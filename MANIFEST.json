@@ -1,0 +1,23 @@
+{
+  "pack": "Research Attention OS Codex Development Pack",
+  "version": "v1.1",
+  "documents": [
+    "01_PRODUCT.md",
+    "02_DOMAIN_MODEL.md",
+    "03_DATABASE_SCHEMA.md",
+    "04_SCHEDULER_SPEC.md",
+    "05_INGESTION_SPEC.md",
+    "06_SOURCE_GRAPH_SPEC.md",
+    "07_MVP_ACCEPTANCE_TESTS.md"
+  ],
+  "recommended_read_order": [
+    "01_PRODUCT.md",
+    "02_DOMAIN_MODEL.md",
+    "04_SCHEDULER_SPEC.md",
+    "05_INGESTION_SPEC.md",
+    "06_SOURCE_GRAPH_SPEC.md",
+    "03_DATABASE_SCHEMA.md",
+    "07_MVP_ACCEPTANCE_TESTS.md"
+  ],
+  "core_vertical_slice": "Source -> Claim/Observation -> Kernel Match -> AttentionPlan -> Model Delta -> KernelPatch -> Human Commit"
+}

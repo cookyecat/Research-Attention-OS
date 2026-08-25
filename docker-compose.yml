@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: raos
+      POSTGRES_PASSWORD: raos
+      POSTGRES_DB: raos
+    ports:
+      - "5432:5432"
+    volumes:
+      - raos_pg:/var/lib/postgresql/data
+
+volumes:
+  raos_pg:

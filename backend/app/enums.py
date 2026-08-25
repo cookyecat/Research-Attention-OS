@@ -1,0 +1,254 @@
+from enum import StrEnum
+
+
+class CreatedBy(StrEnum):
+    USER = "USER"
+    SYSTEM = "SYSTEM"
+    IMPORT = "IMPORT"
+
+
+class SourceType(StrEnum):
+    TEXT = "TEXT"
+    URL = "URL"
+    PDF = "PDF"
+    PAPER = "PAPER"
+    VIDEO = "VIDEO"
+    REPO = "REPO"
+    POST = "POST"
+    MANUAL_OBSERVATION = "MANUAL_OBSERVATION"
+
+
+class EventStatus(StrEnum):
+    CANDIDATE = "CANDIDATE"
+    CONFIRMED = "CONFIRMED"
+    MERGED = "MERGED"
+    ARCHIVED = "ARCHIVED"
+
+
+class ClaimType(StrEnum):
+    FACTUAL = "FACTUAL"
+    TECHNICAL = "TECHNICAL"
+    PREDICTIVE = "PREDICTIVE"
+    OPINION = "OPINION"
+    PROMOTIONAL = "PROMOTIONAL"
+
+
+class AttributionType(StrEnum):
+    AUTHOR = "AUTHOR"
+    FOUNDER = "FOUNDER"
+    COMPANY = "COMPANY"
+    PAPER = "PAPER"
+    RESEARCHER = "RESEARCHER"
+    USER = "USER"
+    UNKNOWN = "UNKNOWN"
+
+
+class ObserverType(StrEnum):
+    USER = "USER"
+    PAPER = "PAPER"
+    SYSTEM_EXTRACTED = "SYSTEM_EXTRACTED"
+    INDEPENDENT_SOURCE = "INDEPENDENT_SOURCE"
+
+
+class ObservationType(StrEnum):
+    DIRECT_VISUAL = "DIRECT_VISUAL"
+    MEASUREMENT = "MEASUREMENT"
+    REPORTED_RESULT = "REPORTED_RESULT"
+    USER_FIELD_NOTE = "USER_FIELD_NOTE"
+    OTHER = "OTHER"
+
+
+class AuthorType(StrEnum):
+    AI = "AI"
+    USER = "USER"
+
+
+class EvidenceObjectType(StrEnum):
+    CLAIM = "CLAIM"
+    OBSERVATION = "OBSERVATION"
+    INFERENCE = "INFERENCE"
+    BELIEF = "BELIEF"
+    HYPOTHESIS = "HYPOTHESIS"
+    MODEL = "MODEL"
+    QUESTION = "QUESTION"
+
+
+class Stance(StrEnum):
+    SUPPORTS = "SUPPORTS"
+    WEAKENS = "WEAKENS"
+    REFUTES = "REFUTES"
+    NEUTRAL = "NEUTRAL"
+
+
+class Strength(StrEnum):
+    WEAK = "WEAK"
+    MODERATE = "MODERATE"
+    STRONG = "STRONG"
+
+
+class RelevanceDecay(StrEnum):
+    RAPID = "RAPID"
+    MODERATE = "MODERATE"
+    SLOW = "SLOW"
+    PERSISTENT = "PERSISTENT"
+
+
+class KernelNodeType(StrEnum):
+    GOAL = "GOAL"
+    PROJECT = "PROJECT"
+    BOTTLENECK = "BOTTLENECK"
+    QUESTION = "QUESTION"
+    BELIEF = "BELIEF"
+    HYPOTHESIS = "HYPOTHESIS"
+    MODEL = "MODEL"
+    DECISION = "DECISION"
+    EXPERIMENT = "EXPERIMENT"
+
+
+class KernelRelationship(StrEnum):
+    SUPPORTS = "SUPPORTS"
+    WEAKENS = "WEAKENS"
+    REFUTES = "REFUTES"
+    RELATES_TO = "RELATES_TO"
+    MOTIVATES = "MOTIVATES"
+    ANSWERS = "ANSWERS"
+    TESTS = "TESTS"
+    BLOCKS = "BLOCKS"
+    DEPENDS_ON = "DEPENDS_ON"
+    SUPERSEDES = "SUPERSEDES"
+    DERIVED_FROM = "DERIVED_FROM"
+
+
+class AttentionState(StrEnum):
+    DROP = "DROP"
+    AWARE = "AWARE"
+    WATCH = "WATCH"
+    ENGAGE = "ENGAGE"
+
+
+class ProcessingMode(StrEnum):
+    SCAN = "SCAN"
+    LEARN = "LEARN"
+    VERIFY = "VERIFY"
+    DEEP_DIVE = "DEEP_DIVE"
+    SYNTHESIZE = "SYNTHESIZE"
+
+
+class Urgency(StrEnum):
+    BACKGROUND = "BACKGROUND"
+    NORMAL = "NORMAL"
+    PRIORITY = "PRIORITY"
+    PREEMPT = "PREEMPT"
+
+
+class ExpectedOutput(StrEnum):
+    NONE = "NONE"
+    SUMMARY = "SUMMARY"
+    WATCH = "WATCH"
+    KERNEL_PATCH = "KERNEL_PATCH"
+    DECISION_REVIEW = "DECISION_REVIEW"
+    EXPERIMENT_PROPOSAL = "EXPERIMENT_PROPOSAL"
+
+
+class Interruptibility(StrEnum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+
+
+class CognitiveCapacity(StrEnum):
+    LOW = "LOW"
+    NORMAL = "NORMAL"
+    HIGH = "HIGH"
+
+
+class CandidateType(StrEnum):
+    SOURCE = "SOURCE"
+    EVENT = "EVENT"
+    CLAIM = "CLAIM"
+    OBSERVATION = "OBSERVATION"
+
+
+class WatchTargetType(StrEnum):
+    ENTITY = "ENTITY"
+    COMPANY = "COMPANY"
+    RESEARCHER = "RESEARCHER"
+    PAPER = "PAPER"
+    METHOD = "METHOD"
+    MODEL = "MODEL"
+    CLAIM = "CLAIM"
+    BENCHMARK = "BENCHMARK"
+    QUESTION = "QUESTION"
+    TREND = "TREND"
+
+
+class WatchStatus(StrEnum):
+    ACTIVE = "ACTIVE"
+    PROMOTED = "PROMOTED"
+    EXPIRED = "EXPIRED"
+    CANCELLED = "CANCELLED"
+
+
+class TriggerType(StrEnum):
+    PAPER_RELEASE = "PAPER_RELEASE"
+    CODE_RELEASE = "CODE_RELEASE"
+    BENCHMARK_UPDATE = "BENCHMARK_UPDATE"
+    INDEPENDENT_REPLICATION = "INDEPENDENT_REPLICATION"
+    NEW_EVIDENCE = "NEW_EVIDENCE"
+    FUNDING_EVENT = "FUNDING_EVENT"
+    ADOPTION_EVENT = "ADOPTION_EVENT"
+    USER_DEFINED = "USER_DEFINED"
+
+
+class PatchChangeType(StrEnum):
+    CREATE = "CREATE"
+    REVISE = "REVISE"
+    DEPRECATE = "DEPRECATE"
+    REOPEN = "REOPEN"
+    SUPERSEDE = "SUPERSEDE"
+
+
+class PatchStatus(StrEnum):
+    PROPOSED = "PROPOSED"
+    ACCEPTED = "ACCEPTED"
+    MODIFIED = "MODIFIED"
+    REJECTED = "REJECTED"
+
+
+class SourceEdgeRelationship(StrEnum):
+    CITES = "CITES"
+    REPORTS_ON = "REPORTS_ON"
+    REPOSTS = "REPOSTS"
+    DISCUSSES = "DISCUSSES"
+    EXTENDS = "EXTENDS"
+    CONTRADICTS = "CONTRADICTS"
+    DERIVED_FROM = "DERIVED_FROM"
+
+
+class DetectedBy(StrEnum):
+    PARSER = "PARSER"
+    AI = "AI"
+    USER = "USER"
+    METADATA = "METADATA"
+
+
+class IngestionStatus(StrEnum):
+    PENDING = "PENDING"
+    FETCHING = "FETCHING"
+    PARSING = "PARSING"
+    NORMALIZING = "NORMALIZING"
+    DEDUPLICATING = "DEDUPLICATING"
+    PERSISTED = "PERSISTED"
+    FETCH_FAILED = "FETCH_FAILED"
+    PARSE_FAILED = "PARSE_FAILED"
+    NORMALIZE_FAILED = "NORMALIZE_FAILED"
+
+
+PROTECTED_KERNEL_TYPES = frozenset(
+    {
+        KernelNodeType.BELIEF,
+        KernelNodeType.MODEL,
+        KernelNodeType.HYPOTHESIS,
+        KernelNodeType.DECISION,
+    }
+)
