@@ -36,6 +36,7 @@ class KernelMatch:
     score: float
     reason: str
     structural: bool = False
+    relevance_type: str = "TOPIC"
 
 
 def _overlap(a: set[str], b: set[str]) -> float:
@@ -89,6 +90,7 @@ def match_kernel(extraction: ExtractionResult, nodes: list[KernelNode], extra_te
                     score=score,
                     reason="; ".join(reason_bits) or "lexical overlap",
                     structural=True,
+                    relevance_type="STRUCTURAL",
                 )
             )
             continue
@@ -117,6 +119,13 @@ def match_kernel(extraction: ExtractionResult, nodes: list[KernelNode], extra_te
                     score=round(min(score, 1.0), 4),
                     reason="; ".join(reason_bits) or "lexical overlap with kernel node",
                     structural=False,
+                    relevance_type=(
+                        "BOTTLENECK"
+                        if node.node_type == "BOTTLENECK"
+                        else "DECISION"
+                        if node.node_type == "DECISION"
+                        else "TOPIC"
+                    ),
                 )
             )
     matches.sort(key=lambda m: m.score, reverse=True)

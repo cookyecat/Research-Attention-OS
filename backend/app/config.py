@@ -6,9 +6,13 @@ class Settings(BaseSettings):
 
     database_url: str = "sqlite:///./raos.db"
     auto_create_tables: bool = True
+    cognitive_provider: str = "rule"
     llm_api_key: str | None = None
     llm_base_url: str = "https://api.openai.com/v1"
     llm_model: str = "gpt-4o-mini"
+    embedding_base_url: str | None = None
+    embedding_api_key: str | None = None
+    embedding_model: str = "text-embedding-3-small"
     max_upload_bytes: int = 20 * 1024 * 1024
     url_fetch_timeout_seconds: float = 15.0
     scheduler_version: str = "raos-scheduler-0.1.0"

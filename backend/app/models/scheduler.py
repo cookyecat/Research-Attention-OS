@@ -36,6 +36,7 @@ class AttentionPlan(UUIDPrimaryKeyMixin, Base):
     watch_after_processing: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     scheduler_version: Mapped[str] = mapped_column(Text, nullable=False)
     score_debug: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    analysis_run_id: Mapped[UUID | None] = mapped_column(Uuid, ForeignKey("analysis_runs.id"), nullable=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 

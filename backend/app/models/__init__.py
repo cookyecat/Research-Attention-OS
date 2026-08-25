@@ -1,3 +1,4 @@
+from app.models.analysis import AnalysisRun
 from app.models.claim import Claim
 from app.models.event import Event, EventSource
 from app.models.evidence import EvidenceLink, TemporalPolicy
@@ -32,4 +33,5 @@ __all__ = [
     "WatchTrigger",
     "IngestionJob",
     "ParserRun",
+    "AnalysisRun",
 ]

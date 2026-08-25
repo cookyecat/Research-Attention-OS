@@ -44,6 +44,8 @@ button { background: var(--paper); color: #1a140c; border: 0; padding: 10px 16px
 button.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
 button.danger { background: var(--danger); color: white; }
 .actions { display: flex; gap: 8px; margin-top: 12px; }
+.modify-form { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 12px; }
+.modify-form textarea { min-height: 72px; }
 pre { white-space: pre-wrap; color: var(--muted); font-size: 13px; }
 .error { color: var(--danger); }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }

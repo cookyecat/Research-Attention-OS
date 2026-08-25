@@ -61,3 +61,4 @@ class KernelPatch(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     status: Mapped[str] = mapped_column(String, nullable=False, default="PROPOSED", index=True)
     proposed_by: Mapped[str] = mapped_column(String, nullable=False)
     reviewed_by_user_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    analysis_run_id: Mapped[UUID | None] = mapped_column(Uuid, ForeignKey("analysis_runs.id"), nullable=True, index=True)

@@ -1,17 +1,36 @@
-from sqlalchemy.orm import Session
-from sqlalchemy.pool import StaticPool
-from sqlalchemy import create_engine, event
-from sqlalchemy.orm import sessionmaker
+from __future__ import annotations
+
+import os
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine, event, text
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from app.db import Base, get_db
 from app.main import app
 
 
+def _postgres_url() -> str | None:
+    return os.environ.get("RAOS_TEST_DATABASE_URL")
+
+
 @pytest.fixture
 def engine():
+    url = _postgres_url()
+    if url:
+        eng = create_engine(url, future=True)
+        with eng.connect() as conn:
+            if url.startswith("postgresql"):
+                conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+                conn.commit()
+        Base.metadata.drop_all(eng)
+        Base.metadata.create_all(eng)
+        yield eng
+        Base.metadata.drop_all(eng)
+        return
+
     eng = create_engine(
         "sqlite://",
         connect_args={"check_same_thread": False},
@@ -25,7 +44,7 @@ def engine():
         cursor.close()
 
     Base.metadata.create_all(eng)
-    return eng
+    yield eng
 
 
 @pytest.fixture

@@ -20,3 +20,4 @@ class Observation(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     scope: Mapped[str | None] = mapped_column(Text, nullable=True)
     confidence: Mapped[float] = mapped_column(Float, nullable=False)
     temporal_policy_id: Mapped[UUID | None] = mapped_column(Uuid, nullable=True)
+    analysis_run_id: Mapped[UUID | None] = mapped_column(Uuid, ForeignKey("analysis_runs.id"), nullable=True, index=True)

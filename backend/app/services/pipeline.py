@@ -16,20 +16,18 @@ from app.models.observation import Observation
 from app.models.scheduler import AttentionPlan, RuntimeContext
 from app.models.source import Source
 from app.models.watch import Watch, WatchTrigger
-from app.services.deltas import build_model_delta, propose_patches, suggest_watches
+from app.services.deltas import suggest_watches
 from app.services.extraction import (
     ExtractionResult,
-    extract_from_text,
     merge_extractions,
     observation_is_forbidden_inference,
 )
 from app.services.ingestion import attach_or_create_event
 from app.services.kernel_commit import create_patch
-from app.services.matching import KernelMatch, match_kernel
+from app.services.matching import KernelMatch
 from app.services.scheduler import (
     RuntimeView,
     SchedulerFeatures,
-    estimate_features,
     route,
     validate_plan,
 )
@@ -54,6 +52,7 @@ def persist_extraction(
     source: Source,
     extraction: ExtractionResult,
     event_id: UUID | None,
+    analysis_run_id: UUID | None = None,
 ) -> tuple[list[Claim], list[Observation], list[Inference], list[EvidenceLink]]:
     claims: list[Claim] = []
     observations: list[Observation] = []
@@ -68,6 +67,7 @@ def persist_extraction(
             attributed_to=item.attributed_to,
             attribution_type=item.attribution_type,
             confidence_extraction=item.confidence_extraction,
+            analysis_run_id=analysis_run_id,
         )
         db.add(row)
         claims.append(row)
@@ -78,6 +78,7 @@ def persist_extraction(
                 author_type=AuthorType.AI,
                 confidence=item.confidence,
                 scope="rejected-as-observation",
+                analysis_run_id=analysis_run_id,
             )
             db.add(inf)
             inferences.append(inf)
@@ -89,12 +90,18 @@ def persist_extraction(
             text=item.text,
             observation_type=item.observation_type,
             confidence=item.confidence,
+            analysis_run_id=analysis_run_id,
         )
         db.add(row)
         observations.append(row)
     db.flush()
     for item in extraction.inferences:
-        inf = Inference(text=item.text, author_type=item.author_type, confidence=item.confidence)
+        inf = Inference(
+            text=item.text,
+            author_type=item.author_type,
+            confidence=item.confidence,
+            analysis_run_id=analysis_run_id,
+        )
         db.add(inf)
         db.flush()
         db.add(
@@ -137,6 +144,7 @@ def persist_extraction(
             scope=ev.scope,
             proposed_by="AI",
             accepted_by_user=None,
+            analysis_run_id=analysis_run_id,
         )
         db.add(link)
         links.append(link)
@@ -148,15 +156,24 @@ def extract_source(
     db: Session,
     source: Source,
     extra_sources: list[Source] | None = None,
+    *,
+    provider=None,
+    analysis_run_id: UUID | None = None,
 ) -> tuple[ExtractionResult, list[Claim], list[Observation], list[Inference], list[EvidenceLink]]:
-    primary = extract_from_text(source.content_text or "", source.source_type, source.title)
+    from app.cognitive.factory import get_provider
+
+    provider = provider or get_provider()
+    primary = provider.extract_information(source.content_text or "", source.source_type, source.title)
     parts = [primary]
     extras = extra_sources or []
     for extra in extras:
-        parts.append(extract_from_text(extra.content_text or "", extra.source_type, extra.title))
+        parts.append(provider.extract_information(extra.content_text or "", extra.source_type, extra.title))
     merged = merge_extractions(*parts) if len(parts) > 1 else primary
+    merged = provider.reason_evidence(merged)
     event = attach_or_create_event(db, source, merged.event_title or source.title, merged.event_summary)
-    claims, observations, inferences, links = persist_extraction(db, source, merged, event.id)
+    claims, observations, inferences, links = persist_extraction(
+        db, source, merged, event.id, analysis_run_id=analysis_run_id
+    )
     for extra in extras:
         attach_or_create_event(db, extra, merged.event_title or extra.title, merged.event_summary)
     return merged, claims, observations, inferences, links
@@ -186,34 +203,191 @@ def run_pipeline(
     runtime_context_id: UUID | None = None,
     runtime: RuntimeView | None = None,
     persist_suggested_watches: bool = False,
+    reprocess: bool = False,
+    provider=None,
 ) -> dict:
+    from app.cognitive.factory import get_provider
+    from app.cognitive.versions import PIPELINE_VERSION, PROMPT_VERSION
+    from app.services.analysis_runs import (
+        complete_run,
+        fail_run,
+        find_completed_run,
+        hydrate_run,
+        identity_key,
+        input_hash,
+        kernel_snapshot_hash,
+        new_run,
+        run_public,
+    )
+
     source = db.get(Source, source_id)
     if source is None:
         raise ValueError("Source not found")
     extras = [db.get(Source, sid) for sid in extra_source_ids or []]
     extras = [s for s in extras if s is not None]
-    extraction, claims, observations, inferences, links = extract_source(db, source, extras)
+    provider = provider or get_provider()
     nodes = _active_kernel(db)
-    blob = " ".join(
-        [source.content_text or "", source.title or ""] + [e.content_text or "" for e in extras]
+    in_hash = input_hash(source, extras)
+    k_hash = kernel_snapshot_hash(nodes)
+    provider_type = getattr(provider, "provider_type", "rule")
+    model_name = settings.llm_model if provider_type.startswith("model") else None
+    ident = identity_key(
+        input_digest=in_hash,
+        kernel_digest=k_hash,
+        provider_type=provider_type.split("+")[0],
+        model_name=model_name,
+        prompt_version=PROMPT_VERSION,
+        pipeline_version=PIPELINE_VERSION,
     )
-    matches = match_kernel(extraction, nodes, extra_text=blob)
-    event_source_ids = [source.id] + [e.id for e in extras]
-    independence = independence_report(db, event_source_ids)
-    is_duplicate = independence["secondary_reports"] >= 1 and str(source.id) in independence.get(
-        "secondary_source_ids", []
+    if not reprocess:
+        existing = find_completed_run(db, ident)
+        if existing:
+            if runtime is not None:
+                return _reschedule(db, existing, runtime, source, persist_suggested_watches=persist_suggested_watches)
+            return hydrate_run(db, existing)
+
+    run = new_run(
+        db,
+        source_id=source.id,
+        extra_ids=[str(e.id) for e in extras],
+        identity=ident,
+        in_hash=in_hash,
+        k_hash=k_hash,
+        provider_type=provider_type,
+        model_name=model_name,
     )
-    features = estimate_features(
-        blob,
-        extraction,
-        matches,
-        is_duplicate=is_duplicate,
-        independent_source_count=independence["independent_sources"],
-        secondary_report_count=independence["secondary_reports"],
-    )
-    ctx = db.get(RuntimeContext, runtime_context_id) if runtime_context_id else None
-    view = runtime or _runtime_view(ctx)
-    draft = validate_plan(route(features, view))
+    try:
+        extraction, claims, observations, inferences, links = extract_source(
+            db, source, extras, provider=provider, analysis_run_id=run.id
+        )
+        blob = " ".join(
+            [source.content_text or "", source.title or ""] + [e.content_text or "" for e in extras]
+        )
+        matches = provider.match_kernel(extraction, nodes, extra_text=blob)
+        event_source_ids = [source.id] + [e.id for e in extras]
+        independence = independence_report(db, event_source_ids)
+        is_duplicate = independence["secondary_reports"] >= 1 and str(source.id) in independence.get(
+            "secondary_source_ids", []
+        )
+        features = provider.judge_features(
+            blob,
+            extraction,
+            matches,
+            is_duplicate=is_duplicate,
+            independent_source_count=independence["independent_sources"],
+            secondary_report_count=independence["secondary_reports"],
+        )
+        ctx = db.get(RuntimeContext, runtime_context_id) if runtime_context_id else None
+        view = runtime or _runtime_view(ctx)
+        draft = validate_plan(route(features, view))
+        plan = AttentionPlan(
+            candidate_type=CandidateType.SOURCE,
+            candidate_id=source.id,
+            attention_state=draft.attention_state,
+            processing_modes=[m.value for m in draft.processing_modes],
+            urgency=draft.urgency,
+            cognitive_budget_minutes=draft.cognitive_budget_minutes,
+            kernel_target_ids=[str(m.node_id) for m in matches],
+            expected_output=draft.expected_output,
+            reason=draft.reason,
+            watch_after_processing=draft.watch_after_processing,
+            scheduler_version=settings.scheduler_version,
+            analysis_run_id=run.id,
+            score_debug={
+                "features": features.as_dict(),
+                "matches": [
+                    {
+                        "node_id": str(m.node_id),
+                        "node_type": m.node_type,
+                        "title": m.title,
+                        "score": m.score,
+                        "reason": m.reason,
+                        "structural": m.structural,
+                        "relevance_type": getattr(m, "relevance_type", "TOPIC"),
+                    }
+                    for m in matches
+                ],
+                "independence": independence,
+            },
+        )
+        db.add(plan)
+        db.flush()
+        delta = provider.propose_model_delta(blob, extraction, matches, features, nodes)
+        evidence_ids = [str(link.id) for link in links]
+        patch_drafts = provider.propose_patches(blob, delta, matches, features, nodes, evidence_ids)
+        patches: list[KernelPatch] = []
+        if draft.attention_state.value != "DROP":
+            for pd in patch_drafts:
+                patches.append(
+                    create_patch(
+                        db,
+                        target_object_type=pd.target_object_type,
+                        target_object_id=pd.target_object_id,
+                        change_type=pd.change_type,
+                        current_state=pd.current_state,
+                        proposed_state=pd.proposed_state,
+                        reasoning=pd.reasoning,
+                        evidence_link_ids=pd.evidence_link_ids,
+                        suggested_confidence_change=pd.suggested_confidence_change,
+                        analysis_run_id=run.id,
+                    )
+                )
+        watch_suggestions = suggest_watches(blob, features, delta)
+        created_watches: list[Watch] = []
+        if persist_suggested_watches or draft.attention_state.value == "WATCH":
+            for sug in watch_suggestions:
+                watch = Watch(
+                    target_type=sug["target_type"],
+                    target_ref=sug["target_ref"],
+                    status="ACTIVE",
+                    created_reason=sug["created_reason"],
+                    kernel_target_ids=[str(m.node_id) for m in matches],
+                )
+                db.add(watch)
+                db.flush()
+                for trig in sug["triggers"]:
+                    db.add(WatchTrigger(watch_id=watch.id, trigger_type=trig, trigger_config={}))
+                created_watches.append(watch)
+        db.flush()
+        fallback_used = bool(getattr(provider, "fallback_used", False))
+        payload = serialize_analysis(
+            source,
+            extraction,
+            claims,
+            observations,
+            inferences,
+            links,
+            matches,
+            plan,
+            delta,
+            patches,
+            watch_suggestions,
+            created_watches,
+            features,
+        )
+        payload["analysis_run"] = {
+            "id": str(run.id),
+            "identity_key": ident,
+            "provider_type": provider_type,
+            "fallback_used": fallback_used,
+            "pipeline_version": PIPELINE_VERSION,
+        }
+        complete_run(run, payload, fallback_used=fallback_used, meta=getattr(provider, "last_meta", None))
+        payload["analysis_run"] = run_public(run)
+        return payload
+    except Exception as exc:
+        fail_run(run, str(exc))
+        raise
+
+
+def _reschedule(db: Session, run, runtime: RuntimeView, source: Source, persist_suggested_watches: bool = False) -> dict:
+    from app.services.analysis_runs import hydrate_run
+    from app.services.scheduler import SchedulerFeatures
+
+    payload = hydrate_run(db, run)
+    feat = payload.get("features") or {}
+    features = SchedulerFeatures(**{k: v for k, v in feat.items() if k in SchedulerFeatures.__dataclass_fields__})
+    draft = validate_plan(route(features, runtime))
     plan = AttentionPlan(
         candidate_type=CandidateType.SOURCE,
         candidate_id=source.id,
@@ -221,80 +395,31 @@ def run_pipeline(
         processing_modes=[m.value for m in draft.processing_modes],
         urgency=draft.urgency,
         cognitive_budget_minutes=draft.cognitive_budget_minutes,
-        kernel_target_ids=[str(m.node_id) for m in matches],
+        kernel_target_ids=payload.get("attention_plan", {}).get("kernel_target_ids") or [],
         expected_output=draft.expected_output,
         reason=draft.reason,
         watch_after_processing=draft.watch_after_processing,
         scheduler_version=settings.scheduler_version,
-        score_debug={
-            "features": features.as_dict(),
-            "matches": [
-                {
-                    "node_id": str(m.node_id),
-                    "node_type": m.node_type,
-                    "title": m.title,
-                    "score": m.score,
-                    "reason": m.reason,
-                    "structural": m.structural,
-                }
-                for m in matches
-            ],
-            "independence": independence,
-        },
+        analysis_run_id=run.id,
+        score_debug=payload.get("attention_plan", {}).get("score_debug") or {},
     )
     db.add(plan)
     db.flush()
-    delta = build_model_delta(blob, extraction, matches, features, nodes)
-    evidence_ids = [str(link.id) for link in links]
-    patch_drafts = propose_patches(blob, delta, matches, features, nodes, evidence_ids)
-    patches: list[KernelPatch] = []
-    if draft.attention_state.value != "DROP":
-        for pd in patch_drafts:
-            patches.append(
-                create_patch(
-                    db,
-                    target_object_type=pd.target_object_type,
-                    target_object_id=pd.target_object_id,
-                    change_type=pd.change_type,
-                    current_state=pd.current_state,
-                    proposed_state=pd.proposed_state,
-                    reasoning=pd.reasoning,
-                    evidence_link_ids=pd.evidence_link_ids,
-                    suggested_confidence_change=pd.suggested_confidence_change,
-                )
-            )
-    watch_suggestions = suggest_watches(blob, features, delta)
-    created_watches: list[Watch] = []
-    if persist_suggested_watches or draft.attention_state.value == "WATCH":
-        for sug in watch_suggestions:
-            watch = Watch(
-                target_type=sug["target_type"],
-                target_ref=sug["target_ref"],
-                status="ACTIVE",
-                created_reason=sug["created_reason"],
-                kernel_target_ids=[str(m.node_id) for m in matches],
-            )
-            db.add(watch)
-            db.flush()
-            for trig in sug["triggers"]:
-                db.add(WatchTrigger(watch_id=watch.id, trigger_type=trig, trigger_config={}))
-            created_watches.append(watch)
-    db.flush()
-    return serialize_analysis(
-        source,
-        extraction,
-        claims,
-        observations,
-        inferences,
-        links,
-        matches,
-        plan,
-        delta,
-        patches,
-        watch_suggestions,
-        created_watches,
-        features,
-    )
+    payload["attention_plan"] = {
+        "id": str(plan.id),
+        "attention_state": plan.attention_state,
+        "processing_modes": plan.processing_modes,
+        "urgency": plan.urgency,
+        "cognitive_budget_minutes": plan.cognitive_budget_minutes,
+        "kernel_target_ids": plan.kernel_target_ids,
+        "expected_output": plan.expected_output,
+        "reason": plan.reason,
+        "watch_after_processing": plan.watch_after_processing,
+        "scheduler_version": plan.scheduler_version,
+        "score_debug": plan.score_debug,
+    }
+    run.result_payload = payload
+    return payload
 
 
 def serialize_analysis(
@@ -331,8 +456,9 @@ def serialize_analysis(
                 "title": m.title,
                 "score": m.score,
                 "reason": m.reason,
-                "structural": m.structural,
-            }
+                    "structural": m.structural,
+                    "relevance_type": getattr(m, "relevance_type", "TOPIC"),
+                }
             for m in matches
         ],
         "attention_plan": {
@@ -354,6 +480,12 @@ def serialize_analysis(
             "distinctions": delta.distinctions,
             "questions": delta.questions,
             "admission_allowed": delta.admission_allowed,
+            "affected_kernel_nodes": getattr(delta, "affected_kernel_nodes", []),
+            "possible_hypotheses": getattr(delta, "possible_hypotheses", []),
+            "decision_implications": getattr(delta, "decision_implications", []),
+            "epistemic_risk": getattr(delta, "epistemic_risk", ""),
+            "evidence_maturity": getattr(delta, "evidence_maturity", None),
+            "rationale": getattr(delta, "rationale", ""),
         },
         "kernel_patches": [_patch_dict(p) for p in patches],
         "watch_suggestions": watch_suggestions,

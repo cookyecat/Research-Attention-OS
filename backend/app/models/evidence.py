@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import Boolean, Float, String, Text, Uuid
+from sqlalchemy import Boolean, Float, ForeignKey, String, Text, Uuid
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import JSON
 
@@ -21,6 +21,7 @@ class EvidenceLink(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     scope: Mapped[str | None] = mapped_column(Text, nullable=True)
     proposed_by: Mapped[str] = mapped_column(String, nullable=False)
     accepted_by_user: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    analysis_run_id: Mapped[UUID | None] = mapped_column(Uuid, ForeignKey("analysis_runs.id"), nullable=True, index=True)
 
 
 class TemporalPolicy(UUIDPrimaryKeyMixin, TimestampMixin, Base):

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import KernelPatchCard from "@/components/KernelPatchCard";
 
 const ORDER = ["GOAL", "PROJECT", "BOTTLENECK", "QUESTION", "BELIEF", "HYPOTHESIS", "MODEL", "DECISION", "EXPERIMENT"];
 
@@ -19,15 +20,10 @@ export default function KernelPage() {
     api("/kernel/seed", { method: "POST" }).finally(load);
   }, []);
 
-  async function act(id: string, action: "accept" | "reject") {
-    await api(`/kernel/patches/${id}/${action}`, { method: "POST" });
-    await load();
-  }
-
   return (
     <>
       <h2>Cognitive Kernel</h2>
-      <p className="lede">Active researcher state. Small and high-density. History is append-only; AI proposals stay PROPOSED until you commit.</p>
+      <p className="lede">Active researcher state. Small and high-density. History is append-only; AI proposals stay PROPOSED until you Accept, Modify, or Reject.</p>
       {ORDER.filter((t) => kernel[t]?.length).map((t) => (
         <div key={t}>
           <h3>{t}</h3>
@@ -38,27 +34,18 @@ export default function KernelPage() {
                 <span className="badge">v{n.current_version}</span>
               </div>
               <h3>{n.title}</h3>
-              {n.payload?.proposition && <p>{n.payload.proposition}</p>}
+              {n.payload?.proposition && n.payload.proposition !== n.title && <p>{n.payload.proposition}</p>}
               {n.payload?.scope && <p className="lede">Scope: {n.payload.scope}</p>}
               {n.payload?.confidence != null && <p>Confidence: {n.payload.confidence}</p>}
-              {n.payload?.description && <p>{n.payload.description}</p>}
+              {n.payload?.description && n.payload.description !== n.title && <p>{n.payload.description}</p>}
+              {n.payload?.text && n.payload.text !== n.title && <p>{n.payload.text}</p>}
             </div>
           ))}
         </div>
       ))}
       <h3>Proposed patches</h3>
       {patches.filter((p) => p.status === "PROPOSED").map((p) => (
-        <div className="card" key={p.id}>
-          <div className="row">
-            <span className="badge">{p.change_type}</span>
-            <span className="badge">{p.target_object_type}</span>
-          </div>
-          <p>{p.reasoning}</p>
-          <div className="actions">
-            <button onClick={() => act(p.id, "accept")}>Accept</button>
-            <button className="ghost" onClick={() => act(p.id, "reject")}>Reject</button>
-          </div>
-        </div>
+        <KernelPatchCard key={p.id} patch={p} onCommitted={load} />
       ))}
     </>
   );

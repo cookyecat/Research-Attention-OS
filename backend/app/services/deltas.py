@@ -17,6 +17,12 @@ class ModelDelta:
     distinctions: list[str] = field(default_factory=list)
     questions: list[str] = field(default_factory=list)
     admission_allowed: bool = False
+    affected_kernel_nodes: list[dict] = field(default_factory=list)
+    possible_hypotheses: list[str] = field(default_factory=list)
+    decision_implications: list[str] = field(default_factory=list)
+    epistemic_risk: str = ""
+    evidence_maturity: float = 0.4
+    rationale: str = ""
 
 
 @dataclass

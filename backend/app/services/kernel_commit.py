@@ -38,6 +38,7 @@ def create_patch(
     proposed_by: str = "AI",
     evidence_link_ids: list | None = None,
     suggested_confidence_change: dict | None = None,
+    analysis_run_id: UUID | None = None,
 ) -> KernelPatch:
     patch = KernelPatch(
         target_object_type=target_object_type,
@@ -50,6 +51,7 @@ def create_patch(
         suggested_confidence_change=suggested_confidence_change,
         status=PatchStatus.PROPOSED,
         proposed_by=proposed_by,
+        analysis_run_id=analysis_run_id,
     )
     db.add(patch)
     db.flush()

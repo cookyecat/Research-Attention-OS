@@ -21,3 +21,4 @@ class Claim(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     confidence_extraction: Mapped[float | None] = mapped_column(Float, nullable=True)
     credibility_estimate: Mapped[float | None] = mapped_column(Float, nullable=True)
     temporal_policy_id: Mapped[UUID | None] = mapped_column(Uuid, nullable=True)
+    analysis_run_id: Mapped[UUID | None] = mapped_column(Uuid, ForeignKey("analysis_runs.id"), nullable=True, index=True)

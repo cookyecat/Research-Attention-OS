@@ -6,7 +6,9 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models.scheduler import RuntimeContext
+from app.models.source import Source
 from app.schemas.api import ExtractIn, PlanIn
+from app.services.analysis_runs import hydrate_run, latest_run_for_source
 from app.services.pipeline import run_pipeline
 from app.services.scheduler import RuntimeView
 
@@ -21,6 +23,7 @@ def extract(body: ExtractIn, db: Session = Depends(get_db)):
             body.source_id,
             extra_source_ids=body.extra_source_ids,
             persist_suggested_watches=body.persist_suggested_watches,
+            reprocess=False,
         )
     except ValueError as exc:
         raise HTTPException(404, str(exc)) from exc
@@ -29,6 +32,31 @@ def extract(body: ExtractIn, db: Session = Depends(get_db)):
 @router.post("/run")
 def run(body: ExtractIn, db: Session = Depends(get_db)):
     return extract(body, db)
+
+
+@router.post("/reprocess")
+def reprocess(body: ExtractIn, db: Session = Depends(get_db)):
+    try:
+        return run_pipeline(
+            db,
+            body.source_id,
+            extra_source_ids=body.extra_source_ids,
+            persist_suggested_watches=body.persist_suggested_watches,
+            reprocess=True,
+        )
+    except ValueError as exc:
+        raise HTTPException(404, str(exc)) from exc
+
+
+@router.get("/by-source/{source_id}")
+def get_by_source(source_id: UUID, db: Session = Depends(get_db)):
+    source = db.get(Source, source_id)
+    if source is None:
+        raise HTTPException(404, "Source not found")
+    run = latest_run_for_source(db, source_id)
+    if run is None:
+        raise HTTPException(404, "No analysis run for this source")
+    return hydrate_run(db, run)
 
 
 @router.post("/plan")

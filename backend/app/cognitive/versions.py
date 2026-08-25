@@ -1,0 +1,11 @@
+"""Pipeline component versions recorded on every AnalysisRun."""
+
+EXTRACTOR_VERSION = "raos-extractor-0.2.0"
+MATCHER_VERSION = "raos-matcher-0.2.0"
+EVIDENCE_REASONER_VERSION = "raos-evidence-0.2.0"
+DELTA_VERSION = "raos-delta-0.2.0"
+SCHEDULER_VERSION = "raos-scheduler-0.1.0"
+PROMPT_VERSION = "raos-prompts-0.2.0"
+PROVIDER_VERSION = "raos-provider-0.2.0"
+EMBEDDING_MODEL_VERSION_NONE = "none"
+PIPELINE_VERSION = "raos-pipeline-0.2.0"
