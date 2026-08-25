@@ -1,0 +1,75 @@
+name: ci
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  backend-sqlite:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Test (SQLite)
+        run: pytest -q
+
+  backend-postgres:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: raos
+          POSTGRES_PASSWORD: raos
+          POSTGRES_DB: raos_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U raos -d raos_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      RAOS_TEST_DATABASE_URL: postgresql+psycopg://raos:raos@localhost:5432/raos_test
+      RAOS_DATABASE_URL: postgresql+psycopg://raos:raos@localhost:5432/raos_test
+      RAOS_AUTO_CREATE_TABLES: "false"
+      RAOS_COGNITIVE_PROVIDER: rule
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Alembic upgrade
+        run: alembic upgrade head
+      - name: Test (PostgreSQL)
+        run: pytest -q
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install
+        run: npm install
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Build
+        run: npm run build
