@@ -120,6 +120,11 @@ Kernel Match localizes where the information might matter. You estimate:
 
 A company self-report may REINFORCE a model and still have low epistemic_strength.
 Do not treat directional consistency as strong evidence.
+Scope alignment is required before assigning effect direction.
+Do not project a broad claim onto a narrower Kernel proposition.
+Distinguish system-level, subsystem-level, temporal, task, benchmark, population, deployment, and causal scope when relevant.
+If the source does not provide evidence at the target Kernel scope, prefer REFINE or NO_MATERIAL_CHANGE over a strong REINFORCE or CHALLENGE.
+Explicit narrower-scope evidence may support a directional effect.
 A topic-relevant marketing article is not a Decision review.
 OPEN_NEW with exploration_candidate=true is allowed when no Kernel target fits but a useful new direction appears.
 Low topic similarity alone must not imply NO_MATERIAL_CHANGE when a STRUCTURAL or new-direction effect is present.
@@ -130,6 +135,7 @@ IMPACT_USER = """Text:
 {text}
 
 Matches: {matches}
+Match titles are Kernel propositions. Align the source-claim scope with that proposition before REINFORCE or CHALLENGE.
 Duplicate: {is_duplicate}
 Independent sources: {independent_source_count}
 Secondary reports: {secondary_report_count}
