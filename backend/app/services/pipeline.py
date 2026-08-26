@@ -68,6 +68,10 @@ def persist_extraction(
             attribution_type=item.attribution_type,
             confidence_extraction=item.confidence_extraction,
             analysis_run_id=analysis_run_id,
+            source_span_text=item.source_span_text,
+            source_start_offset=item.source_start_offset,
+            source_end_offset=item.source_end_offset,
+            chunk_id=item.chunk_id,
         )
         db.add(row)
         claims.append(row)
@@ -91,6 +95,10 @@ def persist_extraction(
             observation_type=item.observation_type,
             confidence=item.confidence,
             analysis_run_id=analysis_run_id,
+            source_span_text=item.source_span_text,
+            source_start_offset=item.source_start_offset,
+            source_end_offset=item.source_end_offset,
+            chunk_id=item.chunk_id,
         )
         db.add(row)
         observations.append(row)
@@ -161,13 +169,27 @@ def extract_source(
     analysis_run_id: UUID | None = None,
 ) -> tuple[ExtractionResult, list[Claim], list[Observation], list[Inference], list[EvidenceLink]]:
     from app.cognitive.factory import get_provider
+    from app.services.chunking import split_source
+    from app.services.extraction import dedup_extraction
 
     provider = provider or get_provider()
-    primary = provider.extract_information(source.content_text or "", source.source_type, source.title)
+
+    def _extract_one(src: Source) -> ExtractionResult:
+        full = src.content_text or ""
+        chunks = split_source(full)
+        parts: list[ExtractionResult] = []
+        for chunk in chunks:
+            part = provider.extract_information(chunk.text, src.source_type, src.title)
+            _stamp_chunk_provenance(part, chunk, full)
+            parts.append(part)
+        merged = merge_extractions(*parts) if len(parts) > 1 else parts[0]
+        return dedup_extraction(merged)
+
+    primary = _extract_one(source)
     parts = [primary]
     extras = extra_sources or []
     for extra in extras:
-        parts.append(provider.extract_information(extra.content_text or "", extra.source_type, extra.title))
+        parts.append(_extract_one(extra))
     merged = merge_extractions(*parts) if len(parts) > 1 else primary
     merged = provider.reason_evidence(merged)
     event = attach_or_create_event(db, source, merged.event_title or source.title, merged.event_summary)
@@ -177,6 +199,20 @@ def extract_source(
     for extra in extras:
         attach_or_create_event(db, extra, merged.event_title or extra.title, merged.event_summary)
     return merged, claims, observations, inferences, links
+
+
+def _stamp_chunk_provenance(part: ExtractionResult, chunk, full_text: str) -> None:
+    from app.services.chunking import locate_span
+
+    for item in [*part.claims, *part.observations, *part.inferences]:
+        if not item.chunk_id:
+            item.chunk_id = chunk.chunk_id
+        span = item.source_span_text or item.text
+        item.source_span_text = span
+        if item.source_start_offset is None:
+            start, end = locate_span(full_text, span, hint=chunk.start)
+            item.source_start_offset = start
+            item.source_end_offset = end
 
 
 def _runtime_view(ctx: RuntimeContext | None) -> RuntimeView:
@@ -207,18 +243,20 @@ def run_pipeline(
     provider=None,
 ) -> dict:
     from app.cognitive.factory import get_provider
-    from app.cognitive.versions import PIPELINE_VERSION, PROMPT_VERSION
+    from app.cognitive.versions import PIPELINE_VERSION
     from app.services.analysis_runs import (
+        acquire_run,
         complete_run,
         fail_run,
-        find_completed_run,
         hydrate_run,
-        identity_key,
+        compute_identity,
         input_hash,
         kernel_snapshot_hash,
-        new_run,
+        plan_public,
         run_public,
     )
+    from app.services.embeddings import embedding_model_label, load_node_embeddings, retrieve_ids_pgvector
+    from app.services.retrieval import try_embed_query
 
     source = db.get(Source, source_id)
     if source is None:
@@ -230,23 +268,16 @@ def run_pipeline(
     in_hash = input_hash(source, extras)
     k_hash = kernel_snapshot_hash(nodes)
     provider_type = getattr(provider, "provider_type", "rule")
-    model_name = settings.llm_model if provider_type.startswith("model") else None
-    ident = identity_key(
+    model_name = settings.llm_model if str(provider_type).startswith("model") else None
+    emb_version = embedding_model_label()
+    ident = compute_identity(
         input_digest=in_hash,
         kernel_digest=k_hash,
-        provider_type=provider_type.split("+")[0],
+        provider_type=provider_type,
         model_name=model_name,
-        prompt_version=PROMPT_VERSION,
-        pipeline_version=PIPELINE_VERSION,
+        embedding_model_version=emb_version,
     )
-    if not reprocess:
-        existing = find_completed_run(db, ident)
-        if existing:
-            if runtime is not None:
-                return _reschedule(db, existing, runtime, source, persist_suggested_watches=persist_suggested_watches)
-            return hydrate_run(db, existing)
-
-    run = new_run(
+    kind, run = acquire_run(
         db,
         source_id=source.id,
         extra_ids=[str(e.id) for e in extras],
@@ -255,7 +286,41 @@ def run_pipeline(
         k_hash=k_hash,
         provider_type=provider_type,
         model_name=model_name,
+        embedding_model_version=emb_version,
+        reprocess=reprocess,
     )
+    if kind == "existing" and run.status == "COMPLETED":
+        if runtime is not None:
+            return _reschedule(
+                db,
+                run,
+                runtime,
+                source,
+                persist_suggested_watches=persist_suggested_watches,
+                runtime_context_id=runtime_context_id,
+            )
+        return hydrate_run(db, run)
+    if kind == "existing" and run.status == "RUNNING":
+        import time
+
+        for _ in range(40):
+            db.expire(run)
+            db.refresh(run)
+            if run.status == "COMPLETED":
+                if runtime is not None:
+                    return _reschedule(
+                        db, run, runtime, source, persist_suggested_watches=persist_suggested_watches,
+                        runtime_context_id=runtime_context_id,
+                    )
+                return hydrate_run(db, run)
+            if run.status in {"FAILED", "SUPERSEDED"}:
+                break
+            time.sleep(0.05)
+        if run.status == "COMPLETED":
+            return hydrate_run(db, run)
+        if run.status == "RUNNING":
+            raise RuntimeError("AnalysisRun already in progress for this identity")
+
     try:
         extraction, claims, observations, inferences, links = extract_source(
             db, source, extras, provider=provider, analysis_run_id=run.id
@@ -263,7 +328,23 @@ def run_pipeline(
         blob = " ".join(
             [source.content_text or "", source.title or ""] + [e.content_text or "" for e in extras]
         )
-        matches = provider.match_kernel(extraction, nodes, extra_text=blob)
+        qvec, emb_model = try_embed_query(blob[:4000])
+        ranked_ids = None
+        node_emb = None
+        if qvec:
+            ranked_ids = retrieve_ids_pgvector(db, qvec, model=emb_model)
+            try:
+                node_emb = load_node_embeddings(db, expected_model=emb_model, expected_dim=len(qvec))
+            except Exception:
+                node_emb = None
+        matches = provider.match_kernel(
+            extraction,
+            nodes,
+            extra_text=blob,
+            query_embedding=qvec,
+            node_embeddings=node_emb,
+            ranked_ids=ranked_ids,
+        )
         event_source_ids = [source.id] + [e.id for e in extras]
         independence = independence_report(db, event_source_ids)
         is_duplicate = independence["secondary_reports"] >= 1 and str(source.id) in independence.get(
@@ -292,7 +373,11 @@ def run_pipeline(
             reason=draft.reason,
             watch_after_processing=draft.watch_after_processing,
             scheduler_version=settings.scheduler_version,
+            attention_policy_version=settings.attention_policy_version,
+            runtime_context_id=runtime_context_id,
+            runtime_snapshot=_snapshot_runtime(view),
             analysis_run_id=run.id,
+            created_at=datetime.now(timezone.utc),
             score_debug={
                 "features": features.as_dict(),
                 "matches": [
@@ -350,6 +435,7 @@ def run_pipeline(
                 created_watches.append(watch)
         db.flush()
         fallback_used = bool(getattr(provider, "fallback_used", False))
+        stage_provenance = getattr(provider, "stage_provenance", None)
         payload = serialize_analysis(
             source,
             extraction,
@@ -372,18 +458,48 @@ def run_pipeline(
             "fallback_used": fallback_used,
             "pipeline_version": PIPELINE_VERSION,
         }
-        complete_run(run, payload, fallback_used=fallback_used, meta=getattr(provider, "last_meta", None))
+        complete_run(
+            run,
+            payload,
+            fallback_used=fallback_used,
+            meta=getattr(provider, "last_meta", None),
+            stage_provenance=stage_provenance,
+        )
         payload["analysis_run"] = run_public(run)
         return payload
     except Exception as exc:
         fail_run(run, str(exc))
+        try:
+            db.commit()
+        except Exception:
+            db.rollback()
         raise
 
 
-def _reschedule(db: Session, run, runtime: RuntimeView, source: Source, persist_suggested_watches: bool = False) -> dict:
-    from app.services.analysis_runs import hydrate_run
+def _snapshot_runtime(view: RuntimeView) -> dict:
+    return {
+        "current_task": view.current_task,
+        "session_topic": view.session_topic,
+        "available_attention_minutes": view.available_attention_minutes,
+        "interruptibility": view.interruptibility,
+        "cognitive_capacity": view.cognitive_capacity,
+        "deadline_minutes": view.deadline_minutes,
+    }
+
+
+def _reschedule(
+    db: Session,
+    run,
+    runtime: RuntimeView,
+    source: Source,
+    persist_suggested_watches: bool = False,
+    runtime_context_id: UUID | None = None,
+) -> dict:
+    from app.services.analysis_runs import hydrate_run, plan_public
     from app.services.scheduler import SchedulerFeatures
 
+    stored_payload = dict(run.result_payload or {})
+    original_plan = stored_payload.get("attention_plan")
     payload = hydrate_run(db, run)
     feat = payload.get("features") or {}
     features = SchedulerFeatures(**{k: v for k, v in feat.items() if k in SchedulerFeatures.__dataclass_fields__})
@@ -395,31 +511,27 @@ def _reschedule(db: Session, run, runtime: RuntimeView, source: Source, persist_
         processing_modes=[m.value for m in draft.processing_modes],
         urgency=draft.urgency,
         cognitive_budget_minutes=draft.cognitive_budget_minutes,
-        kernel_target_ids=payload.get("attention_plan", {}).get("kernel_target_ids") or [],
+        kernel_target_ids=(payload.get("attention_plan") or {}).get("kernel_target_ids") or [],
         expected_output=draft.expected_output,
         reason=draft.reason,
         watch_after_processing=draft.watch_after_processing,
         scheduler_version=settings.scheduler_version,
+        attention_policy_version=settings.attention_policy_version,
+        runtime_context_id=runtime_context_id,
+        runtime_snapshot=_snapshot_runtime(runtime),
         analysis_run_id=run.id,
-        score_debug=payload.get("attention_plan", {}).get("score_debug") or {},
+        created_at=datetime.now(timezone.utc),
+        score_debug=(payload.get("attention_plan") or {}).get("score_debug") or {},
     )
     db.add(plan)
     db.flush()
-    payload["attention_plan"] = {
-        "id": str(plan.id),
-        "attention_state": plan.attention_state,
-        "processing_modes": plan.processing_modes,
-        "urgency": plan.urgency,
-        "cognitive_budget_minutes": plan.cognitive_budget_minutes,
-        "kernel_target_ids": plan.kernel_target_ids,
-        "expected_output": plan.expected_output,
-        "reason": plan.reason,
-        "watch_after_processing": plan.watch_after_processing,
-        "scheduler_version": plan.scheduler_version,
-        "score_debug": plan.score_debug,
-    }
-    run.result_payload = payload
-    return payload
+    # Overlay latest plan on the HTTP response only. Never mutate completed AnalysisRun.
+    response = dict(payload)
+    response["attention_plan"] = plan_public(plan)
+    response["latest_attention_plan"] = response["attention_plan"]
+    response["original_attention_plan"] = original_plan
+    assert run.result_payload.get("attention_plan") == original_plan
+    return response
 
 
 def serialize_analysis(
@@ -472,6 +584,9 @@ def serialize_analysis(
             "reason": plan.reason,
             "watch_after_processing": plan.watch_after_processing,
             "scheduler_version": plan.scheduler_version,
+            "attention_policy_version": plan.attention_policy_version,
+            "runtime_context_id": str(plan.runtime_context_id) if plan.runtime_context_id else None,
+            "runtime_snapshot": plan.runtime_snapshot or {},
             "score_debug": plan.score_debug,
         },
         "model_delta": {
@@ -504,6 +619,10 @@ def _claim_dict(c: Claim) -> dict:
         "claim_type": c.claim_type,
         "attributed_to": c.attributed_to,
         "attribution_type": c.attribution_type,
+        "source_span_text": c.source_span_text,
+        "source_start_offset": c.source_start_offset,
+        "source_end_offset": c.source_end_offset,
+        "chunk_id": c.chunk_id,
     }
 
 
@@ -513,6 +632,10 @@ def _obs_dict(o: Observation) -> dict:
         "text": o.text,
         "observer_type": o.observer_type,
         "observation_type": o.observation_type,
+        "source_span_text": o.source_span_text,
+        "source_start_offset": o.source_start_offset,
+        "source_end_offset": o.source_end_offset,
+        "chunk_id": o.chunk_id,
     }
 
 

@@ -38,6 +38,10 @@ def seed_kernel(db: Session = Depends(get_db)):
     if existing:
         return {"seeded": False, "reason": "kernel already has nodes"}
     nodes = seed_mvp_kernel(db)
+    from app.services.embeddings import refresh_node_embedding
+
+    for node in nodes.values():
+        refresh_node_embedding(db, node)
     return {"seeded": True, "ids": {code: str(n.id) for code, n in nodes.items()}}
 
 
@@ -68,6 +72,9 @@ def create_node(body: KernelNodeCreate, db: Session = Depends(get_db)):
             committed_by="USER",
         )
     )
+    from app.services.embeddings import refresh_node_embedding
+
+    refresh_node_embedding(db, node)
     return {"id": str(node.id), "node_type": node.node_type, "current_version": 1}
 
 

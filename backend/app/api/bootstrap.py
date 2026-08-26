@@ -6,8 +6,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from app.cognitive.client import LLMError, chat_json
+from app.cognitive.client import LLMError, chat_json_schema
 from app.cognitive.prompts import BOOTSTRAP_SYSTEM, BOOTSTRAP_USER
+from app.cognitive.schemas import BootstrapResponse
 from app.db import get_db
 from app.enums import PatchChangeType
 from app.models.source import Source
@@ -30,16 +31,17 @@ def bootstrap_propose(body: BootstrapIn, db: Session = Depends(get_db)):
             excerpts.append((src.title or "") + "\n" + src.content_text[:1500])
     proposals = []
     try:
-        data, _meta = chat_json(
+        parsed, _meta, _events = chat_json_schema(
             [
                 {"role": "system", "content": BOOTSTRAP_SYSTEM},
                 {
                     "role": "user",
                     "content": BOOTSTRAP_USER.format(text=body.text[:8000], excerpts="\n---\n".join(excerpts) or "(none)"),
                 },
-            ]
+            ],
+            BootstrapResponse,
         )
-        raw_list = data.get("proposals") or []
+        raw_list = [p.model_dump() for p in parsed.proposals]
     except LLMError:
         raw_list = _heuristic_bootstrap(body.text)
     patches = []

@@ -1,0 +1,101 @@
+# RAOS Live Eval — example manifest
+#
+# Target composition (add real sources later; do not invent articles):
+#   5  wechat / media longform
+#   5  paper abstract / section / PDF
+#   5  official company / research blog
+#   5  GitHub / benchmark / technical release
+#   5  cross-domain decision / investment / startup
+#   5  low-value / irrelevant / hype
+#
+# Known future cases (only when original materials exist in-repo or locally):
+#   银河通用, SpaceClaw / WorldDreamer, 共生知行, 创业股权案例
+#
+# Human Gold is NEVER produced by a model. Empty gold => UNLABELED
+# (run is stored, excluded from accuracy denominators).
+
+name: raos-live-eval-example
+cases:
+  - id: slot-wechat-01
+    source_kind: wechat
+    cognitive_tasks: [topic_relevance]
+    gold_status: UNLABELED
+    source:
+      type: TEXT
+      title: null
+      url: null
+      local_file: null
+      text: null
+    kernel_fixture: mvp
+    human_gold: null
+    notes: "Placeholder for a 公众号 / 媒体长文. Paste real text or local_file later."
+
+  - id: slot-paper-01
+    source_kind: paper
+    cognitive_tasks: [belief_conflict, evidence_verification]
+    gold_status: UNLABELED
+    source:
+      type: PAPER
+      title: null
+      url: null
+      local_file: null
+      text: null
+    kernel_fixture: mvp
+    human_gold: null
+    notes: "Placeholder for a real paper abstract/section/PDF."
+
+  - id: slot-company-blog-01
+    source_kind: company_blog
+    cognitive_tasks: [topic_relevance]
+    gold_status: UNLABELED
+    source:
+      type: URL
+      title: null
+      url: null
+      local_file: null
+      text: null
+    kernel_fixture: mvp
+    human_gold: null
+    notes: "Placeholder for an official company / research blog."
+
+  - id: slot-github-01
+    source_kind: github
+    cognitive_tasks: [topic_relevance]
+    gold_status: UNLABELED
+    source:
+      type: REPO
+      title: null
+      url: null
+      local_file: null
+      text: null
+    kernel_fixture: mvp
+    human_gold: null
+    notes: "Placeholder for GitHub / benchmark / technical release."
+
+  - id: slot-investment-01
+    source_kind: investment
+    cognitive_tasks: [structural_relevance, decision_relevance]
+    gold_status: UNLABELED
+    source:
+      type: TEXT
+      title: null
+      url: null
+      local_file: null
+      text: null
+    kernel_fixture: mvp
+    human_gold: null
+    notes: "Placeholder for a cross-domain decision / investment / startup case."
+
+  - id: slot-hype-01
+    source_kind: hype
+    cognitive_tasks: [topic_relevance]
+    gold_status: UNLABELED
+    source:
+      type: TEXT
+      title: null
+      url: null
+      local_file: null
+      text: null
+    kernel_fixture: mvp
+    human_gold: null
+    notes: "Placeholder for a low-value / irrelevant / hype source."

@@ -47,6 +47,18 @@ class KernelVersion(UUIDPrimaryKeyMixin, Base):
     node: Mapped[KernelNode] = orm_relationship(back_populates="versions")
 
 
+class KernelEmbedding(Base):
+    """Portable embedding store. JSON vector everywhere; Postgres also has unbounded embedding_vec."""
+
+    __tablename__ = "kernel_embeddings"
+
+    kernel_node_id: Mapped[UUID] = mapped_column(Uuid, ForeignKey("kernel_nodes.id"), primary_key=True)
+    embedding: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    embedding_model: Mapped[str] = mapped_column(String, nullable=False, default="none")
+    dimensions: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
 class KernelPatch(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     __tablename__ = "kernel_patches"
 

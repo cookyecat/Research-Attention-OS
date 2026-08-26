@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import Float, ForeignKey, String, Text, Uuid
+from sqlalchemy import Float, ForeignKey, Integer, String, Text, Uuid
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
@@ -22,3 +22,7 @@ class Claim(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     credibility_estimate: Mapped[float | None] = mapped_column(Float, nullable=True)
     temporal_policy_id: Mapped[UUID | None] = mapped_column(Uuid, nullable=True)
     analysis_run_id: Mapped[UUID | None] = mapped_column(Uuid, ForeignKey("analysis_runs.id"), nullable=True, index=True)
+    source_span_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    source_start_offset: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    source_end_offset: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    chunk_id: Mapped[str | None] = mapped_column(String, nullable=True)

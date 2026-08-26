@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import json
+from uuid import UUID
 
-from app.cognitive.client import chat_json, estimate_cost_usd
+from app.cognitive.client import SchemaValidationError, chat_json, chat_json_schema, estimate_cost_usd
 from app.cognitive.prompts import (
     DELTA_SYSTEM,
     DELTA_USER,
@@ -15,9 +16,16 @@ from app.cognitive.prompts import (
     MATCH_SYSTEM,
     MATCH_USER,
 )
+from app.cognitive.schemas import (
+    EvidenceReasoningResponse,
+    ExtractionResponse,
+    KernelMatchResponse,
+    ModelDeltaResponse,
+    SchedulerJudgmentResponse,
+)
 from app.cognitive.validators import validate_evidence_strength, validate_extraction
 from app.config import settings
-from app.enums import AttributionType, AuthorType, ClaimType, ObservationType, ObserverType, Stance, Strength
+from app.enums import AuthorType
 from app.models.kernel import KernelNode
 from app.services.deltas import ModelDelta, PatchDraft, propose_patches
 from app.services.extraction import (
@@ -32,17 +40,8 @@ from app.services.retrieval import retrieve_kernel_candidates, try_embed_query
 from app.services.scheduler import SchedulerFeatures
 
 
-def _enum(cls, value, default):
-    if value is None:
-        return default
-    try:
-        return cls(str(value).upper())
-    except ValueError:
-        return default
-
-
 class ModelBackedCognitiveProvider:
-    """Open-world understanding via OpenAI-compatible structured JSON + deterministic validators."""
+    """Open-world understanding via validated structured JSON + epistemic constitution validator."""
 
     provider_type = "model"
 
@@ -52,14 +51,19 @@ class ModelBackedCognitiveProvider:
             "latency_ms": 0,
             "prompt_tokens": 0,
             "completion_tokens": 0,
-            "estimated_cost_usd": 0.0,
+            "estimated_cost_usd": None,
             "model": None,
+            "validation_events": [],
         }
+        self.last_validation_events: list[dict] = []
 
-    def _complete(self, system: str, user: str) -> dict:
-        parsed, meta = self._chat(
-            [{"role": "system", "content": system}, {"role": "user", "content": user}]
+    def _complete(self, system: str, user: str, schema_cls):
+        obj, meta, events = chat_json_schema(
+            [{"role": "system", "content": system}, {"role": "user", "content": user}],
+            schema_cls,
+            chat_fn=self._chat,
         )
+        self.last_validation_events = events
         self.last_meta["latency_ms"] = int(self.last_meta.get("latency_ms") or 0) + int(meta.get("latency_ms") or 0)
         self.last_meta["prompt_tokens"] = int(self.last_meta.get("prompt_tokens") or 0) + int(meta.get("prompt_tokens") or 0)
         self.last_meta["completion_tokens"] = int(self.last_meta.get("completion_tokens") or 0) + int(
@@ -70,49 +74,61 @@ class ModelBackedCognitiveProvider:
             int(self.last_meta["prompt_tokens"]),
             int(self.last_meta["completion_tokens"]),
         )
-        return parsed
+        existing = list(self.last_meta.get("validation_events") or [])
+        existing.extend(events)
+        self.last_meta["validation_events"] = existing
+        return obj
 
     def extract_information(self, text: str, source_type: str, title: str | None = None) -> ExtractionResult:
-        data = self._complete(
+        parsed: ExtractionResponse = self._complete(
             EXTRACT_SYSTEM,
-            EXTRACT_USER.format(source_type=source_type, title=title or "", text=text[:12000]),
+            EXTRACT_USER.format(source_type=source_type, title=title or "", text=text),
+            ExtractionResponse,
         )
         result = ExtractionResult(
-            event_title=data.get("event_title"),
-            event_summary=data.get("event_summary"),
-            marketing_heavy=bool(data.get("marketing_heavy")),
-            current_facts=list(data.get("current_facts") or []),
-            future_plans=list(data.get("future_plans") or []),
-            technical_claims=list(data.get("technical_claims") or []),
-            promotional_framing=list(data.get("promotional_framing") or []),
+            event_title=parsed.event_title,
+            event_summary=parsed.event_summary,
+            marketing_heavy=parsed.marketing_heavy,
+            current_facts=list(parsed.current_facts),
+            future_plans=list(parsed.future_plans),
+            technical_claims=list(parsed.technical_claims),
+            promotional_framing=list(parsed.promotional_framing),
         )
-        for raw in data.get("claims") or []:
+        for item in parsed.claims:
             result.claims.append(
                 ExtractedClaim(
-                    text=raw.get("text") or "",
-                    claim_type=_enum(ClaimType, raw.get("claim_type"), ClaimType.FACTUAL),
-                    attributed_to=raw.get("attributed_to"),
-                    attribution_type=_enum(AttributionType, raw.get("attribution_type"), AttributionType.UNKNOWN),
-                    confidence_extraction=float(raw.get("extraction_confidence") or 0.6),
-                    temporal_status=str(raw.get("temporal_status") or "CURRENT"),
+                    text=item.text,
+                    claim_type=item.claim_type,
+                    attributed_to=item.attributed_to,
+                    attribution_type=item.attribution_type,
+                    confidence_extraction=item.extraction_confidence,
+                    temporal_status=item.temporal_status,
+                    source_span_text=item.source_span or item.text,
+                    source_start_offset=item.source_start_offset,
+                    source_end_offset=item.source_end_offset,
+                    chunk_id=item.chunk_id,
                 )
             )
-        for raw in data.get("observations") or []:
+        for item in parsed.observations:
             result.observations.append(
                 ExtractedObservation(
-                    text=raw.get("text") or "",
-                    observer_type=_enum(ObserverType, raw.get("observer"), ObserverType.SYSTEM_EXTRACTED),
-                    observation_type=_enum(ObservationType, raw.get("observation_type"), ObservationType.OTHER),
-                    confidence=float(raw.get("confidence") or 0.6),
+                    text=item.text,
+                    observer_type=item.observer,
+                    observation_type=item.observation_type,
+                    confidence=item.confidence,
+                    source_span_text=item.source_span or item.text,
+                    source_start_offset=item.source_start_offset,
+                    source_end_offset=item.source_end_offset,
+                    chunk_id=item.chunk_id,
                 )
             )
-        for raw in data.get("inferences") or []:
+        for item in parsed.inferences:
             result.inferences.append(
                 ExtractedInference(
-                    text=raw.get("text") or "",
+                    text=item.text,
                     author_type=AuthorType.AI,
-                    confidence=float(raw.get("confidence") or 0.4),
-                    source_roles=[str(raw.get("derived_from") or "model")],
+                    confidence=item.confidence,
+                    source_roles=[item.derived_from or "model"],
                 )
             )
         return validate_extraction(result)
@@ -122,17 +138,30 @@ class ModelBackedCognitiveProvider:
         extraction: ExtractionResult,
         nodes: list[KernelNode],
         extra_text: str = "",
+        *,
+        query_embedding=None,
+        node_embeddings=None,
+        ranked_ids=None,
     ) -> list[KernelMatch]:
         blob = " ".join(
             [extra_text]
             + [c.text for c in extraction.claims]
             + [o.text for o in extraction.observations]
         )
-        qvec, _model = try_embed_query(blob[:4000])
-        candidates = retrieve_kernel_candidates(blob, nodes, query_embedding=qvec)
+        qvec = query_embedding
+        if qvec is None:
+            qvec, _model = try_embed_query(blob[:4000])
+        candidates = retrieve_kernel_candidates(
+            blob,
+            nodes,
+            query_embedding=qvec,
+            node_embeddings=node_embeddings,
+            ranked_ids=ranked_ids,
+        )
         if not candidates:
             candidates = nodes[:12]
         payload = []
+        allowed = {n.id for n in candidates}
         for node in candidates:
             payload.append(
                 {
@@ -142,7 +171,7 @@ class ModelBackedCognitiveProvider:
                     "text": node_text(node)[:800],
                 }
             )
-        data = self._complete(
+        parsed: KernelMatchResponse = self._complete(
             MATCH_SYSTEM,
             MATCH_USER.format(
                 text=blob[:8000],
@@ -150,21 +179,29 @@ class ModelBackedCognitiveProvider:
                 observations=json.dumps([o.text for o in extraction.observations]),
                 kernel_candidates=json.dumps(payload),
             ),
+            KernelMatchResponse,
         )
-        by_id = {str(n.id): n for n in nodes}
+        by_id = {n.id: n for n in nodes}
+        unknown = [m.kernel_node_id for m in parsed.matches if m.kernel_node_id not in by_id]
+        if unknown:
+            raise SchemaValidationError(
+                "kernel_node_id is not a known Kernel node",
+                errors=[{"loc": ["matches"], "msg": f"unknown ids: {unknown}"}],
+                retry_used=True,
+            )
         matches: list[KernelMatch] = []
-        for raw in data.get("matches") or []:
-            node = by_id.get(str(raw.get("kernel_node_id")))
-            if node is None:
+        for item in parsed.matches:
+            if item.kernel_node_id not in allowed and item.kernel_node_id not in by_id:
                 continue
-            rtype = str(raw.get("relevance_type") or "TOPIC").upper()
+            node = by_id[item.kernel_node_id]
+            rtype = item.relevance_type
             matches.append(
                 KernelMatch(
                     node_id=node.id,
                     node_type=node.node_type,
                     title=node.title,
-                    score=float(raw.get("score") or 0.5),
-                    reason=str(raw.get("reason") or rtype),
+                    score=item.score,
+                    reason=item.reason,
                     structural=rtype == "STRUCTURAL",
                     relevance_type=rtype,
                 )
@@ -174,36 +211,61 @@ class ModelBackedCognitiveProvider:
     def reason_evidence(self, extraction: ExtractionResult) -> ExtractionResult:
         if not extraction.claims or not (extraction.observations or extraction.inferences):
             return extraction
-        data = self._complete(
+        parsed: EvidenceReasoningResponse = self._complete(
             EVIDENCE_SYSTEM,
             EVIDENCE_USER.format(
                 claims=json.dumps([{"i": i, "text": c.text} for i, c in enumerate(extraction.claims)]),
                 observations=json.dumps([{"i": i, "text": o.text} for i, o in enumerate(extraction.observations)]),
                 inferences=json.dumps([{"i": i, "text": inf.text} for i, inf in enumerate(extraction.inferences)]),
             ),
+            EvidenceReasoningResponse,
         )
         links = []
-        for raw in data.get("links") or []:
+        n_obs = len(extraction.observations)
+        n_claims = len(extraction.claims)
+        n_inf = len(extraction.inferences)
+        for item in parsed.links:
+            if item.source_role == "OBSERVATION" and item.source_index >= n_obs:
+                raise SchemaValidationError(
+                    "evidence source_index out of range",
+                    errors=[{"loc": ["links", "source_index"], "msg": "out of range"}],
+                    retry_used=True,
+                )
+            if item.source_role == "CLAIM" and item.source_index >= n_claims:
+                raise SchemaValidationError(
+                    "evidence source_index out of range",
+                    errors=[{"loc": ["links", "source_index"], "msg": "out of range"}],
+                    retry_used=True,
+                )
+            if item.source_role == "INFERENCE" and item.source_index >= n_inf:
+                raise SchemaValidationError(
+                    "evidence source_index out of range",
+                    errors=[{"loc": ["links", "source_index"], "msg": "out of range"}],
+                    retry_used=True,
+                )
+            if item.target_role == "CLAIM" and item.target_index >= n_claims:
+                raise SchemaValidationError(
+                    "evidence target_index out of range",
+                    errors=[{"loc": ["links", "target_index"], "msg": "out of range"}],
+                    retry_used=True,
+                )
             stance, strength = validate_evidence_strength(
-                str(raw.get("stance") or "NEUTRAL"),
-                str(raw.get("strength") or "WEAK"),
+                item.stance.value,
+                item.strength.value,
                 extraction.evidence_maturity,
             )
-            try:
-                links.append(
-                    ExtractedEvidence(
-                        source_role=str(raw.get("source_role") or "OBSERVATION"),
-                        source_index=int(raw.get("source_index") or 0),
-                        target_role=str(raw.get("target_role") or "CLAIM"),
-                        target_index=int(raw.get("target_index") or 0),
-                        stance=Stance(stance),
-                        strength=Strength(strength),
-                        confidence=min(float(raw.get("confidence") or 0.5), 0.85),
-                        scope=raw.get("scope"),
-                    )
+            links.append(
+                ExtractedEvidence(
+                    source_role=item.source_role,
+                    source_index=item.source_index,
+                    target_role=item.target_role,
+                    target_index=item.target_index,
+                    stance=item.stance.__class__(stance),
+                    strength=item.strength.__class__(strength),
+                    confidence=min(item.confidence, 0.85),
+                    scope=item.scope,
                 )
-            except ValueError:
-                continue
+            )
         extraction.evidence = links
         return extraction
 
@@ -218,40 +280,52 @@ class ModelBackedCognitiveProvider:
         secondary_report_count: int = 0,
         threatens_active_work: bool | None = None,
     ) -> SchedulerFeatures:
-        data = self._complete(
+        parsed: SchedulerJudgmentResponse = self._complete(
             JUDGMENT_SYSTEM,
             JUDGMENT_USER.format(
                 text=text[:8000],
-                matches=json.dumps([{"id": str(m.node_id), "type": m.node_type, "title": m.title, "score": m.score, "rel": m.relevance_type} for m in matches]),
+                matches=json.dumps(
+                    [
+                        {
+                            "id": str(m.node_id),
+                            "type": m.node_type,
+                            "title": m.title,
+                            "score": m.score,
+                            "rel": m.relevance_type,
+                        }
+                        for m in matches
+                    ]
+                ),
                 is_duplicate=is_duplicate,
                 independent_source_count=independent_source_count,
                 secondary_report_count=secondary_report_count,
             ),
+            SchedulerJudgmentResponse,
         )
         threatened = threatens_active_work
         if threatened is None:
-            threatened = bool(data.get("threatens_active_work"))
+            threatened = parsed.threatens_active_work
         return SchedulerFeatures(
-            topic_relevance=float(data.get("topic_relevance") or 0),
-            structural_relevance=float(data.get("structural_relevance") or 0),
-            decision_relevance=float(data.get("decision_relevance") or 0),
-            novelty=float(data.get("novelty") or 0.5),
-            credibility=float(data.get("credibility") or 0.5),
-            kernel_delta=float(data.get("kernel_delta") or 0),
-            bottleneck_alignment=float(data.get("bottleneck_alignment") or 0),
-            disagreement=float(data.get("disagreement") or 0),
-            actionability=float(data.get("actionability") or 0),
-            temporal_value=float(data.get("temporal_value") or 0.4),
-            cognitive_cost=float(data.get("cognitive_cost") or 5),
+            topic_relevance=parsed.topic_relevance,
+            structural_relevance=parsed.structural_relevance,
+            decision_relevance=parsed.decision_relevance,
+            novelty=parsed.novelty,
+            credibility=parsed.credibility,
+            kernel_delta=parsed.kernel_delta,
+            bottleneck_alignment=parsed.bottleneck_alignment,
+            disagreement=parsed.disagreement,
+            actionability=parsed.actionability,
+            temporal_value=parsed.temporal_value,
+            cognitive_cost=parsed.cognitive_cost,
             is_duplicate=is_duplicate,
-            evidence_maturity=float(data.get("evidence_maturity") or extraction.evidence_maturity),
+            evidence_maturity=parsed.evidence_maturity,
             threatens_active_work=bool(threatened),
-            marketing_heavy=bool(data.get("marketing_heavy") or extraction.marketing_heavy),
+            marketing_heavy=parsed.marketing_heavy or extraction.marketing_heavy,
             sources_conflict=bool(extraction.evidence),
             independent_source_count=independent_source_count,
             secondary_report_count=secondary_report_count,
-            high_quality_technical=bool(data.get("high_quality_technical")),
-            foundational_paper=bool(data.get("foundational_paper")),
+            high_quality_technical=parsed.high_quality_technical,
+            foundational_paper=parsed.foundational_paper,
         )
 
     def propose_model_delta(
@@ -267,26 +341,35 @@ class ModelBackedCognitiveProvider:
             for n in nodes
             if any(m.node_id == n.id for m in matches)
         ]
-        data = self._complete(
+        parsed: ModelDeltaResponse = self._complete(
             DELTA_SYSTEM,
             DELTA_USER.format(
                 text=text[:8000],
                 matches=json.dumps([{"id": str(m.node_id), "title": m.title, "reason": m.reason} for m in matches]),
                 kernel=json.dumps(kernel_snap),
             ),
+            ModelDeltaResponse,
         )
+        affected = []
+        for item in parsed.affected_kernel_nodes:
+            if isinstance(item, dict) and item.get("id"):
+                affected.append(str(item["id"]))
+            elif isinstance(item, str):
+                affected.append(item)
+            elif hasattr(item, "id"):
+                affected.append(str(item.id))
         return ModelDelta(
-            summary=str(data.get("summary") or "No committed Kernel change is implied yet."),
-            what_could_change=list(data.get("what_could_change") or []),
-            distinctions=list(data.get("distinctions") or []),
-            questions=list(data.get("new_questions") or []),
-            admission_allowed=bool(data.get("admission_allowed")),
-            affected_kernel_nodes=list(data.get("affected_kernel_nodes") or []),
-            possible_hypotheses=list(data.get("possible_hypotheses") or []),
-            decision_implications=list(data.get("decision_implications") or []),
-            epistemic_risk=str(data.get("epistemic_risk") or ""),
-            evidence_maturity=float(data.get("evidence_maturity") or features.evidence_maturity),
-            rationale=str(data.get("rationale") or ""),
+            summary=parsed.summary,
+            what_could_change=list(parsed.what_could_change),
+            distinctions=list(parsed.distinctions),
+            questions=list(parsed.new_questions),
+            admission_allowed=parsed.admission_allowed,
+            affected_kernel_nodes=affected,
+            possible_hypotheses=list(parsed.possible_hypotheses),
+            decision_implications=list(parsed.decision_implications),
+            epistemic_risk=parsed.epistemic_risk,
+            evidence_maturity=parsed.evidence_maturity,
+            rationale=parsed.rationale,
         )
 
     def propose_patches(
@@ -298,5 +381,4 @@ class ModelBackedCognitiveProvider:
         nodes: list[KernelNode],
         evidence_link_ids: list[str],
     ) -> list[PatchDraft]:
-        # Patches remain deterministic from delta + admission rules (no silent Kernel writes).
         return propose_patches(text, delta, matches, features, nodes, evidence_link_ids)

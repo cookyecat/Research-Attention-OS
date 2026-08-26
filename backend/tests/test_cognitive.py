@@ -32,6 +32,38 @@ def test_validator_demotes_inference_language_from_observations():
     assert any("probably" in i.text.lower() for i in cleaned.inferences)
 
 
+def test_validator_demotes_chinese_inference_and_attribution():
+    inferred = validate_extraction(
+        ExtractionResult(
+            observations=[
+                ExtractedObservation(
+                    text="这表明系统已经鲁棒",
+                    observer_type=ObserverType.SYSTEM_EXTRACTED,
+                    observation_type=ObservationType.OTHER,
+                    confidence=0.9,
+                )
+            ]
+        )
+    )
+    assert inferred.observations == []
+    assert any("表明" in i.text for i in inferred.inferences)
+
+    attributed = validate_extraction(
+        ExtractionResult(
+            observations=[
+                ExtractedObservation(
+                    text="公司称机器人已实现零样本泛化",
+                    observer_type=ObserverType.SYSTEM_EXTRACTED,
+                    observation_type=ObservationType.OTHER,
+                    confidence=0.9,
+                )
+            ]
+        )
+    )
+    assert not any("零样本" in o.text for o in attributed.observations)
+    assert any("零样本" in c.text for c in attributed.claims)
+
+
 def test_company_claim_is_not_an_observation():
     result = ExtractionResult(
         observations=[

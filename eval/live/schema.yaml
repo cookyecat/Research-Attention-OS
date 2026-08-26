@@ -1,0 +1,30 @@
+# Structural schemas are defined in schema.py (Pydantic). This file documents the Live Case YAML shape.
+
+id: string
+source:
+  type: TEXT|URL|PDF|PAPER|REPO|POST|MANUAL_OBSERVATION
+  title: string|null
+  url: string|null
+  local_file: string|null
+  text: string|null
+kernel_fixture: mvp
+source_kind: news|paper|technical_blog|field_observation|investment|hype|cross_domain_analogy|wechat|github|company_blog
+cognitive_tasks:
+  - topic_relevance
+  - structural_relevance
+  - belief_conflict
+  - decision_relevance
+  - evidence_verification
+gold_status: LABELED|UNLABELED
+human_gold:
+  attention_state: []
+  acceptable_modes: []
+  must_match_kernel: []
+  should_match_kernel: []
+  forbidden_kernel: []
+  key_claims: []
+  key_observations: []
+  expected_delta_concepts: []
+  forbidden_conclusions: []
+  delta_rubric: 0  # 0=wrong, 1=summary, 2=useful connection, 3=genuine refinement
+  notes: ""

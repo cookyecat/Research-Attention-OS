@@ -149,6 +149,10 @@ class ExtractedClaim:
     attribution_type: AttributionType = AttributionType.UNKNOWN
     confidence_extraction: float = 0.7
     temporal_status: str = "CURRENT"
+    source_span_text: str | None = None
+    source_start_offset: int | None = None
+    source_end_offset: int | None = None
+    chunk_id: str | None = None
 
 
 @dataclass
@@ -157,6 +161,10 @@ class ExtractedObservation:
     observer_type: ObserverType
     observation_type: ObservationType
     confidence: float = 0.8
+    source_span_text: str | None = None
+    source_start_offset: int | None = None
+    source_end_offset: int | None = None
+    chunk_id: str | None = None
 
 
 @dataclass
@@ -165,6 +173,10 @@ class ExtractedInference:
     author_type: AuthorType
     confidence: float = 0.5
     source_roles: list[str] = field(default_factory=list)
+    source_span_text: str | None = None
+    source_start_offset: int | None = None
+    source_end_offset: int | None = None
+    chunk_id: str | None = None
 
 
 @dataclass
@@ -248,10 +260,33 @@ def extract_from_text(text: str, source_type: str = "TEXT", title: str | None = 
         text or "", TECHNICAL_CUES
     )
 
+    search_from = 0
+
+    def _span_for(sentence: str) -> tuple[str, int | None, int | None]:
+        nonlocal search_from
+        if not text:
+            return sentence, None, None
+        idx = text.find(sentence, search_from)
+        if idx < 0:
+            idx = text.find(sentence)
+        if idx >= 0:
+            search_from = idx + len(sentence)
+            return sentence, idx, idx + len(sentence)
+        return sentence, None, None
+
     for sentence in sentences:
+        span_text, start, end = _span_for(sentence)
         if _is_inference(sentence):
             result.inferences.append(
-                ExtractedInference(text=sentence, author_type=AuthorType.AI, confidence=0.45, source_roles=["span"])
+                ExtractedInference(
+                    text=sentence,
+                    author_type=AuthorType.AI,
+                    confidence=0.45,
+                    source_roles=["span"],
+                    source_span_text=span_text,
+                    source_start_offset=start,
+                    source_end_offset=end,
+                )
             )
             continue
         if _is_observation(sentence, source_type):
@@ -265,6 +300,9 @@ def extract_from_text(text: str, source_type: str = "TEXT", title: str | None = 
                     observer_type=observer,
                     observation_type=obs_type,
                     confidence=0.85,
+                    source_span_text=span_text,
+                    source_start_offset=start,
+                    source_end_offset=end,
                 )
             )
             continue
@@ -281,6 +319,9 @@ def extract_from_text(text: str, source_type: str = "TEXT", title: str | None = 
                 attributed_to=attributed_to,
                 attribution_type=attr_type,
                 temporal_status=temporal,
+                source_span_text=span_text,
+                source_start_offset=start,
+                source_end_offset=end,
             )
             result.claims.append(claim)
             if ctype == ClaimType.PREDICTIVE:
@@ -293,12 +334,16 @@ def extract_from_text(text: str, source_type: str = "TEXT", title: str | None = 
                 result.current_facts.append(sentence)
 
     if source_type == "MANUAL_OBSERVATION" and not result.observations and not result.claims:
+        span_text, start, end = _span_for(text.strip())
         result.observations.append(
             ExtractedObservation(
                 text=text.strip(),
                 observer_type=ObserverType.USER,
                 observation_type=ObservationType.USER_FIELD_NOTE,
                 confidence=0.9,
+                source_span_text=span_text,
+                source_start_offset=start,
+                source_end_offset=end,
             )
         )
 
@@ -357,9 +402,39 @@ def merge_extractions(*parts: ExtractionResult) -> ExtractionResult:
             merged.event_title = part.event_title
         if part.event_summary and not merged.event_summary:
             merged.event_summary = part.event_summary
+    merged = dedup_extraction(merged)
     merged.evidence = _link_contradictions(merged)
     merged.evidence_maturity = _evidence_maturity(merged)
     return merged
+
+
+def _norm_text(value: str) -> str:
+    return re.sub(r"\s+", " ", value or "").strip().lower()
+
+
+def dedup_extraction(result: ExtractionResult) -> ExtractionResult:
+    """Keep first occurrence so source_span / chunk_id survive merge."""
+
+    def _uniq(items, keyfn):
+        seen: set[str] = set()
+        out = []
+        for item in items:
+            key = keyfn(item)
+            if key in seen:
+                continue
+            if key:
+                seen.add(key)
+            out.append(item)
+        return out
+
+    result.claims = _uniq(result.claims, lambda c: _norm_text(c.text))
+    result.observations = _uniq(result.observations, lambda o: _norm_text(o.text))
+    result.inferences = _uniq(result.inferences, lambda i: _norm_text(i.text))
+    result.current_facts = _uniq(result.current_facts, _norm_text)
+    result.future_plans = _uniq(result.future_plans, _norm_text)
+    result.technical_claims = _uniq(result.technical_claims, _norm_text)
+    result.promotional_framing = _uniq(result.promotional_framing, _norm_text)
+    return result
 
 
 FORBIDDEN_OBSERVATION_PATTERNS = (

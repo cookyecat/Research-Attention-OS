@@ -6,6 +6,7 @@ import time
 from typing import Any
 
 import httpx
+from pydantic import BaseModel, ValidationError
 
 from app.config import settings
 
@@ -14,9 +15,38 @@ class LLMError(RuntimeError):
     pass
 
 
-def estimate_cost_usd(prompt_tokens: int, completion_tokens: int) -> float:
-    """Rough OpenAI-mini-class estimate; recorded, not optimized."""
-    return round((prompt_tokens * 0.15 + completion_tokens * 0.60) / 1_000_000, 8)
+class SchemaValidationError(LLMError):
+    """Model output failed the structural schema after optional repair."""
+
+    def __init__(self, message: str, *, errors: Any = None, retry_used: bool = False, raw: Any = None):
+        super().__init__(message)
+        self.errors = errors
+        self.retry_used = retry_used
+        self.raw = raw
+
+
+class EmbeddingDimensionError(ValueError):
+    pass
+
+
+def estimate_cost_usd(prompt_tokens: int, completion_tokens: int) -> float | None:
+    """Configured $/1M tokens. Unknown prices must be null — never a fake-precise default."""
+    inp = settings.llm_input_cost_per_1m
+    out = settings.llm_output_cost_per_1m
+    if inp is None or out is None:
+        return None
+    return round((prompt_tokens * inp + completion_tokens * out) / 1_000_000, 8)
+
+
+def merge_usage_meta(a: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
+    out = dict(a or {})
+    out["latency_ms"] = int(out.get("latency_ms") or 0) + int(b.get("latency_ms") or 0)
+    out["prompt_tokens"] = int(out.get("prompt_tokens") or 0) + int(b.get("prompt_tokens") or 0)
+    out["completion_tokens"] = int(out.get("completion_tokens") or 0) + int(b.get("completion_tokens") or 0)
+    out["model"] = b.get("model") or out.get("model")
+    cost = estimate_cost_usd(out["prompt_tokens"], out["completion_tokens"])
+    out["estimated_cost_usd"] = cost
+    return out
 
 
 def chat_json(
@@ -56,8 +86,72 @@ def chat_json(
         "prompt_tokens": usage.get("prompt_tokens") or 0,
         "completion_tokens": usage.get("completion_tokens") or 0,
         "model": body.get("model") or (model or settings.llm_model),
+        "estimated_cost_usd": estimate_cost_usd(
+            int(usage.get("prompt_tokens") or 0),
+            int(usage.get("completion_tokens") or 0),
+        ),
     }
     return parsed, meta
+
+
+def chat_json_schema(
+    messages: list[dict[str, str]],
+    schema_cls: type[BaseModel],
+    *,
+    chat_fn=None,
+    model: str | None = None,
+) -> tuple[BaseModel, dict[str, Any], list[dict[str, Any]]]:
+    """Parse JSON, validate with Pydantic, repair once, then fail closed."""
+    fn = chat_fn or chat_json
+    events: list[dict[str, Any]] = []
+    parsed, meta = fn(messages, model=model)
+    try:
+        obj = schema_cls.model_validate(parsed)
+        return obj, meta, events
+    except ValidationError as exc:
+        events.append(
+            {
+                "retry": 0,
+                "status": "invalid",
+                "error": exc.errors(include_url=False),
+                "schema": schema_cls.__name__,
+            }
+        )
+        repair_messages = list(messages) + [
+            {"role": "assistant", "content": json.dumps(parsed, ensure_ascii=False)[:12000]},
+            {
+                "role": "user",
+                "content": (
+                    "Your JSON failed structural schema validation.\n"
+                    f"Schema: {schema_cls.__name__}\n"
+                    f"Errors: {exc.json()}\n"
+                    "Return a corrected JSON object only. Do not omit required fields. "
+                    "Do not invent values for missing evidence."
+                ),
+            },
+        ]
+        parsed2, meta2 = fn(repair_messages, model=model)
+        meta = merge_usage_meta(meta, meta2)
+        try:
+            obj = schema_cls.model_validate(parsed2)
+            events.append({"retry": 1, "status": "repaired", "schema": schema_cls.__name__})
+            meta["schema_repaired"] = True
+            return obj, meta, events
+        except ValidationError as exc2:
+            events.append(
+                {
+                    "retry": 1,
+                    "status": "invalid",
+                    "error": exc2.errors(include_url=False),
+                    "schema": schema_cls.__name__,
+                }
+            )
+            raise SchemaValidationError(
+                f"{schema_cls.__name__} invalid after repair",
+                errors=exc2.errors(include_url=False),
+                retry_used=True,
+                raw=parsed2,
+            ) from exc2
 
 
 def embed_texts(texts: list[str], *, timeout: float = 30.0) -> tuple[list[list[float]], str]:
@@ -78,6 +172,12 @@ def embed_texts(texts: list[str], *, timeout: float = 30.0) -> tuple[list[list[f
     except Exception as exc:
         raise LLMError(str(exc)) from exc
     vectors = [item["embedding"] for item in sorted(body["data"], key=lambda x: x["index"])]
+    if settings.embedding_dimensions is not None:
+        for vec in vectors:
+            if len(vec) != settings.embedding_dimensions:
+                raise EmbeddingDimensionError(
+                    f"embedding dimension {len(vec)} != configured {settings.embedding_dimensions}"
+                )
     return vectors, settings.embedding_model
 
 

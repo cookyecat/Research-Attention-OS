@@ -21,6 +21,7 @@ class RuleBasedCognitiveProvider:
         extraction: ExtractionResult,
         nodes: list[KernelNode],
         extra_text: str = "",
+        **_kwargs,
     ) -> list[KernelMatch]:
         return match_kernel(extraction, nodes, extra_text=extra_text)
 

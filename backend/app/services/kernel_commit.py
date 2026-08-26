@@ -146,6 +146,10 @@ def commit_patch(db: Session, patch_id: UUID, *, action: str, modified_state: di
             )
         )
     db.flush()
+    if node is not None:
+        from app.services.embeddings import refresh_node_embedding
+
+        refresh_node_embedding(db, node)
     return patch
 
 

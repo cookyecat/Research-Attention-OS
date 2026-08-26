@@ -27,6 +27,10 @@ def extract(body: ExtractIn, db: Session = Depends(get_db)):
         )
     except ValueError as exc:
         raise HTTPException(404, str(exc)) from exc
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)[:500]) from exc
 
 
 @router.post("/run")
@@ -46,6 +50,10 @@ def reprocess(body: ExtractIn, db: Session = Depends(get_db)):
         )
     except ValueError as exc:
         raise HTTPException(404, str(exc)) from exc
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)[:500]) from exc
 
 
 @router.get("/by-source/{source_id}")
@@ -57,6 +65,33 @@ def get_by_source(source_id: UUID, db: Session = Depends(get_db)):
     if run is None:
         raise HTTPException(404, "No analysis run for this source")
     return hydrate_run(db, run)
+
+
+@router.get("/{run_id}")
+def get_run(run_id: UUID, db: Session = Depends(get_db)):
+    from app.models.analysis import AnalysisRun
+
+    run = db.get(AnalysisRun, run_id)
+    if run is None:
+        raise HTTPException(404, "AnalysisRun not found")
+    return hydrate_run(db, run)
+
+
+@router.get("/{run_id}/attention-plans")
+def get_run_attention_plans(run_id: UUID, db: Session = Depends(get_db)):
+    from app.models.analysis import AnalysisRun
+    from app.services.analysis_runs import attention_plans_for_run, plan_public
+
+    run = db.get(AnalysisRun, run_id)
+    if run is None:
+        raise HTTPException(404, "AnalysisRun not found")
+    plans = attention_plans_for_run(db, run.id)
+    latest = plan_public(plans[0]) if plans else None
+    return {
+        "analysis_run_id": str(run.id),
+        "latest_attention_plan": latest,
+        "attention_plans": [plan_public(p) for p in plans],
+    }
 
 
 @router.post("/plan")
@@ -97,3 +132,7 @@ def plan(body: PlanIn, db: Session = Depends(get_db)):
         )
     except ValueError as exc:
         raise HTTPException(404, str(exc)) from exc
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)[:500]) from exc

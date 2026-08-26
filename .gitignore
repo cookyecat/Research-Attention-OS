@@ -46,7 +46,9 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 
-# Editors / tooling
+# Live eval reports
+eval/live/results/*
+!eval/live/results/.gitkeep
 .idea/
 .vscode/
 *.swp

@@ -24,10 +24,18 @@ def engine():
         with eng.connect() as conn:
             if url.startswith("postgresql"):
                 conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+                conn.execute(text("DROP TABLE IF EXISTS kernel_embeddings CASCADE"))
                 conn.commit()
         Base.metadata.drop_all(eng)
         Base.metadata.create_all(eng)
+        if url.startswith("postgresql"):
+            with eng.connect() as conn:
+                conn.execute(text("ALTER TABLE kernel_embeddings ADD COLUMN IF NOT EXISTS embedding_vec vector"))
+                conn.commit()
         yield eng
+        with eng.connect() as conn:
+            conn.execute(text("DROP TABLE IF EXISTS kernel_embeddings CASCADE"))
+            conn.commit()
         Base.metadata.drop_all(eng)
         return
 
