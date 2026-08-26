@@ -75,7 +75,7 @@ class BadAffectedNodesChat:
     def __call__(self, messages, **_kwargs):
         parsed, meta = self.inner(messages, **_kwargs)
         system = (messages[0].get("content") or "").lower()
-        if "model delta" in system or "what this information could change" in system:
+        if "produce a model delta" in system:
             parsed = dict(parsed)
             parsed["affected_kernel_nodes"] = ["not-an-object"]
         return parsed, meta

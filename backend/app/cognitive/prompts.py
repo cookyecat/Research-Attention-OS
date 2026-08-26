@@ -108,17 +108,25 @@ Return JSON:
   "what_could_change": []
 }}"""
 
-JUDGMENT_SYSTEM = """Judge scheduler features for Research Attention OS.
-You do NOT choose DROP/AWARE/WATCH/ENGAGE. You only score features.
-decision_relevance may be high only when a DECISION Kernel node is matched or a match has relevance_type=DECISION. A topic-relevant marketing article is not a Decision review.
-structural_relevance should reflect STRUCTURAL matches.
-bottleneck_alignment should reflect BOTTLENECK matches.
-Disagreement with an active Belief is verification value, not a reason to ignore.
-Structural relevance is first-class.
-Popularity is not importance.
+IMPACT_SYSTEM = """Assess potential cognitive impact for Research Attention OS.
+You do NOT choose DROP/AWARE/WATCH/ENGAGE. You estimate what absorbing this information could mean for the current Cognitive Kernel.
+
+Kernel Match localizes where the information might matter. You estimate:
+- effect direction: REINFORCE | CHALLENGE | REFINE | OPEN_NEW | NO_MATERIAL_CHANGE
+- change_magnitude: how much understanding could change if absorbed
+- epistemic_strength: how justified that effect is by current evidence (not the same as direction)
+- target_importance: importance of the affected Kernel target
+- attention_cost: effort to process properly
+
+A company self-report may REINFORCE a model and still have low epistemic_strength.
+Do not treat directional consistency as strong evidence.
+A topic-relevant marketing article is not a Decision review.
+OPEN_NEW with exploration_candidate=true is allowed when no Kernel target fits but a useful new direction appears.
+Low topic similarity alone must not imply NO_MATERIAL_CHANGE when a STRUCTURAL or new-direction effect is present.
+Popularity is not importance. Disagreement is verification value, not a reason to ignore.
 Return JSON only."""
 
-JUDGMENT_USER = """Text:
+IMPACT_USER = """Text:
 {text}
 
 Matches: {matches}
@@ -128,23 +136,27 @@ Secondary reports: {secondary_report_count}
 
 Return JSON:
 {{
-  "topic_relevance": 0.0,
-  "structural_relevance": 0.0,
-  "decision_relevance": 0.0,
-  "novelty": 0.0,
-  "credibility": 0.0,
-  "kernel_delta": 0.0,
-  "bottleneck_alignment": 0.0,
-  "disagreement": 0.0,
-  "actionability": 0.0,
-  "temporal_value": 0.0,
-  "cognitive_cost": 0.0,
+  "effects": [{{
+    "target_kernel_node_id": null,
+    "effect": "REINFORCE",
+    "change_magnitude": 0.0,
+    "epistemic_strength": 0.0,
+    "target_importance": 0.0,
+    "reason": "",
+    "exploration_candidate": false
+  }}],
+  "attention_cost": 0.0,
+  "exploration_candidate": false,
   "evidence_maturity": 0.0,
   "threatens_active_work": false,
   "marketing_heavy": false,
   "high_quality_technical": false,
   "foundational_paper": false
 }}"""
+
+# Transitional aliases; the stage is impact assessment, not generic feature judgment.
+JUDGMENT_SYSTEM = IMPACT_SYSTEM
+JUDGMENT_USER = IMPACT_USER
 
 BOOTSTRAP_SYSTEM = """Propose an initial Cognitive Kernel from a researcher's self-description.
 Propose Goals, Projects, Questions, Beliefs, Models — as KernelPatch proposals only.

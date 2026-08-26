@@ -24,6 +24,7 @@ STAGE_RUNTIME: dict[str, StageRuntime] = {
     "extraction": StageRuntime(thinking="disabled", reasoning_effort=None, timeout=60.0),
     "matching": StageRuntime(thinking="disabled", reasoning_effort=None, timeout=60.0),
     "judgment": StageRuntime(thinking="disabled", reasoning_effort=None, timeout=60.0),
+    "impact": StageRuntime(thinking="disabled", reasoning_effort=None, timeout=60.0),
     "evidence": StageRuntime(thinking="enabled", reasoning_effort="low", timeout=120.0),
     "delta": StageRuntime(thinking="enabled", reasoning_effort="low", timeout=120.0),
 }

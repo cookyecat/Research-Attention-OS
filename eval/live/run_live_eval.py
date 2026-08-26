@@ -94,6 +94,7 @@ def analysis_payload_to_eval_row(payload: dict[str, Any]) -> dict[str, Any]:
         "claim_texts": [c.get("text") for c in (payload.get("claims") or [])],
         "observation_texts": [o.get("text") for o in (payload.get("observations") or [])],
         "inference_texts": [i.get("text") for i in (payload.get("inferences") or [])],
+        "cognitive_impact": payload.get("cognitive_impact") or (payload.get("attention_plan") or {}).get("score_debug", {}).get("cognitive_impact"),
         "evidence_stage_skipped": payload.get("evidence_stage_skipped")
         if payload.get("evidence_stage_skipped") is not None
         else features.get("evidence_stage_skipped"),
@@ -119,6 +120,7 @@ def _empty_eval_fields() -> dict[str, Any]:
         "query_instruct_applied": None,
         "retrieval_method": None,
         "scheduler_features": None,
+        "cognitive_impact": None,
         "evidence_stage_skipped": None,
         "evidence_skip_reason": None,
     }

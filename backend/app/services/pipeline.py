@@ -16,7 +16,8 @@ from app.models.observation import Observation
 from app.models.scheduler import AttentionPlan, RuntimeContext
 from app.models.source import Source
 from app.models.watch import Watch, WatchTrigger
-from app.services.deltas import suggest_watches
+from app.services.cognitive_impact import CognitiveImpactAssessment
+from app.services.deltas import ModelDelta, suggest_watches
 from app.services.extraction import (
     ExtractionResult,
     merge_extractions,
@@ -244,7 +245,7 @@ def run_pipeline(
     provider=None,
 ) -> dict:
     from app.cognitive.factory import get_provider
-    from app.cognitive.versions import PIPELINE_VERSION
+    from app.cognitive.versions import IMPACT_ASSESSOR_VERSION, PIPELINE_VERSION
     from app.services.analysis_runs import (
         acquire_run,
         complete_run,
@@ -363,18 +364,20 @@ def run_pipeline(
         is_duplicate = independence["secondary_reports"] >= 1 and str(source.id) in independence.get(
             "secondary_source_ids", []
         )
-        features = provider.judge_features(
+        assessment = provider.assess_cognitive_impact(
             blob,
             extraction,
             matches,
             is_duplicate=is_duplicate,
             independent_source_count=independence["independent_sources"],
             secondary_report_count=independence["secondary_reports"],
+            nodes=nodes,
         )
+        features = assessment.features
         features = ground_features_to_matches(features, matches)
         ctx = db.get(RuntimeContext, runtime_context_id) if runtime_context_id else None
         view = runtime or _runtime_view(ctx)
-        draft = validate_plan(route(features, view))
+        draft = validate_plan(route(features, view, assessment=assessment))
         plan = AttentionPlan(
             candidate_type=CandidateType.SOURCE,
             candidate_id=source.id,
@@ -394,6 +397,8 @@ def run_pipeline(
             created_at=datetime.now(timezone.utc),
             score_debug={
                 "features": features.as_dict(),
+                "cognitive_impact": assessment.as_dict(),
+                "impact_assessor_version": IMPACT_ASSESSOR_VERSION,
                 "matches": [
                     {
                         "node_id": str(m.node_id),
@@ -411,9 +416,18 @@ def run_pipeline(
         )
         db.add(plan)
         db.flush()
-        delta = provider.propose_model_delta(blob, extraction, matches, features, nodes)
-        evidence_ids = [str(link.id) for link in links]
-        patch_drafts = provider.propose_patches(blob, delta, matches, features, nodes, evidence_ids)
+        if draft.attention_state.value == "DROP":
+            delta = ModelDelta(
+                summary="No material cognitive value relative to cost; synthesis skipped.",
+                admission_allowed=False,
+                rationale="Attention Policy routed DROP before ModelDelta.",
+                evidence_maturity=features.evidence_maturity,
+            )
+            patch_drafts = []
+        else:
+            delta = provider.propose_model_delta(blob, extraction, matches, features, nodes)
+            evidence_ids = [str(link.id) for link in links]
+            patch_drafts = provider.propose_patches(blob, delta, matches, features, nodes, evidence_ids)
         patches: list[KernelPatch] = []
         if draft.attention_state.value != "DROP":
             for pd in patch_drafts:
@@ -465,6 +479,7 @@ def run_pipeline(
             created_watches,
             features,
             retrieval=retrieval,
+            assessment=assessment,
         )
         payload["analysis_run"] = {
             "id": str(run.id),
@@ -564,6 +579,7 @@ def serialize_analysis(
     created_watches: list[Watch],
     features: SchedulerFeatures,
     retrieval: dict | None = None,
+    assessment: CognitiveImpactAssessment | None = None,
 ) -> dict:
     return {
         "source_id": str(source.id),
@@ -625,6 +641,7 @@ def serialize_analysis(
             for w in created_watches
         ],
         "features": features.as_dict(),
+        "cognitive_impact": assessment.as_dict() if assessment is not None else None,
         "evidence_stage_skipped": bool(extraction.evidence_stage_skipped),
         "evidence_skip_reason": extraction.evidence_skip_reason,
         "retrieval": retrieval or {

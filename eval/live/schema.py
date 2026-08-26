@@ -38,6 +38,18 @@ class LiveSource(BaseModel):
     text: str | None = None
 
 
+class DynamicsEffectGold(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    target_kernel: str | None = None
+    acceptable_effects: list[str] = Field(default_factory=list)
+    effect: str | None = None
+    min_change_magnitude: float | None = None
+    max_change_magnitude: float | None = None
+    max_epistemic_strength: float | None = None
+    min_epistemic_strength: float | None = None
+
+
 class HumanGold(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
@@ -50,6 +62,8 @@ class HumanGold(BaseModel):
     key_observations: list[str] = Field(default_factory=list)
     expected_delta_concepts: list[str] = Field(default_factory=list)
     forbidden_conclusions: list[str] = Field(default_factory=list)
+    expected_effects: list[DynamicsEffectGold] = Field(default_factory=list)
+    forbidden_effects: list[DynamicsEffectGold] = Field(default_factory=list)
     delta_rubric: int | None = Field(default=None, ge=0, le=3)
     notes: str | None = None
 

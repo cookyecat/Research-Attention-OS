@@ -110,14 +110,14 @@ class GalaxyInflatedChat(SemanticFakeChat):
         if "relate claims" in system or "stances:" in system:
             self.evidence_calls += 1
         parsed, meta = super().__call__(messages, **kwargs)
-        if "judge scheduler" in system or "you do not choose drop" in system:
+        if "judge scheduler" in system or "you do not choose drop" in system or "cognitive impact" in system:
             parsed = dict(parsed)
-            parsed["decision_relevance"] = 0.92
             parsed["marketing_heavy"] = True
-            parsed["structural_relevance"] = 0.12
-            parsed["topic_relevance"] = max(float(parsed.get("topic_relevance") or 0), 0.82)
-            parsed["kernel_delta"] = max(float(parsed.get("kernel_delta") or 0), 0.75)
             parsed["evidence_maturity"] = 0.4
+            parsed.pop("decision_relevance", None)
+            parsed.pop("topic_relevance", None)
+            parsed.pop("kernel_delta", None)
+            parsed.pop("structural_relevance", None)
         return parsed, meta
 
 
@@ -228,6 +228,16 @@ def test_galaxy_style_no_spurious_decision_or_conflict(client: TestClient, monke
     assert "VERIFY" in plan["processing_modes"]
     assert "SYNTHESIZE" in plan["processing_modes"]
     assert plan["expected_output"] != "DECISION_REVIEW"
+
+    impact = result.get("cognitive_impact") or {}
+    effects = impact.get("effects") or []
+    assert effects
+    kinds = {e.get("effect") for e in effects}
+    assert kinds & {"REINFORCE", "REFINE"}
+    assert all(float(e.get("epistemic_strength") or 0) <= 0.45 for e in effects)
+
+    titles = " ".join((m.get("title") or "") for m in result["kernel_matches"]).lower()
+    assert "motor intelligence" in titles
 
     prov = (result.get("analysis_run") or {}).get("stage_provenance") or {}
     evidence_rec = prov.get("evidence") or {}

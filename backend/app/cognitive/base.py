@@ -7,6 +7,7 @@ from uuid import UUID
 from app.models.kernel import KernelNode
 from app.services.extraction import ExtractionResult
 from app.services.matching import KernelMatch
+from app.services.cognitive_impact import CognitiveImpactAssessment
 from app.services.scheduler import SchedulerFeatures
 from app.services.deltas import ModelDelta, PatchDraft
 
@@ -48,6 +49,19 @@ class CognitiveAnalysisProvider(Protocol):
         independent_source_count: int = 1,
     ) -> ExtractionResult: ...
 
+    def assess_cognitive_impact(
+        self,
+        text: str,
+        extraction: ExtractionResult,
+        matches: list[KernelMatch],
+        *,
+        is_duplicate: bool = False,
+        independent_source_count: int = 1,
+        secondary_report_count: int = 0,
+        threatens_active_work: bool | None = None,
+        nodes: list[KernelNode] | None = None,
+    ) -> CognitiveImpactAssessment: ...
+
     def judge_features(
         self,
         text: str,
@@ -58,6 +72,7 @@ class CognitiveAnalysisProvider(Protocol):
         independent_source_count: int = 1,
         secondary_report_count: int = 0,
         threatens_active_work: bool | None = None,
+        nodes: list[KernelNode] | None = None,
     ) -> SchedulerFeatures: ...
 
     def propose_model_delta(

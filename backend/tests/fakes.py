@@ -61,10 +61,14 @@ class SemanticFakeChat:
             return self._match(user), META
         if "relate claims" in system or "stances:" in system:
             return self._evidence(user), META
+        if (
+            "cognitive impact" in system
+            or "judge scheduler" in system
+            or "you do not choose drop" in system
+        ):
+            return self._impact(user), META
         if "model delta" in system or "what this information could change" in system:
             return self._delta(user), META
-        if "judge scheduler" in system or "you do not choose drop" in system:
-            return self._judge(user), META
         if "initial cognitive kernel" in system:
             return {
                 "proposals": [
@@ -377,12 +381,13 @@ class SemanticFakeChat:
         }
 
     def _judge(self, user: str) -> dict:
+        return self._impact(user)
+
+    def _impact(self, user: str) -> dict:
         source, rest = _split_marker(user, "Matches:")
         low = source.lower()
         parsed = _load_json_blob(rest)
-        rels = []
-        if isinstance(parsed, list):
-            rels = [str(m.get("rel") or "").upper() for m in parsed if isinstance(m, dict)]
+        matches = parsed if isinstance(parsed, list) else []
         marketing = any(k in low for k in HYPE)
         disagreement = any(
             k in low
@@ -401,7 +406,9 @@ class SemanticFakeChat:
                 "joint commands",
             )
         )
-        structural = ("STRUCTURAL" in rels) or any(
+        structural = any(
+            str(m.get("rel") or "").upper() == "STRUCTURAL" for m in matches if isinstance(m, dict)
+        ) or any(
             k in low for k in ("equity", "stake", "employment", "labor relationship", "ownership", "minority")
         )
         motor = any(
@@ -420,19 +427,96 @@ class SemanticFakeChat:
             )
         )
         hype_only = marketing and not motor
-        topic = 0.12 if hype_only else (0.82 if motor else (0.18 if structural else 0.2))
+        minor = "minor" in low and "version" in low
+        importance = {
+            "DECISION": 0.85,
+            "BOTTLENECK": 0.8,
+            "BELIEF": 0.75,
+            "MODEL": 0.75,
+            "QUESTION": 0.7,
+            "PROJECT": 0.65,
+            "GOAL": 0.9,
+        }
+        effects = []
+        if hype_only:
+            effects.append(
+                {
+                    "target_kernel_node_id": None,
+                    "effect": "NO_MATERIAL_CHANGE",
+                    "change_magnitude": 0.08,
+                    "epistemic_strength": 0.1,
+                    "target_importance": 0.1,
+                    "reason": "Promotional source with no material Kernel effect.",
+                    "exploration_candidate": False,
+                }
+            )
+        else:
+            for item in matches:
+                if not isinstance(item, dict):
+                    continue
+                ntype = str(item.get("type") or "")
+                nid = item.get("id")
+                rel = str(item.get("rel") or "").upper()
+                score = float(item.get("score") or 0.5)
+                if disagreement and ntype == "BELIEF":
+                    kind = "CHALLENGE"
+                    change = max(score, 0.75)
+                elif rel == "STRUCTURAL" or ntype == "DECISION":
+                    kind = "REFINE"
+                    change = max(score, 0.75)
+                elif ntype in {"MODEL", "QUESTION", "BOTTLENECK"}:
+                    kind = "REFINE"
+                    change = max(score, 0.65)
+                elif motor or ntype == "PROJECT":
+                    kind = "REFINE"
+                    change = max(score, 0.7)
+                else:
+                    kind = "REINFORCE"
+                    change = score
+                if minor:
+                    kind = "NO_MATERIAL_CHANGE"
+                    change = min(change, 0.15)
+                epi = 0.22 if marketing else (0.55 if disagreement else 0.32)
+                effects.append(
+                    {
+                        "target_kernel_node_id": nid,
+                        "effect": kind,
+                        "change_magnitude": change,
+                        "epistemic_strength": epi,
+                        "target_importance": importance.get(ntype, 0.5),
+                        "reason": f"{kind} on {item.get('title') or ntype}",
+                        "exploration_candidate": False,
+                    }
+                )
+            if not effects:
+                if motor and not hype_only:
+                    effects.append(
+                        {
+                            "target_kernel_node_id": None,
+                            "effect": "OPEN_NEW",
+                            "change_magnitude": 0.55,
+                            "epistemic_strength": 0.3,
+                            "target_importance": 0.55,
+                            "reason": "No Kernel target; possible new research direction.",
+                            "exploration_candidate": True,
+                        }
+                    )
+                else:
+                    effects.append(
+                        {
+                            "target_kernel_node_id": None,
+                            "effect": "NO_MATERIAL_CHANGE",
+                            "change_magnitude": 0.1,
+                            "epistemic_strength": 0.15,
+                            "target_importance": 0.2,
+                            "reason": "No material Kernel effect.",
+                            "exploration_candidate": False,
+                        }
+                    )
         return {
-            "topic_relevance": topic,
-            "structural_relevance": 0.85 if structural and not hype_only else 0.1,
-            "decision_relevance": 0.85 if structural and not hype_only else 0.2,
-            "novelty": 0.2 if "minor" in low and "version" in low else 0.65,
-            "credibility": 0.25 if hype_only else 0.72,
-            "kernel_delta": 0.15 if hype_only else (0.75 if disagreement or structural or motor else 0.2),
-            "bottleneck_alignment": 0.8 if ("latency" in low or "energy" in low) and not hype_only else (0.7 if motor and not hype_only else 0.1),
-            "disagreement": 0.85 if disagreement and not hype_only else 0.1,
-            "actionability": 0.7 if (structural or motor) and not hype_only else 0.2,
-            "temporal_value": 0.5,
-            "cognitive_cost": 8 if motor else 2,
+            "effects": effects,
+            "attention_cost": 8 if motor else 2,
+            "exploration_candidate": any(e.get("exploration_candidate") for e in effects),
             "evidence_maturity": 0.4,
             "threatens_active_work": "invalidat" in low or ("novelty" in low and "overlap" in low),
             "marketing_heavy": hype_only,

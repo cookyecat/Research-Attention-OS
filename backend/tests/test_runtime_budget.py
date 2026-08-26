@@ -33,10 +33,15 @@ class RecordingChat(SemanticFakeChat):
             self.by_stage["matching"] = dict(kwargs)
         elif "relate claims" in system or "stances:" in system:
             self.by_stage["evidence"] = dict(kwargs)
+        elif (
+            "cognitive impact" in system
+            or "judge scheduler" in system
+            or "you do not choose drop" in system
+        ):
+            self.by_stage["impact"] = dict(kwargs)
+            self.by_stage["judgment"] = dict(kwargs)
         elif "model delta" in system or "what this information could change" in system:
             self.by_stage["delta"] = dict(kwargs)
-        elif "judge scheduler" in system or "you do not choose drop" in system:
-            self.by_stage["judgment"] = dict(kwargs)
         return super().__call__(messages, **kwargs)
 
 
@@ -94,6 +99,8 @@ def test_stage_runtime_defaults():
     assert STAGE_RUNTIME["extraction"].timeout == 60.0
     assert STAGE_RUNTIME["matching"].thinking == "disabled"
     assert STAGE_RUNTIME["judgment"].thinking == "disabled"
+    assert STAGE_RUNTIME["impact"].thinking == "disabled"
+    assert STAGE_RUNTIME["impact"].timeout == 60.0
     assert STAGE_RUNTIME["evidence"].thinking == "enabled"
     assert STAGE_RUNTIME["evidence"].reasoning_effort == "low"
     assert STAGE_RUNTIME["evidence"].timeout == 120.0

@@ -51,8 +51,10 @@ Each run writes `eval/live/results/<timestamp>/`:
 - `summary.md`
 - `cases.jsonl`
 
-`cases.jsonl` includes `stage_provenance` (thinking mode, reasoning effort, latency, tokens, fallback/error), `attention_state`, `processing_mode`, kernel matches with scores and relevance types, `embedding_model` / `embedding_used` / `lexical_fallback`, scheduler features, `evidence_stage_skipped` / `evidence_skip_reason`, and `delta_summary`.
+`cases.jsonl` includes `stage_provenance` (thinking mode, reasoning effort, latency, tokens, fallback/error), `attention_state`, `processing_mode`, kernel matches with scores and relevance types, `embedding_model` / `embedding_used` / `lexical_fallback`, scheduler features, `cognitive_impact`, `evidence_stage_skipped` / `evidence_skip_reason`, and `delta_summary`.
 
-Live Eval v0.1.1 runs the **production pipeline** (chunking → extraction → evidence → query embedding → kernel match → scheduler judgment → Attention Policy → model delta). It does not reimplement an eval-only path.
+Live Eval v0.1.1+ runs the **production pipeline** (chunking → extraction → evidence → query embedding → kernel match → cognitive impact assessment → Attention Policy → model delta). It does not reimplement an eval-only path.
+
+Optional Dynamics Gold (`expected_effects` / `forbidden_effects`) may be added to a subset of labeled cases. Core Gold remains sufficient for labeling.
 
 A model-stage fallback is recorded as `prediction_source: "rule-fallback"` with `model_prediction: false` and is excluded from model accuracy denominators. Do not treat rule-fallback output as a successful model prediction.

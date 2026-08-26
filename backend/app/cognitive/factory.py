@@ -29,7 +29,8 @@ STAGE_NAMES = {
     "extract_information": "extraction",
     "match_kernel": "matching",
     "reason_evidence": "evidence",
-    "judge_features": "judgment",
+    "judge_features": "impact",
+    "assess_cognitive_impact": "impact",
     "propose_model_delta": "delta",
     "propose_patches": "patches",
 }
@@ -141,6 +142,9 @@ class FallbackProvider:
     def judge_features(self, *args, **kwargs):
         return self._call("judge_features", *args, **kwargs)
 
+    def assess_cognitive_impact(self, *args, **kwargs):
+        return self._call("assess_cognitive_impact", *args, **kwargs)
+
     def propose_model_delta(self, *args, **kwargs):
         return self._call("propose_model_delta", *args, **kwargs)
 
@@ -156,6 +160,7 @@ def get_provider(*, chat_fn=None):
             "extraction": {"provider": "rule", "status": "success"},
             "matching": {"provider": "rule", "status": "success"},
             "evidence": {"provider": "rule", "status": "success"},
+            "impact": {"provider": "rule", "status": "success"},
             "judgment": {"provider": "rule", "status": "success"},
             "delta": {"provider": "rule", "status": "success"},
             "patches": {"provider": "deterministic", "status": "success"},

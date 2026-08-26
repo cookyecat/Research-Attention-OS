@@ -12,24 +12,31 @@ from app.cognitive.prompts import (
     EVIDENCE_USER,
     EXTRACT_SYSTEM,
     extraction_user_prompt,
-    JUDGMENT_SYSTEM,
-    JUDGMENT_USER,
+    IMPACT_SYSTEM,
+    IMPACT_USER,
     MATCH_SYSTEM,
     MATCH_USER,
 )
 from app.cognitive.schemas import (
+    CognitiveImpactResponse,
     EvidenceReasoningResponse,
     ExtractionResponse,
     KernelMatchResponse,
     ModelDeltaResponse,
-    SchedulerJudgmentResponse,
 )
 from app.cognitive.validators import validate_evidence_strength, validate_extraction
 from app.config import settings
-from app.enums import AuthorType
+from app.enums import AuthorType, CognitiveEffectKind
 from app.models.kernel import KernelNode
+from app.services.cognitive_impact import (
+    TARGET_IMPORTANCE,
+    CognitiveEffect,
+    CognitiveImpactAssessment,
+    features_from_impact,
+    ground_effects,
+)
 from app.services.deltas import ModelDelta, PatchDraft, propose_patches
-from app.services.evidence_gate import evidence_conflict_flags, should_run_heavy_evidence
+from app.services.evidence_gate import should_run_heavy_evidence
 from app.services.extraction import (
     ExtractedClaim,
     ExtractedEvidence,
@@ -39,7 +46,7 @@ from app.services.extraction import (
 )
 from app.services.matching import KernelMatch, node_text
 from app.services.retrieval import retrieve_kernel_candidates_traced, try_embed_query
-from app.services.scheduler import SchedulerFeatures, ground_features_to_matches
+from app.services.scheduler import SchedulerFeatures
 
 
 class ModelBackedCognitiveProvider:
@@ -60,6 +67,7 @@ class ModelBackedCognitiveProvider:
         self.last_validation_events: list[dict] = []
         self.last_stage_runtime: dict = {}
         self.last_retrieval: dict | None = None
+        self.last_impact: CognitiveImpactAssessment | None = None
 
     def _set_stage_runtime(self, stage: str, *, llm_called: bool) -> dict:
         if stage in STAGE_RUNTIME:
@@ -324,7 +332,7 @@ class ModelBackedCognitiveProvider:
         self.last_stage_runtime = runtime
         return extraction
 
-    def judge_features(
+    def assess_cognitive_impact(
         self,
         text: str,
         extraction: ExtractionResult,
@@ -334,10 +342,11 @@ class ModelBackedCognitiveProvider:
         independent_source_count: int = 1,
         secondary_report_count: int = 0,
         threatens_active_work: bool | None = None,
-    ) -> SchedulerFeatures:
-        parsed: SchedulerJudgmentResponse = self._complete(
-            JUDGMENT_SYSTEM,
-            JUDGMENT_USER.format(
+        nodes: list[KernelNode] | None = None,
+    ) -> CognitiveImpactAssessment:
+        parsed: CognitiveImpactResponse = self._complete(
+            IMPACT_SYSTEM,
+            IMPACT_USER.format(
                 text=text[:8000],
                 matches=json.dumps(
                     [
@@ -355,44 +364,87 @@ class ModelBackedCognitiveProvider:
                 independent_source_count=independent_source_count,
                 secondary_report_count=secondary_report_count,
             ),
-            SchedulerJudgmentResponse,
-            stage="judgment",
+            CognitiveImpactResponse,
+            stage="impact",
+        )
+        by_id = {m.node_id: m for m in matches}
+        if nodes:
+            by_id.update({n.id: n for n in nodes})
+        effects: list[CognitiveEffect] = []
+        for item in parsed.effects:
+            ntype = None
+            if item.target_kernel_node_id and item.target_kernel_node_id in by_id:
+                node = by_id[item.target_kernel_node_id]
+                ntype = getattr(node, "node_type", None)
+            importance = item.target_importance
+            if ntype:
+                importance = max(importance, TARGET_IMPORTANCE.get(ntype, 0.0))
+            effects.append(
+                CognitiveEffect(
+                    target_kernel_node_id=item.target_kernel_node_id,
+                    effect=CognitiveEffectKind(item.effect),
+                    change_magnitude=item.change_magnitude,
+                    epistemic_strength=item.epistemic_strength,
+                    target_importance=importance,
+                    reason=item.reason,
+                    exploration_candidate=item.exploration_candidate,
+                )
+            )
+        effects = ground_effects(
+            effects, matches, extraction, independent_source_count=independent_source_count
         )
         threatened = threatens_active_work
         if threatened is None:
             threatened = parsed.threatens_active_work
-        links_present, conflict = evidence_conflict_flags(
-            extraction, independent_source_count=independent_source_count
-        )
         maturity = parsed.evidence_maturity
         if extraction.evidence_stage_skipped:
             maturity = min(maturity, extraction.evidence_maturity, 0.4)
-        features = SchedulerFeatures(
-            topic_relevance=parsed.topic_relevance,
-            structural_relevance=parsed.structural_relevance,
-            decision_relevance=parsed.decision_relevance,
-            novelty=parsed.novelty,
-            credibility=parsed.credibility,
-            kernel_delta=parsed.kernel_delta,
-            bottleneck_alignment=parsed.bottleneck_alignment,
-            disagreement=parsed.disagreement,
-            actionability=parsed.actionability,
-            temporal_value=parsed.temporal_value,
-            cognitive_cost=parsed.cognitive_cost,
+        explore = parsed.exploration_candidate or any(e.exploration_candidate for e in effects)
+        assessment = CognitiveImpactAssessment(
+            effects=effects,
+            attention_cost=parsed.attention_cost,
+            exploration_candidate=explore,
+        )
+        assessment.features = features_from_impact(
+            assessment,
+            matches,
+            extraction,
+            attention_cost=parsed.attention_cost,
+            exploration_candidate=explore,
             is_duplicate=is_duplicate,
-            evidence_maturity=maturity,
-            threatens_active_work=bool(threatened),
-            marketing_heavy=parsed.marketing_heavy or extraction.marketing_heavy,
-            sources_conflict=conflict,
-            evidence_links_present=links_present,
-            evidence_stage_skipped=bool(extraction.evidence_stage_skipped),
-            evidence_skip_reason=extraction.evidence_skip_reason,
             independent_source_count=independent_source_count,
             secondary_report_count=secondary_report_count,
+            threatens_active_work=bool(threatened),
+            marketing_heavy=parsed.marketing_heavy or extraction.marketing_heavy,
             high_quality_technical=parsed.high_quality_technical,
             foundational_paper=parsed.foundational_paper,
+            evidence_maturity=maturity,
         )
-        return ground_features_to_matches(features, matches)
+        self.last_impact = assessment
+        return assessment
+
+    def judge_features(
+        self,
+        text: str,
+        extraction: ExtractionResult,
+        matches: list[KernelMatch],
+        *,
+        is_duplicate: bool = False,
+        independent_source_count: int = 1,
+        secondary_report_count: int = 0,
+        threatens_active_work: bool | None = None,
+        nodes: list[KernelNode] | None = None,
+    ) -> SchedulerFeatures:
+        return self.assess_cognitive_impact(
+            text,
+            extraction,
+            matches,
+            is_duplicate=is_duplicate,
+            independent_source_count=independent_source_count,
+            secondary_report_count=secondary_report_count,
+            threatens_active_work=threatens_active_work,
+            nodes=nodes,
+        ).features
 
     def propose_model_delta(
         self,

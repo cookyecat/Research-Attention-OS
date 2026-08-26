@@ -116,18 +116,20 @@ class EvidenceReasoningResponse(StrictModel):
     links: list[EvidenceLinkItem] = Field(default_factory=list)
 
 
-class SchedulerJudgmentResponse(StrictModel):
-    topic_relevance: float = Field(ge=0.0, le=1.0)
-    structural_relevance: float = Field(ge=0.0, le=1.0)
-    decision_relevance: float = Field(ge=0.0, le=1.0)
-    novelty: float = Field(ge=0.0, le=1.0)
-    credibility: float = Field(ge=0.0, le=1.0)
-    kernel_delta: float = Field(ge=0.0, le=1.0)
-    bottleneck_alignment: float = Field(ge=0.0, le=1.0)
-    disagreement: float = Field(ge=0.0, le=1.0)
-    actionability: float = Field(ge=0.0, le=1.0)
-    temporal_value: float = Field(ge=0.0, le=1.0)
-    cognitive_cost: float = Field(ge=0.0, le=100.0)
+class CognitiveEffectItem(StrictModel):
+    target_kernel_node_id: UUID | None = None
+    effect: Literal["REINFORCE", "CHALLENGE", "REFINE", "OPEN_NEW", "NO_MATERIAL_CHANGE"]
+    change_magnitude: float = Field(ge=0.0, le=1.0)
+    epistemic_strength: float = Field(ge=0.0, le=1.0)
+    target_importance: float = Field(ge=0.0, le=1.0)
+    reason: str = Field(min_length=1)
+    exploration_candidate: bool = False
+
+
+class CognitiveImpactResponse(StrictModel):
+    effects: list[CognitiveEffectItem]
+    attention_cost: float = Field(ge=0.0, le=100.0)
+    exploration_candidate: bool = False
     evidence_maturity: float = Field(ge=0.0, le=1.0)
     threatens_active_work: bool = False
     marketing_heavy: bool = False

@@ -7,7 +7,7 @@ from app.services.evidence_gate import evidence_conflict_flags
 from app.services.extraction import ExtractionResult
 from app.services.matching import EQUITY_STRUCTURE, KernelMatch, tokenize
 
-SCHEDULER_VERSION = "raos-scheduler-0.1.0"
+SCHEDULER_VERSION = "raos-scheduler-0.2.0"
 # Below Attention Policy HIGH (0.65). Do not change route() thresholds to match this cap.
 UNSUPPORTED_RELEVANCE_CAP = 0.34
 
@@ -38,6 +38,10 @@ class SchedulerFeatures:
     high_quality_technical: bool = False
     foundational_paper: bool = False
     exploration_candidate: bool = False
+    change_magnitude: float = 0.0
+    epistemic_strength: float = 0.0
+    target_importance: float = 0.0
+    attention_cost: float = 0.0
 
     def as_dict(self) -> dict:
         return self.__dict__.copy()
@@ -107,7 +111,7 @@ def _level(value: float) -> str:
     return "MEDIUM"
 
 
-def estimate_features(
+def _compatibility_features(
     text: str,
     extraction: ExtractionResult,
     matches: list[KernelMatch],
@@ -229,6 +233,29 @@ def estimate_features(
     return ground_features_to_matches(features, matches)
 
 
+def estimate_features(
+    text: str,
+    extraction: ExtractionResult,
+    matches: list[KernelMatch],
+    *,
+    is_duplicate: bool = False,
+    independent_source_count: int = 1,
+    secondary_report_count: int = 0,
+    threatens_active_work: bool | None = None,
+) -> SchedulerFeatures:
+    from app.services.cognitive_impact import assess_impact_from_rules
+
+    return assess_impact_from_rules(
+        text,
+        extraction,
+        matches,
+        is_duplicate=is_duplicate,
+        independent_source_count=independent_source_count,
+        secondary_report_count=secondary_report_count,
+        threatens_active_work=threatens_active_work,
+    ).features
+
+
 def _budget(state: AttentionState, modes: list[ProcessingMode]) -> int:
     if state == AttentionState.DROP:
         return 0
@@ -248,7 +275,7 @@ def _budget(state: AttentionState, modes: list[ProcessingMode]) -> int:
     return minutes
 
 
-def route(features: SchedulerFeatures, runtime: RuntimeView | None = None) -> PlanDraft:
+def route(features: SchedulerFeatures, runtime: RuntimeView | None = None, assessment=None) -> PlanDraft:
     runtime = runtime or RuntimeView()
     reason_parts: list[str] = []
 
@@ -398,6 +425,15 @@ def route(features: SchedulerFeatures, runtime: RuntimeView | None = None) -> Pl
             processing_modes=[ProcessingMode.SCAN],
             expected_output=ExpectedOutput.SUMMARY,
             reason="Relevant enough to know it happened, but no likely Kernel delta. Popularity is not importance; do not ENGAGE because a company is famous.",
+            cognitive_budget_minutes=1,
+        )
+
+    if features.exploration_candidate and not features.marketing_heavy:
+        return PlanDraft(
+            attention_state=AttentionState.AWARE,
+            processing_modes=[ProcessingMode.SCAN],
+            expected_output=ExpectedOutput.SUMMARY,
+            reason="OPEN_NEW exploration candidate: missing Kernel localization is not automatic DROP.",
             cognitive_budget_minutes=1,
         )
 

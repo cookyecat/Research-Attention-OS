@@ -105,6 +105,16 @@ class KernelNodeType(StrEnum):
     EXPERIMENT = "EXPERIMENT"
 
 
+class CognitiveEffectKind(StrEnum):
+    """Direction of a potential Kernel effect. Not evidential force (see Stance)."""
+
+    REINFORCE = "REINFORCE"
+    CHALLENGE = "CHALLENGE"
+    REFINE = "REFINE"
+    OPEN_NEW = "OPEN_NEW"
+    NO_MATERIAL_CHANGE = "NO_MATERIAL_CHANGE"
+
+
 class KernelRelationship(StrEnum):
     SUPPORTS = "SUPPORTS"
     WEAKENS = "WEAKENS"
