@@ -4,6 +4,7 @@ import os
 
 import pytest
 from sqlalchemy import text
+from sqlalchemy.pool import NullPool
 
 from tests.conftest import add_text, analyze
 
@@ -12,6 +13,17 @@ pytestmark = pytest.mark.skipif(
     not os.environ.get("RAOS_TEST_DATABASE_URL"),
     reason="RAOS_TEST_DATABASE_URL not set",
 )
+
+
+def test_postgres_engine_uses_nullpool_and_disposes(engine):
+    assert isinstance(engine.pool, NullPool)
+    with engine.connect() as conn:
+        n = conn.execute(
+            text("SELECT count(*) FROM pg_stat_activity WHERE datname = current_database()")
+        ).scalar()
+        conn.commit()
+    assert n is not None
+    assert int(n) < 25, f"unexpected connection count {n}; test engines are leaking"
 
 
 def test_postgres_pgvector_distance(engine):

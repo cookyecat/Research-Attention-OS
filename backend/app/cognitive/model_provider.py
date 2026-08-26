@@ -350,14 +350,7 @@ class ModelBackedCognitiveProvider:
             ),
             ModelDeltaResponse,
         )
-        affected = []
-        for item in parsed.affected_kernel_nodes:
-            if isinstance(item, dict) and item.get("id"):
-                affected.append(str(item["id"]))
-            elif isinstance(item, str):
-                affected.append(item)
-            elif hasattr(item, "id"):
-                affected.append(str(item.id))
+        affected = [{"id": item.id, "impact": item.impact} for item in parsed.affected_kernel_nodes]
         return ModelDelta(
             summary=parsed.summary,
             what_could_change=list(parsed.what_could_change),

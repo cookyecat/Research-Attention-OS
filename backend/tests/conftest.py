@@ -6,10 +6,14 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, event, text
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
+from sqlalchemy.pool import NullPool, StaticPool
 
-from app.db import Base, get_db
+from app.db import Base, get_db, engine as app_engine
 from app.main import app
+
+# Tests never use the import-time app engine (get_db is overridden). Dispose it so
+# QueuePool idle connections are not held against the same Postgres as the test engines.
+app_engine.dispose()
 
 
 def _postgres_url() -> str | None:
@@ -20,23 +24,28 @@ def _postgres_url() -> str | None:
 def engine():
     url = _postgres_url()
     if url:
-        eng = create_engine(url, future=True)
-        with eng.connect() as conn:
+        # NullPool: one connection per checkout, none held after close.
+        # Function-scoped QueuePool engines without dispose() exhaust Postgres max_connections.
+        eng = create_engine(url, future=True, poolclass=NullPool)
+        try:
+            with eng.connect() as conn:
+                if url.startswith("postgresql"):
+                    conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+                    conn.execute(text("DROP TABLE IF EXISTS kernel_embeddings CASCADE"))
+                    conn.commit()
+            Base.metadata.drop_all(eng)
+            Base.metadata.create_all(eng)
             if url.startswith("postgresql"):
-                conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+                with eng.connect() as conn:
+                    conn.execute(text("ALTER TABLE kernel_embeddings ADD COLUMN IF NOT EXISTS embedding_vec vector"))
+                    conn.commit()
+            yield eng
+            with eng.connect() as conn:
                 conn.execute(text("DROP TABLE IF EXISTS kernel_embeddings CASCADE"))
                 conn.commit()
-        Base.metadata.drop_all(eng)
-        Base.metadata.create_all(eng)
-        if url.startswith("postgresql"):
-            with eng.connect() as conn:
-                conn.execute(text("ALTER TABLE kernel_embeddings ADD COLUMN IF NOT EXISTS embedding_vec vector"))
-                conn.commit()
-        yield eng
-        with eng.connect() as conn:
-            conn.execute(text("DROP TABLE IF EXISTS kernel_embeddings CASCADE"))
-            conn.commit()
-        Base.metadata.drop_all(eng)
+            Base.metadata.drop_all(eng)
+        finally:
+            eng.dispose()
         return
 
     eng = create_engine(
@@ -51,8 +60,11 @@ def engine():
         cursor.execute("PRAGMA foreign_keys=ON")
         cursor.close()
 
-    Base.metadata.create_all(eng)
-    yield eng
+    try:
+        Base.metadata.create_all(eng)
+        yield eng
+    finally:
+        eng.dispose()
 
 
 @pytest.fixture

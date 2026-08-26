@@ -21,13 +21,15 @@ from app.enums import (
     Strength,
 )
 
+# Kernel node statuses actually used in seed, bootstrap, patches, and the active-kernel filter.
+# Not a new state machine — a closed set of values already present in the codebase.
+KernelNodeStatus = Literal["ACTIVE", "OPEN", "CONTESTED", "DEPRECATED", "ABANDONED", "COMPLETED"]
+
 
 class StrictModel(BaseModel):
-    model_config = ConfigDict(extra="ignore", str_strip_whitespace=True)
+    """Fail-closed LLM structured output. Unexpected fields are rejected, not dropped."""
 
-
-class Score01(BaseModel):
-    model_config = ConfigDict(extra="ignore")
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
 
 class ClaimItem(StrictModel):
@@ -125,7 +127,7 @@ class AffectedKernelNode(StrictModel):
 
 class ModelDeltaResponse(StrictModel):
     summary: str = Field(min_length=1)
-    affected_kernel_nodes: list[Any] = Field(default_factory=list)
+    affected_kernel_nodes: list[AffectedKernelNode] = Field(default_factory=list)
     distinctions: list[str] = Field(default_factory=list)
     new_questions: list[str] = Field(default_factory=list)
     possible_hypotheses: list[str] = Field(default_factory=list)
@@ -140,7 +142,7 @@ class ModelDeltaResponse(StrictModel):
 class BootstrapProposal(StrictModel):
     target_object_type: KernelNodeType | Literal["GOAL", "PROJECT", "QUESTION", "BELIEF", "MODEL", "BOTTLENECK", "DECISION"]
     title: str = Field(min_length=1)
-    status: str = "ACTIVE"
+    status: KernelNodeStatus = "ACTIVE"
     payload: dict[str, Any] = Field(default_factory=dict)
     reasoning: str = Field(min_length=1)
 

@@ -7,11 +7,13 @@ from fastapi.testclient import TestClient
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker
 
+from pydantic import ValidationError
+
 from app.cognitive.client import EmbeddingDimensionError
 from app.cognitive.factory import FallbackProvider
 from app.cognitive.model_provider import ModelBackedCognitiveProvider
 from app.cognitive.rule_provider import RuleBasedCognitiveProvider
-from app.cognitive.schemas import ExtractionResponse
+from app.cognitive.schemas import ExtractionResponse, ModelDeltaResponse
 from app.models.analysis import AnalysisRun
 from app.models.kernel import KernelEmbedding, KernelNode
 from app.services.analysis_runs import compute_identity
@@ -41,6 +43,44 @@ class AlwaysInvalidChat:
         return {"claims": "not-a-list"}, META
 
 
+class ExtraFieldOnceChat:
+    """Valid payload plus an unexpected field on the first extraction call only."""
+
+    def __init__(self):
+        self.n = 0
+        self.inner = SemanticFakeChat()
+
+    def __call__(self, messages, **_kwargs):
+        self.n += 1
+        parsed, meta = self.inner(messages, **_kwargs)
+        system = (messages[0].get("content") or "").lower()
+        if self.n == 1 and "extraction stage" in system:
+            return {**parsed, "unexpected_field": "must-fail"}, meta
+        return parsed, meta
+
+
+class AlwaysExtraFieldChat:
+    def __init__(self):
+        self.inner = SemanticFakeChat()
+
+    def __call__(self, messages, **_kwargs):
+        parsed, meta = self.inner(messages, **_kwargs)
+        return {**parsed, "unexpected_field": "must-fail"}, meta
+
+
+class BadAffectedNodesChat:
+    def __init__(self):
+        self.inner = SemanticFakeChat()
+
+    def __call__(self, messages, **_kwargs):
+        parsed, meta = self.inner(messages, **_kwargs)
+        system = (messages[0].get("content") or "").lower()
+        if "model delta" in system or "what this information could change" in system:
+            parsed = dict(parsed)
+            parsed["affected_kernel_nodes"] = ["not-an-object"]
+        return parsed, meta
+
+
 def test_schema_invalid_then_retry_valid():
     chat = RepairOnceChat()
     provider = ModelBackedCognitiveProvider(chat_fn=chat)
@@ -68,7 +108,7 @@ def test_schema_invalid_twice_raises_then_fallback(client: TestClient, monkeypat
 
 
 def test_malformed_item_is_not_silently_dropped():
-    with pytest.raises(Exception):
+    with pytest.raises(ValidationError):
         ExtractionResponse.model_validate(
             {
                 "claims": [{"text": "ok", "claim_type": "FACTUAL", "extraction_confidence": 0.4}, "bad-item"],
@@ -76,6 +116,81 @@ def test_malformed_item_is_not_silently_dropped():
                 "inferences": [],
             }
         )
+
+
+def test_unexpected_field_is_rejected_not_silently_dropped():
+    payload = {
+        "claims": [{"text": "ok", "claim_type": "FACTUAL", "extraction_confidence": 0.4}],
+        "observations": [],
+        "inferences": [],
+        "unexpected_field": "nope",
+    }
+    with pytest.raises(ValidationError) as exc:
+        ExtractionResponse.model_validate(payload)
+    assert any(e.get("type") == "extra_forbidden" for e in exc.value.errors())
+
+
+def test_unexpected_field_retries_then_succeeds():
+    chat = ExtraFieldOnceChat()
+    provider = ModelBackedCognitiveProvider(chat_fn=chat)
+    result = provider.extract_information(
+        "The founder says the robot generalizes zero-shot. In the video, it succeeds once.",
+        "TEXT",
+        "extra-retry",
+    )
+    assert result.claims
+    events = provider.last_meta.get("validation_events") or []
+    assert any(e.get("status") == "repaired" for e in events)
+
+
+def test_unexpected_field_twice_falls_back(client: TestClient, monkeypatch):
+    def _provider(**_kwargs):
+        return FallbackProvider(ModelBackedCognitiveProvider(chat_fn=AlwaysExtraFieldChat()), RuleBasedCognitiveProvider())
+
+    monkeypatch.setattr("app.cognitive.factory.get_provider", _provider)
+    src = add_text(client, "A technical paper about motor intelligence latency.", title="extra-fb")
+    result = analyze(client, src["id"])
+    assert result["analysis_run"]["fallback_used"] is True
+    prov = result["analysis_run"]["stage_provenance"] or {}
+    assert prov.get("extraction", {}).get("status") == "fallback"
+
+
+def test_malformed_affected_kernel_nodes_fail_validation():
+    with pytest.raises(ValidationError) as exc:
+        ModelDeltaResponse.model_validate(
+            {
+                "summary": "A relevant distinction.",
+                "affected_kernel_nodes": ["not-an-object"],
+            }
+        )
+    assert exc.value.errors()
+    with pytest.raises(ValidationError):
+        ModelDeltaResponse.model_validate(
+            {
+                "summary": "A relevant distinction.",
+                "affected_kernel_nodes": [{"impact": "REFINE"}],
+            }
+        )
+
+
+def test_malformed_affected_kernel_nodes_follow_repair_fallback(client: TestClient, monkeypatch):
+    def _provider(**_kwargs):
+        return FallbackProvider(ModelBackedCognitiveProvider(chat_fn=BadAffectedNodesChat()), RuleBasedCognitiveProvider())
+
+    monkeypatch.setattr("app.cognitive.factory.get_provider", _provider)
+    src = add_text(
+        client,
+        "A high-quality technical paper on arXiv argues the opposite of the belief that large "
+        "unified models may be unsuitable for the fastest embodied-control loop.",
+        title="delta-bad-nodes",
+    )
+    result = analyze(client, src["id"])
+    assert result["model_delta"]["summary"]
+    prov = result["analysis_run"].get("stage_provenance") or {}
+    delta_stage = prov.get("delta") or {}
+    assert delta_stage.get("status") in {"fallback", "success"}
+    if result["analysis_run"]["fallback_used"]:
+        assert delta_stage.get("status") == "fallback"
 
 
 def test_analysis_identity_changes_with_matcher_and_prompt(monkeypatch):
