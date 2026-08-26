@@ -29,11 +29,11 @@ from app.config import settings
 from app.enums import AuthorType, CognitiveEffectKind
 from app.models.kernel import KernelNode
 from app.services.cognitive_impact import (
-    TARGET_IMPORTANCE,
     CognitiveEffect,
     CognitiveImpactAssessment,
     features_from_impact,
     ground_effects,
+    resolve_target_importance,
 )
 from app.services.deltas import ModelDelta, PatchDraft, propose_patches
 from app.services.evidence_gate import should_run_heavy_evidence
@@ -376,9 +376,12 @@ class ModelBackedCognitiveProvider:
             if item.target_kernel_node_id and item.target_kernel_node_id in by_id:
                 node = by_id[item.target_kernel_node_id]
                 ntype = getattr(node, "node_type", None)
-            importance = item.target_importance
-            if ntype:
-                importance = max(importance, TARGET_IMPORTANCE.get(ntype, 0.0))
+            node = by_id.get(item.target_kernel_node_id) if item.target_kernel_node_id else None
+            importance = resolve_target_importance(
+                node=node,
+                node_type=ntype,
+                llm_estimate=item.target_importance,
+            )
             effects.append(
                 CognitiveEffect(
                     target_kernel_node_id=item.target_kernel_node_id,

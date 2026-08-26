@@ -49,6 +49,7 @@ class RuleBasedCognitiveProvider:
             independent_source_count=independent_source_count,
             secondary_report_count=secondary_report_count,
             threatens_active_work=threatens_active_work,
+            nodes=nodes,
         )
 
     def judge_features(

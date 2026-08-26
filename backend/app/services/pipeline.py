@@ -377,7 +377,7 @@ def run_pipeline(
         features = ground_features_to_matches(features, matches)
         ctx = db.get(RuntimeContext, runtime_context_id) if runtime_context_id else None
         view = runtime or _runtime_view(ctx)
-        draft = validate_plan(route(features, view, assessment=assessment))
+        draft = validate_plan(route(features, view, assessment=assessment, matches=matches))
         plan = AttentionPlan(
             candidate_type=CandidateType.SOURCE,
             candidate_id=source.id,
@@ -526,14 +526,21 @@ def _reschedule(
     runtime_context_id: UUID | None = None,
 ) -> dict:
     from app.services.analysis_runs import hydrate_run, plan_public
-    from app.services.scheduler import SchedulerFeatures
+    from app.services.cognitive_impact import assessment_from_dict
+    from app.services.scheduler import SchedulerFeatures, matches_from_debug
 
     stored_payload = dict(run.result_payload or {})
     original_plan = stored_payload.get("attention_plan")
     payload = hydrate_run(db, run)
     feat = payload.get("features") or {}
     features = SchedulerFeatures(**{k: v for k, v in feat.items() if k in SchedulerFeatures.__dataclass_fields__})
-    draft = validate_plan(route(features, runtime))
+    impact = payload.get("cognitive_impact") or (original_plan or {}).get("score_debug", {}).get("cognitive_impact")
+    assessment = assessment_from_dict(impact)
+    debug_matches = ((payload.get("attention_plan") or {}).get("score_debug") or {}).get("matches")
+    if not debug_matches:
+        debug_matches = ((original_plan or {}).get("score_debug") or {}).get("matches")
+    matches = matches_from_debug(debug_matches)
+    draft = validate_plan(route(features, runtime, assessment=assessment, matches=matches))
     plan = AttentionPlan(
         candidate_type=CandidateType.SOURCE,
         candidate_id=source.id,

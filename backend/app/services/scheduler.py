@@ -7,13 +7,19 @@ from app.services.evidence_gate import evidence_conflict_flags
 from app.services.extraction import ExtractionResult
 from app.services.matching import EQUITY_STRUCTURE, KernelMatch, tokenize
 
-SCHEDULER_VERSION = "raos-scheduler-0.2.0"
-# Below Attention Policy HIGH (0.65). Do not change route() thresholds to match this cap.
+SCHEDULER_VERSION = "raos-scheduler-0.2.1"
+# Compatibility projection cap for debug/Live Eval. Routing no longer branches on these scores.
 UNSUPPORTED_RELEVANCE_CAP = 0.34
 
 
 @dataclass
 class SchedulerFeatures:
+    """Compatibility/debug projection of CognitiveImpactAssessment + Kernel Match.
+
+    Attention Policy consumes CognitiveImpactAssessment directly. These fields remain
+    for Live Eval, reschedule of older runs, and score_debug.
+    """
+
     topic_relevance: float
     structural_relevance: float
     decision_relevance: float
@@ -89,10 +95,10 @@ def _match_supported(
 
 
 def ground_features_to_matches(features: SchedulerFeatures, matches: list[KernelMatch]) -> SchedulerFeatures:
-    """Deterministic consistency cap before Attention Policy.
+    """Cap unsupported localization scores on the compatibility projection.
 
-    LLM remains the feature judge. Unsupported HIGH scores cannot fire Decision /
-    Structural / Bottleneck branches. route() thresholds are unchanged.
+    Routing uses CognitiveEffect target semantics, not these scores. The cap remains
+    so debug/Live Eval cannot display a free-floating HIGH decision_relevance.
     """
     if not _match_supported(matches, node_types=("DECISION",), relevance_types=("DECISION",)):
         features.decision_relevance = min(features.decision_relevance, UNSUPPORTED_RELEVANCE_CAP)
@@ -101,14 +107,6 @@ def ground_features_to_matches(features: SchedulerFeatures, matches: list[Kernel
     if not _match_supported(matches, node_types=("BOTTLENECK",), relevance_types=("BOTTLENECK",)):
         features.bottleneck_alignment = min(features.bottleneck_alignment, UNSUPPORTED_RELEVANCE_CAP)
     return features
-
-
-def _level(value: float) -> str:
-    if value >= 0.65:
-        return "HIGH"
-    if value <= 0.35:
-        return "LOW"
-    return "MEDIUM"
 
 
 def _compatibility_features(
@@ -275,10 +273,120 @@ def _budget(state: AttentionState, modes: list[ProcessingMode]) -> int:
     return minutes
 
 
-def route(features: SchedulerFeatures, runtime: RuntimeView | None = None, assessment=None) -> PlanDraft:
-    runtime = runtime or RuntimeView()
-    reason_parts: list[str] = []
+def _projection_assessment(features: SchedulerFeatures):
+    """Last-resort view when no CognitiveImpactAssessment is available.
 
+    Uses impact projection fields on SchedulerFeatures (change_magnitude / kernel_delta),
+    never topic_relevance or decision_relevance. Isolated compatibility for reschedule
+    of older runs and legacy tests.
+    """
+    from app.enums import CognitiveEffectKind
+    from app.services.cognitive_impact import CognitiveEffect, CognitiveImpactAssessment
+
+    change = features.change_magnitude if features.change_magnitude else features.kernel_delta
+    epi = features.epistemic_strength if features.epistemic_strength else min(features.credibility, 0.45)
+    importance = features.target_importance
+    if features.exploration_candidate and change < 0.35:
+        kind = CognitiveEffectKind.OPEN_NEW
+        change = max(change, 0.55)
+        explore = True
+    elif features.disagreement >= 0.55 or features.sources_conflict:
+        kind = CognitiveEffectKind.CHALLENGE
+        change = max(change, 0.55)
+        explore = False
+    elif change < 0.35:
+        kind = CognitiveEffectKind.NO_MATERIAL_CHANGE
+        explore = False
+    else:
+        kind = CognitiveEffectKind.REFINE
+        explore = False
+    return CognitiveImpactAssessment(
+        effects=[
+            CognitiveEffect(
+                target_kernel_node_id=None,
+                effect=kind,
+                change_magnitude=change,
+                epistemic_strength=epi,
+                target_importance=importance,
+                reason="Projected from stored SchedulerFeatures; no DECISION target invented.",
+                exploration_candidate=explore,
+            )
+        ],
+        attention_cost=features.attention_cost or features.cognitive_cost,
+        exploration_candidate=explore or features.exploration_candidate,
+        features=features,
+    )
+
+
+def matches_from_debug(raw) -> list[KernelMatch]:
+    if not raw:
+        return []
+    out: list[KernelMatch] = []
+    for item in raw:
+        if not isinstance(item, dict) or not item.get("node_id"):
+            continue
+        from uuid import UUID
+
+        try:
+            nid = UUID(str(item["node_id"]))
+        except (TypeError, ValueError):
+            continue
+        out.append(
+            KernelMatch(
+                node_id=nid,
+                node_type=str(item.get("node_type") or ""),
+                title=item.get("title"),
+                score=float(item.get("score") or 0.0),
+                reason=str(item.get("reason") or ""),
+                structural=bool(item.get("structural")),
+                relevance_type=str(item.get("relevance_type") or "TOPIC"),
+            )
+        )
+    return out
+
+
+def route(
+    features: SchedulerFeatures,
+    runtime: RuntimeView | None = None,
+    assessment=None,
+    matches: list[KernelMatch] | None = None,
+) -> PlanDraft:
+    """Attention Policy. CognitiveImpactAssessment is the semantic input.
+
+    SchedulerFeatures supply source/runtime context (duplicate, threat, marketing,
+    foundational LEARN) and a fallback projection when assessment is missing.
+    """
+    from app.enums import CognitiveEffectKind
+    from app.services.cognitive_impact import (
+        MEANINGFUL_CHANGE,
+        has_effect,
+        has_exploration_effect,
+        material_effects,
+        material_effects_on_type,
+        material_structural_effects,
+        max_change_magnitude,
+        max_epistemic_strength,
+        max_target_importance,
+    )
+
+    runtime = runtime or RuntimeView()
+    if assessment is None:
+        assessment = _projection_assessment(features)
+    matches = matches or []
+    material = material_effects(assessment)
+    targeted = [e for e in material if e.target_kernel_node_id is not None]
+    explore = has_exploration_effect(assessment)
+    challenge = has_effect(assessment, CognitiveEffectKind.CHALLENGE)
+    change = max_change_magnitude(assessment)
+    epi = max_epistemic_strength(assessment)
+    importance = max_target_importance(assessment)
+    decision_fx = material_effects_on_type(assessment, matches, "DECISION")
+    bottleneck_fx = material_effects_on_type(assessment, matches, "BOTTLENECK")
+    synth_types = ("MODEL", "BELIEF", "QUESTION", "BOTTLENECK", "DECISION", "PROJECT")
+    synth_fx = material_effects_on_type(assessment, matches, *synth_types)
+    structural_fx = material_structural_effects(assessment, matches)
+
+    # --- Source / runtime context (not cognitive value) ---
     if features.is_duplicate:
         return PlanDraft(
             attention_state=AttentionState.DROP,
@@ -288,30 +396,12 @@ def route(features: SchedulerFeatures, runtime: RuntimeView | None = None, asses
             cognitive_budget_minutes=0,
         )
 
-    if features.credibility < 0.4 and features.topic_relevance < 0.35 and features.structural_relevance < 0.5:
-        return PlanDraft(
-            attention_state=AttentionState.DROP,
-            urgency=Urgency.BACKGROUND,
-            reason="Low credibility and low Kernel relevance.",
-            cognitive_budget_minutes=0,
-        )
-
-    if features.marketing_heavy and features.kernel_delta < 0.3 and features.structural_relevance < 0.5:
-        return PlanDraft(
-            attention_state=AttentionState.DROP,
-            urgency=Urgency.BACKGROUND,
-            reason="Marketing-heavy article with no primary technical evidence and no Kernel or structural relevance.",
-            cognitive_budget_minutes=0,
-        )
-
-    # Runtime: imminent deadline + low interruptibility, unless threat to submission
     tight_deadline = runtime.deadline_minutes is not None and runtime.deadline_minutes <= 120
     low_interrupt = (runtime.interruptibility or "MEDIUM") == "LOW"
     if tight_deadline and low_interrupt and not features.threatens_active_work:
-        modes: list[ProcessingMode] = []
         return PlanDraft(
             attention_state=AttentionState.WATCH,
-            processing_modes=modes,
+            processing_modes=[],
             urgency=Urgency.BACKGROUND,
             expected_output=ExpectedOutput.WATCH,
             reason=(
@@ -324,70 +414,110 @@ def route(features: SchedulerFeatures, runtime: RuntimeView | None = None, asses
         )
 
     if features.threatens_active_work:
-        reason = (
-            "This item highly overlaps the active submission and may invalidate novelty. "
-            "PREEMPT is justified: interrupting current work is cheaper than discovering a novelty collision after submission."
-        )
         modes = [ProcessingMode.VERIFY, ProcessingMode.SYNTHESIZE]
         return PlanDraft(
             attention_state=AttentionState.ENGAGE,
             processing_modes=modes,
             urgency=Urgency.PREEMPT,
             expected_output=ExpectedOutput.KERNEL_PATCH,
-            reason=reason,
+            reason=(
+                "This item highly overlaps the active submission and may invalidate novelty. "
+                "PREEMPT is justified: interrupting current work is cheaper than discovering a novelty collision after submission."
+            ),
             cognitive_budget_minutes=_budget(AttentionState.ENGAGE, modes),
         )
 
-    if features.decision_relevance >= 0.65:
-        modes = [ProcessingMode.SYNTHESIZE]
-        state = AttentionState.ENGAGE
-        expected = ExpectedOutput.DECISION_REVIEW
-        reason_parts.append(
-            f"Topic relevance {_level(features.topic_relevance)}; "
-            f"structural relevance {_level(features.structural_relevance)}; "
-            f"decision relevance {_level(features.decision_relevance)}."
-        )
-        reason_parts.append("Active Decision may change; do not DROP solely because the source topic is not AI.")
+    # --- No material cognitive effect ---
+    if not material and not challenge:
+        if explore and not features.marketing_heavy:
+            return PlanDraft(
+                attention_state=AttentionState.AWARE,
+                processing_modes=[ProcessingMode.SCAN],
+                expected_output=ExpectedOutput.SUMMARY,
+                reason="OPEN_NEW exploration candidate: missing Kernel localization is not automatic DROP.",
+                cognitive_budget_minutes=1,
+            )
+        if features.marketing_heavy:
+            return PlanDraft(
+                attention_state=AttentionState.DROP,
+                urgency=Urgency.BACKGROUND,
+                reason="No material cognitive effect; marketing-heavy source is not worth current attention.",
+                cognitive_budget_minutes=0,
+            )
+        if features.topic_relevance >= 0.25:
+            return PlanDraft(
+                attention_state=AttentionState.AWARE,
+                processing_modes=[ProcessingMode.SCAN],
+                expected_output=ExpectedOutput.SUMMARY,
+                reason="No material cognitive change expected. High topic relevance alone does not ENGAGE.",
+                cognitive_budget_minutes=1,
+            )
         return PlanDraft(
-            attention_state=state,
-            processing_modes=modes,
-            urgency=Urgency.NORMAL,
-            expected_output=expected,
-            reason=" ".join(reason_parts),
-            cognitive_budget_minutes=_budget(state, modes),
+            attention_state=AttentionState.DROP,
+            reason="No material cognitive effect and no useful exploration signal.",
+            cognitive_budget_minutes=0,
         )
 
-    if features.bottleneck_alignment >= 0.65 or (
-        features.topic_relevance >= 0.55 and features.kernel_delta >= 0.55
-    ):
-        modes = []
-        if features.disagreement >= 0.55 or features.sources_conflict:
+    # --- DECISION target: matched DECISION node + material effect, not decision_relevance ---
+    if decision_fx:
+        modes = [ProcessingMode.SYNTHESIZE]
+        if epi < 0.45 or features.evidence_maturity < 0.5:
+            modes.insert(0, ProcessingMode.VERIFY)
+        return PlanDraft(
+            attention_state=AttentionState.ENGAGE,
+            processing_modes=modes,
+            urgency=Urgency.NORMAL,
+            expected_output=ExpectedOutput.DECISION_REVIEW,
+            reason="Material cognitive effect on an active Decision; do not DROP solely because the source topic is not AI.",
+            cognitive_budget_minutes=_budget(AttentionState.ENGAGE, modes),
+        )
+
+    # --- Meaningful change on an existing Kernel target, or a CHALLENGE ---
+    targeted_or_challenge = bool(targeted) or challenge
+    meaningful = change >= MEANINGFUL_CHANGE
+    important = importance >= 0.55 or bool(synth_fx) or challenge
+    open_only = explore and not targeted and not challenge
+
+    if targeted_or_challenge and meaningful and important and not open_only:
+        modes: list[ProcessingMode] = []
+        reason_parts: list[str] = [
+            "Material cognitive effect with meaningful change magnitude on an important Kernel target."
+        ]
+        low_epi = epi < 0.45
+        if challenge or features.sources_conflict:
             modes.append(ProcessingMode.VERIFY)
             reason_parts.append(
-                "High relevance plus disagreement with an active Belief raises verification value; "
-                "disagreement is not low relevance."
+                "CHALLENGE / conflicting evidence raises verification value; disagreement is not low relevance."
+            )
+        elif low_epi and not features.foundational_paper:
+            modes.append(ProcessingMode.VERIFY)
+            reason_parts.append(
+                "Change magnitude is meaningful but epistemic strength is low; VERIFY before belief revision."
             )
         elif features.evidence_maturity < 0.5 and not features.foundational_paper:
             modes.append(ProcessingMode.VERIFY)
             reason_parts.append("Evidence maturity is low; VERIFY attributed claims before belief update.")
-        if features.novelty >= 0.5 and "VERIFY" in [m.value for m in modes]:
-            modes.append(ProcessingMode.SYNTHESIZE)
-            reason_parts.append("Sources or observations materially conflict with attributed claims; synthesize against the Kernel.")
-        elif features.foundational_paper or (features.high_quality_technical and features.disagreement < 0.4):
-            modes.append(ProcessingMode.LEARN)
-            reason_parts.append("High relevance introducing or explaining a mechanism; LEARN.")
-        else:
+        # Compatibility: LEARN vs VERIFY is not a CognitiveEffect kind.
+        if features.foundational_paper or (
+            features.high_quality_technical and not challenge and not low_epi and features.disagreement < 0.4
+        ):
+            if ProcessingMode.VERIFY not in modes:
+                modes.append(ProcessingMode.LEARN)
+                reason_parts.append("Foundational / high-quality technical treatment of a mechanism; LEARN.")
+        if synth_fx or challenge:
             if ProcessingMode.SYNTHESIZE not in modes:
                 modes.append(ProcessingMode.SYNTHESIZE)
-            if ProcessingMode.VERIFY not in modes and features.high_quality_technical:
-                modes.insert(0, ProcessingMode.VERIFY)
+                reason_parts.append("Integrate against an existing Model, Belief, Question, Bottleneck, or Decision.")
+        elif features.novelty >= 0.5 and ProcessingMode.VERIFY in modes:
+            modes.append(ProcessingMode.SYNTHESIZE)
         if not modes:
-            modes = [ProcessingMode.VERIFY, ProcessingMode.SYNTHESIZE]
-        expected = ExpectedOutput.KERNEL_PATCH if features.kernel_delta >= 0.55 else ExpectedOutput.SUMMARY
-        if features.evidence_maturity < 0.45:
-            expected = ExpectedOutput.WATCH if expected != ExpectedOutput.KERNEL_PATCH else expected
-        reason_parts.insert(0, "Candidate matches active Project/Bottleneck/Belief/Model state.")
-        urgency = Urgency.PRIORITY if features.bottleneck_alignment >= 0.7 else Urgency.NORMAL
+            modes = [ProcessingMode.SYNTHESIZE]
+        if ProcessingMode.VERIFY not in modes and ProcessingMode.LEARN not in modes and low_epi:
+            modes.insert(0, ProcessingMode.VERIFY)
+        expected = ExpectedOutput.KERNEL_PATCH if change >= MEANINGFUL_CHANGE else ExpectedOutput.SUMMARY
+        if features.evidence_maturity < 0.45 and expected != ExpectedOutput.KERNEL_PATCH:
+            expected = ExpectedOutput.WATCH
+        urgency = Urgency.PRIORITY if bottleneck_fx and change >= MEANINGFUL_CHANGE else Urgency.NORMAL
         return PlanDraft(
             attention_state=AttentionState.ENGAGE,
             processing_modes=modes,
@@ -395,40 +525,44 @@ def route(features: SchedulerFeatures, runtime: RuntimeView | None = None, asses
             expected_output=expected,
             reason=" ".join(reason_parts),
             watch_after_processing=features.evidence_maturity < 0.5,
-            watch_triggers=_default_watch_triggers(features),
+            watch_triggers=_default_watch_triggers(features, assessment, matches),
             cognitive_budget_minutes=_budget(AttentionState.ENGAGE, modes),
         )
 
-    if features.structural_relevance >= 0.65 and features.kernel_delta >= 0.4:
+    # --- Structural effect without a topic-driven ENGAGE ---
+    if structural_fx and change >= 0.4:
         modes = [ProcessingMode.SYNTHESIZE]
+        expected = ExpectedOutput.DECISION_REVIEW if decision_fx else ExpectedOutput.KERNEL_PATCH
         return PlanDraft(
             attention_state=AttentionState.ENGAGE,
             processing_modes=modes,
-            expected_output=ExpectedOutput.DECISION_REVIEW,
-            reason="Structural relevance is high even if topic relevance is low.",
+            expected_output=expected,
+            reason="Meaningful CognitiveEffect on a STRUCTURAL Kernel match; low topic similarity does not DROP.",
             cognitive_budget_minutes=_budget(AttentionState.ENGAGE, modes),
         )
 
-    if features.topic_relevance >= 0.4 and features.evidence_maturity < 0.45 and features.kernel_delta >= 0.35:
+    # --- Moderate change, insufficient justification ---
+    if material and change >= 0.35 and (targeted or challenge):
         return PlanDraft(
             attention_state=AttentionState.WATCH,
             expected_output=ExpectedOutput.WATCH,
-            reason="Strategic potential with insufficient current evidence; transfer future attention to the system.",
+            reason="Potentially important cognitive effect with insufficient current evidence; transfer future attention to the system.",
             watch_after_processing=True,
-            watch_triggers=_default_watch_triggers(features),
+            watch_triggers=_default_watch_triggers(features, assessment, matches),
             cognitive_budget_minutes=2,
         )
 
-    if features.topic_relevance >= 0.25 and features.kernel_delta < 0.35:
-        return PlanDraft(
-            attention_state=AttentionState.AWARE,
-            processing_modes=[ProcessingMode.SCAN],
-            expected_output=ExpectedOutput.SUMMARY,
-            reason="Relevant enough to know it happened, but no likely Kernel delta. Popularity is not importance; do not ENGAGE because a company is famous.",
-            cognitive_budget_minutes=1,
-        )
-
-    if features.exploration_candidate and not features.marketing_heavy:
+    # --- Exploration: conservative AWARE/SCAN; high-value new direction may ENGAGE ---
+    if explore and not features.marketing_heavy:
+        if change >= 0.65 and importance >= 0.7:
+            modes = [ProcessingMode.LEARN]
+            return PlanDraft(
+                attention_state=AttentionState.ENGAGE,
+                processing_modes=modes,
+                expected_output=ExpectedOutput.SUMMARY,
+                reason="High-value OPEN_NEW direction; ENGAGE conservatively to LEARN.",
+                cognitive_budget_minutes=_budget(AttentionState.ENGAGE, modes),
+            )
         return PlanDraft(
             attention_state=AttentionState.AWARE,
             processing_modes=[ProcessingMode.SCAN],
@@ -437,25 +571,20 @@ def route(features: SchedulerFeatures, runtime: RuntimeView | None = None, asses
             cognitive_budget_minutes=1,
         )
 
-    if features.kernel_delta < 0.2 and features.topic_relevance < 0.3:
-        return PlanDraft(
-            attention_state=AttentionState.DROP,
-            reason="No material Kernel relation and low topic relevance.",
-            cognitive_budget_minutes=0,
-        )
-
     return PlanDraft(
         attention_state=AttentionState.AWARE,
         processing_modes=[ProcessingMode.SCAN],
         expected_output=ExpectedOutput.SUMMARY,
-        reason="Default AWARE: insufficient Kernel delta for ENGAGE.",
+        reason="Default AWARE: no ENGAGE-grade cognitive effect.",
         cognitive_budget_minutes=1,
     )
 
 
-def _default_watch_triggers(features: SchedulerFeatures) -> list[str]:
+def _default_watch_triggers(features: SchedulerFeatures, assessment=None, matches=None) -> list[str]:
+    from app.services.cognitive_impact import material_effects_on_type
+
     triggers = ["PAPER_RELEASE", "CODE_RELEASE", "INDEPENDENT_REPLICATION"]
-    if features.bottleneck_alignment >= 0.4:
+    if material_effects_on_type(assessment, matches, "BOTTLENECK") or features.bottleneck_alignment >= 0.4:
         triggers.extend(["BENCHMARK_UPDATE", "NEW_EVIDENCE"])
     return triggers
 

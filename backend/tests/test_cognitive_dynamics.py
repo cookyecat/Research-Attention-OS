@@ -6,18 +6,18 @@ from uuid import uuid4
 
 from fastapi.testclient import TestClient
 
-from app.enums import AttentionState, CognitiveEffectKind, ProcessingMode
+from app.enums import AttentionState, ClaimType, CognitiveEffectKind, ExpectedOutput, ProcessingMode, Urgency
 from app.services.cognitive_impact import (
     CognitiveEffect,
     CognitiveImpactAssessment,
     assess_impact_from_rules,
     epistemic_cap,
     ground_effects,
+    resolve_target_importance,
 )
 from app.services.extraction import ExtractedClaim, ExtractionResult
 from app.services.matching import KernelMatch
-from app.services.scheduler import SchedulerFeatures, route
-from app.enums import ClaimType
+from app.services.scheduler import RuntimeView, SchedulerFeatures, route
 from tests.conftest import add_text, analyze, kernel_index
 from tests.test_scheduler_grounding import GALAXY_STYLE
 
@@ -57,50 +57,173 @@ def _match(node_type: str = "PROJECT", relevance_type: str = "TOPIC", score: flo
     )
 
 
+def _effect(match: KernelMatch | None, kind: CognitiveEffectKind, **overrides) -> CognitiveEffect:
+    base = dict(
+        target_kernel_node_id=match.node_id if match else None,
+        effect=kind,
+        change_magnitude=0.7,
+        epistemic_strength=0.25,
+        target_importance=0.75,
+        reason="test effect",
+        exploration_candidate=kind == CognitiveEffectKind.OPEN_NEW,
+    )
+    base.update(overrides)
+    return CognitiveEffect(**base)
+
+
+def _assessment(*effects: CognitiveEffect, **kwargs) -> CognitiveImpactAssessment:
+    explore = kwargs.pop("exploration_candidate", any(e.exploration_candidate for e in effects))
+    return CognitiveImpactAssessment(
+        effects=list(effects),
+        attention_cost=kwargs.get("attention_cost", 8.0),
+        exploration_candidate=explore,
+    )
+
+
 def test_high_topic_without_material_change_does_not_engage():
+    match = _match("PROJECT", "TOPIC", 0.88)
+    assessment = _assessment(
+        _effect(match, CognitiveEffectKind.NO_MATERIAL_CHANGE, change_magnitude=0.12, epistemic_strength=0.2)
+    )
     plan = route(
-        _features(
-            topic_relevance=0.88,
-            kernel_delta=0.12,
-            change_magnitude=0.12,
-            epistemic_strength=0.2,
-            bottleneck_alignment=0.1,
-            decision_relevance=0.1,
-        )
+        _features(topic_relevance=0.88, kernel_delta=0.12, change_magnitude=0.12, epistemic_strength=0.2),
+        assessment=assessment,
+        matches=[match],
     )
     assert plan.attention_state != AttentionState.ENGAGE
 
 
-def test_high_change_low_epistemic_favors_verify():
-    plan = route(
-        _features(
-            topic_relevance=0.7,
-            kernel_delta=0.7,
-            change_magnitude=0.7,
-            epistemic_strength=0.2,
-            evidence_maturity=0.35,
-            disagreement=0.1,
-        )
+def test_low_topic_structural_effect_may_engage():
+    match = _match("MODEL", "STRUCTURAL", 0.8)
+    assessment = _assessment(
+        _effect(match, CognitiveEffectKind.REFINE, change_magnitude=0.7, epistemic_strength=0.35, target_importance=0.75)
     )
-    assert plan.attention_state == AttentionState.ENGAGE
-    assert ProcessingMode.VERIFY in plan.processing_modes
-
-
-def test_strong_target_refinement_synthesizes():
     plan = route(
-        _features(
-            topic_relevance=0.7,
-            kernel_delta=0.7,
-            change_magnitude=0.7,
-            epistemic_strength=0.35,
-            evidence_maturity=0.4,
-            novelty=0.65,
-            target_importance=0.8,
-            bottleneck_alignment=0.7,
-        )
+        _features(topic_relevance=0.15, structural_relevance=0.8, kernel_delta=0.7, decision_relevance=0.1),
+        assessment=assessment,
+        matches=[match],
     )
     assert plan.attention_state == AttentionState.ENGAGE
     assert ProcessingMode.SYNTHESIZE in plan.processing_modes
+
+
+def test_high_change_low_epistemic_favors_verify():
+    match = _match("MODEL", "TOPIC", 0.7)
+    assessment = _assessment(
+        _effect(match, CognitiveEffectKind.REFINE, change_magnitude=0.7, epistemic_strength=0.2, target_importance=0.75)
+    )
+    plan = route(
+        _features(topic_relevance=0.7, kernel_delta=0.7, change_magnitude=0.7, epistemic_strength=0.2, evidence_maturity=0.35),
+        assessment=assessment,
+        matches=[match],
+    )
+    assert plan.attention_state == AttentionState.ENGAGE
+    assert ProcessingMode.VERIFY in plan.processing_modes
+    assert ProcessingMode.SYNTHESIZE in plan.processing_modes
+
+
+def test_strong_target_refinement_synthesizes():
+    match = _match("MODEL", "TOPIC", 0.7)
+    assessment = _assessment(
+        _effect(match, CognitiveEffectKind.REFINE, change_magnitude=0.7, epistemic_strength=0.35, target_importance=0.8)
+    )
+    plan = route(
+        _features(topic_relevance=0.7, kernel_delta=0.7, bottleneck_alignment=0.2),
+        assessment=assessment,
+        matches=[match],
+    )
+    assert plan.attention_state == AttentionState.ENGAGE
+    assert ProcessingMode.SYNTHESIZE in plan.processing_modes
+
+
+def test_challenge_on_belief_favors_verify():
+    match = _match("BELIEF", "TOPIC", 0.8)
+    assessment = _assessment(
+        _effect(match, CognitiveEffectKind.CHALLENGE, change_magnitude=0.75, epistemic_strength=0.4, target_importance=0.75)
+    )
+    plan = route(
+        _features(disagreement=0.8, kernel_delta=0.75),
+        assessment=assessment,
+        matches=[match],
+    )
+    assert plan.attention_state == AttentionState.ENGAGE
+    assert ProcessingMode.VERIFY in plan.processing_modes
+    assert ProcessingMode.SYNTHESIZE in plan.processing_modes
+
+
+def test_decision_target_effect_is_decision_review():
+    match = _match("DECISION", "STRUCTURAL", 0.85)
+    assessment = _assessment(
+        _effect(match, CognitiveEffectKind.REFINE, change_magnitude=0.75, epistemic_strength=0.4, target_importance=0.85)
+    )
+    plan = route(
+        _features(topic_relevance=0.2, decision_relevance=0.2, structural_relevance=0.85),
+        assessment=assessment,
+        matches=[match],
+    )
+    assert plan.attention_state == AttentionState.ENGAGE
+    assert plan.expected_output == ExpectedOutput.DECISION_REVIEW
+    assert ProcessingMode.SYNTHESIZE in plan.processing_modes
+
+
+def test_high_decision_relevance_without_decision_effect_is_not_decision_review():
+    match = _match("PROJECT", "TOPIC", 0.8)
+    assessment = _assessment(
+        _effect(match, CognitiveEffectKind.REINFORCE, change_magnitude=0.7, epistemic_strength=0.3, target_importance=0.65)
+    )
+    plan = route(
+        _features(decision_relevance=0.9, topic_relevance=0.8, kernel_delta=0.7),
+        assessment=assessment,
+        matches=[match],
+    )
+    assert plan.expected_output != ExpectedOutput.DECISION_REVIEW
+
+
+def test_bottleneck_effect_can_be_priority():
+    match = _match("BOTTLENECK", "BOTTLENECK", 0.8)
+    assessment = _assessment(
+        _effect(match, CognitiveEffectKind.REFINE, change_magnitude=0.75, epistemic_strength=0.3, target_importance=0.8)
+    )
+    plan = route(
+        _features(bottleneck_alignment=0.2, topic_relevance=0.4),
+        assessment=assessment,
+        matches=[match],
+    )
+    assert plan.attention_state == AttentionState.ENGAGE
+    assert plan.urgency == Urgency.PRIORITY
+
+
+def test_runtime_deadline_still_watch_when_not_threatened():
+    match = _match("MODEL")
+    assessment = _assessment(_effect(match, CognitiveEffectKind.REFINE, change_magnitude=0.8))
+    plan = route(
+        _features(),
+        RuntimeView(deadline_minutes=60, interruptibility="LOW"),
+        assessment=assessment,
+        matches=[match],
+    )
+    assert plan.attention_state == AttentionState.WATCH
+    assert plan.urgency == Urgency.BACKGROUND
+    assert plan.urgency != Urgency.PREEMPT
+
+
+def test_explicit_payload_importance_outranks_type_prior_and_llm():
+    class Node:
+        node_type = "BELIEF"
+        payload = {"importance": 0.2}
+
+    assert resolve_target_importance(node=Node(), node_type="BELIEF", llm_estimate=0.99) == 0.2
+    class Bare:
+        node_type = "BELIEF"
+        payload = {"proposition": "x"}
+
+    assert resolve_target_importance(node=Bare(), node_type="BELIEF", llm_estimate=0.99) == 0.75
+    assert resolve_target_importance(node_type=None, llm_estimate=0.41) == 0.41
+    class Ranked:
+        node_type = "GOAL"
+        payload = {"priority": 1}
+
+    assert resolve_target_importance(node=Ranked()) == 1.0
 
 
 def test_promotional_reinforce_keeps_epistemic_strength_low():

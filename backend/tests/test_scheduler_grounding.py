@@ -235,6 +235,9 @@ def test_galaxy_style_no_spurious_decision_or_conflict(client: TestClient, monke
     kinds = {e.get("effect") for e in effects}
     assert kinds & {"REINFORCE", "REFINE"}
     assert all(float(e.get("epistemic_strength") or 0) <= 0.45 for e in effects)
+    assert any(float(e.get("change_magnitude") or 0) >= 0.55 for e in effects)
+    assert "topic relevance" not in (plan.get("reason") or "").lower()
+    assert "epistemic" in (plan.get("reason") or "").lower() or "verify" in (plan.get("reason") or "").lower()
 
     titles = " ".join((m.get("title") or "") for m in result["kernel_matches"]).lower()
     assert "motor intelligence" in titles

@@ -14,6 +14,8 @@ from app.services.evidence_gate import evidence_conflict_flags
 from app.services.extraction import ExtractionResult
 from app.services.matching import KernelMatch
 
+# Type priors only. Not "every BELIEF outranks every PROJECT."
+# Resolution: explicit Kernel payload importance/priority > type prior > LLM estimate > neutral.
 TARGET_IMPORTANCE = {
     "GOAL": 0.9,
     "DECISION": 0.85,
@@ -25,6 +27,10 @@ TARGET_IMPORTANCE = {
     "HYPOTHESIS": 0.55,
     "EXPERIMENT": 0.5,
 }
+NEUTRAL_IMPORTANCE = 0.5
+MATERIAL_CHANGE_MIN = 0.35
+MEANINGFUL_CHANGE = 0.55
+LOW_EPISTEMIC = 0.45
 
 # Single promotional / media source without first-hand evidence cannot justify strong revision.
 SINGLE_SOURCE_EPISTEMIC_CAP = 0.35
@@ -56,6 +62,8 @@ class CognitiveEffect:
 
 @dataclass
 class CognitiveImpactAssessment:
+    """Semantic source of truth for Attention Policy. SchedulerFeatures is a debug projection."""
+
     effects: list[CognitiveEffect] = field(default_factory=list)
     attention_cost: float = 2.0
     exploration_candidate: bool = False
@@ -76,6 +84,159 @@ def _kind(value) -> str:
     if hasattr(value, "value"):
         return str(value.value)
     return str(value)
+
+
+def _clamp01(value: float) -> float:
+    return max(0.0, min(1.0, float(value)))
+
+
+def explicit_node_importance(node) -> float | None:
+    """Read KernelNode.payload importance or priority. Clamp to [0, 1]."""
+    payload = getattr(node, "payload", None) or {}
+    if not isinstance(payload, dict):
+        return None
+    for key in ("importance", "priority"):
+        raw = payload.get(key)
+        if raw is None:
+            continue
+        try:
+            return _clamp01(float(raw))
+        except (TypeError, ValueError):
+            continue
+    return None
+
+
+def resolve_target_importance(*, node=None, node_type: str | None = None, llm_estimate: float | None = None) -> float:
+    """explicit Kernel importance > stable type prior > LLM estimate > neutral.
+
+    Does not raise an LLM estimate to a type minimum.
+    """
+    if node is not None:
+        explicit = explicit_node_importance(node)
+        if explicit is not None:
+            return explicit
+        node_type = node_type or getattr(node, "node_type", None)
+    if node_type:
+        prior = TARGET_IMPORTANCE.get(str(node_type))
+        if prior is not None:
+            return prior
+    if llm_estimate is not None:
+        try:
+            return _clamp01(float(llm_estimate))
+        except (TypeError, ValueError):
+            pass
+    return NEUTRAL_IMPORTANCE
+
+
+def material_effects(assessment: CognitiveImpactAssessment | None, *, min_change: float = MATERIAL_CHANGE_MIN) -> list[CognitiveEffect]:
+    if assessment is None:
+        return []
+    return [
+        e
+        for e in assessment.effects
+        if _kind(e.effect) != CognitiveEffectKind.NO_MATERIAL_CHANGE and float(e.change_magnitude) >= min_change
+    ]
+
+
+def max_change_magnitude(assessment: CognitiveImpactAssessment | None) -> float:
+    pool = material_effects(assessment) or (list(assessment.effects) if assessment else [])
+    return max((float(e.change_magnitude) for e in pool), default=0.0)
+
+
+def max_epistemic_strength(assessment: CognitiveImpactAssessment | None) -> float:
+    pool = material_effects(assessment) or (list(assessment.effects) if assessment else [])
+    return max((float(e.epistemic_strength) for e in pool), default=0.0)
+
+
+def max_target_importance(assessment: CognitiveImpactAssessment | None) -> float:
+    pool = material_effects(assessment) or (list(assessment.effects) if assessment else [])
+    return max((float(e.target_importance) for e in pool), default=0.0)
+
+
+def has_effect(assessment: CognitiveImpactAssessment | None, kind) -> bool:
+    want = _kind(kind)
+    if assessment is None:
+        return False
+    return any(_kind(e.effect) == want for e in assessment.effects)
+
+
+def has_exploration_effect(assessment: CognitiveImpactAssessment | None) -> bool:
+    if assessment is None:
+        return False
+    if assessment.exploration_candidate:
+        return True
+    return any(
+        e.exploration_candidate or _kind(e.effect) == CognitiveEffectKind.OPEN_NEW for e in assessment.effects
+    )
+
+
+def _match_index(matches) -> dict:
+    return {m.node_id: m for m in (matches or [])}
+
+
+def effect_target_match(effect: CognitiveEffect, matches):
+    if effect.target_kernel_node_id is None:
+        return None
+    return _match_index(matches).get(effect.target_kernel_node_id)
+
+
+def has_target_type(assessment: CognitiveImpactAssessment | None, matches, node_type: str) -> bool:
+    wanted = str(node_type).upper()
+    for effect in material_effects(assessment):
+        match = effect_target_match(effect, matches)
+        if match is not None and str(match.node_type).upper() == wanted:
+            return True
+    return False
+
+
+def material_effects_on_type(assessment: CognitiveImpactAssessment | None, matches, *node_types: str) -> list[CognitiveEffect]:
+    wanted = {t.upper() for t in node_types}
+    found: list[CognitiveEffect] = []
+    for effect in material_effects(assessment):
+        match = effect_target_match(effect, matches)
+        if match is not None and str(match.node_type).upper() in wanted:
+            found.append(effect)
+    return found
+
+
+def material_structural_effects(assessment: CognitiveImpactAssessment | None, matches) -> list[CognitiveEffect]:
+    found: list[CognitiveEffect] = []
+    for effect in material_effects(assessment):
+        match = effect_target_match(effect, matches)
+        if match is None:
+            continue
+        rel = str(getattr(match, "relevance_type", "") or "").upper()
+        if match.structural or rel == "STRUCTURAL" or str(match.node_type).upper() == "DECISION":
+            found.append(effect)
+    return found
+
+
+def assessment_from_dict(data: dict | None) -> CognitiveImpactAssessment | None:
+    if not data:
+        return None
+    effects: list[CognitiveEffect] = []
+    for item in data.get("effects") or []:
+        nid = item.get("target_kernel_node_id")
+        try:
+            target = UUID(str(nid)) if nid else None
+        except (TypeError, ValueError):
+            target = None
+        effects.append(
+            CognitiveEffect(
+                target_kernel_node_id=target,
+                effect=CognitiveEffectKind(_kind(item.get("effect") or CognitiveEffectKind.NO_MATERIAL_CHANGE)),
+                change_magnitude=float(item.get("change_magnitude") or 0.0),
+                epistemic_strength=float(item.get("epistemic_strength") or 0.0),
+                target_importance=float(item.get("target_importance") or 0.0),
+                reason=str(item.get("reason") or ""),
+                exploration_candidate=bool(item.get("exploration_candidate")),
+            )
+        )
+    return CognitiveImpactAssessment(
+        effects=effects,
+        attention_cost=float(data.get("attention_cost") or 2.0),
+        exploration_candidate=bool(data.get("exploration_candidate")),
+    )
 
 
 def epistemic_cap(
@@ -163,7 +324,7 @@ def features_from_impact(
     disagreement: float = 0.0,
     temporal_value: float = 0.4,
 ):
-    """Derive compatibility SchedulerFeatures. Localization comes from matches; value from effects."""
+    """Compatibility/debug projection. Not the source of truth for Attention Policy."""
     from app.services.scheduler import SchedulerFeatures, ground_features_to_matches
 
     if isinstance(assessment_or_effects, CognitiveImpactAssessment):
@@ -267,10 +428,13 @@ def assess_impact_from_rules(
     independent_source_count: int = 1,
     secondary_report_count: int = 0,
     threatens_active_work: bool | None = None,
+    nodes=None,
 ) -> CognitiveImpactAssessment:
     """Deterministic impact assessment used by the rule provider and as fallback."""
     from app.services.matching import EQUITY_STRUCTURE, tokenize
     from app.services.scheduler import _compatibility_features
+
+    nodes_by_id = {n.id: n for n in (nodes or [])}
 
     probe = _compatibility_features(
         text,
@@ -300,7 +464,7 @@ def assess_impact_from_rules(
         )
     else:
         for match in matches:
-            importance = TARGET_IMPORTANCE.get(match.node_type, 0.5)
+            importance = resolve_target_importance(node=nodes_by_id.get(match.node_id), node_type=match.node_type)
             change = match.score
             epi = min(probe.credibility, cap)
             if "minor" in low and "version" in low:
@@ -371,7 +535,11 @@ def assess_impact_from_rules(
                     effect=CognitiveEffectKind.CHALLENGE,
                     change_magnitude=max(0.75, probe.kernel_delta),
                     epistemic_strength=min(0.45, cap),
-                    target_importance=0.75 if belief else 0.5,
+                    target_importance=resolve_target_importance(
+                        node=nodes_by_id.get(belief.node_id) if belief else None,
+                        node_type="BELIEF" if belief else None,
+                        llm_estimate=0.5,
+                    ),
                     reason="Attributed claims conflict with observations or an active Belief.",
                 )
             )
