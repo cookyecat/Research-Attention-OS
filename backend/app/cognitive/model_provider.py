@@ -394,11 +394,7 @@ class ModelBackedCognitiveProvider:
                 )
             )
         effects = ground_effects(
-            effects,
-            matches,
-            extraction,
-            independent_source_count=independent_source_count,
-            source_text=text,
+            effects, matches, extraction, independent_source_count=independent_source_count
         )
         threatened = threatens_active_work
         if threatened is None:

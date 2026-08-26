@@ -254,124 +254,15 @@ def epistemic_cap(
     return cap
 
 
-def _fold_scope_text(text: str) -> str:
-    return " ".join((text or "").lower().replace("-", " ").split())
-
-
-# Generic linguistic markers. Not product, architecture, or domain term lists.
-_SAME_SCOPE_PHRASES = (
-    "no separate",
-    "without a separate",
-    "without any separate",
-    "no distinct",
-    "the same large",
-    "the same model",
-    "the same method",
-    "directly",
-)
-_SPLIT_MARKERS = ("separate", "distinct", "not the same", "different component")
-_LIMITING_MARKERS = (
-    "benchmark",
-    "correlat",
-    "one deployment",
-    "in one setting",
-    "in one deployment",
-    "offline",
-)
-_GENERALIZING_MARKERS = (
-    "generally",
-    "in general",
-    "causal",
-    "causally",
-    "across",
-    "real world",
-)
-_SCOPE_FAMILIES = (
-    frozenset({"fastest", "high frequency", "real time", "hz", "low level"}),
-    frozenset({"generally", "in general", "across", "real world"}),
-    frozenset({"causal", "causally", "causes"}),
-)
-
-
-def _has_marker(folded: str, marker: str) -> bool:
-    if marker in {"correlat"}:
-        return marker in folded
-    return f" {marker} " in f" {folded} "
-
-
-def _family_covered(folded: str, family: frozenset[str]) -> bool:
-    return any(_has_marker(folded, token) for token in family)
-
-
-def scope_alignment(source_text: str, kernel_text: str) -> str:
-    """Compare source-claim scope to a Kernel proposition.
-
-    Returns 'aligned' | 'split' | 'mismatch'. Not a Scope ontology.
-    Broad-scope claims must not be projected onto narrower Kernel propositions.
-    """
-    source = _fold_scope_text(source_text)
-    kernel = _fold_scope_text(kernel_text)
-    if not source or not kernel:
-        return "aligned"
-
-    stripped = source
-    for phrase in _SAME_SCOPE_PHRASES:
-        stripped = stripped.replace(phrase, " ")
-    stripped = " ".join(stripped.split())
-    if any(_has_marker(stripped, marker) for marker in _SPLIT_MARKERS):
-        return "split"
-
-    same_scope = any(_has_marker(source, phrase) for phrase in _SAME_SCOPE_PHRASES)
-    kernel_family_hit = any(_family_covered(kernel, family) for family in _SCOPE_FAMILIES)
-    source_covers_kernel_family = any(
-        _family_covered(kernel, family) and _family_covered(source, family) for family in _SCOPE_FAMILIES
-    )
-    if same_scope and (source_covers_kernel_family or not kernel_family_hit):
-        return "aligned"
-
-    source_limited = any(_has_marker(source, marker) for marker in _LIMITING_MARKERS)
-    kernel_general = any(_has_marker(kernel, marker) for marker in _GENERALIZING_MARKERS)
-    if source_limited and kernel_general:
-        return "mismatch"
-
-    if kernel_family_hit and not source_covers_kernel_family:
-        return "mismatch"
-    return "aligned"
-
-
-def _apply_scope_alignment(
-    kind: CognitiveEffectKind,
-    change: float,
-    epi: float,
-    reason: str,
-    alignment: str,
-) -> tuple[CognitiveEffectKind, float, float, str]:
-    """Prefer REFINE / NO_MATERIAL_CHANGE over unjustified strong direction."""
-    if kind not in {CognitiveEffectKind.REINFORCE, CognitiveEffectKind.CHALLENGE}:
-        return kind, change, epi, reason
-    if alignment == "aligned":
-        return kind, change, epi, reason
-    note = "Source claim scope is not aligned with the Kernel proposition."
-    if alignment == "split":
-        if kind == CognitiveEffectKind.CHALLENGE:
-            return CognitiveEffectKind.REFINE, change, min(epi, 0.3), f"{reason} {note}".strip()
-        return kind, change, epi, reason
-    # mismatch: do not keep a strong REINFORCE or CHALLENGE
-    new_kind = CognitiveEffectKind.REFINE if change >= 0.35 else CognitiveEffectKind.NO_MATERIAL_CHANGE
-    return new_kind, min(change, 0.4), min(epi, 0.25), f"{reason} {note}".strip()
-
-
 def ground_effects(
     effects: list[CognitiveEffect],
     matches: list[KernelMatch],
     extraction: ExtractionResult,
     *,
     independent_source_count: int = 1,
-    source_text: str = "",
 ) -> list[CognitiveEffect]:
-    """Deterministic caps. LLM remains the effect judge."""
+    """Deterministic caps. LLM remains the effect judge. Does not rewrite effect direction."""
     allowed = {m.node_id for m in matches}
-    by_id = {m.node_id: m for m in matches}
     cap = epistemic_cap(extraction, independent_source_count=independent_source_count)
     grounded: list[CognitiveEffect] = []
     for effect in effects:
@@ -385,11 +276,6 @@ def ground_effects(
         change = max(0.0, min(1.0, float(effect.change_magnitude)))
         importance = max(0.0, min(1.0, float(effect.target_importance)))
         kind = CognitiveEffectKind(_kind(effect.effect))
-        reason = effect.reason
-        match = by_id.get(target) if target else None
-        if source_text and match is not None:
-            alignment = scope_alignment(source_text, match.title or "")
-            kind, change, epi, reason = _apply_scope_alignment(kind, change, epi, reason, alignment)
         explore = bool(effect.exploration_candidate) or kind == CognitiveEffectKind.OPEN_NEW
         if kind == CognitiveEffectKind.OPEN_NEW:
             target = target if target in allowed else None
@@ -401,7 +287,7 @@ def ground_effects(
                 change_magnitude=change,
                 epistemic_strength=epi,
                 target_importance=importance,
-                reason=reason,
+                reason=effect.reason,
                 exploration_candidate=explore,
             )
         )
@@ -642,33 +528,23 @@ def assess_impact_from_rules(
     if probe.disagreement >= 0.55 or probe.sources_conflict:
         if not any(_kind(e.effect) == CognitiveEffectKind.CHALLENGE for e in effects):
             belief = next((m for m in matches if m.node_type == "BELIEF"), None)
-            aligned = (
-                scope_alignment(text, belief.title or "") == "aligned" if belief else True
-            )
-            if aligned:
-                effects = [e for e in effects if _kind(e.effect) != CognitiveEffectKind.NO_MATERIAL_CHANGE]
-                effects.append(
-                    CognitiveEffect(
-                        target_kernel_node_id=belief.node_id if belief else None,
-                        effect=CognitiveEffectKind.CHALLENGE,
-                        change_magnitude=max(0.75, probe.kernel_delta),
-                        epistemic_strength=min(0.45, cap),
-                        target_importance=resolve_target_importance(
-                            node=nodes_by_id.get(belief.node_id) if belief else None,
-                            node_type="BELIEF" if belief else None,
-                            llm_estimate=0.5,
-                        ),
-                        reason="Attributed claims conflict with observations or an active Belief.",
-                    )
+            effects = [e for e in effects if _kind(e.effect) != CognitiveEffectKind.NO_MATERIAL_CHANGE]
+            effects.append(
+                CognitiveEffect(
+                    target_kernel_node_id=belief.node_id if belief else None,
+                    effect=CognitiveEffectKind.CHALLENGE,
+                    change_magnitude=max(0.75, probe.kernel_delta),
+                    epistemic_strength=min(0.45, cap),
+                    target_importance=resolve_target_importance(
+                        node=nodes_by_id.get(belief.node_id) if belief else None,
+                        node_type="BELIEF" if belief else None,
+                        llm_estimate=0.5,
+                    ),
+                    reason="Attributed claims conflict with observations or an active Belief.",
                 )
+            )
 
-    effects = ground_effects(
-        effects,
-        matches,
-        extraction,
-        independent_source_count=independent_source_count,
-        source_text=text,
-    )
+    effects = ground_effects(effects, matches, extraction, independent_source_count=independent_source_count)
     explore = any(e.exploration_candidate for e in effects)
     attention_cost = probe.cognitive_cost
     features = features_from_impact(
