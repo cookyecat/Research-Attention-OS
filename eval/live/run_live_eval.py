@@ -19,6 +19,151 @@ if str(BACKEND) not in sys.path:
 from eval.live.report import compute_metrics, render_markdown
 from eval.live.schema import LiveCase, LiveManifest, gold_status_of
 
+FALLBACK_STAGE_STATUSES = {"fallback", "rule-after-fallback"}
+
+
+def live_eval_runtime_fields(
+    provider=None,
+    *,
+    provenance=None,
+    fallback_used=None,
+    provider_type=None,
+) -> dict[str, Any]:
+    """Surface stage provenance and whether output is a model prediction."""
+    provenance = provenance if provenance is not None else getattr(provider, "stage_provenance", None)
+    fallback_used = bool(
+        fallback_used if fallback_used is not None else getattr(provider, "fallback_used", False)
+    )
+    provider_type = provider_type if provider_type is not None else getattr(provider, "provider_type", None)
+    fallback_stages: list[str] = []
+    if isinstance(provenance, dict):
+        for stage, rec in provenance.items():
+            if not isinstance(rec, dict):
+                continue
+            if rec.get("status") in FALLBACK_STAGE_STATUSES or rec.get("fallback_from"):
+                fallback_stages.append(stage)
+    is_fallback = fallback_used or bool(fallback_stages)
+    if is_fallback:
+        source = "rule-fallback"
+    elif provider_type == "model+rule-fallback":
+        source = "rule-fallback"
+    elif provider_type == "rule":
+        source = "rule"
+    else:
+        source = "model"
+    return {
+        "stage_provenance": provenance,
+        "fallback": is_fallback,
+        "fallback_stages": fallback_stages,
+        "prediction_source": source,
+        "model_prediction": source == "model",
+    }
+
+
+def analysis_payload_to_eval_row(payload: dict[str, Any]) -> dict[str, Any]:
+    """Map production pipeline output onto a Live Eval cases.jsonl row."""
+    plan = payload.get("attention_plan") or {}
+    run = payload.get("analysis_run") or {}
+    retrieval = payload.get("retrieval") or {}
+    matches = payload.get("kernel_matches") or []
+    delta = payload.get("model_delta") or {}
+    features = payload.get("features") or {}
+    provenance = run.get("stage_provenance") or payload.get("stage_provenance")
+    modes = plan.get("processing_modes") or []
+    runtime = live_eval_runtime_fields(
+        provenance=provenance,
+        fallback_used=run.get("fallback_used"),
+        provider_type=run.get("provider_type"),
+    )
+    return {
+        "attention_state": plan.get("attention_state"),
+        "processing_mode": modes,
+        "processing_modes": modes,
+        "kernel_matches": matches,
+        "matched_kernel_titles": [m.get("title") for m in matches],
+        "matched_kernel_ids": [m.get("node_id") for m in matches],
+        "match_relevance_types": [m.get("relevance_type") for m in matches],
+        "match_scores": [m.get("score") for m in matches],
+        "embedding_model": retrieval.get("embedding_model"),
+        "embedding_used": retrieval.get("embedding_used"),
+        "lexical_fallback": retrieval.get("lexical_fallback"),
+        "query_instruct_applied": retrieval.get("query_instruct_applied"),
+        "retrieval_method": retrieval.get("method"),
+        "scheduler_features": features,
+        "delta_summary": delta.get("summary"),
+        "claim_texts": [c.get("text") for c in (payload.get("claims") or [])],
+        "observation_texts": [o.get("text") for o in (payload.get("observations") or [])],
+        "inference_texts": [i.get("text") for i in (payload.get("inferences") or [])],
+        "latency_ms": run.get("latency_ms"),
+        "tokens": {"prompt": run.get("prompt_tokens"), "completion": run.get("completion_tokens")},
+        "cost": run.get("estimated_cost_usd"),
+        "source_id": payload.get("source_id"),
+        "analysis_run_id": run.get("id"),
+        **runtime,
+    }
+
+
+def _empty_eval_fields() -> dict[str, Any]:
+    return {
+        "processing_mode": None,
+        "processing_modes": None,
+        "match_scores": [],
+        "embedding_used": None,
+        "lexical_fallback": None,
+        "query_instruct_applied": None,
+        "retrieval_method": None,
+        "scheduler_features": None,
+    }
+
+
+def ensure_kernel_fixture(db, fixture: str | None) -> None:
+    if fixture not in {None, "mvp"}:
+        return
+    from sqlalchemy import func, select
+
+    from app.models.kernel import KernelNode
+    from app.services.embeddings import refresh_node_embedding
+    from app.testing.kernel_fixture import seed_mvp_kernel
+
+    n = db.execute(select(func.count()).select_from(KernelNode).where(KernelNode.deleted_at.is_(None))).scalar_one()
+    if n:
+        return
+    nodes = seed_mvp_kernel(db)
+    for node in nodes.values():
+        refresh_node_embedding(db, node)
+
+
+def ingest_live_case_source(db, case: LiveCase):
+    from app.services.ingestion import ingest_text, ingest_url
+
+    text = case.source.text or ""
+    if case.source.local_file:
+        path = Path(case.source.local_file)
+        if not path.is_file():
+            path = ROOT / case.source.local_file
+        text = path.read_text(encoding="utf-8")
+    if text:
+        source = ingest_text(db, text, title=case.source.title or case.id)
+        meta = dict(source.raw_metadata or {})
+        meta["live_eval_case_id"] = case.id
+        source.raw_metadata = meta
+        if case.source.type and case.source.type.upper() not in {"TEXT", "POST"}:
+            source.source_type = case.source.type.upper()
+        return source
+    if case.source.url:
+        return ingest_url(db, case.source.url)
+    raise ValueError("empty source")
+
+
+def run_live_pipeline(db, case: LiveCase) -> dict[str, Any]:
+    """Reuse production ingest + run_pipeline. Do not reimplement an eval-only path."""
+    from app.services.pipeline import run_pipeline
+
+    ensure_kernel_fixture(db, case.kernel_fixture)
+    source = ingest_live_case_source(db, case)
+    db.flush()
+    return run_pipeline(db, source.id, reprocess=True)
+
 
 def load_manifest(path: Path) -> LiveManifest:
     raw = path.read_text(encoding="utf-8")
@@ -33,7 +178,7 @@ def load_manifest(path: Path) -> LiveManifest:
     return LiveManifest.model_validate(data)
 
 
-def run_case(case: LiveCase, *, dry_run: bool) -> dict[str, Any]:
+def run_case(case: LiveCase, *, dry_run: bool, db=None) -> dict[str, Any]:
     status = gold_status_of(case)
     row: dict[str, Any] = {
         "id": case.id,
@@ -50,6 +195,10 @@ def run_case(case: LiveCase, *, dry_run: bool) -> dict[str, Any]:
         "tokens": None,
         "cost": None,
         "fallback": None,
+        "fallback_stages": [],
+        "prediction_source": None,
+        "model_prediction": None,
+        "stage_provenance": None,
         "attention_state": None,
         "kernel_matches": [],
         "matched_kernel_titles": [],
@@ -61,14 +210,13 @@ def run_case(case: LiveCase, *, dry_run: bool) -> dict[str, Any]:
         "inference_texts": [],
         "delta_rubric": (case.human_gold.delta_rubric if case.human_gold else None),
         "error": None,
+        **_empty_eval_fields(),
     }
     if dry_run or not (case.source.text or case.source.local_file or case.source.url):
         row["skipped"] = True
         row["skip_reason"] = "dry-run or empty source (UNLABELED slot)"
         return row
-    # Live path: import backend only when executing for real.
     from app.config import settings
-    from app.cognitive.factory import get_provider
     from app.cognitive.versions import (
         EXTRACTOR_VERSION,
         MATCHER_VERSION,
@@ -77,36 +225,42 @@ def run_case(case: LiveCase, *, dry_run: bool) -> dict[str, Any]:
         PROVIDER_VERSION,
     )
 
-    text = case.source.text or ""
-    if case.source.local_file:
-        text = Path(case.source.local_file).read_text(encoding="utf-8")
-    provider = get_provider()
-    extraction = provider.extract_information(text, case.source.type or "TEXT", case.source.title)
-    row.update(
-        {
-            "model": settings.llm_model,
-            "provider_versions": {
-                "extractor": EXTRACTOR_VERSION,
-                "matcher": MATCHER_VERSION,
-                "provider": PROVIDER_VERSION,
-                "pipeline": PIPELINE_VERSION,
-            },
-            "prompt_version": PROMPT_VERSION,
-            "embedding_model": settings.embedding_model,
-            "latency_ms": getattr(provider, "last_meta", {}).get("latency_ms"),
-            "tokens": {
-                "prompt": getattr(provider, "last_meta", {}).get("prompt_tokens"),
-                "completion": getattr(provider, "last_meta", {}).get("completion_tokens"),
-            },
-            "cost": getattr(provider, "last_meta", {}).get("estimated_cost_usd"),
-            "fallback": getattr(provider, "fallback_used", False),
-            "claim_texts": [c.text for c in extraction.claims],
-            "observation_texts": [o.text for o in extraction.observations],
-            "inference_texts": [i.text for i in extraction.inferences],
-            "skipped": False,
-        }
-    )
-    return row
+    close = False
+    if db is None:
+        from app.db import SessionLocal
+
+        db = SessionLocal()
+        close = True
+    try:
+        payload = run_live_pipeline(db, case)
+        if close:
+            db.commit()
+        row.update(analysis_payload_to_eval_row(payload))
+        row.update(
+            {
+                "model": settings.llm_model,
+                "provider_versions": {
+                    "extractor": EXTRACTOR_VERSION,
+                    "matcher": MATCHER_VERSION,
+                    "provider": PROVIDER_VERSION,
+                    "pipeline": PIPELINE_VERSION,
+                },
+                "prompt_version": PROMPT_VERSION,
+                "skipped": False,
+            }
+        )
+        if row.get("embedding_model") is None:
+            row["embedding_model"] = settings.embedding_model
+        return row
+    except Exception as exc:
+        if close:
+            db.rollback()
+        row["error"] = str(exc)[:4000]
+        row["skipped"] = False
+        return row
+    finally:
+        if close:
+            db.close()
 
 
 def write_report(out_dir: Path, summary: dict, rows: list[dict]) -> None:

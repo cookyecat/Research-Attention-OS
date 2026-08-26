@@ -1,0 +1,24 @@
+name: raos-live-eval-v0.1
+
+cases:
+  - id: galaxy-general-wrc-01
+
+    source_kind: wechat
+
+    cognitive_tasks:
+      - belief_conflict
+      - evidence_verification
+      - topic_relevance
+
+    gold_status: UNLABELED
+
+    source:
+      type: TEXT
+      title: "看懂银河通用，就读懂了具身智能的未来"
+      url: null
+      local_file: eval/live/sources/galaxy_general_wrc.txt
+      text: null
+
+    kernel_fixture: mvp
+
+    human_gold: null

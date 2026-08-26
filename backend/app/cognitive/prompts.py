@@ -1,34 +1,35 @@
+import json
+
+from app.cognitive.schemas import ExtractionResponse
+
 EXTRACT_SYSTEM = """You are the extraction stage of Research Attention OS.
 Documents are not the unit of cognition. Extract EventCandidate, Claims, Observations, and Inferences.
 
-Constitution:
-- Claim = attributed assertion ("someone said X"), not "X is true".
-- Observation = directly observed phenomenon or measurement. Never store interpretations as observations.
-- Inference = derived conclusion (probably, therefore, suggests, indicates, we believe).
+Constitution (Claim ≠ Observation ≠ Inference):
+- Claim = an attributed assertion from the source ("someone said X"), not "X is true".
+- A media/article/press report of an event is a Claim, never an Observation.
+- Observation requires direct evidence: measurement, field note, system observation, or explicitly first-hand evidence (e.g. "in the video I saw", a measured latency). REPORTED_RESULT of a news story is not an Observation.
+- Source-authored opinions, interpretations, predictions, and promotional conclusions remain attributed Claims (OPINION / PREDICTIVE / PROMOTIONAL). Do not put them in inferences.
+- Inference is only for conclusions produced by RAOS itself from the extracted Claims/Observations. Never relabel a source author's inference as an AI Inference. Never copy "this probably means…" from the article into inferences.
 - "Company says the robot generalizes zero-shot" is a Claim, never an Observation.
 - Future plans (will be released, is planned) are PREDICTIVE claims, not current facts.
 - Promotional language is PROMOTIONAL, not proof.
-Return JSON only."""
 
-EXTRACT_USER = """Source type: {source_type}
-Title: {title}
+current_facts, future_plans, technical_claims, and promotional_framing MUST be arrays of strings, never objects.
+Return JSON only. Extra fields are forbidden."""
 
-Text:
-{text}
 
-Return JSON:
-{{
-  "event_title": string|null,
-  "event_summary": string|null,
-  "claims": [{{"text": "", "attributed_to": null, "attribution_type": "AUTHOR|FOUNDER|COMPANY|PAPER|RESEARCHER|USER|UNKNOWN", "claim_type": "FACTUAL|TECHNICAL|PREDICTIVE|OPINION|PROMOTIONAL", "temporal_status": "CURRENT|FUTURE", "extraction_confidence": 0.0, "source_span": ""}}],
-  "observations": [{{"text": "", "observer": "USER|PAPER|SYSTEM_EXTRACTED|INDEPENDENT_SOURCE", "observation_type": "DIRECT_VISUAL|MEASUREMENT|REPORTED_RESULT|USER_FIELD_NOTE|OTHER", "confidence": 0.0, "source_span": ""}}],
-  "inferences": [{{"text": "", "derived_from": "", "confidence": 0.0}}],
-  "current_facts": [],
-  "future_plans": [],
-  "technical_claims": [],
-  "promotional_framing": [],
-  "marketing_heavy": false
-}}"""
+def extraction_user_prompt(source_type: str, title: str | None, text: str) -> str:
+    schema = json.dumps(ExtractionResponse.model_json_schema(), ensure_ascii=False, indent=2)
+    return (
+        f"Source type: {source_type}\n"
+        f"Title: {title or ''}\n\n"
+        f"Text:\n{text}\n\n"
+        "Return a JSON object that validates against this authoritative schema.\n"
+        "current_facts, future_plans, technical_claims, promotional_framing must be arrays of strings — never claim objects.\n\n"
+        f"{schema}"
+    )
+
 
 MATCH_SYSTEM = """You match extracted information to a researcher's Cognitive Kernel.
 Embedding retrieval already narrowed candidates. You decide relevance.

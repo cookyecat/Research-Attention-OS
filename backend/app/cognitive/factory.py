@@ -1,9 +1,27 @@
 from __future__ import annotations
 
-from app.cognitive.client import SchemaValidationError, estimate_cost_usd
+from app.cognitive.client import LLMTimeoutError, SchemaValidationError, estimate_cost_usd
 from app.cognitive.model_provider import ModelBackedCognitiveProvider
 from app.cognitive.rule_provider import RuleBasedCognitiveProvider
 from app.config import settings
+
+
+def _runtime_fields(primary) -> dict:
+    runtime = getattr(primary, "last_stage_runtime", None) or {}
+    return {
+        "thinking": runtime.get("thinking"),
+        "reasoning_effort": runtime.get("reasoning_effort"),
+        "timeout": runtime.get("timeout"),
+        "llm_called": runtime.get("llm_called"),
+    }
+
+
+def _error_type(exc: Exception) -> str:
+    if isinstance(exc, LLMTimeoutError):
+        return "timeout"
+    if isinstance(exc, SchemaValidationError):
+        return "schema"
+    return type(exc).__name__
 
 STAGE_NAMES = {
     "extract_information": "extraction",
@@ -24,6 +42,7 @@ class FallbackProvider:
         self.provider_type = "model"
         self.fallback_used = False
         self.stage_provenance: dict = {}
+        self.last_retrieval: dict | None = None
 
     def _call(self, name: str, *args, **kwargs):
         stage = STAGE_NAMES.get(name, name)
@@ -37,8 +56,12 @@ class FallbackProvider:
             self.stage_provenance[stage] = {
                 "provider": "rule",
                 "model": None,
-                "status": "success",
+                "status": "rule-after-fallback",
                 "fallback_from": "model",
+                "thinking": None,
+                "reasoning_effort": None,
+                "timeout": None,
+                "note": "sticky fallback; not a model prediction",
             }
             return result
         try:
@@ -46,7 +69,7 @@ class FallbackProvider:
             after = getattr(self.primary, "last_meta", {}) or {}
             events = list(getattr(self.primary, "last_validation_events", []) or [])
             retry = 1 if any(e.get("retry") == 1 and e.get("status") == "repaired" for e in events) else 0
-            self.stage_provenance[stage] = {
+            rec = {
                 "provider": "model",
                 "model": after.get("model") or settings.llm_model,
                 "status": "success",
@@ -60,21 +83,31 @@ class FallbackProvider:
                 ),
                 "validation_events": events,
             }
+            rec.update(_runtime_fields(self.primary))
+            self.stage_provenance[stage] = rec
             return result
         except Exception as exc:
             self.fallback_used = True
             self.provider_type = "model+rule-fallback"
             result = getattr(self.fallback, name)(*args, **kwargs)
+            after = getattr(self.primary, "last_meta", {}) or {}
             rec = {
                 "provider": "rule",
                 "model": None,
                 "status": "fallback",
                 "fallback_from": "model",
                 "error": str(exc)[:2000],
+                "error_type": _error_type(exc),
                 "retry": 1 if isinstance(exc, SchemaValidationError) and exc.retry_used else 0,
+                "latency_ms": int(after.get("latency_ms") or 0) - before["latency_ms"],
+                "prompt_tokens": int(after.get("prompt_tokens") or 0) - before["prompt_tokens"],
+                "completion_tokens": int(after.get("completion_tokens") or 0) - before["completion_tokens"],
             }
+            rec.update(_runtime_fields(self.primary))
             if isinstance(exc, SchemaValidationError):
                 rec["validation_error"] = exc.errors
+            if isinstance(exc, LLMTimeoutError):
+                rec["timeout"] = rec.get("timeout") if rec.get("timeout") is not None else exc.timeout
             self.stage_provenance[stage] = rec
             return result
 
@@ -86,7 +119,19 @@ class FallbackProvider:
         return self._call("extract_information", *args, **kwargs)
 
     def match_kernel(self, *args, **kwargs):
-        return self._call("match_kernel", *args, **kwargs)
+        result = self._call("match_kernel", *args, **kwargs)
+        rec = self.stage_provenance.get("matching") or {}
+        if rec.get("status") in {"fallback", "rule-after-fallback"}:
+            self.last_retrieval = {
+                "embedding_used": False,
+                "lexical_fallback": True,
+                "method": "lexical",
+                "embedding_model": None,
+                "query_instruct_applied": False,
+            }
+        else:
+            self.last_retrieval = getattr(self.primary, "last_retrieval", None)
+        return result
 
     def reason_evidence(self, *args, **kwargs):
         return self._call("reason_evidence", *args, **kwargs)

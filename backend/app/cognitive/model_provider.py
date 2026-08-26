@@ -4,13 +4,14 @@ import json
 from uuid import UUID
 
 from app.cognitive.client import SchemaValidationError, chat_json, chat_json_schema, estimate_cost_usd
+from app.cognitive.runtime import STAGE_RUNTIME
 from app.cognitive.prompts import (
     DELTA_SYSTEM,
     DELTA_USER,
     EVIDENCE_SYSTEM,
     EVIDENCE_USER,
     EXTRACT_SYSTEM,
-    EXTRACT_USER,
+    extraction_user_prompt,
     JUDGMENT_SYSTEM,
     JUDGMENT_USER,
     MATCH_SYSTEM,
@@ -36,7 +37,7 @@ from app.services.extraction import (
     ExtractionResult,
 )
 from app.services.matching import KernelMatch, node_text
-from app.services.retrieval import retrieve_kernel_candidates, try_embed_query
+from app.services.retrieval import retrieve_kernel_candidates_traced, try_embed_query
 from app.services.scheduler import SchedulerFeatures
 
 
@@ -56,12 +57,32 @@ class ModelBackedCognitiveProvider:
             "validation_events": [],
         }
         self.last_validation_events: list[dict] = []
+        self.last_stage_runtime: dict = {}
+        self.last_retrieval: dict | None = None
 
-    def _complete(self, system: str, user: str, schema_cls):
+    def _set_stage_runtime(self, stage: str, *, llm_called: bool) -> dict:
+        if stage in STAGE_RUNTIME:
+            runtime = {**STAGE_RUNTIME[stage].as_dict(), "stage": stage, "llm_called": llm_called}
+        else:
+            runtime = {
+                "thinking": None,
+                "reasoning_effort": None,
+                "timeout": None,
+                "stage": stage,
+                "llm_called": llm_called,
+            }
+        self.last_stage_runtime = runtime
+        return runtime
+
+    def _complete(self, system: str, user: str, schema_cls, *, stage: str):
+        budget = self._set_stage_runtime(stage, llm_called=True)
         obj, meta, events = chat_json_schema(
             [{"role": "system", "content": system}, {"role": "user", "content": user}],
             schema_cls,
             chat_fn=self._chat,
+            thinking=budget["thinking"],
+            reasoning_effort=budget["reasoning_effort"],
+            timeout=budget["timeout"],
         )
         self.last_validation_events = events
         self.last_meta["latency_ms"] = int(self.last_meta.get("latency_ms") or 0) + int(meta.get("latency_ms") or 0)
@@ -74,6 +95,9 @@ class ModelBackedCognitiveProvider:
             int(self.last_meta["prompt_tokens"]),
             int(self.last_meta["completion_tokens"]),
         )
+        self.last_meta["thinking"] = budget["thinking"]
+        self.last_meta["reasoning_effort"] = budget["reasoning_effort"]
+        self.last_meta["timeout"] = budget["timeout"]
         existing = list(self.last_meta.get("validation_events") or [])
         existing.extend(events)
         self.last_meta["validation_events"] = existing
@@ -82,8 +106,9 @@ class ModelBackedCognitiveProvider:
     def extract_information(self, text: str, source_type: str, title: str | None = None) -> ExtractionResult:
         parsed: ExtractionResponse = self._complete(
             EXTRACT_SYSTEM,
-            EXTRACT_USER.format(source_type=source_type, title=title or "", text=text),
+            extraction_user_prompt(source_type, title, text),
             ExtractionResponse,
+            stage="extraction",
         )
         result = ExtractionResult(
             event_title=parsed.event_title,
@@ -149,15 +174,18 @@ class ModelBackedCognitiveProvider:
             + [o.text for o in extraction.observations]
         )
         qvec = query_embedding
+        emb_model = None
         if qvec is None:
-            qvec, _model = try_embed_query(blob[:4000])
-        candidates = retrieve_kernel_candidates(
+            qvec, emb_model = try_embed_query(blob[:4000])
+        candidates, trace = retrieve_kernel_candidates_traced(
             blob,
             nodes,
             query_embedding=qvec,
             node_embeddings=node_embeddings,
             ranked_ids=ranked_ids,
+            embedding_model=emb_model or settings.embedding_model,
         )
+        self.last_retrieval = trace.as_dict()
         if not candidates:
             candidates = nodes[:12]
         payload = []
@@ -180,6 +208,7 @@ class ModelBackedCognitiveProvider:
                 kernel_candidates=json.dumps(payload),
             ),
             KernelMatchResponse,
+            stage="matching",
         )
         by_id = {n.id: n for n in nodes}
         unknown = [m.kernel_node_id for m in parsed.matches if m.kernel_node_id not in by_id]
@@ -210,6 +239,7 @@ class ModelBackedCognitiveProvider:
 
     def reason_evidence(self, extraction: ExtractionResult) -> ExtractionResult:
         if not extraction.claims or not (extraction.observations or extraction.inferences):
+            self._set_stage_runtime("evidence", llm_called=False)
             return extraction
         parsed: EvidenceReasoningResponse = self._complete(
             EVIDENCE_SYSTEM,
@@ -219,6 +249,7 @@ class ModelBackedCognitiveProvider:
                 inferences=json.dumps([{"i": i, "text": inf.text} for i, inf in enumerate(extraction.inferences)]),
             ),
             EvidenceReasoningResponse,
+            stage="evidence",
         )
         links = []
         n_obs = len(extraction.observations)
@@ -301,6 +332,7 @@ class ModelBackedCognitiveProvider:
                 secondary_report_count=secondary_report_count,
             ),
             SchedulerJudgmentResponse,
+            stage="judgment",
         )
         threatened = threatens_active_work
         if threatened is None:
@@ -349,6 +381,7 @@ class ModelBackedCognitiveProvider:
                 kernel=json.dumps(kernel_snap),
             ),
             ModelDeltaResponse,
+            stage="delta",
         )
         affected = [{"id": item.id, "impact": item.impact} for item in parsed.affected_kernel_nodes]
         return ModelDelta(
@@ -374,4 +407,5 @@ class ModelBackedCognitiveProvider:
         nodes: list[KernelNode],
         evidence_link_ids: list[str],
     ) -> list[PatchDraft]:
+        self._set_stage_runtime("patches", llm_called=False)
         return propose_patches(text, delta, matches, features, nodes, evidence_link_ids)

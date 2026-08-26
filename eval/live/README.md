@@ -50,3 +50,9 @@ Each run writes `eval/live/results/<timestamp>/`:
 - `summary.json`
 - `summary.md`
 - `cases.jsonl`
+
+`cases.jsonl` includes `stage_provenance` (thinking mode, reasoning effort, latency, tokens, fallback/error), `attention_state`, `processing_mode`, kernel matches with scores and relevance types, `embedding_model` / `embedding_used` / `lexical_fallback`, scheduler features, and `delta_summary`.
+
+Live Eval v0.1.1 runs the **production pipeline** (chunking → extraction → evidence → query embedding → kernel match → scheduler judgment → Attention Policy → model delta). It does not reimplement an eval-only path.
+
+A model-stage fallback is recorded as `prediction_source: "rule-fallback"` with `model_prediction: false` and is excluded from model accuracy denominators. Do not treat rule-fallback output as a successful model prediction.

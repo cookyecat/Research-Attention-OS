@@ -6,10 +6,10 @@ Malformed items fail the whole response; they are never silently dropped.
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 
 from app.enums import (
     AttributionType,
@@ -30,6 +30,21 @@ class StrictModel(BaseModel):
     """Fail-closed LLM structured output. Unexpected fields are rejected, not dropped."""
 
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+
+def _require_string_list(value: Any) -> Any:
+    """Reject object/number coercion. These fields must already be arrays of strings."""
+    if value is None:
+        return []
+    if not isinstance(value, list):
+        raise ValueError("must be an array of strings")
+    for i, item in enumerate(value):
+        if not isinstance(item, str):
+            raise ValueError(f"must be an array of strings; index {i} is {type(item).__name__}, not str")
+    return value
+
+
+StringList = Annotated[list[str], BeforeValidator(_require_string_list)]
 
 
 class ClaimItem(StrictModel):
@@ -68,10 +83,10 @@ class ExtractionResponse(StrictModel):
     inferences: list[InferenceItem]
     event_title: str | None = None
     event_summary: str | None = None
-    current_facts: list[str] = Field(default_factory=list)
-    future_plans: list[str] = Field(default_factory=list)
-    technical_claims: list[str] = Field(default_factory=list)
-    promotional_framing: list[str] = Field(default_factory=list)
+    current_facts: StringList = Field(default_factory=list)
+    future_plans: StringList = Field(default_factory=list)
+    technical_claims: StringList = Field(default_factory=list)
+    promotional_framing: StringList = Field(default_factory=list)
     marketing_heavy: bool = False
 
 

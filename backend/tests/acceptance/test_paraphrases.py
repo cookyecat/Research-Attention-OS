@@ -81,7 +81,8 @@ def test_paraphrase_m_constitution(model_client: TestClient):
         assert "zero-shot" in claims
         assert "robust" not in obs
         assert "probably" not in obs
-        assert "robust" in inf or "probably" in inf
+        assert any(k in claims for k in ("robust", "probably", "therefore"))
+        assert "probably means the system is robust" not in inf
 
 
 def test_paraphrase_n_drop(model_client: TestClient):

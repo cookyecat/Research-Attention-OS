@@ -3,12 +3,15 @@ from __future__ import annotations
 import json
 import re
 import time
-from typing import Any
+from typing import Any, Literal
 
 import httpx
 from pydantic import BaseModel, ValidationError
 
 from app.config import settings
+
+ThinkingMode = Literal["enabled", "disabled"]
+ReasoningEffort = Literal["low", "high", "max"]
 
 
 class LLMError(RuntimeError):
@@ -25,8 +28,36 @@ class SchemaValidationError(LLMError):
         self.raw = raw
 
 
+class LLMTimeoutError(LLMError):
+    def __init__(self, timeout: float, message: str | None = None):
+        super().__init__(message or f"timeout after {timeout}s")
+        self.timeout = timeout
+
+
 class EmbeddingDimensionError(ValueError):
     pass
+
+
+def thinking_request_fields(
+    thinking: ThinkingMode | None,
+    reasoning_effort: ReasoningEffort | None,
+) -> dict[str, Any]:
+    """Map stage thinking intent onto a provider wire format.
+
+    Generic OpenAI-compatible calls omit these keys (protocol=none).
+    DeepSeek-compatible gateways opt in via RAOS_LLM_THINKING_PROTOCOL=deepseek.
+    """
+    if thinking is None:
+        return {}
+    protocol = (settings.llm_thinking_protocol or "none").strip().lower()
+    if protocol in {"", "none", "off", "openai"}:
+        return {}
+    if protocol in {"deepseek", "thinking"}:
+        fields: dict[str, Any] = {"thinking": {"type": thinking}}
+        if thinking == "enabled" and reasoning_effort:
+            fields["reasoning_effort"] = reasoning_effort
+        return fields
+    return {}
 
 
 def estimate_cost_usd(prompt_tokens: int, completion_tokens: int) -> float | None:
@@ -46,6 +77,11 @@ def merge_usage_meta(a: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
     out["model"] = b.get("model") or out.get("model")
     cost = estimate_cost_usd(out["prompt_tokens"], out["completion_tokens"])
     out["estimated_cost_usd"] = cost
+    for key in ("thinking", "reasoning_effort", "timeout"):
+        if b.get(key) is not None:
+            out[key] = b.get(key)
+        elif key not in out:
+            out[key] = a.get(key) if a else None
     return out
 
 
@@ -54,6 +90,8 @@ def chat_json(
     *,
     model: str | None = None,
     timeout: float = 45.0,
+    thinking: ThinkingMode | None = None,
+    reasoning_effort: ReasoningEffort | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """OpenAI-compatible chat completion expecting a JSON object."""
     if not settings.llm_api_key:
@@ -65,6 +103,7 @@ def chat_json(
         "response_format": {"type": "json_object"},
         "messages": messages,
     }
+    payload.update(thinking_request_fields(thinking, reasoning_effort))
     headers = {
         "Authorization": f"Bearer {settings.llm_api_key}",
         "Content-Type": "application/json",
@@ -75,6 +114,8 @@ def chat_json(
             resp = client.post(url, json=payload, headers=headers)
             resp.raise_for_status()
             body = resp.json()
+    except httpx.TimeoutException as exc:
+        raise LLMTimeoutError(timeout, f"timeout after {timeout}s: {exc}") from exc
     except Exception as exc:
         raise LLMError(str(exc)) from exc
     latency_ms = int((time.perf_counter() - started) * 1000)
@@ -90,6 +131,9 @@ def chat_json(
             int(usage.get("prompt_tokens") or 0),
             int(usage.get("completion_tokens") or 0),
         ),
+        "thinking": thinking,
+        "reasoning_effort": reasoning_effort,
+        "timeout": timeout,
     }
     return parsed, meta
 
@@ -100,11 +144,20 @@ def chat_json_schema(
     *,
     chat_fn=None,
     model: str | None = None,
+    timeout: float = 45.0,
+    thinking: ThinkingMode | None = None,
+    reasoning_effort: ReasoningEffort | None = None,
 ) -> tuple[BaseModel, dict[str, Any], list[dict[str, Any]]]:
     """Parse JSON, validate with Pydantic, repair once, then fail closed."""
     fn = chat_fn or chat_json
     events: list[dict[str, Any]] = []
-    parsed, meta = fn(messages, model=model)
+    call_kw = {
+        "model": model,
+        "timeout": timeout,
+        "thinking": thinking,
+        "reasoning_effort": reasoning_effort,
+    }
+    parsed, meta = fn(messages, **call_kw)
     try:
         obj = schema_cls.model_validate(parsed)
         return obj, meta, events
@@ -130,7 +183,7 @@ def chat_json_schema(
                 ),
             },
         ]
-        parsed2, meta2 = fn(repair_messages, model=model)
+        parsed2, meta2 = fn(repair_messages, **call_kw)
         meta = merge_usage_meta(meta, meta2)
         try:
             obj = schema_cls.model_validate(parsed2)

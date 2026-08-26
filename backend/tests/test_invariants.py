@@ -32,15 +32,20 @@ def test_claim_cannot_become_observation():
     )
     assert any("zero-shot" in c.text.lower() for c in result.claims)
     assert any("succeeds once" in o.text.lower() for o in result.observations)
-    assert any("robust" in i.text.lower() for i in result.inferences)
+    assert any("robust" in c.text.lower() or "probably" in c.text.lower() for c in result.claims)
+    assert not any("robust" in o.text.lower() for o in result.observations)
     assert not any(observation_is_forbidden_inference(o.text) for o in result.observations)
+    assert not any(i.author_type == "AI" and "probably means the system is robust" in i.text.lower() for i in result.inferences)
 
 
 def test_inference_requires_source_object(client: TestClient):
     src = add_text(client, "The founder says the robot generalizes zero-shot. This probably means the system is robust.")
     result = analyze(client, src["id"])
-    assert result["inferences"]
-    # persisted inference_sources checked via extract path succeeding without error
+    assert any("robust" in c["text"].lower() or "probably" in c["text"].lower() for c in result["claims"])
+    assert not any("robust" in o["text"].lower() for o in result["observations"])
+    for inf in result["inferences"]:
+        assert inf["author_type"] == "AI"
+        assert "probably means the system is robust" not in inf["text"].lower()
     got = client.get(f"/sources/{src['id']}")
     assert got.status_code == 200
 

@@ -277,12 +277,15 @@ def extract_from_text(text: str, source_type: str = "TEXT", title: str | None = 
     for sentence in sentences:
         span_text, start, end = _span_for(sentence)
         if _is_inference(sentence):
-            result.inferences.append(
-                ExtractedInference(
+            # Source-authored derived conclusion: attributed Claim, not RAOS Inference.
+            result.claims.append(
+                ExtractedClaim(
                     text=sentence,
-                    author_type=AuthorType.AI,
-                    confidence=0.45,
-                    source_roles=["span"],
+                    claim_type=ClaimType.OPINION,
+                    attributed_to="source",
+                    attribution_type=AttributionType.UNKNOWN,
+                    temporal_status="CURRENT",
+                    confidence_extraction=0.6,
                     source_span_text=span_text,
                     source_start_offset=start,
                     source_end_offset=end,
@@ -330,7 +333,7 @@ def extract_from_text(text: str, source_type: str = "TEXT", title: str | None = 
                 result.promotional_framing.append(sentence)
             elif ctype == ClaimType.TECHNICAL:
                 result.technical_claims.append(sentence)
-            else:
+            elif ctype != ClaimType.OPINION:
                 result.current_facts.append(sentence)
 
     if source_type == "MANUAL_OBSERVATION" and not result.observations and not result.claims:

@@ -24,6 +24,11 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:3000"
     long_source_chunk_chars: int = 6000
     long_source_chunk_overlap: int = 400
+    # none: omit thinking fields (OpenAI-compatible).
+    # deepseek: send DeepSeek-compatible thinking / reasoning_effort when a stage requests them.
+    llm_thinking_protocol: str = "none"
+    # auto: Qwen instruct prefix when the embedding model name contains qwen.
+    embedding_query_protocol: str = "auto"
 
 
 settings = Settings()

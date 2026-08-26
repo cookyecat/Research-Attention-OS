@@ -97,7 +97,8 @@ def test_model_provider_structured_parse_and_constitution():
     assert any("zero-shot" in c.text.lower() for c in extraction.claims)
     assert any("succeeds once" in o.text.lower() or "pause" in o.text.lower() or "dwell" in o.text.lower() for o in extraction.observations)
     assert not any("robust" in o.text.lower() for o in extraction.observations)
-    assert any("robust" in i.text.lower() or "probably" in i.text.lower() for i in extraction.inferences)
+    assert any("robust" in c.text.lower() or "probably" in c.text.lower() for c in extraction.claims)
+    assert not any("probably means the system is robust" in i.text.lower() for i in extraction.inferences)
 
 
 def test_model_failure_falls_back_to_rule(client: TestClient, monkeypatch):

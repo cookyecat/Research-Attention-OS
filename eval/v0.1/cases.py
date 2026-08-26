@@ -222,9 +222,8 @@ CASES: list[dict] = [
         "The founder says the robot generalizes zero-shot. In the video, it succeeds once. This probably means the system is robust.",
         attention_state=["ENGAGE", "WATCH", "AWARE"],
         coi={
-            "must_have_claim_topics": ["zero-shot"],
+            "must_have_claim_topics": ["zero-shot", "robust"],
             "must_have_observation_topics": ["succeeds once"],
-            "must_have_inference_topics": ["robust"],
             "observation_must_not_contain": ["robust", "probably"],
         },
         forbidden_conclusions=["the system is scripted"],

@@ -256,7 +256,7 @@ def run_pipeline(
         run_public,
     )
     from app.services.embeddings import embedding_model_label, load_node_embeddings, retrieve_ids_pgvector
-    from app.services.retrieval import try_embed_query
+    from app.services.retrieval import query_instruct_enabled, try_embed_query
 
     source = db.get(Source, source_id)
     if source is None:
@@ -345,6 +345,18 @@ def run_pipeline(
             node_embeddings=node_emb,
             ranked_ids=ranked_ids,
         )
+        retrieval = dict(getattr(provider, "last_retrieval", None) or {})
+        if not retrieval:
+            retrieval = {
+                "embedding_used": bool(qvec),
+                "lexical_fallback": qvec is None,
+                "method": "lexical" if qvec is None else "embedding",
+                "query_instruct_applied": query_instruct_enabled() and bool(qvec),
+            }
+        retrieval["embedding_model"] = retrieval.get("embedding_model") or (
+            emb_model if emb_model and emb_model != "none" else settings.embedding_model
+        )
+        retrieval.setdefault("query_instruct_applied", query_instruct_enabled())
         event_source_ids = [source.id] + [e.id for e in extras]
         independence = independence_report(db, event_source_ids)
         is_duplicate = independence["secondary_reports"] >= 1 and str(source.id) in independence.get(
@@ -450,6 +462,7 @@ def run_pipeline(
             watch_suggestions,
             created_watches,
             features,
+            retrieval=retrieval,
         )
         payload["analysis_run"] = {
             "id": str(run.id),
@@ -548,6 +561,7 @@ def serialize_analysis(
     watch_suggestions: list[dict],
     created_watches: list[Watch],
     features: SchedulerFeatures,
+    retrieval: dict | None = None,
 ) -> dict:
     return {
         "source_id": str(source.id),
@@ -609,6 +623,13 @@ def serialize_analysis(
             for w in created_watches
         ],
         "features": features.as_dict(),
+        "retrieval": retrieval or {
+            "embedding_model": None,
+            "embedding_used": False,
+            "lexical_fallback": True,
+            "method": "lexical",
+            "query_instruct_applied": False,
+        },
     }
 
 

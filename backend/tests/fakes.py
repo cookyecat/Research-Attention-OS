@@ -170,8 +170,29 @@ class SemanticFakeChat:
                 }
             )
 
-        if any(k in low for k in ("probably", "therefore", "suggests", "robust", "scripted")):
-            inferences.append({"text": "This probably means the system is robust.", "derived_from": "claim+observation", "confidence": 0.35})
+        if any(
+            k in low
+            for k in (
+                "probably",
+                "system is robust",
+                "it is robust",
+                "suggests robustness",
+                "therefore it is robust",
+            )
+        ):
+            add_claim(
+                "This probably means the system is robust.",
+                "OPINION",
+                "UNKNOWN",
+                "source",
+            )
+            inferences.append(
+                {
+                    "text": "A single successful trial is insufficient to support zero-shot generalization.",
+                    "derived_from": "RAOS",
+                    "confidence": 0.4,
+                }
+            )
 
         if not claims:
             add_claim(user.split("\n", 1)[-1][:280].strip() or "Attributed statement from the source.", "FACTUAL", "UNKNOWN", None)

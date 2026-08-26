@@ -9,18 +9,23 @@ from eval.live.schema import LiveCase, gold_status_of
 def compute_metrics(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
     labeled = [r for r in case_rows if r.get("gold_status") == "LABELED"]
     unlabeled_n = sum(1 for r in case_rows if r.get("gold_status") != "LABELED")
-    attention = _attention_metrics(labeled)
-    kernel = _kernel_metrics(labeled)
-    epistemic = _epistemic_metrics(labeled)
-    delta = _delta_metrics(labeled)
-    safety = _safety_metrics(labeled)
-    by_source_kind = _slice(labeled, "source_kind")
-    by_task = _slice_tasks(labeled)
+    fallback_rows = [r for r in case_rows if _is_rule_fallback(r)]
+    model_labeled = [r for r in labeled if not _is_rule_fallback(r)]
+    attention = _attention_metrics(model_labeled)
+    kernel = _kernel_metrics(model_labeled)
+    epistemic = _epistemic_metrics(model_labeled)
+    delta = _delta_metrics(model_labeled)
+    safety = _safety_metrics(model_labeled)
+    by_source_kind = _slice(model_labeled, "source_kind")
+    by_task = _slice_tasks(model_labeled)
     return {
         "n_cases": len(case_rows),
         "n_labeled": len(labeled),
         "n_unlabeled": unlabeled_n,
+        "n_fallback": len(fallback_rows),
+        "n_model_predictions": sum(1 for r in case_rows if r.get("model_prediction") is True),
         "unlabeled_excluded_from_accuracy": True,
+        "fallback_excluded_from_model_metrics": True,
         "attention": attention,
         "kernel_matching": kernel,
         "epistemic_separation": epistemic,
@@ -29,6 +34,21 @@ def compute_metrics(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
         "by_source_kind": by_source_kind,
         "by_cognitive_task": by_task,
     }
+
+
+def _is_rule_fallback(row: dict) -> bool:
+    if row.get("fallback") is True:
+        return True
+    if row.get("prediction_source") == "rule-fallback":
+        return True
+    if row.get("model_prediction") is False and row.get("prediction_source") == "rule-fallback":
+        return True
+    provenance = row.get("stage_provenance") or {}
+    if isinstance(provenance, dict):
+        for rec in provenance.values():
+            if isinstance(rec, dict) and rec.get("status") in {"fallback", "rule-after-fallback"}:
+                return True
+    return False
 
 
 def _attention_metrics(rows: list[dict]) -> dict:
@@ -204,6 +224,7 @@ def render_markdown(summary: dict) -> str:
         "",
         f"- cases: {summary.get('n_cases')} (labeled {summary.get('n_labeled')}, unlabeled {summary.get('n_unlabeled')})",
         f"- unlabeled excluded from accuracy: {summary.get('unlabeled_excluded_from_accuracy')}",
+        f"- fallback cases (not counted as model predictions): {summary.get('n_fallback')}",
         "",
         "## Attention Routing",
         f"- Attention Accuracy: {att.get('attention_accuracy')}",

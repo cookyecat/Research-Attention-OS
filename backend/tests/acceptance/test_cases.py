@@ -380,9 +380,10 @@ def test_case_m_claim_observation_inference(client: TestClient):
     inf = " ".join(i["text"].lower() for i in result["inferences"])
     assert "zero-shot" in claims
     assert "succeeds once" in obs or "one successful" in obs
-    assert "robust" in inf
+    assert "robust" in claims or "probably" in claims
     assert "robust" not in obs
     assert not any("robust" in o["text"].lower() for o in result["observations"])
+    assert not any("probably means the system is robust" in i["text"].lower() for i in result["inferences"])
 
 
 def test_case_n_promotional_drop(client: TestClient):
