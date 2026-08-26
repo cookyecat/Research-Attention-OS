@@ -3,10 +3,13 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from app.enums import AttentionState, CandidateType, ExpectedOutput, ProcessingMode, Urgency
+from app.services.evidence_gate import evidence_conflict_flags
 from app.services.extraction import ExtractionResult
 from app.services.matching import EQUITY_STRUCTURE, KernelMatch, tokenize
 
 SCHEDULER_VERSION = "raos-scheduler-0.1.0"
+# Below Attention Policy HIGH (0.65). Do not change route() thresholds to match this cap.
+UNSUPPORTED_RELEVANCE_CAP = 0.34
 
 
 @dataclass
@@ -27,6 +30,9 @@ class SchedulerFeatures:
     threatens_active_work: bool = False
     marketing_heavy: bool = False
     sources_conflict: bool = False
+    evidence_links_present: bool = False
+    evidence_stage_skipped: bool = False
+    evidence_skip_reason: str | None = None
     independent_source_count: int = 1
     secondary_report_count: int = 0
     high_quality_technical: bool = False
@@ -57,6 +63,40 @@ class PlanDraft:
     reason: str = ""
     watch_after_processing: bool = False
     watch_triggers: list[str] = field(default_factory=list)
+
+
+def _match_supported(
+    matches: list[KernelMatch],
+    *,
+    node_types: tuple[str, ...] = (),
+    relevance_types: tuple[str, ...] = (),
+    structural: bool = False,
+) -> bool:
+    wanted = {r.upper() for r in relevance_types}
+    for match in matches:
+        if match.node_type in node_types:
+            return True
+        rel = (match.relevance_type or "").upper()
+        if rel in wanted:
+            return True
+        if structural and match.structural:
+            return True
+    return False
+
+
+def ground_features_to_matches(features: SchedulerFeatures, matches: list[KernelMatch]) -> SchedulerFeatures:
+    """Deterministic consistency cap before Attention Policy.
+
+    LLM remains the feature judge. Unsupported HIGH scores cannot fire Decision /
+    Structural / Bottleneck branches. route() thresholds are unchanged.
+    """
+    if not _match_supported(matches, node_types=("DECISION",), relevance_types=("DECISION",)):
+        features.decision_relevance = min(features.decision_relevance, UNSUPPORTED_RELEVANCE_CAP)
+    if not _match_supported(matches, relevance_types=("STRUCTURAL",), structural=True):
+        features.structural_relevance = min(features.structural_relevance, UNSUPPORTED_RELEVANCE_CAP)
+    if not _match_supported(matches, node_types=("BOTTLENECK",), relevance_types=("BOTTLENECK",)):
+        features.bottleneck_alignment = min(features.bottleneck_alignment, UNSUPPORTED_RELEVANCE_CAP)
+    return features
 
 
 def _level(value: float) -> str:
@@ -91,8 +131,11 @@ def estimate_features(
     if extraction.technical_claims:
         credibility = max(credibility, 0.72)
 
+    links_present, conflict = evidence_conflict_flags(
+        extraction, independent_source_count=independent_source_count
+    )
     disagreement = 0.0
-    if extraction.evidence:
+    if conflict:
         disagreement = 0.8
     low = text.lower()
     # Conflict with "large unified models may be unsuitable"
@@ -158,7 +201,7 @@ def estimate_features(
     )
     foundational = any(p in low for p in ("foundational", "survey of", "textbook", "principles of"))
 
-    return SchedulerFeatures(
+    features = SchedulerFeatures(
         topic_relevance=round(topic, 3),
         structural_relevance=round(structural, 3),
         decision_relevance=round(decision, 3),
@@ -174,12 +217,16 @@ def estimate_features(
         evidence_maturity=extraction.evidence_maturity,
         threatens_active_work=bool(threatened),
         marketing_heavy=marketing,
-        sources_conflict=bool(extraction.evidence),
+        sources_conflict=conflict,
+        evidence_links_present=links_present,
+        evidence_stage_skipped=bool(extraction.evidence_stage_skipped),
+        evidence_skip_reason=extraction.evidence_skip_reason,
         independent_source_count=independent_source_count,
         secondary_report_count=secondary_report_count,
         high_quality_technical=high_quality,
         foundational_paper=foundational,
     )
+    return ground_features_to_matches(features, matches)
 
 
 def _budget(state: AttentionState, modes: list[ProcessingMode]) -> int:

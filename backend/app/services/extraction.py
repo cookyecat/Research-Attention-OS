@@ -205,6 +205,8 @@ class ExtractionResult:
     future_plans: list[str] = field(default_factory=list)
     technical_claims: list[str] = field(default_factory=list)
     promotional_framing: list[str] = field(default_factory=list)
+    evidence_stage_skipped: bool = False
+    evidence_skip_reason: str | None = None
 
 
 def _claim_type_for(sentence: str) -> ClaimType:

@@ -94,6 +94,12 @@ def analysis_payload_to_eval_row(payload: dict[str, Any]) -> dict[str, Any]:
         "claim_texts": [c.get("text") for c in (payload.get("claims") or [])],
         "observation_texts": [o.get("text") for o in (payload.get("observations") or [])],
         "inference_texts": [i.get("text") for i in (payload.get("inferences") or [])],
+        "evidence_stage_skipped": payload.get("evidence_stage_skipped")
+        if payload.get("evidence_stage_skipped") is not None
+        else features.get("evidence_stage_skipped"),
+        "evidence_skip_reason": payload.get("evidence_skip_reason")
+        if payload.get("evidence_skip_reason") is not None
+        else features.get("evidence_skip_reason"),
         "latency_ms": run.get("latency_ms"),
         "tokens": {"prompt": run.get("prompt_tokens"), "completion": run.get("completion_tokens")},
         "cost": run.get("estimated_cost_usd"),
@@ -113,6 +119,8 @@ def _empty_eval_fields() -> dict[str, Any]:
         "query_instruct_applied": None,
         "retrieval_method": None,
         "scheduler_features": None,
+        "evidence_stage_skipped": None,
+        "evidence_skip_reason": None,
     }
 
 

@@ -41,7 +41,12 @@ class CognitiveAnalysisProvider(Protocol):
         extra_text: str = "",
     ) -> list[KernelMatch]: ...
 
-    def reason_evidence(self, extraction: ExtractionResult) -> ExtractionResult: ...
+    def reason_evidence(
+        self,
+        extraction: ExtractionResult,
+        *,
+        independent_source_count: int = 1,
+    ) -> ExtractionResult: ...
 
     def judge_features(
         self,

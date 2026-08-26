@@ -28,6 +28,7 @@ from app.services.matching import KernelMatch
 from app.services.scheduler import (
     RuntimeView,
     SchedulerFeatures,
+    ground_features_to_matches,
     route,
     validate_plan,
 )
@@ -191,7 +192,7 @@ def extract_source(
     for extra in extras:
         parts.append(_extract_one(extra))
     merged = merge_extractions(*parts) if len(parts) > 1 else primary
-    merged = provider.reason_evidence(merged)
+    merged = provider.reason_evidence(merged, independent_source_count=1 + len(extras))
     event = attach_or_create_event(db, source, merged.event_title or source.title, merged.event_summary)
     claims, observations, inferences, links = persist_extraction(
         db, source, merged, event.id, analysis_run_id=analysis_run_id
@@ -370,6 +371,7 @@ def run_pipeline(
             independent_source_count=independence["independent_sources"],
             secondary_report_count=independence["secondary_reports"],
         )
+        features = ground_features_to_matches(features, matches)
         ctx = db.get(RuntimeContext, runtime_context_id) if runtime_context_id else None
         view = runtime or _runtime_view(ctx)
         draft = validate_plan(route(features, view))
@@ -623,6 +625,8 @@ def serialize_analysis(
             for w in created_watches
         ],
         "features": features.as_dict(),
+        "evidence_stage_skipped": bool(extraction.evidence_stage_skipped),
+        "evidence_skip_reason": extraction.evidence_skip_reason,
         "retrieval": retrieval or {
             "embedding_model": None,
             "embedding_used": False,

@@ -13,6 +13,8 @@ def _runtime_fields(primary) -> dict:
         "reasoning_effort": runtime.get("reasoning_effort"),
         "timeout": runtime.get("timeout"),
         "llm_called": runtime.get("llm_called"),
+        "evidence_stage_skipped": runtime.get("evidence_stage_skipped"),
+        "evidence_skip_reason": runtime.get("evidence_skip_reason"),
     }
 
 

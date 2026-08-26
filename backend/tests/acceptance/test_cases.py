@@ -123,6 +123,8 @@ def test_case_a_galaxy_general_wrc_folding(client: TestClient):
     assert plan["attention_state"] == "ENGAGE"
     assert "VERIFY" in plan["processing_modes"]
     assert "SYNTHESIZE" in plan["processing_modes"]
+    assert result["features"]["sources_conflict"] is True
+    assert result["features"]["evidence_links_present"] is True
 
     delta = " ".join(result["model_delta"]["distinctions"] + result["model_delta"]["what_could_change"]).lower()
     assert "cognitive" in delta and "motor" in delta

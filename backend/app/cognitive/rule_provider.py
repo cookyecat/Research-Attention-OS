@@ -25,7 +25,7 @@ class RuleBasedCognitiveProvider:
     ) -> list[KernelMatch]:
         return match_kernel(extraction, nodes, extra_text=extra_text)
 
-    def reason_evidence(self, extraction: ExtractionResult) -> ExtractionResult:
+    def reason_evidence(self, extraction: ExtractionResult, **_kwargs) -> ExtractionResult:
         return extraction
 
     def judge_features(

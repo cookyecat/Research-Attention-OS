@@ -110,6 +110,9 @@ Return JSON:
 
 JUDGMENT_SYSTEM = """Judge scheduler features for Research Attention OS.
 You do NOT choose DROP/AWARE/WATCH/ENGAGE. You only score features.
+decision_relevance may be high only when a DECISION Kernel node is matched or a match has relevance_type=DECISION. A topic-relevant marketing article is not a Decision review.
+structural_relevance should reflect STRUCTURAL matches.
+bottleneck_alignment should reflect BOTTLENECK matches.
 Disagreement with an active Belief is verification value, not a reason to ignore.
 Structural relevance is first-class.
 Popularity is not importance.

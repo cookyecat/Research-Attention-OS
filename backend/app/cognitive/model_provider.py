@@ -29,6 +29,7 @@ from app.config import settings
 from app.enums import AuthorType
 from app.models.kernel import KernelNode
 from app.services.deltas import ModelDelta, PatchDraft, propose_patches
+from app.services.evidence_gate import evidence_conflict_flags, should_run_heavy_evidence
 from app.services.extraction import (
     ExtractedClaim,
     ExtractedEvidence,
@@ -38,7 +39,7 @@ from app.services.extraction import (
 )
 from app.services.matching import KernelMatch, node_text
 from app.services.retrieval import retrieve_kernel_candidates_traced, try_embed_query
-from app.services.scheduler import SchedulerFeatures
+from app.services.scheduler import SchedulerFeatures, ground_features_to_matches
 
 
 class ModelBackedCognitiveProvider:
@@ -237,10 +238,29 @@ class ModelBackedCognitiveProvider:
             )
         return matches
 
-    def reason_evidence(self, extraction: ExtractionResult) -> ExtractionResult:
-        if not extraction.claims or not (extraction.observations or extraction.inferences):
-            self._set_stage_runtime("evidence", llm_called=False)
+    def reason_evidence(
+        self,
+        extraction: ExtractionResult,
+        *,
+        independent_source_count: int = 1,
+    ) -> ExtractionResult:
+        run, reason = should_run_heavy_evidence(
+            extraction, independent_source_count=independent_source_count
+        )
+        if not run:
+            extraction.evidence_stage_skipped = True
+            extraction.evidence_skip_reason = reason
+            if extraction.evidence_maturity > 0.4:
+                extraction.evidence_maturity = 0.4
+            runtime = self._set_stage_runtime("evidence", llm_called=False)
+            runtime["thinking"] = None
+            runtime["reasoning_effort"] = None
+            runtime["evidence_stage_skipped"] = True
+            runtime["evidence_skip_reason"] = reason
+            self.last_stage_runtime = runtime
             return extraction
+        extraction.evidence_stage_skipped = False
+        extraction.evidence_skip_reason = None
         parsed: EvidenceReasoningResponse = self._complete(
             EVIDENCE_SYSTEM,
             EVIDENCE_USER.format(
@@ -298,6 +318,10 @@ class ModelBackedCognitiveProvider:
                 )
             )
         extraction.evidence = links
+        runtime = dict(self.last_stage_runtime or {})
+        runtime["evidence_stage_skipped"] = False
+        runtime["evidence_skip_reason"] = None
+        self.last_stage_runtime = runtime
         return extraction
 
     def judge_features(
@@ -337,7 +361,13 @@ class ModelBackedCognitiveProvider:
         threatened = threatens_active_work
         if threatened is None:
             threatened = parsed.threatens_active_work
-        return SchedulerFeatures(
+        links_present, conflict = evidence_conflict_flags(
+            extraction, independent_source_count=independent_source_count
+        )
+        maturity = parsed.evidence_maturity
+        if extraction.evidence_stage_skipped:
+            maturity = min(maturity, extraction.evidence_maturity, 0.4)
+        features = SchedulerFeatures(
             topic_relevance=parsed.topic_relevance,
             structural_relevance=parsed.structural_relevance,
             decision_relevance=parsed.decision_relevance,
@@ -350,15 +380,19 @@ class ModelBackedCognitiveProvider:
             temporal_value=parsed.temporal_value,
             cognitive_cost=parsed.cognitive_cost,
             is_duplicate=is_duplicate,
-            evidence_maturity=parsed.evidence_maturity,
+            evidence_maturity=maturity,
             threatens_active_work=bool(threatened),
             marketing_heavy=parsed.marketing_heavy or extraction.marketing_heavy,
-            sources_conflict=bool(extraction.evidence),
+            sources_conflict=conflict,
+            evidence_links_present=links_present,
+            evidence_stage_skipped=bool(extraction.evidence_stage_skipped),
+            evidence_skip_reason=extraction.evidence_skip_reason,
             independent_source_count=independent_source_count,
             secondary_report_count=secondary_report_count,
             high_quality_technical=parsed.high_quality_technical,
             foundational_paper=parsed.foundational_paper,
         )
+        return ground_features_to_matches(features, matches)
 
     def propose_model_delta(
         self,
