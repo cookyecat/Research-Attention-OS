@@ -16,15 +16,12 @@ cognitive_tasks:
   - decision_relevance
   - evidence_verification
 gold_status: LABELED|UNLABELED
+
+# Human Gold v2 — the only default annotation template.
+# Locate → kernel_targets | Estimate → cognitive_effects + expected_delta | Route → attention_state + processing_modes
 human_gold:
-  attention_state: []
-  acceptable_modes: []
-  must_match_kernel: []
-  should_match_kernel: []
-  forbidden_kernel: []
-  key_claims: []
-  key_observations: []
-  expected_delta_concepts: []
-  forbidden_conclusions: []
-  delta_rubric: 0  # 0=wrong, 1=summary, 2=useful connection, 3=genuine refinement
-  notes: ""
+  attention_state: []          # multi-select: DROP | AWARE | WATCH | ENGAGE
+  processing_modes: []         # multi-select: SCAN | LEARN | VERIFY | DEEP_DIVE | SYNTHESIZE
+  kernel_targets: []           # Kernel titles/ids, or [NONE]
+  cognitive_effects: []        # multi-select: REINFORCE | CHALLENGE | REFINE | OPEN_NEW | NO_MATERIAL_CHANGE
+  expected_delta: ""           # free text: what absorbing this should add, correct, or form

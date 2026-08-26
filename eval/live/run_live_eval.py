@@ -17,7 +17,7 @@ if str(BACKEND) not in sys.path:
     sys.path.insert(0, str(BACKEND))
 
 from eval.live.report import compute_metrics, render_markdown
-from eval.live.schema import LiveCase, LiveManifest, gold_status_of
+from eval.live.schema import LiveCase, LiveManifest, gold_status_of, dump_human_gold
 
 FALLBACK_STAGE_STATUSES = {"fallback", "rule-after-fallback"}
 
@@ -195,7 +195,7 @@ def run_case(case: LiveCase, *, dry_run: bool, db=None) -> dict[str, Any]:
         "gold_status": status,
         "source_kind": case.source_kind,
         "cognitive_tasks": case.cognitive_tasks,
-        "human_gold": case.human_gold.model_dump() if case.human_gold else None,
+        "human_gold": dump_human_gold(case.human_gold),
         "dry_run": dry_run,
         "model": None,
         "provider_versions": None,
