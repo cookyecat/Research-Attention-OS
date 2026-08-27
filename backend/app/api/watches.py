@@ -49,7 +49,7 @@ def fire_trigger(watch_id: UUID, trigger_id: UUID, source_id: UUID | None = None
     result = None
     if source_id:
         result = run_pipeline(db, source_id)
-        state = result["attention_plan"]["attention_state"]
+        state = result["attention_plan"]["disposition"]
         if state == "ENGAGE":
             watch.status = "PROMOTED"
     db.flush()

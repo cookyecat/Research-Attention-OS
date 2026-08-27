@@ -80,14 +80,11 @@ attention_policy:
 
 ```yaml
 AttentionPlan:
-  attention_state: DROP | AWARE | WATCH | ENGAGE
-
-  processing_modes:
-    - SCAN
-    - LEARN
-    - VERIFY
-    - DEEP_DIVE
-    - SYNTHESIZE
+  disposition: DROP | AWARE | WATCH | ENGAGE
+  update:
+    operation: REINFORCE | CHALLENGE | OPEN_NEW | null
+    target_node_id: null
+  delta_content: string
 
   urgency: BACKGROUND | NORMAL | PRIORITY | PREEMPT
 
@@ -139,30 +136,13 @@ WATCH requires at least one promotion trigger.
 ### ENGAGE
 Worth real human cognitive effort now.
 
-Must include at least one processing mode.
+Must include a real cognitive-budget allocation. ENGAGE is a disposition, not a processing-mode bundle.
 
-## 8. Processing modes
+## 8. Disposition depth (not a routing dimension)
 
-### SCAN
-Quick orientation.
+SCAN / LEARN / REASON / CREATE interpret how much cognitive work a disposition implies. They are **not** independent system outputs and must not appear on AttentionPlan.
 
-### LEARN
-Understand a concept, mechanism, architecture, or method.
-
-### VERIFY
-Test whether a strong Claim is actually supported.
-
-Favor VERIFY when:
-- marketing confidence is high;
-- user disagreement is high;
-- evidence maturity is low;
-- attribution is unclear.
-
-### DEEP_DIVE
-Inspect paper details, code, appendix, benchmark, implementation.
-
-### SYNTHESIZE
-Compare with current Beliefs, Models, Questions, and prior evidence.
+Routing uses only `disposition` × `update`.
 
 ## 9. Urgency
 
@@ -223,16 +203,16 @@ IF directly resolves active Bottleneck
   → ENGAGE
 
 IF high relevance AND high disagreement with active Belief
-  → ENGAGE + VERIFY
+  → ENGAGE  (update.operation = CHALLENGE)
 
 IF high relevance AND introduces a new mechanism
-  → ENGAGE + LEARN
+  → ENGAGE  (update.operation = OPEN_NEW or REINFORCE on the matched node)
 
 IF sources materially conflict
-  → ENGAGE + VERIFY + SYNTHESIZE
+  → ENGAGE  (update.operation = CHALLENGE on the contested Belief, else OPEN_NEW)
 
 IF active Decision may change
-  → ENGAGE + SYNTHESIZE
+  → ENGAGE
 
 IF active Decision may change AND time-sensitive
   → PRIORITY or PREEMPT
@@ -278,7 +258,7 @@ Important foundational paper + deadline in 2 hours:
 - WATCH/BACKGROUND.
 
 Nearly identical competitor work + deadline in 2 hours:
-- PREEMPT + ENGAGE + VERIFY.
+- PREEMPT + ENGAGE.
 
 Importance != urgency.
 
@@ -287,13 +267,13 @@ Importance != urgency.
 Reference budgets:
 
 ```text
-AWARE: 0.25–0.5 min
-SCAN: 1–3 min
-LEARN: 5–20 min
-VERIFY: 5–30 min
-DEEP_DIVE: 20–120+ min
-SYNTHESIZE: 10–30 min
+DROP: 0 min
+AWARE: 1 min
+WATCH: 2 min
+ENGAGE: 15 min
 ```
+
+SCAN / LEARN / VERIFY / SYNTHESIZE are not budget keys.
 
 ## 17. Exploration
 
@@ -335,10 +315,10 @@ Prompt must enforce:
 Application code validates:
 - enums;
 - budget >= 0;
-- ENGAGE has a mode;
 - WATCH has a trigger proposal;
-- PREEMPT has explicit justification;
-- Kernel targets exist.
+- PREEMPT has explicit interruption justification;
+- REINFORCE / CHALLENGE target an existing Kernel node;
+- OPEN_NEW has an empty target.
 
 Never persist raw unvalidated LLM JSON.
 

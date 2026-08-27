@@ -278,8 +278,7 @@ captured_at TIMESTAMPTZ NOT NULL
 id UUID PK
 candidate_type VARCHAR NOT NULL
 candidate_id UUID NOT NULL
-attention_state VARCHAR NOT NULL
-processing_modes JSONB NOT NULL DEFAULT '[]'
+disposition VARCHAR NOT NULL  -- stored in column attention_state
 urgency VARCHAR NOT NULL
 cognitive_budget_minutes INTEGER
 kernel_target_ids JSONB NOT NULL DEFAULT '[]'

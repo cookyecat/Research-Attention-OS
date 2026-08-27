@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from app.enums import AttentionState, CandidateType, ExpectedOutput, ProcessingMode, Urgency
+from app.enums import CandidateType, Disposition, ExpectedOutput, Urgency
 from app.services.evidence_gate import evidence_conflict_flags
 from app.services.extraction import ExtractionResult
 from app.services.matching import EQUITY_STRUCTURE, KernelMatch, tokenize
 
-SCHEDULER_VERSION = "raos-scheduler-0.2.1"
+SCHEDULER_VERSION = "raos-scheduler-0.3.0"
 # Compatibility projection cap for debug/Live Eval. Routing no longer branches on these scores.
 UNSUPPORTED_RELEVANCE_CAP = 0.34
 
@@ -65,8 +65,7 @@ class RuntimeView:
 
 @dataclass
 class PlanDraft:
-    attention_state: AttentionState
-    processing_modes: list[ProcessingMode] = field(default_factory=list)
+    disposition: Disposition
     urgency: Urgency = Urgency.NORMAL
     cognitive_budget_minutes: int | None = None
     expected_output: ExpectedOutput = ExpectedOutput.NONE
@@ -254,23 +253,13 @@ def estimate_features(
     ).features
 
 
-def _budget(state: AttentionState, modes: list[ProcessingMode]) -> int:
-    if state == AttentionState.DROP:
-        return 0
-    if state == AttentionState.AWARE:
-        return 1
-    if state == AttentionState.WATCH:
-        return 2
-    minutes = 0
-    for mode in modes:
-        minutes += {
-            ProcessingMode.SCAN: 2,
-            ProcessingMode.LEARN: 12,
-            ProcessingMode.VERIFY: 15,
-            ProcessingMode.DEEP_DIVE: 40,
-            ProcessingMode.SYNTHESIZE: 18,
-        }[mode]
-    return minutes
+def _budget(disposition: Disposition) -> int:
+    return {
+        Disposition.DROP: 0,
+        Disposition.AWARE: 1,
+        Disposition.WATCH: 2,
+        Disposition.ENGAGE: 15,
+    }[disposition]
 
 
 def _projection_assessment(features: SchedulerFeatures):
@@ -279,6 +268,9 @@ def _projection_assessment(features: SchedulerFeatures):
     Uses impact projection fields on SchedulerFeatures (change_magnitude / kernel_delta),
     never topic_relevance or decision_relevance. Isolated compatibility for reschedule
     of older runs and legacy tests.
+
+    Projection has no Kernel node ids. REINFORCE/CHALLENGE require an existing node,
+    so this path may only emit OPEN_NEW or an empty effects list.
     """
     from app.enums import CognitiveEffectKind
     from app.services.cognitive_impact import CognitiveEffect, CognitiveImpactAssessment
@@ -286,36 +278,45 @@ def _projection_assessment(features: SchedulerFeatures):
     change = features.change_magnitude if features.change_magnitude else features.kernel_delta
     epi = features.epistemic_strength if features.epistemic_strength else min(features.credibility, 0.45)
     importance = features.target_importance
+    cost = features.attention_cost or features.cognitive_cost
+
+    def _open_new(magnitude: float, reason: str) -> CognitiveImpactAssessment:
+        return CognitiveImpactAssessment(
+            effects=[
+                CognitiveEffect(
+                    target_kernel_node_id=None,
+                    operation=CognitiveEffectKind.OPEN_NEW,
+                    change_magnitude=magnitude,
+                    epistemic_strength=epi,
+                    target_importance=importance,
+                    reason=reason,
+                    exploration_candidate=True,
+                )
+            ],
+            attention_cost=cost,
+            exploration_candidate=True,
+            features=features,
+        )
+
+    def _empty() -> CognitiveImpactAssessment:
+        return CognitiveImpactAssessment(
+            effects=[],
+            attention_cost=cost,
+            exploration_candidate=features.exploration_candidate,
+            features=features,
+        )
+
     if features.exploration_candidate and change < 0.35:
-        kind = CognitiveEffectKind.OPEN_NEW
-        change = max(change, 0.55)
-        explore = True
-    elif features.disagreement >= 0.55 or features.sources_conflict:
-        kind = CognitiveEffectKind.CHALLENGE
-        change = max(change, 0.55)
-        explore = False
-    elif change < 0.35:
-        kind = CognitiveEffectKind.NO_MATERIAL_CHANGE
-        explore = False
-    else:
-        kind = CognitiveEffectKind.REFINE
-        explore = False
-    return CognitiveImpactAssessment(
-        effects=[
-            CognitiveEffect(
-                target_kernel_node_id=None,
-                effect=kind,
-                change_magnitude=change,
-                epistemic_strength=epi,
-                target_importance=importance,
-                reason="Projected from stored SchedulerFeatures; no DECISION target invented.",
-                exploration_candidate=explore,
-            )
-        ],
-        attention_cost=features.attention_cost or features.cognitive_cost,
-        exploration_candidate=explore or features.exploration_candidate,
-        features=features,
-    )
+        return _open_new(
+            max(change, 0.55),
+            "Projected from stored SchedulerFeatures; no Kernel target invented.",
+        )
+    if features.disagreement >= 0.55 or features.sources_conflict:
+        return _open_new(
+            max(change, 0.55),
+            "Projected conflict without a Kernel target; OPEN_NEW rather than untargeted CHALLENGE.",
+        )
+    return _empty()
 
 
 def matches_from_debug(raw) -> list[KernelMatch]:
@@ -354,7 +355,7 @@ def route(
     """Attention Policy. CognitiveImpactAssessment is the semantic input.
 
     SchedulerFeatures supply source/runtime context (duplicate, threat, marketing,
-    foundational LEARN) and a fallback projection when assessment is missing.
+    foundational papers) and a fallback projection when assessment is missing.
     """
     from app.enums import CognitiveEffectKind
     from app.services.cognitive_impact import (
@@ -389,19 +390,18 @@ def route(
     # --- Source / runtime context (not cognitive value) ---
     if features.is_duplicate:
         return PlanDraft(
-            attention_state=AttentionState.DROP,
+            disposition=Disposition.DROP,
             urgency=Urgency.BACKGROUND,
             expected_output=ExpectedOutput.NONE,
             reason="Duplicate or secondary reprint of an already covered event; independent confirmation count does not increase.",
-            cognitive_budget_minutes=0,
+            cognitive_budget_minutes=_budget(Disposition.DROP),
         )
 
     tight_deadline = runtime.deadline_minutes is not None and runtime.deadline_minutes <= 120
     low_interrupt = (runtime.interruptibility or "MEDIUM") == "LOW"
     if tight_deadline and low_interrupt and not features.threatens_active_work:
         return PlanDraft(
-            attention_state=AttentionState.WATCH,
-            processing_modes=[],
+            disposition=Disposition.WATCH,
             urgency=Urgency.BACKGROUND,
             expected_output=ExpectedOutput.WATCH,
             reason=(
@@ -410,66 +410,58 @@ def route(
             ),
             watch_after_processing=True,
             watch_triggers=["NEW_EVIDENCE"],
-            cognitive_budget_minutes=1,
+            cognitive_budget_minutes=_budget(Disposition.WATCH),
         )
 
     if features.threatens_active_work:
-        modes = [ProcessingMode.VERIFY, ProcessingMode.SYNTHESIZE]
         return PlanDraft(
-            attention_state=AttentionState.ENGAGE,
-            processing_modes=modes,
+            disposition=Disposition.ENGAGE,
             urgency=Urgency.PREEMPT,
             expected_output=ExpectedOutput.KERNEL_PATCH,
             reason=(
                 "This item highly overlaps the active submission and may invalidate novelty. "
                 "PREEMPT is justified: interrupting current work is cheaper than discovering a novelty collision after submission."
             ),
-            cognitive_budget_minutes=_budget(AttentionState.ENGAGE, modes),
+            cognitive_budget_minutes=_budget(Disposition.ENGAGE),
         )
 
     # --- No material cognitive effect ---
     if not material and not challenge:
         if explore and not features.marketing_heavy:
             return PlanDraft(
-                attention_state=AttentionState.AWARE,
-                processing_modes=[ProcessingMode.SCAN],
+                disposition=Disposition.AWARE,
                 expected_output=ExpectedOutput.SUMMARY,
                 reason="OPEN_NEW exploration candidate: missing Kernel localization is not automatic DROP.",
-                cognitive_budget_minutes=1,
+                cognitive_budget_minutes=_budget(Disposition.AWARE),
             )
         if features.marketing_heavy:
             return PlanDraft(
-                attention_state=AttentionState.DROP,
+                disposition=Disposition.DROP,
                 urgency=Urgency.BACKGROUND,
                 reason="No material cognitive effect; marketing-heavy source is not worth current attention.",
-                cognitive_budget_minutes=0,
+                cognitive_budget_minutes=_budget(Disposition.DROP),
             )
         if features.topic_relevance >= 0.25:
             return PlanDraft(
-                attention_state=AttentionState.AWARE,
-                processing_modes=[ProcessingMode.SCAN],
+                disposition=Disposition.AWARE,
                 expected_output=ExpectedOutput.SUMMARY,
                 reason="No material cognitive change expected. High topic relevance alone does not ENGAGE.",
-                cognitive_budget_minutes=1,
+                cognitive_budget_minutes=_budget(Disposition.AWARE),
             )
         return PlanDraft(
-            attention_state=AttentionState.DROP,
+            disposition=Disposition.DROP,
             reason="No material cognitive effect and no useful exploration signal.",
-            cognitive_budget_minutes=0,
+            cognitive_budget_minutes=_budget(Disposition.DROP),
         )
 
     # --- DECISION target: matched DECISION node + material effect, not decision_relevance ---
     if decision_fx:
-        modes = [ProcessingMode.SYNTHESIZE]
-        if epi < 0.45 or features.evidence_maturity < 0.5:
-            modes.insert(0, ProcessingMode.VERIFY)
         return PlanDraft(
-            attention_state=AttentionState.ENGAGE,
-            processing_modes=modes,
+            disposition=Disposition.ENGAGE,
             urgency=Urgency.NORMAL,
             expected_output=ExpectedOutput.DECISION_REVIEW,
             reason="Material cognitive effect on an active Decision; do not DROP solely because the source topic is not AI.",
-            cognitive_budget_minutes=_budget(AttentionState.ENGAGE, modes),
+            cognitive_budget_minutes=_budget(Disposition.ENGAGE),
         )
 
     # --- Meaningful change on an existing Kernel target, or a CHALLENGE ---
@@ -479,104 +471,82 @@ def route(
     open_only = explore and not targeted and not challenge
 
     if targeted_or_challenge and meaningful and important and not open_only:
-        modes: list[ProcessingMode] = []
         reason_parts: list[str] = [
             "Material cognitive effect with meaningful change magnitude on an important Kernel target."
         ]
         low_epi = epi < 0.45
         if challenge or features.sources_conflict:
-            modes.append(ProcessingMode.VERIFY)
             reason_parts.append(
                 "CHALLENGE / conflicting evidence raises verification value; disagreement is not low relevance."
             )
         elif low_epi and not features.foundational_paper:
-            modes.append(ProcessingMode.VERIFY)
             reason_parts.append(
-                "Change magnitude is meaningful but epistemic strength is low; VERIFY before belief revision."
+                "Change magnitude is meaningful but epistemic strength is low; absorb carefully before belief revision."
             )
         elif features.evidence_maturity < 0.5 and not features.foundational_paper:
-            modes.append(ProcessingMode.VERIFY)
-            reason_parts.append("Evidence maturity is low; VERIFY attributed claims before belief update.")
-        # Compatibility: LEARN vs VERIFY is not a CognitiveEffect kind.
+            reason_parts.append("Evidence maturity is low; attributed claims need care before belief update.")
         if features.foundational_paper or (
             features.high_quality_technical and not challenge and not low_epi and features.disagreement < 0.4
         ):
-            if ProcessingMode.VERIFY not in modes:
-                modes.append(ProcessingMode.LEARN)
-                reason_parts.append("Foundational / high-quality technical treatment of a mechanism; LEARN.")
+            reason_parts.append("Foundational / high-quality technical treatment of a mechanism.")
         if synth_fx or challenge:
-            if ProcessingMode.SYNTHESIZE not in modes:
-                modes.append(ProcessingMode.SYNTHESIZE)
-                reason_parts.append("Integrate against an existing Model, Belief, Question, Bottleneck, or Decision.")
-        elif features.novelty >= 0.5 and ProcessingMode.VERIFY in modes:
-            modes.append(ProcessingMode.SYNTHESIZE)
-        if not modes:
-            modes = [ProcessingMode.SYNTHESIZE]
-        if ProcessingMode.VERIFY not in modes and ProcessingMode.LEARN not in modes and low_epi:
-            modes.insert(0, ProcessingMode.VERIFY)
+            reason_parts.append("Integrate against an existing Model, Belief, Question, Bottleneck, or Decision.")
         expected = ExpectedOutput.KERNEL_PATCH if change >= MEANINGFUL_CHANGE else ExpectedOutput.SUMMARY
         if features.evidence_maturity < 0.45 and expected != ExpectedOutput.KERNEL_PATCH:
             expected = ExpectedOutput.WATCH
         urgency = Urgency.PRIORITY if bottleneck_fx and change >= MEANINGFUL_CHANGE else Urgency.NORMAL
         return PlanDraft(
-            attention_state=AttentionState.ENGAGE,
-            processing_modes=modes,
+            disposition=Disposition.ENGAGE,
             urgency=urgency,
             expected_output=expected,
             reason=" ".join(reason_parts),
             watch_after_processing=features.evidence_maturity < 0.5,
             watch_triggers=_default_watch_triggers(features, assessment, matches),
-            cognitive_budget_minutes=_budget(AttentionState.ENGAGE, modes),
+            cognitive_budget_minutes=_budget(Disposition.ENGAGE),
         )
 
     # --- Structural effect without a topic-driven ENGAGE ---
     if structural_fx and change >= 0.4:
-        modes = [ProcessingMode.SYNTHESIZE]
         expected = ExpectedOutput.DECISION_REVIEW if decision_fx else ExpectedOutput.KERNEL_PATCH
         return PlanDraft(
-            attention_state=AttentionState.ENGAGE,
-            processing_modes=modes,
+            disposition=Disposition.ENGAGE,
             expected_output=expected,
             reason="Meaningful CognitiveEffect on a STRUCTURAL Kernel match; low topic similarity does not DROP.",
-            cognitive_budget_minutes=_budget(AttentionState.ENGAGE, modes),
+            cognitive_budget_minutes=_budget(Disposition.ENGAGE),
         )
 
     # --- Moderate change, insufficient justification ---
     if material and change >= 0.35 and (targeted or challenge):
         return PlanDraft(
-            attention_state=AttentionState.WATCH,
+            disposition=Disposition.WATCH,
             expected_output=ExpectedOutput.WATCH,
             reason="Potentially important cognitive effect with insufficient current evidence; transfer future attention to the system.",
             watch_after_processing=True,
             watch_triggers=_default_watch_triggers(features, assessment, matches),
-            cognitive_budget_minutes=2,
+            cognitive_budget_minutes=_budget(Disposition.WATCH),
         )
 
-    # --- Exploration: conservative AWARE/SCAN; high-value new direction may ENGAGE ---
+    # --- Exploration: conservative AWARE; high-value new direction may ENGAGE ---
     if explore and not features.marketing_heavy:
         if change >= 0.65 and importance >= 0.7:
-            modes = [ProcessingMode.LEARN]
             return PlanDraft(
-                attention_state=AttentionState.ENGAGE,
-                processing_modes=modes,
+                disposition=Disposition.ENGAGE,
                 expected_output=ExpectedOutput.SUMMARY,
-                reason="High-value OPEN_NEW direction; ENGAGE conservatively to LEARN.",
-                cognitive_budget_minutes=_budget(AttentionState.ENGAGE, modes),
+                reason="High-value OPEN_NEW direction; ENGAGE to absorb a new cognitive branch.",
+                cognitive_budget_minutes=_budget(Disposition.ENGAGE),
             )
         return PlanDraft(
-            attention_state=AttentionState.AWARE,
-            processing_modes=[ProcessingMode.SCAN],
+            disposition=Disposition.AWARE,
             expected_output=ExpectedOutput.SUMMARY,
             reason="OPEN_NEW exploration candidate: missing Kernel localization is not automatic DROP.",
-            cognitive_budget_minutes=1,
+            cognitive_budget_minutes=_budget(Disposition.AWARE),
         )
 
     return PlanDraft(
-        attention_state=AttentionState.AWARE,
-        processing_modes=[ProcessingMode.SCAN],
+        disposition=Disposition.AWARE,
         expected_output=ExpectedOutput.SUMMARY,
         reason="Default AWARE: no ENGAGE-grade cognitive effect.",
-        cognitive_budget_minutes=1,
+        cognitive_budget_minutes=_budget(Disposition.AWARE),
     )
 
 
@@ -592,9 +562,7 @@ def _default_watch_triggers(features: SchedulerFeatures, assessment=None, matche
 def validate_plan(draft: PlanDraft) -> PlanDraft:
     if draft.cognitive_budget_minutes is not None and draft.cognitive_budget_minutes < 0:
         raise ValueError("budget must be >= 0")
-    if draft.attention_state == AttentionState.ENGAGE and not draft.processing_modes:
-        raise ValueError("ENGAGE requires at least one processing mode")
-    if draft.attention_state == AttentionState.WATCH and not draft.watch_triggers:
+    if draft.disposition == Disposition.WATCH and not draft.watch_triggers:
         draft.watch_triggers = ["NEW_EVIDENCE"]
     if draft.urgency == Urgency.PREEMPT and "interrupt" not in draft.reason.lower() and "preempt" not in draft.reason.lower():
         raise ValueError("PREEMPT requires explicit interruption justification")

@@ -100,9 +100,8 @@ O1 WEAKENS C1
 
 ## Expected scheduler
 ```text
-attention_state: ENGAGE
-processing_modes includes VERIFY
-processing_modes includes SYNTHESIZE
+disposition: ENGAGE
+update.operation: REINFORCE | CHALLENGE
 ```
 
 ## Expected Model Delta
@@ -142,8 +141,6 @@ High:
 ## Scheduler
 ```text
 ENGAGE
-VERIFY
-SYNTHESIZE
 ```
 
 ## Watch suggestions
@@ -183,8 +180,6 @@ High:
 ## Scheduler
 ```text
 ENGAGE
-VERIFY
-SYNTHESIZE
 ```
 
 ## Model Delta
@@ -229,7 +224,7 @@ Must not DROP solely because topic is not AI.
 
 Likely:
 ```text
-ENGAGE + SYNTHESIZE
+ENGAGE
 ```
 or AWARE + DECISION_REVIEW depending on depth.
 
@@ -321,7 +316,7 @@ High-quality technical source argues opposite of B1.
 
 Expected:
 ```text
-ENGAGE + VERIFY
+ENGAGE
 ```
 
 Must not DROP because of preference mismatch.
@@ -338,7 +333,7 @@ Same high-value foundational paper.
 
 Expected:
 ```text
-ENGAGE + LEARN
+ENGAGE
 ```
 
 ### Context 2
@@ -361,9 +356,8 @@ New paper highly overlaps user's active submission and may invalidate novelty.
 
 Expected:
 ```text
-attention_state: ENGAGE
+disposition: ENGAGE
 urgency: PREEMPT
-processing_modes includes VERIFY
 ```
 
 Reason explicitly justifies interruption.

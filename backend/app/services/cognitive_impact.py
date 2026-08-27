@@ -37,10 +37,13 @@ SINGLE_SOURCE_EPISTEMIC_CAP = 0.35
 MARKETING_EPISTEMIC_CAP = 0.25
 
 
+KNOWN_OPERATIONS = frozenset({"REINFORCE", "CHALLENGE", "OPEN_NEW"})
+
+
 @dataclass
 class CognitiveEffect:
     target_kernel_node_id: UUID | None
-    effect: CognitiveEffectKind
+    operation: CognitiveEffectKind
     change_magnitude: float
     epistemic_strength: float
     target_importance: float
@@ -48,10 +51,10 @@ class CognitiveEffect:
     exploration_candidate: bool = False
 
     def as_dict(self) -> dict:
-        kind = self.effect.value if hasattr(self.effect, "value") else str(self.effect)
+        kind = self.operation.value if hasattr(self.operation, "value") else str(self.operation)
         return {
             "target_kernel_node_id": str(self.target_kernel_node_id) if self.target_kernel_node_id else None,
-            "effect": kind,
+            "operation": kind,
             "change_magnitude": round(float(self.change_magnitude), 3),
             "epistemic_strength": round(float(self.epistemic_strength), 3),
             "target_importance": round(float(self.target_importance), 3),
@@ -77,13 +80,24 @@ class CognitiveImpactAssessment:
         }
 
     def material_effects(self) -> list[CognitiveEffect]:
-        return [e for e in self.effects if _kind(e.effect) != CognitiveEffectKind.NO_MATERIAL_CHANGE]
+        return [e for e in self.effects if _is_operation(e.operation)]
 
 
 def _kind(value) -> str:
     if hasattr(value, "value"):
         return str(value.value)
     return str(value)
+
+
+def _is_operation(value) -> bool:
+    return _kind(value) in KNOWN_OPERATIONS
+
+
+def _parse_operation(raw) -> CognitiveEffectKind | None:
+    value = _kind(raw)
+    if value not in KNOWN_OPERATIONS:
+        return None
+    return CognitiveEffectKind(value)
 
 
 def _clamp01(value: float) -> float:
@@ -134,8 +148,31 @@ def material_effects(assessment: CognitiveImpactAssessment | None, *, min_change
     return [
         e
         for e in assessment.effects
-        if _kind(e.effect) != CognitiveEffectKind.NO_MATERIAL_CHANGE and float(e.change_magnitude) >= min_change
+        if _is_operation(e.operation) and float(e.change_magnitude) >= min_change
     ]
+
+
+def _legal_public_effect(effect: CognitiveEffect) -> bool:
+    """REINFORCE/CHALLENGE require an existing node. OPEN_NEW requires none."""
+    op = _kind(effect.operation)
+    if op == CognitiveEffectKind.OPEN_NEW:
+        return True
+    if op in {CognitiveEffectKind.REINFORCE, CognitiveEffectKind.CHALLENGE}:
+        return effect.target_kernel_node_id is not None
+    return False
+
+
+def primary_update(assessment: CognitiveImpactAssessment | None) -> dict:
+    """Single Cognitive Update for the public contract: operation × target_node_id."""
+    effects = [e for e in material_effects(assessment) if _legal_public_effect(e)]
+    if not effects:
+        return {"operation": None, "target_node_id": None}
+    chosen = next((e for e in effects if _kind(e.operation) == CognitiveEffectKind.CHALLENGE), effects[0])
+    op = _kind(chosen.operation)
+    nid = str(chosen.target_kernel_node_id) if chosen.target_kernel_node_id else None
+    if op == CognitiveEffectKind.OPEN_NEW:
+        nid = None
+    return {"operation": op, "target_node_id": nid}
 
 
 def max_change_magnitude(assessment: CognitiveImpactAssessment | None) -> float:
@@ -157,7 +194,13 @@ def has_effect(assessment: CognitiveImpactAssessment | None, kind) -> bool:
     want = _kind(kind)
     if assessment is None:
         return False
-    return any(_kind(e.effect) == want for e in assessment.effects)
+    for effect in assessment.effects:
+        if _kind(effect.operation) != want:
+            continue
+        if want in {CognitiveEffectKind.REINFORCE, CognitiveEffectKind.CHALLENGE} and effect.target_kernel_node_id is None:
+            continue
+        return True
+    return False
 
 
 def has_exploration_effect(assessment: CognitiveImpactAssessment | None) -> bool:
@@ -166,7 +209,7 @@ def has_exploration_effect(assessment: CognitiveImpactAssessment | None) -> bool
     if assessment.exploration_candidate:
         return True
     return any(
-        e.exploration_candidate or _kind(e.effect) == CognitiveEffectKind.OPEN_NEW for e in assessment.effects
+        e.exploration_candidate or _kind(e.operation) == CognitiveEffectKind.OPEN_NEW for e in assessment.effects
     )
 
 
@@ -221,10 +264,14 @@ def assessment_from_dict(data: dict | None) -> CognitiveImpactAssessment | None:
             target = UUID(str(nid)) if nid else None
         except (TypeError, ValueError):
             target = None
+        raw = item.get("operation") if item.get("operation") is not None else item.get("effect")
+        operation = _parse_operation(raw)
+        if operation is None:
+            continue
         effects.append(
             CognitiveEffect(
                 target_kernel_node_id=target,
-                effect=CognitiveEffectKind(_kind(item.get("effect") or CognitiveEffectKind.NO_MATERIAL_CHANGE)),
+                operation=operation,
                 change_magnitude=float(item.get("change_magnitude") or 0.0),
                 epistemic_strength=float(item.get("epistemic_strength") or 0.0),
                 target_importance=float(item.get("target_importance") or 0.0),
@@ -261,45 +308,32 @@ def ground_effects(
     *,
     independent_source_count: int = 1,
 ) -> list[CognitiveEffect]:
-    """Deterministic caps. LLM remains the effect judge. Does not rewrite effect direction."""
+    """Deterministic caps. LLM remains the operation judge. Does not rewrite operation direction."""
     allowed = {m.node_id for m in matches}
     cap = epistemic_cap(extraction, independent_source_count=independent_source_count)
     grounded: list[CognitiveEffect] = []
     for effect in effects:
+        operation = _parse_operation(effect.operation)
+        if operation is None:
+            continue
         target = effect.target_kernel_node_id
-        if target is not None and target not in allowed:
-            if _kind(effect.effect) == CognitiveEffectKind.OPEN_NEW:
-                target = None
-            else:
-                continue
+        if operation == CognitiveEffectKind.OPEN_NEW:
+            target = None
+        elif target is None or target not in allowed:
+            continue
         epi = min(float(effect.epistemic_strength), cap)
         change = max(0.0, min(1.0, float(effect.change_magnitude)))
         importance = max(0.0, min(1.0, float(effect.target_importance)))
-        kind = CognitiveEffectKind(_kind(effect.effect))
-        explore = bool(effect.exploration_candidate) or kind == CognitiveEffectKind.OPEN_NEW
-        if kind == CognitiveEffectKind.OPEN_NEW:
-            target = target if target in allowed else None
-            explore = True
+        explore = bool(effect.exploration_candidate) or operation == CognitiveEffectKind.OPEN_NEW
         grounded.append(
             CognitiveEffect(
                 target_kernel_node_id=target,
-                effect=kind,
+                operation=operation,
                 change_magnitude=change,
                 epistemic_strength=epi,
                 target_importance=importance,
                 reason=effect.reason,
                 exploration_candidate=explore,
-            )
-        )
-    if not grounded:
-        grounded.append(
-            CognitiveEffect(
-                target_kernel_node_id=None,
-                effect=CognitiveEffectKind.NO_MATERIAL_CHANGE,
-                change_magnitude=0.1,
-                epistemic_strength=min(0.2, cap),
-                target_importance=0.2,
-                reason="No grounded cognitive effect on the current Kernel snapshot.",
             )
         )
     return grounded
@@ -337,14 +371,14 @@ def features_from_impact(
     links_present, conflict = evidence_conflict_flags(
         extraction, independent_source_count=independent_source_count
     )
-    material = [e for e in effects if _kind(e.effect) != CognitiveEffectKind.NO_MATERIAL_CHANGE]
+    material = [e for e in effects if _is_operation(e.operation)]
     max_change = max((e.change_magnitude for e in material), default=0.0)
     if not material:
         max_change = max((e.change_magnitude for e in effects), default=0.0)
     max_epi = max((e.epistemic_strength for e in (material or effects)), default=0.2)
     max_importance = max((e.target_importance for e in (material or effects)), default=0.0)
     challenge = max(
-        (e.change_magnitude for e in effects if _kind(e.effect) == CognitiveEffectKind.CHALLENGE),
+        (e.change_magnitude for e in effects if _kind(e.operation) == CognitiveEffectKind.CHALLENGE),
         default=0.0,
     )
     disagreement = max(disagreement, challenge, 0.8 if conflict else 0.0)
@@ -383,7 +417,7 @@ def features_from_impact(
     novelty_value = 0.15 if is_duplicate else (0.6 if novelty is None else novelty)
     actionability = 0.7 if decision >= 0.6 or bottleneck >= 0.6 or max_importance >= 0.8 else 0.35
     explore = exploration_candidate or any(e.exploration_candidate for e in effects) or any(
-        _kind(e.effect) == CognitiveEffectKind.OPEN_NEW for e in effects
+        _kind(e.operation) == CognitiveEffectKind.OPEN_NEW for e in effects
     )
 
     features = SchedulerFeatures(
@@ -452,33 +486,23 @@ def assess_impact_from_rules(
     hype_only = probe.marketing_heavy and not extraction.technical_claims
 
     if hype_only or (probe.marketing_heavy and not matches):
-        effects.append(
-            CognitiveEffect(
-                target_kernel_node_id=None,
-                effect=CognitiveEffectKind.NO_MATERIAL_CHANGE,
-                change_magnitude=0.1,
-                epistemic_strength=min(0.15, cap),
-                target_importance=0.15,
-                reason="Promotional source with no material Kernel effect.",
-            )
-        )
+        effects = []
     else:
         for match in matches:
             importance = resolve_target_importance(node=nodes_by_id.get(match.node_id), node_type=match.node_type)
             change = match.score
             epi = min(probe.credibility, cap)
             if "minor" in low and "version" in low:
-                kind = CognitiveEffectKind.NO_MATERIAL_CHANGE
-                change = min(change, 0.15)
+                continue
             elif match.node_type == "BELIEF" and probe.disagreement >= 0.55:
                 kind = CognitiveEffectKind.CHALLENGE
                 change = max(change, 0.7)
             elif match.node_type == "DECISION" or match.structural or match.relevance_type == "STRUCTURAL":
-                kind = CognitiveEffectKind.REFINE
+                kind = CognitiveEffectKind.REINFORCE
             elif match.node_type in {"MODEL", "QUESTION", "BOTTLENECK"}:
-                kind = CognitiveEffectKind.REFINE if extraction.technical_claims or probe.disagreement >= 0.4 else CognitiveEffectKind.REINFORCE
+                kind = CognitiveEffectKind.REINFORCE
             elif match.node_type == "PROJECT" and extraction.technical_claims:
-                kind = CognitiveEffectKind.REFINE
+                kind = CognitiveEffectKind.REINFORCE
                 change = max(change, 0.65)
             else:
                 kind = CognitiveEffectKind.REINFORCE
@@ -487,7 +511,7 @@ def assess_impact_from_rules(
             effects.append(
                 CognitiveEffect(
                     target_kernel_node_id=match.node_id,
-                    effect=kind,
+                    operation=kind,
                     change_magnitude=change,
                     epistemic_strength=epi,
                     target_importance=importance,
@@ -505,7 +529,7 @@ def assess_impact_from_rules(
                 effects.append(
                     CognitiveEffect(
                         target_kernel_node_id=None,
-                        effect=CognitiveEffectKind.OPEN_NEW,
+                        operation=CognitiveEffectKind.OPEN_NEW,
                         change_magnitude=0.55,
                         epistemic_strength=min(0.3, cap),
                         target_importance=0.55,
@@ -513,36 +537,37 @@ def assess_impact_from_rules(
                         exploration_candidate=True,
                     )
                 )
-            else:
+
+    if probe.disagreement >= 0.55 or probe.sources_conflict:
+        if not any(_kind(e.operation) == CognitiveEffectKind.CHALLENGE for e in effects):
+            belief = next((m for m in matches if m.node_type == "BELIEF"), None)
+            if belief is not None:
+                effects.append(
+                    CognitiveEffect(
+                        target_kernel_node_id=belief.node_id,
+                        operation=CognitiveEffectKind.CHALLENGE,
+                        change_magnitude=max(0.75, probe.kernel_delta),
+                        epistemic_strength=min(0.45, cap),
+                        target_importance=resolve_target_importance(
+                            node=nodes_by_id.get(belief.node_id),
+                            node_type="BELIEF",
+                            llm_estimate=0.5,
+                        ),
+                        reason="Attributed claims conflict with observations or an active Belief.",
+                    )
+                )
+            elif not any(_kind(e.operation) == CognitiveEffectKind.OPEN_NEW for e in effects):
                 effects.append(
                     CognitiveEffect(
                         target_kernel_node_id=None,
-                        effect=CognitiveEffectKind.NO_MATERIAL_CHANGE,
-                        change_magnitude=0.12,
-                        epistemic_strength=min(0.2, cap),
-                        target_importance=0.2,
-                        reason="No Kernel localization and no exploration signal.",
+                        operation=CognitiveEffectKind.OPEN_NEW,
+                        change_magnitude=max(0.55, probe.kernel_delta),
+                        epistemic_strength=min(0.35, cap),
+                        target_importance=0.55,
+                        reason="Conflicting claims/observations with no existing Kernel node to challenge.",
+                        exploration_candidate=True,
                     )
                 )
-
-    if probe.disagreement >= 0.55 or probe.sources_conflict:
-        if not any(_kind(e.effect) == CognitiveEffectKind.CHALLENGE for e in effects):
-            belief = next((m for m in matches if m.node_type == "BELIEF"), None)
-            effects = [e for e in effects if _kind(e.effect) != CognitiveEffectKind.NO_MATERIAL_CHANGE]
-            effects.append(
-                CognitiveEffect(
-                    target_kernel_node_id=belief.node_id if belief else None,
-                    effect=CognitiveEffectKind.CHALLENGE,
-                    change_magnitude=max(0.75, probe.kernel_delta),
-                    epistemic_strength=min(0.45, cap),
-                    target_importance=resolve_target_importance(
-                        node=nodes_by_id.get(belief.node_id) if belief else None,
-                        node_type="BELIEF" if belief else None,
-                        llm_estimate=0.5,
-                    ),
-                    reason="Attributed claims conflict with observations or an active Belief.",
-                )
-            )
 
     effects = ground_effects(effects, matches, extraction, independent_source_count=independent_source_count)
     explore = any(e.exploration_candidate for e in effects)
@@ -581,15 +606,15 @@ def assess_impact_from_rules(
     features.marketing_heavy = probe.marketing_heavy
     features.disagreement = max(features.disagreement, probe.disagreement)
     features.credibility = probe.credibility
-    material = [e for e in effects if _kind(e.effect) != CognitiveEffectKind.NO_MATERIAL_CHANGE]
+    material = [e for e in effects if _is_operation(e.operation)]
     max_change = max((e.change_magnitude for e in material), default=0.0)
     if not material:
-        features.kernel_delta = min(probe.kernel_delta, max((e.change_magnitude for e in effects), default=0.1))
+        features.kernel_delta = min(probe.kernel_delta, 0.1)
     else:
         features.kernel_delta = max(probe.kernel_delta, max_change)
-    features.change_magnitude = round(max_change if material else max((e.change_magnitude for e in effects), default=0.0), 3)
-    features.epistemic_strength = round(max((e.epistemic_strength for e in (material or effects)), default=0.2), 3)
-    features.target_importance = round(max((e.target_importance for e in (material or effects)), default=0.0), 3)
+    features.change_magnitude = round(max_change, 3)
+    features.epistemic_strength = round(max((e.epistemic_strength for e in material), default=0.2), 3)
+    features.target_importance = round(max((e.target_importance for e in material), default=0.0), 3)
     features.attention_cost = float(attention_cost)
     features.cognitive_cost = float(attention_cost)
     features.exploration_candidate = explore

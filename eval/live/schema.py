@@ -48,12 +48,6 @@ UpdateOperation = Literal["REINFORCE", "CHALLENGE", "OPEN_NEW"]
 
 DISPOSITIONS = ("DROP", "AWARE", "WATCH", "ENGAGE")
 UPDATE_OPERATIONS = ("REINFORCE", "CHALLENGE", "OPEN_NEW")
-LEGACY_EFFECT_TO_OPERATION = {
-    "REINFORCE": "REINFORCE",
-    "CHALLENGE": "CHALLENGE",
-    "OPEN_NEW": "OPEN_NEW",
-    "REFINE": "REINFORCE",
-}
 
 # Internal disposition interpretation only — not part of Human Gold.
 DISPOSITION_MODE_HINTS = {
@@ -90,11 +84,10 @@ def _pick_disposition(values: list[str]) -> str | None:
 
 
 def _legacy_operation(values: list[str]) -> str | None:
-    """Map retired effect names onto the new operations. NO_MATERIAL_CHANGE has no equivalent."""
+    """Read only the live operations. Retired names (REFINE, NO_MATERIAL_CHANGE) are not mapped."""
     for value in values:
-        mapped = LEGACY_EFFECT_TO_OPERATION.get(value)
-        if mapped:
-            return mapped
+        if str(value).upper() in UPDATE_OPERATIONS:
+            return str(value).upper()
     return None
 
 

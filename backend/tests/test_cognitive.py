@@ -129,8 +129,7 @@ def test_disagreement_is_not_low_relevance(client: TestClient):
     )
     result = analyze(client, src["id"])
     plan = result["attention_plan"]
-    assert plan["attention_state"] != "DROP"
-    assert "VERIFY" in plan["processing_modes"]
+    assert plan["disposition"] != "DROP"
 
 
 def test_structural_relevance_can_be_high_with_low_topic(client: TestClient):
@@ -146,7 +145,7 @@ def test_structural_relevance_can_be_high_with_low_topic(client: TestClient):
     assert result["features"]["topic_relevance"] <= 0.35
     assert result["features"]["structural_relevance"] >= 0.65
     assert index["D1"]["id"] in {m["node_id"] for m in result["kernel_matches"]}
-    assert result["attention_plan"]["attention_state"] != "DROP"
+    assert result["attention_plan"]["disposition"] != "DROP"
 
 
 def test_model_delta_is_proposal_only(client: TestClient):

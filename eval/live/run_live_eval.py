@@ -69,16 +69,16 @@ def analysis_payload_to_eval_row(payload: dict[str, Any]) -> dict[str, Any]:
     delta = payload.get("model_delta") or {}
     features = payload.get("features") or {}
     provenance = run.get("stage_provenance") or payload.get("stage_provenance")
-    modes = plan.get("processing_modes") or []
     runtime = live_eval_runtime_fields(
         provenance=provenance,
         fallback_used=run.get("fallback_used"),
         provider_type=run.get("provider_type"),
     )
+    update = payload.get("update") or plan.get("update") or {"operation": None, "target_node_id": None}
     return {
-        "attention_state": plan.get("attention_state"),
-        "processing_mode": modes,
-        "processing_modes": modes,
+        "disposition": payload.get("disposition") or plan.get("disposition"),
+        "update": update,
+        "delta_content": payload.get("delta_content") or delta.get("summary"),
         "kernel_matches": matches,
         "matched_kernel_titles": [m.get("title") for m in matches],
         "matched_kernel_ids": [m.get("node_id") for m in matches],
@@ -112,8 +112,9 @@ def analysis_payload_to_eval_row(payload: dict[str, Any]) -> dict[str, Any]:
 
 def _empty_eval_fields() -> dict[str, Any]:
     return {
-        "processing_mode": None,
-        "processing_modes": None,
+        "disposition": None,
+        "update": None,
+        "delta_content": None,
         "match_scores": [],
         "embedding_used": None,
         "lexical_fallback": None,
@@ -209,7 +210,7 @@ def run_case(case: LiveCase, *, dry_run: bool, db=None) -> dict[str, Any]:
         "prediction_source": None,
         "model_prediction": None,
         "stage_provenance": None,
-        "attention_state": None,
+        "disposition": None,
         "kernel_matches": [],
         "matched_kernel_titles": [],
         "matched_kernel_ids": [],

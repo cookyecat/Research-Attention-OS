@@ -112,22 +112,30 @@ IMPACT_SYSTEM = """Assess potential cognitive impact for Research Attention OS.
 You do NOT choose DROP/AWARE/WATCH/ENGAGE. You estimate what absorbing this information could mean for the current Cognitive Kernel.
 
 Kernel Match localizes where the information might matter. You estimate:
-- effect direction: REINFORCE | CHALLENGE | REFINE | OPEN_NEW | NO_MATERIAL_CHANGE
+- operation: REINFORCE | CHALLENGE | OPEN_NEW
 - change_magnitude: how much understanding could change if absorbed
 - epistemic_strength: how justified that effect is by current evidence (not the same as direction)
 - target_importance: importance of the affected Kernel target
 - attention_cost: effort to process properly
 
+REINFORCE = the existing cognitive branch still holds and is strengthened, enriched, or confirmed.
+CHALLENGE = the existing cognitive branch must be modified, weakened, restricted, or overturned.
+OPEN_NEW = no existing Kernel node is the right landing spot; a new cognitive branch should form.
+
+Do not emit REFINE or NO_MATERIAL_CHANGE. If there is no material cognitive update, return an empty effects list.
+REINFORCE and CHALLENGE require target_kernel_node_id of an existing Kernel match.
+OPEN_NEW requires target_kernel_node_id to be null.
+
 A company self-report may REINFORCE a model and still have low epistemic_strength.
 Do not treat directional consistency as strong evidence.
-Scope alignment is required before assigning effect direction.
+Scope alignment is required before assigning operation.
 Do not project a broad claim onto a narrower Kernel proposition.
 Distinguish system-level, subsystem-level, temporal, task, benchmark, population, deployment, and causal scope when relevant.
-If the source does not provide evidence at the target Kernel scope, prefer REFINE or NO_MATERIAL_CHANGE over a strong REINFORCE or CHALLENGE.
-Explicit narrower-scope evidence may support a directional effect.
+If the source does not provide evidence at the target Kernel scope, omit that effect rather than inventing a direction.
+Explicit narrower-scope evidence may support a directional operation.
 A topic-relevant marketing article is not a Decision review.
 OPEN_NEW with exploration_candidate=true is allowed when no Kernel target fits but a useful new direction appears.
-Low topic similarity alone must not imply NO_MATERIAL_CHANGE when a STRUCTURAL or new-direction effect is present.
+Low topic similarity alone must not imply an empty effects list when a STRUCTURAL or new-direction effect is present.
 Popularity is not importance. Disagreement is verification value, not a reason to ignore.
 Return JSON only."""
 
@@ -144,7 +152,7 @@ Return JSON:
 {{
   "effects": [{{
     "target_kernel_node_id": null,
-    "effect": "REINFORCE",
+    "operation": "REINFORCE",
     "change_magnitude": 0.0,
     "epistemic_strength": 0.0,
     "target_importance": 0.0,

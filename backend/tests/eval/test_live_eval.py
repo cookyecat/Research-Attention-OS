@@ -54,7 +54,7 @@ def test_live_eval_dry_run(tmp_path):
     assert all("stage_provenance" in r for r in rows)
     assert all(r["prediction_source"] is None for r in rows)
     assert all(r["model_prediction"] is None for r in rows)
-    assert all("processing_mode" in r for r in rows)
+    assert all("disposition" in r for r in rows)
     assert all("embedding_used" in r for r in rows)
     assert all("lexical_fallback" in r for r in rows)
     assert all("scheduler_features" in r for r in rows)
@@ -65,19 +65,19 @@ def test_unlabeled_not_in_accuracy_denominator():
         {
             "id": "u1",
             "gold_status": "UNLABELED",
-            "attention_state": "DROP",
+            "disposition": "DROP",
             "human_gold": None,
         },
         {
             "id": "l1",
             "gold_status": "LABELED",
-            "attention_state": "ENGAGE",
+            "disposition": "ENGAGE",
             "human_gold": {
                 "disposition": "ENGAGE",
                 "update": {"operation": "OPEN_NEW", "target_node_id": None},
                 "delta_content": "A new question about whether this is worth a branch.",
             },
-            "cognitive_impact": {"effects": [{"target_kernel_node_id": None, "effect": "OPEN_NEW"}]},
+            "cognitive_impact": {"effects": [{"target_kernel_node_id": None, "operation": "OPEN_NEW"}]},
             "claim_texts": [],
             "observation_texts": [],
         },
@@ -91,8 +91,8 @@ def test_unlabeled_not_in_accuracy_denominator():
 
 def test_live_eval_report_reproducible(tmp_path):
     rows = [
-        {"id": "b", "gold_status": "UNLABELED", "attention_state": None},
-        {"id": "a", "gold_status": "UNLABELED", "attention_state": None},
+        {"id": "b", "gold_status": "UNLABELED", "disposition": None},
+        {"id": "a", "gold_status": "UNLABELED", "disposition": None},
     ]
     summary = compute_metrics(rows)
     summary["timestamp"] = "fixed"
@@ -266,7 +266,7 @@ def test_legacy_manifest_gold_still_parses():
             "attention_state": ["ENGAGE"],
             "acceptable_modes": ["VERIFY"],
             "must_match_kernel": ["Motor Intelligence"],
-            "expected_effects": [{"target_kernel": "Motor Intelligence", "acceptable_effects": ["REFINE"]}],
+            "expected_effects": [{"target_kernel": "Motor Intelligence", "acceptable_effects": ["REINFORCE"]}],
             "key_claims": ["zero-shot"],
             "delta_rubric": 2,
         }
@@ -289,7 +289,7 @@ def test_report_scores_new_contract_fields():
         {
             "id": "v3",
             "gold_status": "LABELED",
-            "attention_state": "ENGAGE",
+            "disposition": "ENGAGE",
             "processing_modes": ["VERIFY", "SYNTHESIZE"],
             "matched_kernel_titles": ["Motor Intelligence"],
             "matched_kernel_ids": ["abc"],
@@ -298,7 +298,7 @@ def test_report_scores_new_contract_fields():
                 "effects": [
                     {
                         "target_kernel_node_id": "abc",
-                        "effect": "REINFORCE",
+                        "operation": "REINFORCE",
                     }
                 ]
             },
@@ -328,17 +328,16 @@ def test_report_scores_new_contract_fields():
     assert "key_claims" not in md
 
 
-def test_report_maps_legacy_gold_and_refine_prediction():
+def test_report_scores_legacy_gold_without_refine_mapping():
     none_row = {
         "id": "open",
         "gold_status": "LABELED",
-        "attention_state": "AWARE",
-        "processing_modes": ["SCAN"],
+        "disposition": "AWARE",
         "matched_kernel_titles": [],
         "matched_kernel_ids": [],
         "kernel_matches": [],
         "cognitive_impact": {
-            "effects": [{"target_kernel_node_id": None, "effect": "OPEN_NEW"}]
+            "effects": [{"target_kernel_node_id": None, "operation": "OPEN_NEW"}]
         },
         "human_gold": {
             "disposition": "AWARE",
@@ -351,17 +350,16 @@ def test_report_maps_legacy_gold_and_refine_prediction():
     legacy_row = {
         "id": "legacy",
         "gold_status": "LABELED",
-        "attention_state": "ENGAGE",
-        "processing_modes": ["VERIFY"],
+        "disposition": "ENGAGE",
         "matched_kernel_titles": ["Motor Intelligence"],
         "matched_kernel_ids": [],
         "kernel_matches": [{"node_id": "n1", "title": "Motor Intelligence"}],
-        "cognitive_impact": {"effects": [{"target_kernel_node_id": "n1", "effect": "REFINE"}]},
+        "cognitive_impact": {"effects": [{"target_kernel_node_id": "n1", "operation": "REINFORCE"}]},
         "human_gold": {
             "attention_state": ["ENGAGE"],
             "must_match_kernel": ["Motor Intelligence"],
             "acceptable_modes": ["VERIFY", "SYNTHESIZE"],
-            "expected_effects": [{"target_kernel": "Motor Intelligence", "acceptable_effects": ["REFINE"]}],
+            "expected_effects": [{"target_kernel": "Motor Intelligence", "acceptable_effects": ["REINFORCE"]}],
         },
         "prediction_source": "model",
         "model_prediction": True,
@@ -371,6 +369,27 @@ def test_report_maps_legacy_gold_and_refine_prediction():
     assert metrics["update_operation"]["update_operation_accuracy"] == 1.0
     assert metrics["target"]["target_accuracy"] == 1.0
     assert metrics["n_labeled"] == 2
+
+
+def test_refine_prediction_is_not_mapped_to_reinforce():
+    rows = [
+        {
+            "id": "refine-pred",
+            "gold_status": "LABELED",
+            "disposition": "ENGAGE",
+            "cognitive_impact": {"effects": [{"target_kernel_node_id": "n1", "operation": "REFINE"}]},
+            "kernel_matches": [{"node_id": "n1", "title": "Motor Intelligence"}],
+            "human_gold": {
+                "disposition": "ENGAGE",
+                "update": {"operation": "REINFORCE", "target_node_id": "P1"},
+                "delta_content": "Production must emit REINFORCE, not REFINE.",
+            },
+            "prediction_source": "model",
+            "model_prediction": True,
+        }
+    ]
+    metrics = compute_metrics(rows)
+    assert metrics["update_operation"]["update_operation_accuracy"] == 0.0
 
 
 def test_legacy_no_material_change_does_not_become_open_new():
@@ -401,14 +420,14 @@ def test_target_hit_uses_update_node_not_retrieval():
         {
             "id": "wrong-node",
             "gold_status": "LABELED",
-            "attention_state": "WATCH",
+            "disposition": "WATCH",
             "matched_kernel_titles": ["Motor Intelligence", "Collective Intelligence"],
             "matched_kernel_ids": ["n1", "n2"],
             "kernel_matches": [
                 {"node_id": "n1", "title": "Motor Intelligence"},
                 {"node_id": "n2", "title": "Collective Intelligence"},
             ],
-            "cognitive_impact": {"effects": [{"target_kernel_node_id": "n2", "effect": "REINFORCE"}]},
+            "cognitive_impact": {"effects": [{"target_kernel_node_id": "n2", "operation": "REINFORCE"}]},
             "human_gold": {
                 "disposition": "WATCH",
                 "update": {"operation": "REINFORCE", "target_node_id": "P1"},
@@ -427,11 +446,11 @@ def test_open_new_target_not_hit_by_empty_retrieval_or_targeted_open_new():
     empty_retrieval = {
         "id": "reinforce-existing",
         "gold_status": "LABELED",
-        "attention_state": "WATCH",
+            "disposition": "WATCH",
         "matched_kernel_titles": [],
         "matched_kernel_ids": [],
         "kernel_matches": [],
-        "cognitive_impact": {"effects": [{"target_kernel_node_id": "abc", "effect": "REINFORCE"}]},
+        "cognitive_impact": {"effects": [{"target_kernel_node_id": "abc", "operation": "REINFORCE"}]},
         "human_gold": {
             "disposition": "WATCH",
             "update": {"operation": "OPEN_NEW", "target_node_id": None},
@@ -443,11 +462,11 @@ def test_open_new_target_not_hit_by_empty_retrieval_or_targeted_open_new():
     targeted_open = {
         "id": "open-with-target",
         "gold_status": "LABELED",
-        "attention_state": "WATCH",
+            "disposition": "WATCH",
         "matched_kernel_titles": ["Motor Intelligence"],
         "matched_kernel_ids": ["abc"],
         "kernel_matches": [{"node_id": "abc", "title": "Motor Intelligence"}],
-        "cognitive_impact": {"effects": [{"target_kernel_node_id": "abc", "effect": "OPEN_NEW"}]},
+        "cognitive_impact": {"effects": [{"target_kernel_node_id": "abc", "operation": "OPEN_NEW"}]},
         "human_gold": {
             "disposition": "WATCH",
             "update": {"operation": "OPEN_NEW", "target_node_id": None},
@@ -466,14 +485,14 @@ def test_open_new_target_misses_when_any_predicted_update_has_a_node():
         {
             "id": "mixed",
             "gold_status": "LABELED",
-            "attention_state": "WATCH",
+            "disposition": "WATCH",
             "matched_kernel_titles": ["Motor Intelligence"],
             "matched_kernel_ids": ["abc"],
             "kernel_matches": [{"node_id": "abc", "title": "Motor Intelligence"}],
             "cognitive_impact": {
                 "effects": [
-                    {"target_kernel_node_id": "abc", "effect": "REINFORCE"},
-                    {"target_kernel_node_id": None, "effect": "OPEN_NEW"},
+                    {"target_kernel_node_id": "abc", "operation": "REINFORCE"},
+                    {"target_kernel_node_id": None, "operation": "OPEN_NEW"},
                 ]
             },
             "human_gold": {
@@ -522,7 +541,7 @@ def test_live_eval_records_stage_provenance_and_visible_fallback(tmp_path):
         {
             "id": "fb",
             "gold_status": "LABELED",
-            "attention_state": "ENGAGE",
+            "disposition": "ENGAGE",
             "human_gold": {"disposition": "ENGAGE"},
             **fields,
         }
@@ -539,7 +558,7 @@ def test_fallback_excluded_from_model_accuracy():
         {
             "id": "ok",
             "gold_status": "LABELED",
-            "attention_state": "ENGAGE",
+            "disposition": "ENGAGE",
             "human_gold": {"disposition": "ENGAGE"},
             "prediction_source": "model",
             "fallback": False,
@@ -548,7 +567,7 @@ def test_fallback_excluded_from_model_accuracy():
         {
             "id": "fb",
             "gold_status": "LABELED",
-            "attention_state": "ENGAGE",
+            "disposition": "ENGAGE",
             "human_gold": {"disposition": "ENGAGE"},
             "prediction_source": "rule-fallback",
             "fallback": True,
@@ -587,8 +606,9 @@ def test_live_eval_row_from_production_pipeline(client):
     )
     payload = analyze(client, src["id"])
     row = analysis_payload_to_eval_row(payload)
-    assert row["attention_state"]
-    assert row["processing_mode"] is not None
+    assert row["disposition"]
+    assert row["update"] is not None
+    assert "delta_content" in row
     assert isinstance(row["kernel_matches"], list)
     assert row["lexical_fallback"] is True
     assert row["scheduler_features"]
@@ -614,7 +634,7 @@ def test_live_eval_run_case_full_pipeline(client, engine):
         )
         row = run_case(case, dry_run=False, db=session)
         assert not row.get("error"), row.get("error")
-        assert row["attention_state"]
+        assert row["disposition"]
         assert row["delta_summary"] is not None
         assert row["lexical_fallback"] is True
         assert row["skipped"] is False

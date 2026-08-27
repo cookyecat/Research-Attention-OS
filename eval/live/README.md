@@ -101,10 +101,10 @@ The report scores the Human Gold contract:
 - Target hit (Kernel Snapshot node id)
 - DeltaContent present for human review (not auto-scored)
 
-`cases.jsonl` includes `stage_provenance`, `attention_state` (predicted disposition), `processing_mode`, kernel matches, `cognitive_impact`, `evidence_stage_skipped`, and `delta_summary`.
+`cases.jsonl` includes `stage_provenance`, `disposition`, `update`, `delta_content`, kernel matches, `cognitive_impact`, `evidence_stage_skipped`, and `delta_summary`.
 
 Live Eval v0.1.1+ runs the **production pipeline** (chunking → extraction → evidence → query embedding → kernel match → cognitive impact assessment → Attention Policy → model delta). It does not reimplement an eval-only path.
 
-Legacy gold keys (`attention_state`, `processing_modes`, `kernel_targets`, `cognitive_effects`, `expected_delta`, `must_match_kernel`, `expected_effects`, …) still parse if present and are mapped onto the 3-block contract. They are not part of the default template and are not used to label new cases.
+Legacy gold keys (`attention_state`, `processing_modes`, `kernel_targets`, `cognitive_effects`, `expected_delta`, …) still parse on ingest if present. Retired operations (`REFINE`, `NO_MATERIAL_CHANGE`) are not mapped onto the live contract. They are not part of the default template and are not used to label new cases.
 
 A model-stage fallback is recorded as `prediction_source: "rule-fallback"` with `model_prediction: false` and is excluded from model accuracy denominators. Do not treat rule-fallback output as a successful model prediction.

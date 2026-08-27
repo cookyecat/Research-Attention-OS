@@ -26,7 +26,7 @@ class AttentionPlan(UUIDPrimaryKeyMixin, Base):
 
     candidate_type: Mapped[str] = mapped_column(String, nullable=False)
     candidate_id: Mapped[UUID] = mapped_column(Uuid, nullable=False, index=True)
-    attention_state: Mapped[str] = mapped_column(String, nullable=False)
+    disposition: Mapped[str] = mapped_column("attention_state", String, nullable=False)
     processing_modes: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     urgency: Mapped[str] = mapped_column(String, nullable=False)
     cognitive_budget_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)

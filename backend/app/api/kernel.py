@@ -8,6 +8,7 @@ from app.db import get_db
 from app.models.kernel import KernelNode, KernelPatch, KernelVersion
 from app.models.scheduler import AttentionPlan
 from app.schemas.api import KernelNodeCreate, PatchModifyIn
+from app.services.cognitive_impact import assessment_from_dict, primary_update
 from app.services.kernel_commit import commit_patch
 from app.testing.kernel_fixture import seed_mvp_kernel
 
@@ -154,8 +155,8 @@ def list_attention(db: Session = Depends(get_db)):
             "id": str(p.id),
             "candidate_type": p.candidate_type,
             "candidate_id": str(p.candidate_id),
-            "attention_state": p.attention_state,
-            "processing_modes": p.processing_modes,
+            "disposition": p.disposition,
+            "update": primary_update(assessment_from_dict((p.score_debug or {}).get("cognitive_impact"))),
             "urgency": p.urgency,
             "reason": p.reason,
             "expected_output": p.expected_output,

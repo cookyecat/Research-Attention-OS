@@ -4,7 +4,7 @@ from collections import defaultdict
 from typing import Any
 
 from eval.live.kernel_snapshot import resolve_snapshot_node_id, snapshot_node_by_id
-from eval.live.schema import LEGACY_EFFECT_TO_OPERATION, HumanGold
+from eval.live.schema import UPDATE_OPERATIONS, HumanGold
 
 
 def compute_metrics(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -65,7 +65,12 @@ def _gold_model(row: dict) -> HumanGold:
 
 
 def _pred_disposition(row: dict) -> str | None:
-    return row.get("attention_state")
+    if row.get("disposition"):
+        return row.get("disposition")
+    plan = row.get("attention_plan") or {}
+    if isinstance(plan, dict) and plan.get("disposition"):
+        return plan.get("disposition")
+    return None
 
 
 def _pred_effect_rows(row: dict) -> list[dict]:
@@ -75,16 +80,24 @@ def _pred_effect_rows(row: dict) -> list[dict]:
     return []
 
 
-def _map_pred_operation(effect: str | None) -> str | None:
-    if not effect:
+def _pred_operation_of(item: dict) -> str | None:
+    raw = item.get("operation")
+    if raw is None:
         return None
-    return LEGACY_EFFECT_TO_OPERATION.get(str(effect).upper())
+    value = str(raw).upper()
+    return value if value in UPDATE_OPERATIONS else None
 
 
 def _pred_updates(row: dict) -> list[tuple[str, str | None]]:
+    upd = row.get("update")
+    if isinstance(upd, dict) and upd.get("operation"):
+        op = str(upd["operation"]).upper()
+        if op in UPDATE_OPERATIONS:
+            nid = upd.get("target_node_id")
+            return [(op, str(nid) if nid else None)]
     updates: list[tuple[str, str | None]] = []
     for effect in _pred_effect_rows(row):
-        op = _map_pred_operation(effect.get("effect"))
+        op = _pred_operation_of(effect)
         if not op:
             continue
         nid = effect.get("target_kernel_node_id")
@@ -192,7 +205,7 @@ def _update_operation_metrics(rows: list[dict]) -> dict:
     return {
         "update_operation_accuracy": _div(hit, scored),
         "denominator": scored,
-        "note": "Predicted Cognitive Dynamics effects are mapped onto REINFORCE | CHALLENGE | OPEN_NEW (REFINE → REINFORCE).",
+        "note": "Predicted update.operation is scored directly against REINFORCE | CHALLENGE | OPEN_NEW.",
     }
 
 

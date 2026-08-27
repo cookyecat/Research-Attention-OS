@@ -26,6 +26,7 @@ from app.models.analysis import AnalysisRun
 from app.models.kernel import KernelNode, KernelPatch
 from app.models.scheduler import AttentionPlan
 from app.models.source import Source
+from app.services.cognitive_impact import assessment_from_dict, primary_update
 
 
 def kernel_snapshot_hash(nodes: list[KernelNode]) -> str:
@@ -294,11 +295,38 @@ def attention_plans_for_run(db: Session, run_id: UUID) -> list[AttentionPlan]:
     )
 
 
+def _normalize_public_contract(payload: dict) -> dict:
+    """Fill disposition / update / delta_content on read for older stored payloads.
+
+    Does not map retired operations. Old attention_state values are the same four
+    dispositions; they are renamed, not reinterpreted.
+    """
+    stored = payload.get("attention_plan")
+    if isinstance(stored, dict) and not stored.get("disposition"):
+        stored = dict(stored)
+        if stored.get("attention_state"):
+            stored["disposition"] = stored["attention_state"]
+        if "update" not in stored:
+            latest = payload.get("latest_attention_plan") or {}
+            stored["update"] = latest.get("update") or {"operation": None, "target_node_id": None}
+        payload["attention_plan"] = stored
+    latest = payload.get("latest_attention_plan") or payload.get("attention_plan") or {}
+    if not payload.get("disposition"):
+        payload["disposition"] = latest.get("disposition")
+    if payload.get("update") is None:
+        payload["update"] = latest.get("update") or {"operation": None, "target_node_id": None}
+    if "delta_content" not in payload:
+        payload["delta_content"] = (payload.get("model_delta") or {}).get("summary") or ""
+    return payload
+
+
 def plan_public(plan: AttentionPlan) -> dict:
+    impact = (plan.score_debug or {}).get("cognitive_impact") if isinstance(plan.score_debug, dict) else None
+    update = primary_update(assessment_from_dict(impact)) if impact else {"operation": None, "target_node_id": None}
     return {
         "id": str(plan.id),
-        "attention_state": plan.attention_state,
-        "processing_modes": plan.processing_modes,
+        "disposition": plan.disposition,
+        "update": update,
         "urgency": plan.urgency,
         "cognitive_budget_minutes": plan.cognitive_budget_minutes,
         "kernel_target_ids": plan.kernel_target_ids,
@@ -348,7 +376,7 @@ def hydrate_run(db: Session, run: AnalysisRun) -> dict:
     else:
         payload["latest_attention_plan"] = payload.get("attention_plan")
         payload["attention_plan_history"] = [payload["attention_plan"]] if payload.get("attention_plan") else []
-    return payload
+    return _normalize_public_contract(payload)
 
 
 def run_public(run: AnalysisRun) -> dict:

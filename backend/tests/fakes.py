@@ -439,17 +439,7 @@ class SemanticFakeChat:
         }
         effects = []
         if hype_only:
-            effects.append(
-                {
-                    "target_kernel_node_id": None,
-                    "effect": "NO_MATERIAL_CHANGE",
-                    "change_magnitude": 0.08,
-                    "epistemic_strength": 0.1,
-                    "target_importance": 0.1,
-                    "reason": "Promotional source with no material Kernel effect.",
-                    "exploration_candidate": False,
-                }
-            )
+            effects = []
         else:
             for item in matches:
                 if not isinstance(item, dict):
@@ -462,25 +452,24 @@ class SemanticFakeChat:
                     kind = "CHALLENGE"
                     change = max(score, 0.75)
                 elif rel == "STRUCTURAL" or ntype == "DECISION":
-                    kind = "REFINE"
+                    kind = "REINFORCE"
                     change = max(score, 0.75)
                 elif ntype in {"MODEL", "QUESTION", "BOTTLENECK"}:
-                    kind = "REFINE"
+                    kind = "REINFORCE"
                     change = max(score, 0.65)
                 elif motor or ntype == "PROJECT":
-                    kind = "REFINE"
+                    kind = "REINFORCE"
                     change = max(score, 0.7)
                 else:
                     kind = "REINFORCE"
                     change = score
                 if minor:
-                    kind = "NO_MATERIAL_CHANGE"
-                    change = min(change, 0.15)
+                    continue
                 epi = 0.22 if marketing else (0.55 if disagreement else 0.32)
                 effects.append(
                     {
                         "target_kernel_node_id": nid,
-                        "effect": kind,
+                        "operation": kind,
                         "change_magnitude": change,
                         "epistemic_strength": epi,
                         "target_importance": importance.get(ntype, 0.5),
@@ -493,24 +482,12 @@ class SemanticFakeChat:
                     effects.append(
                         {
                             "target_kernel_node_id": None,
-                            "effect": "OPEN_NEW",
+                            "operation": "OPEN_NEW",
                             "change_magnitude": 0.55,
                             "epistemic_strength": 0.3,
                             "target_importance": 0.55,
                             "reason": "No Kernel target; possible new research direction.",
                             "exploration_candidate": True,
-                        }
-                    )
-                else:
-                    effects.append(
-                        {
-                            "target_kernel_node_id": None,
-                            "effect": "NO_MATERIAL_CHANGE",
-                            "change_magnitude": 0.1,
-                            "epistemic_strength": 0.15,
-                            "target_importance": 0.2,
-                            "reason": "No material Kernel effect.",
-                            "exploration_candidate": False,
                         }
                     )
         return {

@@ -39,7 +39,7 @@ def test_postgres_pipeline_smoke(client):
     src = add_text(client, "A technical paper about motor intelligence latency.", title="pg-smoke")
     result = analyze(client, src["id"])
     assert result["analysis_run"]["id"]
-    assert result["attention_plan"]["attention_state"]
+    assert result["attention_plan"]["disposition"]
 
 
 def test_postgres_pgvector_kernel_retrieval(engine, db):

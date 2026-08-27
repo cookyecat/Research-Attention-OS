@@ -120,9 +120,7 @@ def test_case_a_galaxy_general_wrc_folding(client: TestClient):
     assert {"P1", "BT1", "B1", "M1"} <= codes
 
     plan = result["attention_plan"]
-    assert plan["attention_state"] == "ENGAGE"
-    assert "VERIFY" in plan["processing_modes"]
-    assert "SYNTHESIZE" in plan["processing_modes"]
+    assert plan["disposition"] == "ENGAGE"
     assert result["features"]["sources_conflict"] is True
     assert result["features"]["evidence_links_present"] is True
 
@@ -150,9 +148,7 @@ def test_case_b_spaceclaw_worlddreamer(client: TestClient):
     codes = matched_codes(result, index)
     assert {"P2", "Q2", "B2"} <= codes
     plan = result["attention_plan"]
-    assert plan["attention_state"] == "ENGAGE"
-    assert "VERIFY" in plan["processing_modes"]
-    assert "SYNTHESIZE" in plan["processing_modes"]
+    assert plan["disposition"] == "ENGAGE"
     refs = " ".join(s["target_ref"].lower() for s in result["watch_suggestions"])
     assert "worlddreamer" in refs
     assert "orbitbench" in refs
@@ -171,9 +167,7 @@ def test_case_c_end_to_end_startup(client: TestClient):
     codes = matched_codes(result, index)
     assert {"P1", "Q1", "B1"} <= codes
     plan = result["attention_plan"]
-    assert plan["attention_state"] == "ENGAGE"
-    assert "VERIFY" in plan["processing_modes"]
-    assert "SYNTHESIZE" in plan["processing_modes"]
+    assert plan["disposition"] == "ENGAGE"
     questions = " ".join(result["model_delta"]["questions"]).lower()
     assert "temporal" in questions or "layers" in questions
     assert "good/bad" not in questions
@@ -191,11 +185,9 @@ def test_case_d_structural_relevance_equity(client: TestClient):
     assert features["decision_relevance"] >= 0.65
     assert "D1" in matched_codes(result, index)
     plan = result["attention_plan"]
-    assert plan["attention_state"] != "DROP"
-    assert plan["attention_state"] in {"ENGAGE", "AWARE"}
-    if plan["attention_state"] == "ENGAGE":
-        assert "SYNTHESIZE" in plan["processing_modes"]
-    else:
+    assert plan["disposition"] != "DROP"
+    assert plan["disposition"] in {"ENGAGE", "AWARE"}
+    if plan["disposition"] == "ENGAGE":
         assert plan["expected_output"] == "DECISION_REVIEW"
     joined = " ".join(result["model_delta"]["distinctions"]).lower()
     assert "equity" in joined and "employment" in joined
@@ -204,8 +196,8 @@ def test_case_d_structural_relevance_equity(client: TestClient):
 def test_case_e_generic_ai_news(client: TestClient):
     src = add_text(client, CASE_E, title="Minor model version")
     result = analyze(client, src["id"])
-    assert result["attention_plan"]["attention_state"] in {"AWARE", "DROP"}
-    assert result["attention_plan"]["attention_state"] != "ENGAGE"
+    assert result["attention_plan"]["disposition"] in {"AWARE", "DROP"}
+    assert result["attention_plan"]["disposition"] != "ENGAGE"
 
 
 def test_case_f_duplicate_media_coverage(client: TestClient):
@@ -220,9 +212,9 @@ def test_case_f_duplicate_media_coverage(client: TestClient):
     # After linking, later items should see a single independent source.
     last_ind = results[-1]["features"]["independent_source_count"]
     assert last_ind == 1
-    high = [r for r in results if r["attention_plan"]["attention_state"] == "ENGAGE"]
+    high = [r for r in results if r["attention_plan"]["disposition"] == "ENGAGE"]
     assert len(high) <= 1
-    drop_dup = [r for r in results if r["attention_plan"]["attention_state"] == "DROP"]
+    drop_dup = [r for r in results if r["attention_plan"]["disposition"] == "DROP"]
     assert len(drop_dup) >= 3
     graph = client.get(f"/sources/{ids[1]}/graph").json()
     assert graph["independence"]["independent_sources"] == 1
@@ -291,9 +283,8 @@ def test_case_i_disagreement_not_filtered(client: TestClient):
     src = add_text(client, CASE_I, title="Opposite of B1")
     result = analyze(client, src["id"])
     plan = result["attention_plan"]
-    assert plan["attention_state"] == "ENGAGE"
-    assert "VERIFY" in plan["processing_modes"]
-    assert plan["attention_state"] != "DROP"
+    assert plan["disposition"] == "ENGAGE"
+    assert plan["disposition"] != "DROP"
     assert "disagreement" in plan["reason"].lower() or "verif" in plan["reason"].lower()
 
 
@@ -312,8 +303,7 @@ def test_case_j_runtime_context_changes_route(client: TestClient):
     )
     assert open_ctx.status_code == 200, open_ctx.text
     plan1 = open_ctx.json()["attention_plan"]
-    assert plan1["attention_state"] == "ENGAGE"
-    assert "LEARN" in plan1["processing_modes"]
+    assert plan1["disposition"] == "ENGAGE"
 
     deadline = (datetime.now(timezone.utc) + timedelta(hours=2)).isoformat()
     tight = client.post(
@@ -330,7 +320,7 @@ def test_case_j_runtime_context_changes_route(client: TestClient):
     )
     assert tight.status_code == 200, tight.text
     plan2 = tight.json()["attention_plan"]
-    assert plan2["attention_state"] in {"WATCH", "DROP"} or plan2["urgency"] == "BACKGROUND"
+    assert plan2["disposition"] in {"WATCH", "DROP"} or plan2["urgency"] == "BACKGROUND"
     assert plan2["urgency"] in {"BACKGROUND", "NORMAL"}
     assert plan2["urgency"] != "PREEMPT"
 
@@ -339,9 +329,8 @@ def test_case_k_preempt(client: TestClient):
     src = add_text(client, CASE_K, title="Novelty collision paper")
     result = analyze(client, src["id"])
     plan = result["attention_plan"]
-    assert plan["attention_state"] == "ENGAGE"
+    assert plan["disposition"] == "ENGAGE"
     assert plan["urgency"] == "PREEMPT"
-    assert "VERIFY" in plan["processing_modes"]
     assert "interrupt" in plan["reason"].lower() or "preempt" in plan["reason"].lower()
 
 
@@ -369,8 +358,8 @@ def test_case_l_watch_is_not_bookmark(client: TestClient):
     )
     assert fire.status_code == 200, fire.text
     body = fire.json()
-    assert body["analysis"]["attention_plan"]["attention_state"] in {"ENGAGE", "WATCH", "AWARE"}
-    if body["analysis"]["attention_plan"]["attention_state"] == "ENGAGE":
+    assert body["analysis"]["attention_plan"]["disposition"] in {"ENGAGE", "WATCH", "AWARE"}
+    if body["analysis"]["attention_plan"]["disposition"] == "ENGAGE":
         assert body["watch"]["status"] == "PROMOTED"
 
 
@@ -391,7 +380,7 @@ def test_case_m_claim_observation_inference(client: TestClient):
 def test_case_n_promotional_drop(client: TestClient):
     src = add_text(client, CASE_N, title="Lifestyle robot ad")
     result = analyze(client, src["id"])
-    assert result["attention_plan"]["attention_state"] == "DROP"
+    assert result["attention_plan"]["disposition"] == "DROP"
     got = client.get(f"/sources/{src['id']}")
     assert got.status_code == 200
     assert got.json()["id"] == src["id"]

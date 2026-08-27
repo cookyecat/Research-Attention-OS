@@ -118,7 +118,7 @@ class EvidenceReasoningResponse(StrictModel):
 
 class CognitiveEffectItem(StrictModel):
     target_kernel_node_id: UUID | None = None
-    effect: Literal["REINFORCE", "CHALLENGE", "REFINE", "OPEN_NEW", "NO_MATERIAL_CHANGE"]
+    operation: Literal["REINFORCE", "CHALLENGE", "OPEN_NEW"]
     change_magnitude: float = Field(ge=0.0, le=1.0)
     epistemic_strength: float = Field(ge=0.0, le=1.0)
     target_importance: float = Field(ge=0.0, le=1.0)

@@ -6,7 +6,7 @@ from uuid import uuid4
 
 from fastapi.testclient import TestClient
 
-from app.enums import AttentionState, ClaimType, CognitiveEffectKind, ExpectedOutput, ProcessingMode, Urgency
+from app.enums import Disposition, ClaimType, CognitiveEffectKind, ExpectedOutput, Urgency
 from app.services.cognitive_impact import (
     CognitiveEffect,
     CognitiveImpactAssessment,
@@ -60,7 +60,7 @@ def _match(node_type: str = "PROJECT", relevance_type: str = "TOPIC", score: flo
 def _effect(match: KernelMatch | None, kind: CognitiveEffectKind, **overrides) -> CognitiveEffect:
     base = dict(
         target_kernel_node_id=match.node_id if match else None,
-        effect=kind,
+        operation=kind,
         change_magnitude=0.7,
         epistemic_strength=0.25,
         target_importance=0.75,
@@ -83,57 +83,53 @@ def _assessment(*effects: CognitiveEffect, **kwargs) -> CognitiveImpactAssessmen
 def test_high_topic_without_material_change_does_not_engage():
     match = _match("PROJECT", "TOPIC", 0.88)
     assessment = _assessment(
-        _effect(match, CognitiveEffectKind.NO_MATERIAL_CHANGE, change_magnitude=0.12, epistemic_strength=0.2)
+        _effect(match, CognitiveEffectKind.REINFORCE, change_magnitude=0.12, epistemic_strength=0.2)
     )
     plan = route(
         _features(topic_relevance=0.88, kernel_delta=0.12, change_magnitude=0.12, epistemic_strength=0.2),
         assessment=assessment,
         matches=[match],
     )
-    assert plan.attention_state != AttentionState.ENGAGE
+    assert plan.disposition != Disposition.ENGAGE
 
 
 def test_low_topic_structural_effect_may_engage():
     match = _match("MODEL", "STRUCTURAL", 0.8)
     assessment = _assessment(
-        _effect(match, CognitiveEffectKind.REFINE, change_magnitude=0.7, epistemic_strength=0.35, target_importance=0.75)
+        _effect(match, CognitiveEffectKind.REINFORCE, change_magnitude=0.7, epistemic_strength=0.35, target_importance=0.75)
     )
     plan = route(
         _features(topic_relevance=0.15, structural_relevance=0.8, kernel_delta=0.7, decision_relevance=0.1),
         assessment=assessment,
         matches=[match],
     )
-    assert plan.attention_state == AttentionState.ENGAGE
-    assert ProcessingMode.SYNTHESIZE in plan.processing_modes
+    assert plan.disposition == Disposition.ENGAGE
 
 
 def test_high_change_low_epistemic_favors_verify():
     match = _match("MODEL", "TOPIC", 0.7)
     assessment = _assessment(
-        _effect(match, CognitiveEffectKind.REFINE, change_magnitude=0.7, epistemic_strength=0.2, target_importance=0.75)
+        _effect(match, CognitiveEffectKind.REINFORCE, change_magnitude=0.7, epistemic_strength=0.2, target_importance=0.75)
     )
     plan = route(
         _features(topic_relevance=0.7, kernel_delta=0.7, change_magnitude=0.7, epistemic_strength=0.2, evidence_maturity=0.35),
         assessment=assessment,
         matches=[match],
     )
-    assert plan.attention_state == AttentionState.ENGAGE
-    assert ProcessingMode.VERIFY in plan.processing_modes
-    assert ProcessingMode.SYNTHESIZE in plan.processing_modes
+    assert plan.disposition == Disposition.ENGAGE
 
 
 def test_strong_target_refinement_synthesizes():
     match = _match("MODEL", "TOPIC", 0.7)
     assessment = _assessment(
-        _effect(match, CognitiveEffectKind.REFINE, change_magnitude=0.7, epistemic_strength=0.35, target_importance=0.8)
+        _effect(match, CognitiveEffectKind.REINFORCE, change_magnitude=0.7, epistemic_strength=0.35, target_importance=0.8)
     )
     plan = route(
         _features(topic_relevance=0.7, kernel_delta=0.7, bottleneck_alignment=0.2),
         assessment=assessment,
         matches=[match],
     )
-    assert plan.attention_state == AttentionState.ENGAGE
-    assert ProcessingMode.SYNTHESIZE in plan.processing_modes
+    assert plan.disposition == Disposition.ENGAGE
 
 
 def test_challenge_on_belief_favors_verify():
@@ -146,24 +142,21 @@ def test_challenge_on_belief_favors_verify():
         assessment=assessment,
         matches=[match],
     )
-    assert plan.attention_state == AttentionState.ENGAGE
-    assert ProcessingMode.VERIFY in plan.processing_modes
-    assert ProcessingMode.SYNTHESIZE in plan.processing_modes
+    assert plan.disposition == Disposition.ENGAGE
 
 
 def test_decision_target_effect_is_decision_review():
     match = _match("DECISION", "STRUCTURAL", 0.85)
     assessment = _assessment(
-        _effect(match, CognitiveEffectKind.REFINE, change_magnitude=0.75, epistemic_strength=0.4, target_importance=0.85)
+        _effect(match, CognitiveEffectKind.REINFORCE, change_magnitude=0.75, epistemic_strength=0.4, target_importance=0.85)
     )
     plan = route(
         _features(topic_relevance=0.2, decision_relevance=0.2, structural_relevance=0.85),
         assessment=assessment,
         matches=[match],
     )
-    assert plan.attention_state == AttentionState.ENGAGE
+    assert plan.disposition == Disposition.ENGAGE
     assert plan.expected_output == ExpectedOutput.DECISION_REVIEW
-    assert ProcessingMode.SYNTHESIZE in plan.processing_modes
 
 
 def test_high_decision_relevance_without_decision_effect_is_not_decision_review():
@@ -182,27 +175,27 @@ def test_high_decision_relevance_without_decision_effect_is_not_decision_review(
 def test_bottleneck_effect_can_be_priority():
     match = _match("BOTTLENECK", "BOTTLENECK", 0.8)
     assessment = _assessment(
-        _effect(match, CognitiveEffectKind.REFINE, change_magnitude=0.75, epistemic_strength=0.3, target_importance=0.8)
+        _effect(match, CognitiveEffectKind.REINFORCE, change_magnitude=0.75, epistemic_strength=0.3, target_importance=0.8)
     )
     plan = route(
         _features(bottleneck_alignment=0.2, topic_relevance=0.4),
         assessment=assessment,
         matches=[match],
     )
-    assert plan.attention_state == AttentionState.ENGAGE
+    assert plan.disposition == Disposition.ENGAGE
     assert plan.urgency == Urgency.PRIORITY
 
 
 def test_runtime_deadline_still_watch_when_not_threatened():
     match = _match("MODEL")
-    assessment = _assessment(_effect(match, CognitiveEffectKind.REFINE, change_magnitude=0.8))
+    assessment = _assessment(_effect(match, CognitiveEffectKind.REINFORCE, change_magnitude=0.8))
     plan = route(
         _features(),
         RuntimeView(deadline_minutes=60, interruptibility="LOW"),
         assessment=assessment,
         matches=[match],
     )
-    assert plan.attention_state == AttentionState.WATCH
+    assert plan.disposition == Disposition.WATCH
     assert plan.urgency == Urgency.BACKGROUND
     assert plan.urgency != Urgency.PREEMPT
 
@@ -242,12 +235,11 @@ def test_promotional_reinforce_keeps_epistemic_strength_low():
         independent_source_count=1,
     )
     assert assessment.effects
-    assert any(e.effect == CognitiveEffectKind.REINFORCE or e.effect == CognitiveEffectKind.REFINE for e in assessment.effects)
+    assert any(e.operation == CognitiveEffectKind.REINFORCE for e in assessment.effects)
     assert all(e.epistemic_strength <= 0.35 for e in assessment.effects)
     assert assessment.features.epistemic_strength <= 0.35
     plan = route(assessment.features, assessment=assessment)
-    assert plan.attention_state != AttentionState.DROP
-    assert ProcessingMode.LEARN not in plan.processing_modes or ProcessingMode.VERIFY in plan.processing_modes
+    assert plan.disposition != Disposition.DROP
 
 
 def test_exploration_open_new_is_not_automatic_drop():
@@ -262,10 +254,10 @@ def test_exploration_open_new_is_not_automatic_drop():
         [],
         independent_source_count=1,
     )
-    assert any(e.effect == CognitiveEffectKind.OPEN_NEW for e in assessment.effects)
+    assert any(e.operation == CognitiveEffectKind.OPEN_NEW for e in assessment.effects)
     assert assessment.exploration_candidate is True
     plan = route(assessment.features, assessment=assessment)
-    assert plan.attention_state != AttentionState.DROP
+    assert plan.disposition != Disposition.DROP
 
 
 def test_irrelevant_hype_is_no_material_change_and_dropped():
@@ -280,9 +272,9 @@ def test_irrelevant_hype_is_no_material_change_and_dropped():
         extraction,
         [],
     )
-    assert all(e.effect == CognitiveEffectKind.NO_MATERIAL_CHANGE for e in assessment.effects)
+    assert not assessment.effects
     plan = route(assessment.features, assessment=assessment)
-    assert plan.attention_state in {AttentionState.DROP, AttentionState.AWARE}
+    assert plan.disposition in {Disposition.DROP, Disposition.AWARE}
 
 
 def test_cognitive_effect_does_not_mutate_kernel(client: TestClient):
@@ -318,7 +310,7 @@ def test_ground_effects_caps_single_source_epistemic_strength():
     raw = [
         CognitiveEffect(
             target_kernel_node_id=match.node_id,
-            effect=CognitiveEffectKind.REINFORCE,
+            operation=CognitiveEffectKind.REINFORCE,
             change_magnitude=0.6,
             epistemic_strength=0.9,
             target_importance=0.75,
@@ -326,7 +318,7 @@ def test_ground_effects_caps_single_source_epistemic_strength():
         )
     ]
     grounded = ground_effects(raw, [match], extraction, independent_source_count=1)
-    assert grounded[0].effect == CognitiveEffectKind.REINFORCE
+    assert grounded[0].operation == CognitiveEffectKind.REINFORCE
     assert grounded[0].change_magnitude == 0.6
     assert grounded[0].epistemic_strength <= 0.25
     assert epistemic_cap(extraction, independent_source_count=1) <= 0.25
@@ -338,3 +330,49 @@ def test_impact_assessment_is_run_scoped_dataclass():
     assert "target_kernel_node_id" in CognitiveEffect(
         None, CognitiveEffectKind.OPEN_NEW, 0.5, 0.2, 0.5, "new", True
     ).as_dict()
+
+
+def test_primary_update_rejects_untargeted_reinforce_and_challenge():
+    from app.services.cognitive_impact import primary_update
+
+    illegal = _assessment(
+        _effect(None, CognitiveEffectKind.CHALLENGE, change_magnitude=0.8),
+        _effect(None, CognitiveEffectKind.REINFORCE, change_magnitude=0.7),
+    )
+    assert primary_update(illegal) == {"operation": None, "target_node_id": None}
+
+    match = _match("BELIEF")
+    mixed = _assessment(
+        _effect(None, CognitiveEffectKind.CHALLENGE, change_magnitude=0.8),
+        _effect(match, CognitiveEffectKind.REINFORCE, change_magnitude=0.6),
+    )
+    update = primary_update(mixed)
+    assert update["operation"] == CognitiveEffectKind.REINFORCE
+    assert update["target_node_id"] == str(match.node_id)
+
+    open_new = _assessment(_effect(None, CognitiveEffectKind.OPEN_NEW, change_magnitude=0.6))
+    assert primary_update(open_new) == {"operation": CognitiveEffectKind.OPEN_NEW, "target_node_id": None}
+
+
+def test_projection_never_emits_untargeted_reinforce_or_challenge():
+    from app.services.cognitive_impact import primary_update
+    from app.services.scheduler import _projection_assessment
+
+    conflicted = _projection_assessment(_features(disagreement=0.8, sources_conflict=True))
+    assert all(e.operation == CognitiveEffectKind.OPEN_NEW for e in conflicted.effects)
+    assert all(e.target_kernel_node_id is None for e in conflicted.effects)
+    assert primary_update(conflicted)["operation"] == CognitiveEffectKind.OPEN_NEW
+    assert primary_update(conflicted)["target_node_id"] is None
+
+    material = _projection_assessment(_features(change_magnitude=0.7, disagreement=0.1))
+    assert material.effects == []
+    assert primary_update(material) == {"operation": None, "target_node_id": None}
+
+
+def test_untargeted_challenge_does_not_count_as_challenge_route():
+    from app.services.cognitive_impact import has_effect
+
+    assessment = _assessment(_effect(None, CognitiveEffectKind.CHALLENGE, change_magnitude=0.8))
+    assert has_effect(assessment, CognitiveEffectKind.CHALLENGE) is False
+    plan = route(_features(disagreement=0.8), assessment=assessment)
+    assert plan.disposition != Disposition.ENGAGE

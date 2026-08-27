@@ -106,13 +106,11 @@ class KernelNodeType(StrEnum):
 
 
 class CognitiveEffectKind(StrEnum):
-    """Direction of a potential Kernel effect. Not evidential force (see Stance)."""
+    """Cognitive Update operation. Strengthen / change existing, or create a new branch."""
 
     REINFORCE = "REINFORCE"
     CHALLENGE = "CHALLENGE"
-    REFINE = "REFINE"
     OPEN_NEW = "OPEN_NEW"
-    NO_MATERIAL_CHANGE = "NO_MATERIAL_CHANGE"
 
 
 class KernelRelationship(StrEnum):
@@ -129,19 +127,22 @@ class KernelRelationship(StrEnum):
     DERIVED_FROM = "DERIVED_FROM"
 
 
-class AttentionState(StrEnum):
+class Disposition(StrEnum):
+    """How much human cognitive resource this information is worth."""
+
     DROP = "DROP"
     AWARE = "AWARE"
     WATCH = "WATCH"
     ENGAGE = "ENGAGE"
 
 
-class ProcessingMode(StrEnum):
-    SCAN = "SCAN"
-    LEARN = "LEARN"
-    VERIFY = "VERIFY"
-    DEEP_DIVE = "DEEP_DIVE"
-    SYNTHESIZE = "SYNTHESIZE"
+# SCAN / LEARN / REASON / CREATE interpret Disposition depth; they are not a system dimension.
+DISPOSITION_DEPTH = {
+    Disposition.DROP: (),
+    Disposition.AWARE: ("SCAN",),
+    Disposition.WATCH: ("LEARN",),
+    Disposition.ENGAGE: ("REASON", "CREATE"),
+}
 
 
 class Urgency(StrEnum):

@@ -50,7 +50,7 @@ export default function AttentionPage() {
     loadAnalysis("read");
   }, [sourceId]);
 
-  const shown = useMemo(() => plans.filter((p) => p.attention_state !== "DROP" || sourceId), [plans, sourceId]);
+  const shown = useMemo(() => plans.filter((p) => p.disposition !== "DROP" || sourceId), [plans, sourceId]);
 
   async function afterCommit() {
     await loadPlans();
@@ -89,11 +89,11 @@ export default function AttentionPage() {
           <div className="card">
             <h3>AttentionPlan</h3>
             <div className="row">
-              <span className={`badge ${analysis.attention_plan.attention_state}`}>{analysis.attention_plan.attention_state}</span>
+              <span className={`badge ${analysis.disposition || analysis.attention_plan.disposition}`}>{analysis.disposition || analysis.attention_plan.disposition}</span>
+              {analysis.update?.operation && (
+                <span className="badge">{analysis.update.operation}{analysis.update.target_node_id ? ` → ${analysis.update.target_node_id}` : ""}</span>
+              )}
               <span className={`badge ${analysis.attention_plan.urgency}`}>{analysis.attention_plan.urgency}</span>
-              {(analysis.attention_plan.processing_modes || []).map((m: string) => (
-                <span className="badge" key={m}>{m}</span>
-              ))}
             </div>
             <p>{analysis.attention_plan.reason}</p>
           </div>
@@ -125,8 +125,8 @@ export default function AttentionPage() {
             ))}
           </div>
           <div className="card">
-            <h3>What could this change?</h3>
-            <p>{analysis.model_delta.summary}</p>
+            <h3>Cognitive delta</h3>
+            <p>{analysis.delta_content || analysis.model_delta.summary}</p>
             <ul>
               {(analysis.model_delta.distinctions || []).map((d: string) => (
                 <li key={d}>{d}</li>
@@ -149,10 +149,10 @@ export default function AttentionPage() {
       {shown.map((p) => (
         <div className="card" key={p.id}>
           <div className="row">
-            <span className={`badge ${p.attention_state}`}>{p.attention_state}</span>
-            {(p.processing_modes || []).map((m: string) => (
-              <span className="badge" key={m}>{m}</span>
-            ))}
+            <span className={`badge ${p.disposition}`}>{p.disposition}</span>
+            {p.update?.operation && (
+              <span className="badge">{p.update.operation}</span>
+            )}
           </div>
           <p>{p.reason}</p>
         </div>

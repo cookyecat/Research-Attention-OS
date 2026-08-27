@@ -23,15 +23,11 @@ CASES: list[dict] = mod.CASES
 def _check(result: dict, case: dict, index: dict[str, dict]) -> None:
     expected = case["expected"]
     plan = result["attention_plan"]
-    assert plan["attention_state"] in expected["attention_state"], (
+    assert plan["disposition"] in expected["disposition"], (
         case["id"],
-        plan["attention_state"],
-        expected["attention_state"],
+        plan["disposition"],
+        expected["disposition"],
     )
-    if expected["acceptable_processing_modes"] and plan["attention_state"] == "ENGAGE":
-        modes = set(plan["processing_modes"] or [])
-        for mode in expected["acceptable_processing_modes"]:
-            assert mode in modes, (case["id"], mode, modes)
     codes = matched_codes(result, index)
     for code in expected["expected_kernel_matches"]:
         if code in index:
@@ -54,7 +50,7 @@ def _check(result: dict, case: dict, index: dict[str, dict]) -> None:
         + (result["model_delta"].get("what_could_change") or [])
     ).lower()
     for topic in expected["expected_delta_topics"]:
-        if plan["attention_state"] in {"ENGAGE", "WATCH", "AWARE"}:
+        if plan["disposition"] in {"ENGAGE", "WATCH", "AWARE"}:
             assert topic.lower() in delta_blob or topic.lower() in blob or topic.lower() in str(result["kernel_matches"]).lower(), (
                 case["id"],
                 topic,

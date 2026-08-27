@@ -62,7 +62,7 @@ Information Candidate
 The LLM may propose KernelPatch objects but may not directly commit Belief, Model, Hypothesis, or Decision changes. Human Accept or Modify is required.
 
 ### Rule 4 — Disagreement is not low relevance
-High relevance + high disagreement should usually increase VERIFY value.
+High relevance + high disagreement should usually raise `disposition` toward ENGAGE with `update.operation = CHALLENGE`, not DROP.
 
 ### Rule 5 — Claim, Observation, and Inference remain distinct
 "Company says X" must never become "X is true". AI inference may not be persisted as observation.

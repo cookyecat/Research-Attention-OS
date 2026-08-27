@@ -385,7 +385,7 @@ class ModelBackedCognitiveProvider:
             effects.append(
                 CognitiveEffect(
                     target_kernel_node_id=item.target_kernel_node_id,
-                    effect=CognitiveEffectKind(item.effect),
+                    operation=CognitiveEffectKind(item.operation),
                     change_magnitude=item.change_magnitude,
                     epistemic_strength=item.epistemic_strength,
                     target_importance=importance,

@@ -313,13 +313,11 @@ AttentionPlan:
   id: UUID
   candidate_type: SOURCE | EVENT | CLAIM | OBSERVATION
   candidate_id: UUID
-  attention_state: DROP | AWARE | WATCH | ENGAGE
-  processing_modes:
-    - SCAN
-    - LEARN
-    - VERIFY
-    - DEEP_DIVE
-    - SYNTHESIZE
+  disposition: DROP | AWARE | WATCH | ENGAGE
+  update:
+    operation: REINFORCE | CHALLENGE | OPEN_NEW | null
+    target_node_id: UUID | snapshot-id | null
+  delta_content: string
   urgency: BACKGROUND | NORMAL | PRIORITY | PREEMPT
   cognitive_budget_minutes: integer | null
   kernel_target_ids: [UUID]

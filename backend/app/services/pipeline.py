@@ -16,7 +16,7 @@ from app.models.observation import Observation
 from app.models.scheduler import AttentionPlan, RuntimeContext
 from app.models.source import Source
 from app.models.watch import Watch, WatchTrigger
-from app.services.cognitive_impact import CognitiveImpactAssessment
+from app.services.cognitive_impact import CognitiveImpactAssessment, primary_update
 from app.services.deltas import ModelDelta, suggest_watches
 from app.services.extraction import (
     ExtractionResult,
@@ -381,8 +381,8 @@ def run_pipeline(
         plan = AttentionPlan(
             candidate_type=CandidateType.SOURCE,
             candidate_id=source.id,
-            attention_state=draft.attention_state,
-            processing_modes=[m.value for m in draft.processing_modes],
+            disposition=draft.disposition.value,
+            processing_modes=[],
             urgency=draft.urgency,
             cognitive_budget_minutes=draft.cognitive_budget_minutes,
             kernel_target_ids=[str(m.node_id) for m in matches],
@@ -416,7 +416,7 @@ def run_pipeline(
         )
         db.add(plan)
         db.flush()
-        if draft.attention_state.value == "DROP":
+        if draft.disposition.value == "DROP":
             delta = ModelDelta(
                 summary="No material cognitive value relative to cost; synthesis skipped.",
                 admission_allowed=False,
@@ -429,7 +429,7 @@ def run_pipeline(
             evidence_ids = [str(link.id) for link in links]
             patch_drafts = provider.propose_patches(blob, delta, matches, features, nodes, evidence_ids)
         patches: list[KernelPatch] = []
-        if draft.attention_state.value != "DROP":
+        if draft.disposition.value != "DROP":
             for pd in patch_drafts:
                 patches.append(
                     create_patch(
@@ -447,7 +447,7 @@ def run_pipeline(
                 )
         watch_suggestions = suggest_watches(blob, features, delta)
         created_watches: list[Watch] = []
-        if persist_suggested_watches or draft.attention_state.value == "WATCH":
+        if persist_suggested_watches or draft.disposition.value == "WATCH":
             for sug in watch_suggestions:
                 watch = Watch(
                     target_type=sug["target_type"],
@@ -544,8 +544,8 @@ def _reschedule(
     plan = AttentionPlan(
         candidate_type=CandidateType.SOURCE,
         candidate_id=source.id,
-        attention_state=draft.attention_state,
-        processing_modes=[m.value for m in draft.processing_modes],
+        disposition=draft.disposition.value,
+        processing_modes=[],
         urgency=draft.urgency,
         cognitive_budget_minutes=draft.cognitive_budget_minutes,
         kernel_target_ids=(payload.get("attention_plan") or {}).get("kernel_target_ids") or [],
@@ -588,8 +588,14 @@ def serialize_analysis(
     retrieval: dict | None = None,
     assessment: CognitiveImpactAssessment | None = None,
 ) -> dict:
+    update = primary_update(assessment)
+    # DROP skips absorption; do not surface the skip rationale as a cognitive delta.
+    delta_content = "" if str(plan.disposition) == "DROP" else (getattr(delta, "summary", None) or "")
     return {
         "source_id": str(source.id),
+        "disposition": plan.disposition,
+        "update": update,
+        "delta_content": delta_content,
         "claims": [_claim_dict(c) for c in claims],
         "observations": [_obs_dict(o) for o in observations],
         "inferences": [_inf_dict(i) for i in inferences],
@@ -614,8 +620,8 @@ def serialize_analysis(
         ],
         "attention_plan": {
             "id": str(plan.id),
-            "attention_state": plan.attention_state,
-            "processing_modes": plan.processing_modes,
+            "disposition": plan.disposition,
+            "update": update,
             "urgency": plan.urgency,
             "cognitive_budget_minutes": plan.cognitive_budget_minutes,
             "kernel_target_ids": plan.kernel_target_ids,

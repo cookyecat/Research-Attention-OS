@@ -32,7 +32,7 @@ def test_paraphrase_a_weakens_not_refutes(model_client: TestClient):
             extra = [add_observation(model_client, variant["obs"], title=f"A-obs-{i}")["id"]]
         result = analyze(model_client, src["id"], extra_ids=extra)
         plan = result["attention_plan"]
-        assert plan["attention_state"] != "DROP", variant["article"][:80]
+        assert plan["disposition"] != "DROP", variant["article"][:80]
         blob = " ".join(
             [plan["reason"]]
             + [o["text"] for o in result["observations"]]
@@ -53,8 +53,7 @@ def test_paraphrase_c_reframes_layers(model_client: TestClient):
         src = add_text(model_client, variant["article"], title=f"C-{i}")
         extra = [add_observation(model_client, variant["obs"], title=f"C-obs-{i}")["id"]] if variant.get("obs") else []
         result = analyze(model_client, src["id"], extra_ids=extra)
-        assert result["attention_plan"]["attention_state"] == "ENGAGE"
-        assert "VERIFY" in result["attention_plan"]["processing_modes"]
+        assert result["attention_plan"]["disposition"] == "ENGAGE"
         questions = " ".join(result["model_delta"].get("questions") or []).lower()
         distinctions = " ".join(result["model_delta"].get("distinctions") or []).lower()
         joined = questions + " " + distinctions
@@ -67,7 +66,7 @@ def test_paraphrase_d_structural(model_client: TestClient):
     for i, variant in enumerate(PARAPHRASES["D"]):
         src = add_text(model_client, variant["article"], title=f"D-{i}")
         result = analyze(model_client, src["id"])
-        assert result["attention_plan"]["attention_state"] != "DROP", variant["article"][:80]
+        assert result["attention_plan"]["disposition"] != "DROP", variant["article"][:80]
         assert "D1" in matched_codes(result, index) or result["features"]["structural_relevance"] >= 0.65
 
 
@@ -89,15 +88,14 @@ def test_paraphrase_n_drop(model_client: TestClient):
     for i, variant in enumerate(PARAPHRASES["N"]):
         src = add_text(model_client, variant["article"], title=f"N-{i}")
         result = analyze(model_client, src["id"])
-        assert result["attention_plan"]["attention_state"] == "DROP"
+        assert result["attention_plan"]["disposition"] == "DROP"
 
 
 def test_paraphrase_i_verify_not_drop(model_client: TestClient):
     for i, variant in enumerate(PARAPHRASES["I"]):
         src = add_text(model_client, variant["article"], title=f"I-{i}")
         result = analyze(model_client, src["id"])
-        assert result["attention_plan"]["attention_state"] != "DROP"
-        assert "VERIFY" in result["attention_plan"]["processing_modes"]
+        assert result["attention_plan"]["disposition"] != "DROP"
 
 
 def test_paraphrase_o_news_no_silent_kernel(model_client: TestClient):
