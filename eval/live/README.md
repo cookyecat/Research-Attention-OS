@@ -12,34 +12,53 @@ python eval/live/run_live_eval.py --manifest eval/live/manifest.example.yaml
 
 Requires `RAOS_COGNITIVE_PROVIDER=model` and `RAOS_LLM_API_KEY` for a real run.
 
-## Human Gold v2 (fixed template)
+## Human Gold (fixed template)
 
-Label every case with these **five** fields only. Human Gold is never produced by a model.
+Label every case with these **three** blocks only. Human Gold is never produced by a model.
 
 ```yaml
 human_gold:
-  attention_state: [ENGAGE]                 # multi-select: DROP | AWARE | WATCH | ENGAGE
-  processing_modes: [VERIFY, SYNTHESIZE]    # multi-select: SCAN | LEARN | VERIFY | DEEP_DIVE | SYNTHESIZE
-  kernel_targets: [Motor Intelligence]      # Kernel titles/ids, or [NONE]
-  cognitive_effects: [REFINE, REINFORCE]    # multi-select: REINFORCE | CHALLENGE | REFINE | OPEN_NEW | NO_MATERIAL_CHANGE
-  expected_delta: "If absorbed, refine the motor/cognitive split without treating the source as proof."
+  disposition: WATCH
+
+  update:
+    operation: REINFORCE
+    target_node_id: "P1"   # Kernel Snapshot picker id, or empty for OPEN_NEW
+
+  delta_content: "吸收这条信息后，具体形成、改变或新增了什么认知"
 ```
 
-| Field | Kind | Locate / Estimate / Route |
-|---|---|---|
-| `kernel_targets` | choice (nodes or `NONE`) | Locate |
-| `cognitive_effects` | multi-select | Estimate |
-| `expected_delta` | free text | Estimate |
-| `attention_state` | multi-select (acceptable set) | Route |
-| `processing_modes` | multi-select | Route |
+`target_node_id` is a selectable reference into the **fixed Kernel Snapshot** (`eval/live/kernel_snapshot.py`), not a topic tag and not a recommendation from the current model prediction. Pick by node title; the program stores the snapshot id. Annotators do not need Kernel ontology (PROJECT / BELIEF / QUESTION / MODEL / BOTTLENECK).
 
-Same-length `kernel_targets` and `cognitive_effects` zip into target–effect pairs. Otherwise `cognitive_effects` is the acceptable set for every listed target.
+| Field | Kind | Meaning |
+|---|---|---|
+| `disposition` | enum | DROP / AWARE / WATCH / ENGAGE |
+| `update.operation` | enum | REINFORCE / CHALLENGE / OPEN_NEW |
+| `update.target_node_id` | snapshot picker | required for REINFORCE / CHALLENGE; empty for OPEN_NEW |
+| `delta_content` | free text | cognitive delta after absorbing — not a source claim or evidence quote |
+
+Disposition (SCAN / LEARN / REASON / CREATE are internal interpretations, not annotation fields):
+
+| Value | Meaning |
+|---|---|
+| DROP | 不用管 |
+| AWARE | 知道就行 |
+| WATCH | 先不深挖，但继续盯 |
+| ENGAGE | 现在就认真处理 |
+
+Update operation:
+
+| Value | Meaning |
+|---|---|
+| REINFORCE | Strengthen Existing — 加固已有 cognitive branch |
+| CHALLENGE | Change Existing — 已有 branch 需要被修改、削弱或推翻 |
+| OPEN_NEW | Create New — Kernel 中没有合适落点，产生新的 cognitive branch |
 
 Empty gold ⇒ `UNLABELED`: the run is stored, **excluded from accuracy denominators**.
 
 ## What Codex provides
 
 - schema (`schema.py`)
+- Kernel Snapshot picker (`kernel_snapshot.py`)
 - example manifest (slots only)
 - runner
 - metrics
@@ -75,18 +94,17 @@ Each run writes `eval/live/results/<timestamp>/`:
 - `summary.md`
 - `cases.jsonl`
 
-The report scores the v2 Human Gold fields:
+The report scores the Human Gold contract:
 
-- Attention hit
-- Processing Mode acceptable (predicted ⊆ gold)
-- Kernel Target hit (`NONE` is first-class)
-- Cognitive Effect acceptable
-- Expected Delta present for human review (not auto-scored)
+- Disposition hit
+- Update Operation hit
+- Target hit (Kernel Snapshot node id)
+- DeltaContent present for human review (not auto-scored)
 
-`cases.jsonl` includes `stage_provenance`, `attention_state`, `processing_mode`, kernel matches, `cognitive_impact`, `evidence_stage_skipped`, and `delta_summary`.
+`cases.jsonl` includes `stage_provenance`, `attention_state` (predicted disposition), `processing_mode`, kernel matches, `cognitive_impact`, `evidence_stage_skipped`, and `delta_summary`.
 
 Live Eval v0.1.1+ runs the **production pipeline** (chunking → extraction → evidence → query embedding → kernel match → cognitive impact assessment → Attention Policy → model delta). It does not reimplement an eval-only path.
 
-Legacy gold keys (`must_match_kernel`, `key_claims`, `expected_effects`, …) still parse if present. They are not part of the default template and are not required to run v2 Live Eval.
+Legacy gold keys (`attention_state`, `processing_modes`, `kernel_targets`, `cognitive_effects`, `expected_delta`, `must_match_kernel`, `expected_effects`, …) still parse if present and are mapped onto the 3-block contract. They are not part of the default template and are not used to label new cases.
 
 A model-stage fallback is recorded as `prediction_source: "rule-fallback"` with `model_prediction: false` and is excluded from model accuracy denominators. Do not treat rule-fallback output as a successful model prediction.

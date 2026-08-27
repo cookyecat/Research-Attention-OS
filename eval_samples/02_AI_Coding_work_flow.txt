@@ -1,0 +1,25 @@
+Lauren Tan
+
+@poteto
+
+是 Cursor 的工程师，之前在 Meta 做 React Compiler，也在 Netflix 做过 tech lead 和工程经理。
+
+她加入 Cursor 只有五个月。第一个月还在熟悉代码库，上个月已经合入了 1000 个 PR。这个月才过去 12 天，她又合入了接近 800 个。
+
+这不是 AI slop code，而是你每天都在使用的 Cursor 的代码。
+
+很多人，包括 Claude Code 的 Boris，都提过自己借助 coding agent 达到了类似的效率。但真正愿意把工作方法完整分享出来的人并不多。Lauren 在这个一小时的视频里，几乎是手把手讲了她怎么走到这一步。
+
+她认为，用 AI coding 最大的问题不是生成代码，而是验证代码。
+
+如果 agent 不能自己运行产品、操作界面、读取 CPU trace 和 heap snapshot、打开模拟器并复现问题，那么最后还是要由你来检查结果。你就是整个流程的 verifier，也是无法并行工作的瓶颈。
+
+Lauren 的做法，是先给 agent 建立完整的验证能力：让它能通过 Chrome DevTools 或模拟器实际操作产品，再用 feature map 告诉它每个功能在哪里、怎么进入。这样即使同事只丢来一张截图，或者一句很模糊的 bug 描述，agent 也能找到对应功能，复现问题并验证修复。
+
+每当她发现 agent 在猜测、漏读代码或走错方向，就把这个失败模式写成一条 skill。然后像测试代码一样测试这些 skill：让多个 sub-agent 分别执行任务，由 coordinator 制定 rubric，再让另一个模型交叉检查评分，反复迭代到结果足够稳定。
+
+现在，她甚至允许 agent 自动合并 PR。有一天早上醒来，已经有 20 个 PR 自动进入 main；她直接在 main 上检查，结果都没有问题。
+
+这套方法不是简单的提示词技巧，更像做工程管理：先设计好环境、流程和验收机制，再让团队并行工作。只不过这支团队，现在由几十个 coding agent 组成。
+
+https://x.com/0xCodez/status/2091980766372639135/video/1

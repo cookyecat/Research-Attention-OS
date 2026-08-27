@@ -3,7 +3,8 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Any
 
-from eval.live.schema import HumanGold, KERNEL_TARGET_NONE
+from eval.live.kernel_snapshot import resolve_snapshot_node_id, snapshot_node_by_id
+from eval.live.schema import LEGACY_EFFECT_TO_OPERATION, HumanGold
 
 
 def compute_metrics(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -11,11 +12,10 @@ def compute_metrics(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
     unlabeled_n = sum(1 for r in case_rows if r.get("gold_status") != "LABELED")
     fallback_rows = [r for r in case_rows if _is_rule_fallback(r)]
     model_labeled = [r for r in labeled if not _is_rule_fallback(r)]
-    attention = _attention_metrics(model_labeled)
-    modes = _processing_mode_metrics(model_labeled)
-    kernel = _kernel_metrics(model_labeled)
-    effects = _cognitive_effect_metrics(model_labeled)
-    expected_delta = _expected_delta_metrics(model_labeled)
+    disposition = _disposition_metrics(model_labeled)
+    operation = _update_operation_metrics(model_labeled)
+    target = _target_metrics(model_labeled)
+    delta_content = _delta_content_metrics(model_labeled)
     epistemic = _epistemic_metrics(model_labeled)
     delta = _delta_metrics(model_labeled)
     safety = _safety_metrics(model_labeled)
@@ -29,12 +29,10 @@ def compute_metrics(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
         "n_model_predictions": sum(1 for r in case_rows if r.get("model_prediction") is True),
         "unlabeled_excluded_from_accuracy": True,
         "fallback_excluded_from_model_metrics": True,
-        "attention": attention,
-        "processing_mode": modes,
-        "kernel_target": kernel,
-        "kernel_matching": kernel,
-        "cognitive_effect": effects,
-        "expected_delta": expected_delta,
+        "disposition": disposition,
+        "update_operation": operation,
+        "target": target,
+        "delta_content": delta_content,
         "epistemic_separation": epistemic,
         "model_delta": delta,
         "safety": safety,
@@ -58,56 +56,6 @@ def _is_rule_fallback(row: dict) -> bool:
     return False
 
 
-def _attention_metrics(rows: list[dict]) -> dict:
-    if not rows:
-        return {
-            "attention_accuracy": None,
-            "engage_precision": None,
-            "engage_recall": None,
-            "drop_precision": None,
-            "drop_false_negative_rate": None,
-            "denominator": 0,
-        }
-    correct = 0
-    eng_tp = eng_fp = eng_fn = 0
-    drop_tp = drop_fp = 0
-    important = 0
-    important_dropped = 0
-    for row in rows:
-        gold_states = set((row.get("human_gold") or {}).get("attention_state") or [])
-        pred = row.get("attention_state")
-        if pred in gold_states:
-            correct += 1
-        gold_engage = "ENGAGE" in gold_states
-        pred_engage = pred == "ENGAGE"
-        if pred_engage and gold_engage:
-            eng_tp += 1
-        elif pred_engage and not gold_engage:
-            eng_fp += 1
-        elif gold_engage and not pred_engage:
-            eng_fn += 1
-        gold_drop = gold_states == {"DROP"} or (gold_states and gold_states <= {"DROP"})
-        pred_drop = pred == "DROP"
-        if pred_drop and gold_drop:
-            drop_tp += 1
-        elif pred_drop and not gold_drop:
-            drop_fp += 1
-        is_important = bool(gold_states & {"ENGAGE", "WATCH"})
-        if is_important:
-            important += 1
-            if pred_drop:
-                important_dropped += 1
-    n = len(rows)
-    return {
-        "attention_accuracy": correct / n,
-        "engage_precision": _div(eng_tp, eng_tp + eng_fp),
-        "engage_recall": _div(eng_tp, eng_tp + eng_fn),
-        "drop_precision": _div(drop_tp, drop_tp + drop_fp),
-        "drop_false_negative_rate": _div(important_dropped, important),
-        "denominator": n,
-    }
-
-
 def _gold(row: dict) -> dict:
     return row.get("human_gold") or {}
 
@@ -116,34 +64,8 @@ def _gold_model(row: dict) -> HumanGold:
     return HumanGold.model_validate(_gold(row))
 
 
-def _pred_modes(row: dict) -> set[str]:
-    raw = row.get("processing_modes")
-    if raw is None:
-        raw = row.get("processing_mode")
-    if raw is None:
-        return set()
-    if isinstance(raw, str):
-        return {raw} if raw else set()
-    return {str(m) for m in raw if m}
-
-
-def _matched_labels(row: dict) -> list[str]:
-    labels = []
-    for item in (row.get("matched_kernel_titles") or []) + (row.get("matched_kernel_ids") or []):
-        if item:
-            labels.append(str(item))
-    return labels
-
-
-def _target_in_matches(target: str, labels: list[str]) -> bool:
-    if not target or target.upper() == KERNEL_TARGET_NONE:
-        return False
-    needle = target.lower()
-    for label in labels:
-        low = label.lower()
-        if needle == low or needle in low or low in needle:
-            return True
-    return False
+def _pred_disposition(row: dict) -> str | None:
+    return row.get("attention_state")
 
 
 def _pred_effect_rows(row: dict) -> list[dict]:
@@ -153,142 +75,161 @@ def _pred_effect_rows(row: dict) -> list[dict]:
     return []
 
 
-def _processing_mode_metrics(rows: list[dict]) -> dict:
-    scored = 0
-    hit = 0
+def _map_pred_operation(effect: str | None) -> str | None:
+    if not effect:
+        return None
+    return LEGACY_EFFECT_TO_OPERATION.get(str(effect).upper())
+
+
+def _pred_updates(row: dict) -> list[tuple[str, str | None]]:
+    updates: list[tuple[str, str | None]] = []
+    for effect in _pred_effect_rows(row):
+        op = _map_pred_operation(effect.get("effect"))
+        if not op:
+            continue
+        nid = effect.get("target_kernel_node_id")
+        updates.append((op, str(nid) if nid else None))
+    return updates
+
+
+def _id_to_title(row: dict) -> dict[str, str]:
+    """UUID → title directory from the Kernel Snapshot matches. Not a hit signal."""
+    mapping: dict[str, str] = {}
+    for match in row.get("kernel_matches") or []:
+        if isinstance(match, dict) and match.get("node_id"):
+            mapping[str(match["node_id"])] = str(match.get("title") or "")
+    ids = row.get("matched_kernel_ids") or []
+    titles = row.get("matched_kernel_titles") or []
+    for nid, title in zip(ids, titles):
+        if nid and title:
+            mapping.setdefault(str(nid), str(title))
+    return mapping
+
+
+def _resolve_pred_target(nid: str | None, id_to_title: dict[str, str]) -> str | None:
+    if not nid:
+        return None
+    if snapshot_node_by_id(nid) is not None:
+        return nid
+    title = id_to_title.get(nid)
+    if title:
+        resolved = resolve_snapshot_node_id(title)
+        if resolved and snapshot_node_by_id(resolved) is not None:
+            return resolved
+    resolved = resolve_snapshot_node_id(nid)
+    if resolved and snapshot_node_by_id(resolved) is not None:
+        return resolved
+    return nid
+
+
+def _resolved_pred_targets(row: dict) -> list[str | None]:
+    lookup = _id_to_title(row)
+    return [_resolve_pred_target(nid, lookup) for _, nid in _pred_updates(row)]
+
+
+def _disposition_metrics(rows: list[dict]) -> dict:
+    if not rows:
+        return {
+            "disposition_accuracy": None,
+            "engage_precision": None,
+            "engage_recall": None,
+            "drop_precision": None,
+            "drop_false_negative_rate": None,
+            "denominator": 0,
+        }
+    scored = hit = 0
+    eng_tp = eng_fp = eng_fn = 0
+    drop_tp = drop_fp = 0
+    important = 0
+    important_dropped = 0
     for row in rows:
-        gold_modes = set(_gold_model(row).processing_modes)
-        if not gold_modes:
+        gold = _gold_model(row).disposition
+        if not gold:
             continue
         scored += 1
-        pred = _pred_modes(row)
-        if pred and pred <= gold_modes:
+        pred = _pred_disposition(row)
+        if pred == gold:
             hit += 1
+        gold_engage = gold == "ENGAGE"
+        pred_engage = pred == "ENGAGE"
+        if pred_engage and gold_engage:
+            eng_tp += 1
+        elif pred_engage and not gold_engage:
+            eng_fp += 1
+        elif gold_engage and not pred_engage:
+            eng_fn += 1
+        gold_drop = gold == "DROP"
+        pred_drop = pred == "DROP"
+        if pred_drop and gold_drop:
+            drop_tp += 1
+        elif pred_drop and not gold_drop:
+            drop_fp += 1
+        if gold in {"ENGAGE", "WATCH"}:
+            important += 1
+            if pred_drop:
+                important_dropped += 1
     return {
-        "processing_mode_accuracy": _div(hit, scored),
+        "disposition_accuracy": _div(hit, scored),
+        "engage_precision": _div(eng_tp, eng_tp + eng_fp),
+        "engage_recall": _div(eng_tp, eng_tp + eng_fn),
+        "drop_precision": _div(drop_tp, drop_tp + drop_fp),
+        "drop_false_negative_rate": _div(important_dropped, important),
         "denominator": scored,
-        "note": "Predicted modes must be a subset of the Human Gold acceptable set.",
     }
 
 
-def _kernel_metrics(rows: list[dict]) -> dict:
+def _update_operation_metrics(rows: list[dict]) -> dict:
     scored = hit = 0
-    none_scored = none_hit = 0
-    must_hit = must_total = 0
-    forbidden_hit = forbidden_total = 0
-    struct_hit = struct_total = 0
-    decision_hit = decision_total = 0
     for row in rows:
         gold = _gold_model(row)
-        labels = _matched_labels(row)
-        targets = [t for t in gold.kernel_targets if t]
-        named = [t for t in targets if t.upper() != KERNEL_TARGET_NONE]
-        none_only = bool(targets) and not named
-        if named:
-            scored += 1
-            if all(_target_in_matches(t, labels) for t in named):
+        op = gold.update.operation if gold.update else None
+        if not op:
+            continue
+        scored += 1
+        pred_ops = {item[0] for item in _pred_updates(row)}
+        if op in pred_ops:
+            hit += 1
+    return {
+        "update_operation_accuracy": _div(hit, scored),
+        "denominator": scored,
+        "note": "Predicted Cognitive Dynamics effects are mapped onto REINFORCE | CHALLENGE | OPEN_NEW (REFINE → REINFORCE).",
+    }
+
+
+def _target_metrics(rows: list[dict]) -> dict:
+    scored = hit = 0
+    for row in rows:
+        gold = _gold_model(row)
+        update = gold.update
+        if not update or not update.operation:
+            continue
+        scored += 1
+        pred_targets = _resolved_pred_targets(row)
+        if update.operation == "OPEN_NEW":
+            if all(t is None for t in pred_targets):
                 hit += 1
-        if none_only:
-            none_scored += 1
-            effects = _pred_effect_rows(row)
-            open_untargeted = any(
-                (e.get("effect") in {"OPEN_NEW", "NO_MATERIAL_CHANGE"}) and not e.get("target_kernel_node_id")
-                for e in effects
-            )
-            if not labels or open_untargeted:
-                none_hit += 1
-        rels = row.get("match_relevance_types") or []
-        for item in gold.must_match_kernel or []:
-            must_total += 1
-            if _target_in_matches(item, labels) or item in set(row.get("matched_kernel_ids") or []):
-                must_hit += 1
-        for item in gold.forbidden_kernel or []:
-            forbidden_total += 1
-            if _target_in_matches(item, labels):
-                forbidden_hit += 1
-        if "structural_relevance" in (row.get("cognitive_tasks") or []) or "STRUCTURAL" in rels:
-            struct_total += 1
-            if "STRUCTURAL" in rels:
-                struct_hit += 1
-        if "decision_relevance" in (row.get("cognitive_tasks") or []) or "DECISION" in rels:
-            decision_total += 1
-            if "DECISION" in rels:
-                decision_hit += 1
-    return {
-        "kernel_target_accuracy": _div(hit, scored),
-        "kernel_target_none_accuracy": _div(none_hit, none_scored),
-        "denominator": scored,
-        "none_denominator": none_scored,
-        "must_match_recall": _div(must_hit, must_total) if must_total else _div(hit, scored),
-        "forbidden_match_rate": _div(forbidden_hit, forbidden_total) if forbidden_total else None,
-        "structural_relevance_recall": _div(struct_hit, struct_total),
-        "decision_relevance_recall": _div(decision_hit, decision_total),
-        "must_match_denominator": must_total or scored,
-        "forbidden_denominator": forbidden_total,
-    }
-
-
-def _cognitive_effect_metrics(rows: list[dict]) -> dict:
-    scored = hit = 0
-    for row in rows:
-        gold = _gold_model(row)
-        pairs = gold.target_effect_pairs()
-        kinds_only = [k for k in gold.cognitive_effects if k]
-        pairs = [(t, a) for t, a in pairs if a]
-        if not pairs and not kinds_only:
             continue
-        pred = _pred_effect_rows(row)
-        pred_kinds = {str(e.get("effect")) for e in pred if e.get("effect")}
-        labels = _matched_labels(row)
-        id_to_title = {}
-        for match in row.get("kernel_matches") or []:
-            if isinstance(match, dict) and match.get("node_id"):
-                id_to_title[str(match["node_id"])] = str(match.get("title") or "")
-        scored += 1
-        ok = True
-        if pairs:
-            for target, acceptable in pairs:
-                if not acceptable:
-                    continue
-                acceptable_set = {a.upper() for a in acceptable}
-                if target.upper() == KERNEL_TARGET_NONE:
-                    relevant = [e for e in pred if not e.get("target_kernel_node_id")]
-                    if not relevant:
-                        relevant = pred
-                else:
-                    relevant = []
-                    for effect in pred:
-                        nid = str(effect.get("target_kernel_node_id") or "")
-                        title = id_to_title.get(nid, "")
-                        if _target_in_matches(target, [title, nid, *labels]):
-                            relevant.append(effect)
-                    if not relevant:
-                        relevant = [e for e in pred if str(e.get("effect") or "").upper() in acceptable_set]
-                if not any(str(e.get("effect") or "").upper() in acceptable_set for e in relevant):
-                    ok = False
-                    break
-        elif kinds_only and not (pred_kinds & set(kinds_only)):
-            ok = False
-        if ok:
+        if update.target_node_id and update.target_node_id in {t for t in pred_targets if t}:
             hit += 1
     return {
-        "cognitive_effect_accuracy": _div(hit, scored),
+        "target_accuracy": _div(hit, scored),
         "denominator": scored,
-        "note": "Predicted CognitiveEffect kinds must be in the Human Gold acceptable set for the target.",
+        "note": "Target is the predicted update's Kernel Snapshot node, not a retrieval/topic hit.",
     }
 
 
-def _expected_delta_metrics(rows: list[dict]) -> dict:
+def _delta_content_metrics(rows: list[dict]) -> dict:
     labeled = 0
     for row in rows:
-        text = (_gold(row).get("expected_delta") or "").strip()
+        gold = _gold_model(row)
+        text = (gold.delta_content or "").strip()
         if text:
             labeled += 1
     return {
-        "n_with_expected_delta": labeled,
+        "n_with_delta_content": labeled,
         "denominator": labeled,
         "auto_scored": False,
-        "note": "Expected Delta is free text for human review; it is not auto-scored. See cases.jsonl human_gold.expected_delta.",
+        "note": "DeltaContent is free text for human review; it is not auto-scored. See cases.jsonl human_gold.delta_content.",
     }
 
 
@@ -353,7 +294,7 @@ def _slice(rows: list[dict], key: str) -> dict:
     groups: dict[str, list] = defaultdict(list)
     for row in rows:
         groups[str(row.get(key) or "unknown")].append(row)
-    return {k: {"n": len(v), "attention_accuracy": _attention_metrics(v)["attention_accuracy"]} for k, v in groups.items()}
+    return {k: {"n": len(v), "disposition_accuracy": _disposition_metrics(v)["disposition_accuracy"]} for k, v in groups.items()}
 
 
 def _slice_tasks(rows: list[dict]) -> dict:
@@ -362,7 +303,7 @@ def _slice_tasks(rows: list[dict]) -> dict:
         tasks = row.get("cognitive_tasks") or ["unspecified"]
         for task in tasks:
             groups[str(task)].append(row)
-    return {k: {"n": len(v), "attention_accuracy": _attention_metrics(v)["attention_accuracy"]} for k, v in groups.items()}
+    return {k: {"n": len(v), "disposition_accuracy": _disposition_metrics(v)["disposition_accuracy"]} for k, v in groups.items()}
 
 
 def _div(num: int, den: int) -> float | None:
@@ -372,11 +313,10 @@ def _div(num: int, den: int) -> float | None:
 
 
 def render_markdown(summary: dict) -> str:
-    att = summary.get("attention") or {}
-    modes = summary.get("processing_mode") or {}
-    km = summary.get("kernel_target") or summary.get("kernel_matching") or {}
-    fx = summary.get("cognitive_effect") or {}
-    ed = summary.get("expected_delta") or {}
+    disp = summary.get("disposition") or {}
+    op = summary.get("update_operation") or {}
+    target = summary.get("target") or {}
+    dc = summary.get("delta_content") or {}
     ep = summary.get("epistemic_separation") or {}
     lines = [
         "# RAOS Live Eval",
@@ -385,32 +325,26 @@ def render_markdown(summary: dict) -> str:
         f"- unlabeled excluded from accuracy: {summary.get('unlabeled_excluded_from_accuracy')}",
         f"- fallback cases (not counted as model predictions): {summary.get('n_fallback')}",
         "",
-        "## Attention",
-        f"- Attention Accuracy: {att.get('attention_accuracy')}",
-        f"- ENGAGE Precision: {att.get('engage_precision')}",
-        f"- ENGAGE Recall: {att.get('engage_recall')}",
-        f"- DROP Precision: {att.get('drop_precision')}",
-        f"- DROP False Negative Rate (important → DROP): {att.get('drop_false_negative_rate')}",
+        "## Disposition",
+        f"- Disposition Accuracy: {disp.get('disposition_accuracy')}",
+        f"- ENGAGE Precision: {disp.get('engage_precision')}",
+        f"- ENGAGE Recall: {disp.get('engage_recall')}",
+        f"- DROP Precision: {disp.get('drop_precision')}",
+        f"- DROP False Negative Rate (important → DROP): {disp.get('drop_false_negative_rate')}",
         "",
-        "## Processing Mode",
-        f"- Processing Mode Accuracy: {modes.get('processing_mode_accuracy')}",
-        f"- {modes.get('note')}",
+        "## Update Operation",
+        f"- Update Operation Accuracy: {op.get('update_operation_accuracy')}",
+        f"- {op.get('note')}",
         "",
-        "## Kernel Target",
-        f"- Kernel Target Accuracy: {km.get('kernel_target_accuracy')}",
-        f"- Kernel Target NONE Accuracy: {km.get('kernel_target_none_accuracy')}",
+        "## Target",
+        f"- Target Accuracy: {target.get('target_accuracy')}",
+        f"- {target.get('note')}",
         "",
-        "## Cognitive Effect",
-        f"- Cognitive Effect Accuracy: {fx.get('cognitive_effect_accuracy')}",
-        f"- {fx.get('note')}",
-        "",
-        "## Expected Delta",
-        f"- cases with Expected Delta text: {ed.get('n_with_expected_delta')}",
-        f"- {ed.get('note')}",
+        "## Delta Content",
+        f"- cases with Delta Content text: {dc.get('n_with_delta_content')}",
+        f"- {dc.get('note')}",
         "",
         "## Legacy diagnostics (optional gold only)",
-        f"- Must-Match Recall: {km.get('must_match_recall')}",
-        f"- Forbidden-Match Rate: {km.get('forbidden_match_rate')}",
         f"- Claim Precision: {ep.get('claim_precision')}",
         f"- Observation Precision: {ep.get('observation_precision')}",
         f"- Unsupported Observation Rate: {ep.get('unsupported_observation_rate')}",

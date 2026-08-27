@@ -54,3 +54,4 @@ eval/live/results/*
 *.swp
 *~
 .cursor/*.log
+.codegraph

@@ -4,18 +4,21 @@ import json
 import sys
 from pathlib import Path
 
+import pytest
+from pydantic import ValidationError
+
 ROOT = Path(__file__).resolve().parents[3]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from eval.live.kernel_snapshot import kernel_snapshot_picker
 from eval.live.report import compute_metrics, render_markdown
 from eval.live.run_live_eval import analysis_payload_to_eval_row, load_manifest, live_eval_runtime_fields, main, run_case, write_report
 from eval.live.schema import (
-    ATTENTION_STATES,
-    COGNITIVE_EFFECTS,
+    DISPOSITIONS,
     HUMAN_GOLD_TEMPLATE,
-    KERNEL_TARGET_NONE,
-    PROCESSING_MODES,
+    UPDATE_OPERATIONS,
+    CognitiveUpdate,
     HumanGold,
     LiveCase,
     LiveSource,
@@ -45,8 +48,7 @@ def test_live_eval_dry_run(tmp_path):
     assert summary["n_unlabeled"] == summary["n_cases"]
     assert summary["n_labeled"] == 0
     assert summary["unlabeled_excluded_from_accuracy"] is True
-    assert summary["attention"]["denominator"] == 0
-    assert summary["attention"]["attention_accuracy"] is None
+    assert summary["disposition"]["denominator"] == 0
     rows = [json.loads(line) for line in (out / "cases.jsonl").read_text().splitlines() if line]
     assert rows
     assert all("stage_provenance" in r for r in rows)
@@ -70,7 +72,12 @@ def test_unlabeled_not_in_accuracy_denominator():
             "id": "l1",
             "gold_status": "LABELED",
             "attention_state": "ENGAGE",
-            "human_gold": {"attention_state": ["ENGAGE"]},
+            "human_gold": {
+                "disposition": "ENGAGE",
+                "update": {"operation": "OPEN_NEW", "target_node_id": None},
+                "delta_content": "A new question about whether this is worth a branch.",
+            },
+            "cognitive_impact": {"effects": [{"target_kernel_node_id": None, "effect": "OPEN_NEW"}]},
             "claim_texts": [],
             "observation_texts": [],
         },
@@ -78,8 +85,8 @@ def test_unlabeled_not_in_accuracy_denominator():
     metrics = compute_metrics(rows)
     assert metrics["n_labeled"] == 1
     assert metrics["n_unlabeled"] == 1
-    assert metrics["attention"]["denominator"] == 1
-    assert metrics["attention"]["attention_accuracy"] == 1.0
+    assert metrics["disposition"]["denominator"] == 1
+    assert metrics["disposition"]["disposition_accuracy"] == 1.0
 
 
 def test_live_eval_report_reproducible(tmp_path):
@@ -101,55 +108,156 @@ def test_empty_gold_is_unlabeled():
     assert gold_status_of(case) == "UNLABELED"
 
 
-def test_minimal_v2_human_gold_parses_and_is_labeled():
+def test_minimal_human_gold_parses_and_is_labeled():
     gold = HumanGold.model_validate(
         {
-            "attention_state": ["ENGAGE"],
-            "processing_modes": ["VERIFY", "SYNTHESIZE"],
-            "kernel_targets": ["Motor Intelligence"],
-            "cognitive_effects": ["REFINE", "REINFORCE"],
-            "expected_delta": "Refine the motor/cognitive split if the architecture is hierarchical.",
+            "disposition": "WATCH",
+            "update": {"operation": "REINFORCE", "target_node_id": "P1"},
+            "delta_content": "Motor Intelligence is more clearly a separable control loop, not a proof from the source.",
         }
     )
-    assert set(gold.attention_state) <= set(ATTENTION_STATES)
-    assert set(gold.processing_modes) <= set(PROCESSING_MODES)
-    assert set(gold.cognitive_effects) <= set(COGNITIVE_EFFECTS)
-    assert gold.kernel_targets == ["Motor Intelligence"]
-    assert "must_match_kernel" not in dump_human_gold(gold)
-    assert "forbidden_effects" not in dump_human_gold(gold)
-    case = LiveCase(id="v2-min", source=LiveSource(text="x"), human_gold=gold)
+    assert gold.disposition in DISPOSITIONS
+    assert gold.update is not None
+    assert gold.update.operation in UPDATE_OPERATIONS
+    assert gold.update.target_node_id == "P1"
+    dumped = dump_human_gold(gold)
+    assert dumped["disposition"] == "WATCH"
+    assert dumped["update"] == {"operation": "REINFORCE", "target_node_id": "P1"}
+    assert dumped["delta_content"]
+    assert set(dumped) == {"disposition", "update", "delta_content"}
+    assert list(HUMAN_GOLD_TEMPLATE) == ["disposition", "update", "delta_content"]
+    case = LiveCase(id="min", source=LiveSource(text="x"), human_gold=gold)
     assert gold_status_of(case) == "LABELED"
-    assert list(HUMAN_GOLD_TEMPLATE) == [
-        "attention_state",
-        "processing_modes",
-        "kernel_targets",
-        "cognitive_effects",
-        "expected_delta",
-    ]
 
 
-def test_multiple_acceptable_attention_modes_and_effects():
+def test_reinforce_valid_target():
     gold = HumanGold(
-        attention_state=["ENGAGE", "WATCH"],
-        processing_modes=["VERIFY", "SYNTHESIZE", "LEARN"],
-        kernel_targets=["Motor Intelligence", "NONE"],
-        cognitive_effects=["REFINE", "OPEN_NEW"],
-        expected_delta="Either refine Motor Intelligence or open a new question.",
+        disposition="WATCH",
+        update=CognitiveUpdate(operation="REINFORCE", target_node_id="P1"),
+        delta_content="The existing Motor Intelligence branch is strengthened, not replaced.",
     )
-    pairs = gold.target_effect_pairs()
-    assert pairs == [("Motor Intelligence", ["REFINE"]), ("NONE", ["OPEN_NEW"])]
+    assert gold.update.target_node_id == "P1"
 
 
-def test_kernel_target_none_is_expressible():
-    gold = HumanGold(
-        attention_state=["AWARE"],
-        processing_modes=["SCAN"],
-        kernel_targets=[KERNEL_TARGET_NONE],
-        cognitive_effects=["NO_MATERIAL_CHANGE"],
-        expected_delta="No Kernel target; nothing material to absorb.",
+def test_challenge_valid_target():
+    gold = HumanGold.model_validate(
+        {
+            "disposition": "ENGAGE",
+            "update": {"operation": "CHALLENGE", "target_node_id": "B1"},
+            "delta_content": "The unified-model belief now needs a narrower scope for high-frequency control.",
+        }
     )
-    assert gold.kernel_targets == ["NONE"]
-    assert gold.target_effect_pairs() == [("NONE", ["NO_MATERIAL_CHANGE"])]
+    assert gold.update.operation == "CHALLENGE"
+    assert gold.update.target_node_id == "B1"
+
+
+def test_open_new_null_target():
+    gold = HumanGold.model_validate(
+        {
+            "disposition": "WATCH",
+            "update": {"operation": "OPEN_NEW", "target_node_id": None},
+            "delta_content": "A new branch: whether household folding skill transfer is its own question.",
+        }
+    )
+    assert gold.update.operation == "OPEN_NEW"
+    assert gold.update.target_node_id is None
+
+
+def test_open_new_empty_string_target_is_null():
+    gold = HumanGold.model_validate(
+        {
+            "disposition": "AWARE",
+            "update": {"operation": "OPEN_NEW", "target_node_id": ""},
+            "delta_content": "Opened a new watchline rather than attaching to an existing node.",
+        }
+    )
+    assert gold.update.target_node_id is None
+
+
+def test_illegal_operation_rejected():
+    with pytest.raises(ValidationError):
+        HumanGold.model_validate(
+            {
+                "disposition": "WATCH",
+                "update": {"operation": "REFINE", "target_node_id": "P1"},
+                "delta_content": "should not parse",
+            }
+        )
+    with pytest.raises(ValidationError):
+        HumanGold.model_validate(
+            {
+                "disposition": "WATCH",
+                "update": {"operation": "NO_MATERIAL_CHANGE", "target_node_id": None},
+                "delta_content": "should not parse",
+            }
+        )
+
+
+def test_reinforce_and_challenge_require_target():
+    with pytest.raises(ValidationError):
+        HumanGold.model_validate(
+            {
+                "disposition": "WATCH",
+                "update": {"operation": "REINFORCE", "target_node_id": None},
+                "delta_content": "missing target",
+            }
+        )
+    with pytest.raises(ValidationError):
+        HumanGold.model_validate(
+            {
+                "disposition": "ENGAGE",
+                "update": {"operation": "CHALLENGE"},
+                "delta_content": "missing target",
+            }
+        )
+
+
+def test_open_new_rejects_target():
+    with pytest.raises(ValidationError):
+        HumanGold.model_validate(
+            {
+                "disposition": "WATCH",
+                "update": {"operation": "OPEN_NEW", "target_node_id": "P1"},
+                "delta_content": "should not attach to an existing node",
+            }
+        )
+
+
+def test_illegal_disposition_rejected():
+    with pytest.raises(ValidationError):
+        HumanGold.model_validate(
+            {
+                "disposition": "SCAN",
+                "update": {"operation": "OPEN_NEW", "target_node_id": None},
+                "delta_content": "SCAN is not a disposition",
+            }
+        )
+
+
+def test_target_is_snapshot_picker_not_ontology():
+    picker = kernel_snapshot_picker("mvp")
+    assert picker
+    assert all(set(item) == {"id", "title"} for item in picker)
+    assert all("PROJECT" not in item["title"] for item in picker)
+    gold = HumanGold.model_validate(
+        {
+            "disposition": "WATCH",
+            "update": {"operation": "REINFORCE", "target_node_id": "Motor Intelligence"},
+            "delta_content": "Picker titles resolve to snapshot ids internally.",
+        }
+    )
+    assert gold.update.target_node_id == "P1"
+
+
+def test_unknown_snapshot_target_rejected():
+    with pytest.raises(ValidationError):
+        HumanGold.model_validate(
+            {
+                "disposition": "WATCH",
+                "update": {"operation": "REINFORCE", "target_node_id": "not-a-kernel-node"},
+                "delta_content": "cannot invent a target",
+            }
+        )
 
 
 def test_legacy_manifest_gold_still_parses():
@@ -163,19 +271,23 @@ def test_legacy_manifest_gold_still_parses():
             "delta_rubric": 2,
         }
     )
-    assert gold.processing_modes == ["VERIFY"]
-    assert gold.kernel_targets == ["Motor Intelligence"]
-    assert "REFINE" in gold.cognitive_effects
+    assert gold.disposition == "ENGAGE"
+    assert gold.update is not None
+    assert gold.update.operation == "REINFORCE"
+    assert gold.update.target_node_id == "P1"
     dumped = dump_human_gold(gold)
-    assert dumped["processing_modes"] == ["VERIFY"]
-    assert dumped["must_match_kernel"] == ["Motor Intelligence"]
-    assert dumped["key_claims"] == ["zero-shot"]
+    assert dumped["disposition"] == "ENGAGE"
+    assert dumped["update"]["operation"] == "REINFORCE"
+    assert dumped["update"]["target_node_id"] == "P1"
+    assert set(dumped) == {"disposition", "update", "delta_content"}
+    assert gold.must_match_kernel == ["Motor Intelligence"]
+    assert gold.key_claims == ["zero-shot"]
 
 
-def test_report_scores_v2_core_fields_not_legacy_keys():
+def test_report_scores_new_contract_fields():
     rows = [
         {
-            "id": "v2",
+            "id": "v3",
             "gold_status": "LABELED",
             "attention_state": "ENGAGE",
             "processing_modes": ["VERIFY", "SYNTHESIZE"],
@@ -186,16 +298,14 @@ def test_report_scores_v2_core_fields_not_legacy_keys():
                 "effects": [
                     {
                         "target_kernel_node_id": "abc",
-                        "effect": "REFINE",
+                        "effect": "REINFORCE",
                     }
                 ]
             },
             "human_gold": {
-                "attention_state": ["ENGAGE", "WATCH"],
-                "processing_modes": ["VERIFY", "SYNTHESIZE", "LEARN"],
-                "kernel_targets": ["Motor Intelligence"],
-                "cognitive_effects": ["REFINE", "REINFORCE"],
-                "expected_delta": "Refine the motor/cognitive split.",
+                "disposition": "ENGAGE",
+                "update": {"operation": "REINFORCE", "target_node_id": "P1"},
+                "delta_content": "The motor/cognitive split is a clearer existing branch, not a source proof.",
             },
             "prediction_source": "model",
             "fallback": False,
@@ -203,25 +313,24 @@ def test_report_scores_v2_core_fields_not_legacy_keys():
         }
     ]
     metrics = compute_metrics(rows)
-    assert metrics["attention"]["attention_accuracy"] == 1.0
-    assert metrics["processing_mode"]["processing_mode_accuracy"] == 1.0
-    assert metrics["kernel_target"]["kernel_target_accuracy"] == 1.0
-    assert metrics["cognitive_effect"]["cognitive_effect_accuracy"] == 1.0
-    assert metrics["expected_delta"]["n_with_expected_delta"] == 1
-    assert metrics["expected_delta"]["auto_scored"] is False
+    assert metrics["disposition"]["disposition_accuracy"] == 1.0
+    assert metrics["update_operation"]["update_operation_accuracy"] == 1.0
+    assert metrics["target"]["target_accuracy"] == 1.0
+    assert metrics["delta_content"]["n_with_delta_content"] == 1
+    assert metrics["delta_content"]["auto_scored"] is False
     md = render_markdown(metrics)
-    assert "## Attention" in md
-    assert "## Processing Mode" in md
-    assert "## Kernel Target" in md
-    assert "## Cognitive Effect" in md
-    assert "## Expected Delta" in md
-    assert "Must-Match Recall" in md
+    assert "## Disposition" in md
+    assert "## Update Operation" in md
+    assert "## Target" in md
+    assert "## Delta Content" in md
+    assert "attention_state" not in md
+    assert "Processing Mode" not in md
     assert "key_claims" not in md
 
 
-def test_report_kernel_none_and_legacy_must_match_still_readable():
+def test_report_maps_legacy_gold_and_refine_prediction():
     none_row = {
-        "id": "none",
+        "id": "open",
         "gold_status": "LABELED",
         "attention_state": "AWARE",
         "processing_modes": ["SCAN"],
@@ -229,14 +338,12 @@ def test_report_kernel_none_and_legacy_must_match_still_readable():
         "matched_kernel_ids": [],
         "kernel_matches": [],
         "cognitive_impact": {
-            "effects": [{"target_kernel_node_id": None, "effect": "NO_MATERIAL_CHANGE"}]
+            "effects": [{"target_kernel_node_id": None, "effect": "OPEN_NEW"}]
         },
         "human_gold": {
-            "attention_state": ["AWARE", "DROP"],
-            "processing_modes": ["SCAN"],
-            "kernel_targets": ["NONE"],
-            "cognitive_effects": ["NO_MATERIAL_CHANGE"],
-            "expected_delta": "Nothing to absorb.",
+            "disposition": "AWARE",
+            "update": {"operation": "OPEN_NEW", "target_node_id": None},
+            "delta_content": "Nothing in the current Kernel is the right landing spot.",
         },
         "prediction_source": "model",
         "model_prediction": True,
@@ -254,15 +361,133 @@ def test_report_kernel_none_and_legacy_must_match_still_readable():
             "attention_state": ["ENGAGE"],
             "must_match_kernel": ["Motor Intelligence"],
             "acceptable_modes": ["VERIFY", "SYNTHESIZE"],
+            "expected_effects": [{"target_kernel": "Motor Intelligence", "acceptable_effects": ["REFINE"]}],
         },
         "prediction_source": "model",
         "model_prediction": True,
     }
     metrics = compute_metrics([none_row, legacy_row])
-    assert metrics["kernel_target"]["kernel_target_none_accuracy"] == 1.0
-    assert metrics["kernel_target"]["kernel_target_accuracy"] == 1.0
-    assert metrics["processing_mode"]["processing_mode_accuracy"] == 1.0
+    assert metrics["disposition"]["disposition_accuracy"] == 1.0
+    assert metrics["update_operation"]["update_operation_accuracy"] == 1.0
+    assert metrics["target"]["target_accuracy"] == 1.0
     assert metrics["n_labeled"] == 2
+
+
+def test_legacy_no_material_change_does_not_become_open_new():
+    gold = HumanGold.model_validate(
+        {
+            "attention_state": ["AWARE"],
+            "kernel_targets": ["NONE"],
+            "cognitive_effects": ["NO_MATERIAL_CHANGE"],
+        }
+    )
+    assert gold.disposition == "AWARE"
+    assert gold.update is None
+
+
+def test_legacy_challenge_without_target_still_parses():
+    gold = HumanGold.model_validate(
+        {
+            "attention_state": ["ENGAGE"],
+            "cognitive_effects": ["CHALLENGE"],
+        }
+    )
+    assert gold.disposition == "ENGAGE"
+    assert gold.update is None
+
+
+def test_target_hit_uses_update_node_not_retrieval():
+    rows = [
+        {
+            "id": "wrong-node",
+            "gold_status": "LABELED",
+            "attention_state": "WATCH",
+            "matched_kernel_titles": ["Motor Intelligence", "Collective Intelligence"],
+            "matched_kernel_ids": ["n1", "n2"],
+            "kernel_matches": [
+                {"node_id": "n1", "title": "Motor Intelligence"},
+                {"node_id": "n2", "title": "Collective Intelligence"},
+            ],
+            "cognitive_impact": {"effects": [{"target_kernel_node_id": "n2", "effect": "REINFORCE"}]},
+            "human_gold": {
+                "disposition": "WATCH",
+                "update": {"operation": "REINFORCE", "target_node_id": "P1"},
+                "delta_content": "The update should land on Motor Intelligence, not merely retrieve it.",
+            },
+            "prediction_source": "model",
+            "model_prediction": True,
+        }
+    ]
+    metrics = compute_metrics(rows)
+    assert metrics["update_operation"]["update_operation_accuracy"] == 1.0
+    assert metrics["target"]["target_accuracy"] == 0.0
+
+
+def test_open_new_target_not_hit_by_empty_retrieval_or_targeted_open_new():
+    empty_retrieval = {
+        "id": "reinforce-existing",
+        "gold_status": "LABELED",
+        "attention_state": "WATCH",
+        "matched_kernel_titles": [],
+        "matched_kernel_ids": [],
+        "kernel_matches": [],
+        "cognitive_impact": {"effects": [{"target_kernel_node_id": "abc", "effect": "REINFORCE"}]},
+        "human_gold": {
+            "disposition": "WATCH",
+            "update": {"operation": "OPEN_NEW", "target_node_id": None},
+            "delta_content": "A new branch, not an existing node.",
+        },
+        "prediction_source": "model",
+        "model_prediction": True,
+    }
+    targeted_open = {
+        "id": "open-with-target",
+        "gold_status": "LABELED",
+        "attention_state": "WATCH",
+        "matched_kernel_titles": ["Motor Intelligence"],
+        "matched_kernel_ids": ["abc"],
+        "kernel_matches": [{"node_id": "abc", "title": "Motor Intelligence"}],
+        "cognitive_impact": {"effects": [{"target_kernel_node_id": "abc", "effect": "OPEN_NEW"}]},
+        "human_gold": {
+            "disposition": "WATCH",
+            "update": {"operation": "OPEN_NEW", "target_node_id": None},
+            "delta_content": "OPEN_NEW gold has an empty target.",
+        },
+        "prediction_source": "model",
+        "model_prediction": True,
+    }
+    metrics = compute_metrics([empty_retrieval, targeted_open])
+    assert metrics["target"]["target_accuracy"] == 0.0
+    assert metrics["update_operation"]["update_operation_accuracy"] == 0.5
+
+
+def test_open_new_target_misses_when_any_predicted_update_has_a_node():
+    rows = [
+        {
+            "id": "mixed",
+            "gold_status": "LABELED",
+            "attention_state": "WATCH",
+            "matched_kernel_titles": ["Motor Intelligence"],
+            "matched_kernel_ids": ["abc"],
+            "kernel_matches": [{"node_id": "abc", "title": "Motor Intelligence"}],
+            "cognitive_impact": {
+                "effects": [
+                    {"target_kernel_node_id": "abc", "effect": "REINFORCE"},
+                    {"target_kernel_node_id": None, "effect": "OPEN_NEW"},
+                ]
+            },
+            "human_gold": {
+                "disposition": "WATCH",
+                "update": {"operation": "OPEN_NEW", "target_node_id": None},
+                "delta_content": "No existing node is the landing spot.",
+            },
+            "prediction_source": "model",
+            "model_prediction": True,
+        }
+    ]
+    metrics = compute_metrics(rows)
+    assert metrics["update_operation"]["update_operation_accuracy"] == 1.0
+    assert metrics["target"]["target_accuracy"] == 0.0
 
 
 def test_live_eval_records_stage_provenance_and_visible_fallback(tmp_path):
@@ -298,7 +523,7 @@ def test_live_eval_records_stage_provenance_and_visible_fallback(tmp_path):
             "id": "fb",
             "gold_status": "LABELED",
             "attention_state": "ENGAGE",
-            "human_gold": {"attention_state": ["ENGAGE"]},
+            "human_gold": {"disposition": "ENGAGE"},
             **fields,
         }
     ]
@@ -315,7 +540,7 @@ def test_fallback_excluded_from_model_accuracy():
             "id": "ok",
             "gold_status": "LABELED",
             "attention_state": "ENGAGE",
-            "human_gold": {"attention_state": ["ENGAGE"]},
+            "human_gold": {"disposition": "ENGAGE"},
             "prediction_source": "model",
             "fallback": False,
             "model_prediction": True,
@@ -324,7 +549,7 @@ def test_fallback_excluded_from_model_accuracy():
             "id": "fb",
             "gold_status": "LABELED",
             "attention_state": "ENGAGE",
-            "human_gold": {"attention_state": ["ENGAGE"]},
+            "human_gold": {"disposition": "ENGAGE"},
             "prediction_source": "rule-fallback",
             "fallback": True,
             "model_prediction": False,
@@ -335,14 +560,21 @@ def test_fallback_excluded_from_model_accuracy():
     assert metrics["n_labeled"] == 2
     assert metrics["n_fallback"] == 1
     assert metrics["fallback_excluded_from_model_metrics"] is True
-    assert metrics["attention"]["denominator"] == 1
-    assert metrics["attention"]["attention_accuracy"] == 1.0
+    assert metrics["disposition"]["denominator"] == 1
+    assert metrics["disposition"]["disposition_accuracy"] == 1.0
 
 
 def test_manifest_example_loads():
     manifest = load_manifest(ROOT / "eval" / "live" / "manifest.example.yaml")
     assert len(manifest.cases) >= 6
     assert all(gold_status_of(c) == "UNLABELED" for c in manifest.cases)
+    text = (ROOT / "eval" / "live" / "manifest.example.yaml").read_text()
+    assert "disposition:" in text
+    assert "attention_state:" not in text
+    assert "processing_modes:" not in text
+    assert "kernel_targets:" not in text
+    assert "cognitive_effects:" not in text
+    assert "expected_delta:" not in text
 
 
 def test_live_eval_row_from_production_pipeline(client):

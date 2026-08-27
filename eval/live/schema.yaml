@@ -17,11 +17,41 @@ cognitive_tasks:
   - evidence_verification
 gold_status: LABELED|UNLABELED
 
-# Human Gold v2 — the only default annotation template.
-# Locate → kernel_targets | Estimate → cognitive_effects + expected_delta | Route → attention_state + processing_modes
+# Human Gold — the only default annotation template.
+# Disposition × Update(Operation, Target) × DeltaContent
+# target_node_id is a Kernel Snapshot picker id (eval/live/kernel_snapshot.py), not a topic tag.
 human_gold:
-  attention_state: []          # multi-select: DROP | AWARE | WATCH | ENGAGE
-  processing_modes: []         # multi-select: SCAN | LEARN | VERIFY | DEEP_DIVE | SYNTHESIZE
-  kernel_targets: []           # Kernel titles/ids, or [NONE]
-  cognitive_effects: []        # multi-select: REINFORCE | CHALLENGE | REFINE | OPEN_NEW | NO_MATERIAL_CHANGE
-  expected_delta: ""           # free text: what absorbing this should add, correct, or form
+  disposition: WATCH          # DROP | AWARE | WATCH | ENGAGE
+  update:
+    operation: REINFORCE      # REINFORCE | CHALLENGE | OPEN_NEW
+    target_node_id: "P1"      # snapshot node id; required for REINFORCE/CHALLENGE; empty/null for OPEN_NEW
+  delta_content: ""           # free text: 吸收后的具体认知更新，不是 source claim / evidence
+
+# disposition
+# DROP：不用管
+# AWARE：知道就行
+# WATCH：先不深挖，但继续盯
+# ENGAGE：现在就认真处理
+#
+# SCAN / LEARN / REASON / CREATE 只作为 disposition 的内部解释，不参与独立人工标注。
+# DROP   → 不进入 SCAN
+# AWARE  → SCAN：看懂即可
+# WATCH  → LEARN：吸收后交给系统继续盯
+# ENGAGE → REASON / CREATE：现在就认真处理
+
+# update.operation
+# REINFORCE — Strengthen Existing：加固已有 cognitive branch
+# CHALLENGE — Change Existing：已有 branch 需要被修改、削弱或推翻
+# OPEN_NEW  — Create New：当前 Kernel 没有合适落点，产生新的 cognitive branch
+#
+# REFINE / NO_MATERIAL_CHANGE 不再作为 Cognitive Update operation。
+# 只是补充细节、不改变核心 → REINFORCE
+# 需要修改原命题          → CHALLENGE
+
+# update.target_node_id
+# 指向固定 Kernel Snapshot 中的已有节点（picker / selectable reference）。
+# 程序内部保存 node_id。人工标注不要求记忆 PROJECT / BELIEF / QUESTION / MODEL / BOTTLENECK。
+# 不要用当前模型预测结果动态推荐 target，以避免 unseen eval 泄漏。
+
+# delta_content
+# 吸收这条信息后，具体形成、改变或新增了什么认知。

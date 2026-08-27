@@ -14,13 +14,13 @@
 # Human Gold is NEVER produced by a model. Empty gold => UNLABELED
 # (run is stored, excluded from accuracy denominators).
 #
-# Default Human Gold template (fill these five fields only):
+# Default Human Gold template (fill these three blocks only):
 #   human_gold:
-#     attention_state: [ENGAGE]              # DROP | AWARE | WATCH | ENGAGE
-#     processing_modes: [VERIFY, SYNTHESIZE] # SCAN | LEARN | VERIFY | DEEP_DIVE | SYNTHESIZE
-#     kernel_targets: [Motor Intelligence]   # titles/ids, or [NONE]
-#     cognitive_effects: [REFINE]            # REINFORCE | CHALLENGE | REFINE | OPEN_NEW | NO_MATERIAL_CHANGE
-#     expected_delta: "..."
+#     disposition: WATCH                     # DROP | AWARE | WATCH | ENGAGE
+#     update:
+#       operation: REINFORCE                 # REINFORCE | CHALLENGE | OPEN_NEW
+#       target_node_id: "P1"                 # Kernel Snapshot picker id; empty for OPEN_NEW
+#     delta_content: "吸收后具体形成、改变或新增了什么认知"
 
 name: raos-live-eval-example
 cases:
