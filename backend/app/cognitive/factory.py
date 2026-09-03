@@ -161,16 +161,21 @@ class FallbackProvider:
     def match_kernel(self, *args, **kwargs):
         result = self._call("match_kernel", *args, **kwargs)
         rec = self.stage_provenance.get("matching") or {}
+        trace = dict(getattr(self.primary, "last_retrieval", None) or {})
         if rec.get("status") in FALLBACK_STATUSES:
-            self.last_retrieval = {
-                "embedding_used": False,
-                "lexical_fallback": True,
-                "method": "lexical",
-                "embedding_model": None,
-                "query_instruct_applied": False,
-            }
+            if not trace:
+                trace = {
+                    "embedding_used": False,
+                    "lexical_fallback": True,
+                    "method": "lexical",
+                    "embedding_model": None,
+                    "query_instruct_applied": False,
+                    "candidates": [],
+                }
+            trace["matcher_fallback"] = True
+            self.last_retrieval = trace
         else:
-            self.last_retrieval = getattr(self.primary, "last_retrieval", None)
+            self.last_retrieval = trace or getattr(self.primary, "last_retrieval", None)
         return result
 
     def reason_evidence(self, *args, **kwargs):

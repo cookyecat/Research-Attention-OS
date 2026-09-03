@@ -7,7 +7,7 @@ from uuid import UUID
 from app.cognitive.client import EmbeddingDimensionError, LLMError, embed_texts
 from app.config import settings
 from app.models.kernel import KernelNode
-from app.services.matching import node_text, tokenize, _overlap
+from app.services.matching import expand_locate_query, node_text, tokenize, _overlap
 
 RAOS_QUERY_EMBED_INSTRUCT = (
     "Given a new research information item, retrieve relevant Cognitive Kernel nodes "
@@ -22,9 +22,12 @@ class RetrievalTrace:
     method: str
     embedding_model: str | None = None
     query_instruct_applied: bool = False
+    candidates: tuple[dict, ...] = ()
 
     def as_dict(self) -> dict:
-        return asdict(self)
+        data = asdict(self)
+        data["candidates"] = list(self.candidates)
+        return data
 
 
 def query_instruct_enabled() -> bool:
@@ -77,6 +80,52 @@ def retrieve_kernel_candidates(
     return hits
 
 
+def _lexical_scored(query_text: str, active: list[KernelNode]) -> list[tuple[float, KernelNode]]:
+    qtokens = tokenize(query_text)
+    scored = [(_overlap(qtokens, tokenize(node_text(node))), node) for node in active]
+    scored.sort(key=lambda x: (-x[0], str(x[1].id)))
+    return scored
+
+
+def _candidate_row(node: KernelNode, rank: int, score: float, method: str) -> dict:
+    return {
+        "node_id": str(node.id),
+        "title": node.title,
+        "node_type": node.node_type,
+        "rank": rank,
+        "score": round(float(score), 4),
+        "method": method,
+    }
+
+
+def _merge_retrieval_lists(
+    parts: list[tuple[str, list[tuple[float, KernelNode]]]],
+    *,
+    top_k: int,
+) -> tuple[list[KernelNode], tuple[dict, ...]]:
+    """Union of each retriever's top_k. Locate prefers recall; Impact filters false positives."""
+    best: dict[UUID, dict] = {}
+    for method, scored in parts:
+        for score, node in scored[:top_k]:
+            prev = best.get(node.id)
+            if prev is None:
+                best[node.id] = {"node": node, "score": float(score), "methods": {method}}
+                continue
+            prev["methods"].add(method)
+            if float(score) > prev["score"]:
+                prev["score"] = float(score)
+    ordered = sorted(best.values(), key=lambda rec: (-rec["score"], str(rec["node"].id)))
+    cap = max(top_k, min(len(ordered), top_k * 2))
+    hits: list[KernelNode] = []
+    rows: list[dict] = []
+    for rank, rec in enumerate(ordered[:cap], start=1):
+        methods = rec["methods"]
+        method = "hybrid" if len(methods) > 1 else next(iter(methods))
+        hits.append(rec["node"])
+        rows.append(_candidate_row(rec["node"], rank, rec["score"], method))
+    return hits, tuple(rows)
+
+
 def retrieve_kernel_candidates_traced(
     query_text: str,
     nodes: list[KernelNode],
@@ -87,29 +136,31 @@ def retrieve_kernel_candidates_traced(
     ranked_ids: list[UUID] | None = None,
     embedding_model: str | None = None,
 ) -> tuple[list[KernelNode], RetrievalTrace]:
-    """Embedding retrieval when available; lexical overlap otherwise. Not a truth judgment."""
+    """Locate candidates for the LLM matcher. Embedding ∪ lexical. Not a truth judgment."""
+    query_text = expand_locate_query(query_text)
     instruct = query_instruct_enabled()
     had_embedding = query_embedding is not None or bool(ranked_ids)
     active = [n for n in nodes if n.deleted_at is None]
+    empty = RetrievalTrace(
+        embedding_used=False,
+        lexical_fallback=True,
+        method="lexical",
+        embedding_model=embedding_model,
+        query_instruct_applied=instruct,
+        candidates=(),
+    )
     if not active:
-        return [], RetrievalTrace(
-            embedding_used=False,
-            lexical_fallback=True,
-            method="lexical",
-            embedding_model=embedding_model,
-            query_instruct_applied=instruct,
-        )
+        return [], empty
     by_id = {n.id: n for n in active}
+    lexical = _lexical_scored(query_text, active)
+    parts: list[tuple[str, list[tuple[float, KernelNode]]]] = []
+    dense_method = None
     if ranked_ids:
         ordered = [by_id[i] for i in ranked_ids if i in by_id]
         if ordered:
-            return ordered[:top_k], RetrievalTrace(
-                embedding_used=True,
-                lexical_fallback=False,
-                method="pgvector",
-                embedding_model=embedding_model,
-                query_instruct_applied=instruct,
-            )
+            decay = [(max(0.0, 1.0 - i / max(len(ordered), 1)), n) for i, n in enumerate(ordered)]
+            parts.append(("pgvector", decay))
+            dense_method = "pgvector"
     if query_embedding and node_embeddings:
         qdim = len(query_embedding)
         compatible = {nid: vec for nid, vec in node_embeddings.items() if vec and len(vec) == qdim}
@@ -122,29 +173,30 @@ def retrieve_kernel_candidates_traced(
             if not vec:
                 continue
             scored.append((cosine(query_embedding, vec), node))
-        scored.sort(key=lambda x: x[0], reverse=True)
-        hits = [n for s, n in scored[:top_k] if s > 0.15]
-        if hits:
-            return hits, RetrievalTrace(
-                embedding_used=True,
-                lexical_fallback=False,
-                method="embedding",
-                embedding_model=embedding_model,
-                query_instruct_applied=instruct,
-            )
-    qtokens = tokenize(query_text)
-    scored = []
-    for node in active:
-        score = _overlap(qtokens, tokenize(node_text(node)))
-        scored.append((score, node))
-    scored.sort(key=lambda x: x[0], reverse=True)
-    lexical = [n for s, n in scored[:top_k]]
-    return lexical, RetrievalTrace(
-        embedding_used=had_embedding,
-        lexical_fallback=True,
-        method="lexical",
+        scored.sort(key=lambda x: (-x[0], str(x[1].id)))
+        if scored:
+            parts.append(("embedding", scored))
+            dense_method = dense_method or "embedding"
+    parts.append(("lexical", lexical))
+    hits, candidates = _merge_retrieval_lists(parts, top_k=top_k)
+    used_dense = dense_method is not None
+    lexical_only = any(row["method"] == "lexical" for row in candidates)
+    if used_dense and lexical_only:
+        overall = "hybrid"
+        lexical_fallback = False
+    elif used_dense:
+        overall = dense_method
+        lexical_fallback = False
+    else:
+        overall = "lexical"
+        lexical_fallback = True
+    return hits, RetrievalTrace(
+        embedding_used=used_dense or had_embedding,
+        lexical_fallback=lexical_fallback,
+        method=overall,
         embedding_model=embedding_model,
         query_instruct_applied=instruct,
+        candidates=candidates,
     )
 
 

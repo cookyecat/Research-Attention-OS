@@ -97,11 +97,12 @@ Each run writes `eval/live/results/<timestamp>/`:
 The report scores the Human Gold contract:
 
 - Disposition hit
-- Update Operation hit
-- Target hit (Kernel Snapshot node id)
+- Update Operation hit (operation only)
+- Target hit (only when gold is REINFORCE / CHALLENGE on an existing Kernel Snapshot node)
+- Exact Update hit (operation and target together; OPEN_NEW must be predicted as OPEN_NEW)
 - DeltaContent present for human review (not auto-scored)
 
-`cases.jsonl` includes `stage_provenance`, `disposition`, `update`, `delta_content`, kernel matches, `cognitive_impact`, `evidence_stage_skipped`, and `delta_summary`.
+`cases.jsonl` includes `stage_provenance`, `disposition`, `update`, `delta_content`, `retrieval_candidates` (pre-matcher Locate list with id/title/rank/score), kernel matches, `cognitive_impact`, `primary_effect`, `evidence_stage_skipped`, and `delta_summary`.
 
 Live Eval v0.1.1+ runs the **production pipeline** (chunking → extraction → evidence → query embedding → kernel match → cognitive impact assessment → Attention Policy → model delta). It does not reimplement an eval-only path.
 

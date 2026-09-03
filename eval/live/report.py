@@ -32,6 +32,7 @@ def compute_metrics(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
     disposition = _disposition_metrics(disposition_rows)
     operation = _update_operation_metrics(update_rows)
     target = _target_metrics(target_rows)
+    exact = _exact_update_metrics(update_rows)
     delta_content = _delta_content_metrics(delta_rows)
     epistemic = _epistemic_metrics(extraction_rows)
     delta = _delta_metrics(delta_rows)
@@ -50,6 +51,7 @@ def compute_metrics(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
         "disposition": disposition,
         "update_operation": operation,
         "target": target,
+        "exact_update": exact,
         "delta_content": delta_content,
         "epistemic_separation": epistemic,
         "model_delta": delta,
@@ -112,21 +114,56 @@ def _pred_operation_of(item: dict) -> str | None:
     return value if value in UPDATE_OPERATIONS else None
 
 
-def _pred_updates(row: dict) -> list[tuple[str, str | None]]:
+def _effect_primary_key(item: dict) -> tuple:
+    op = _pred_operation_of(item) or ""
+    nid = item.get("target_kernel_node_id")
+    targeted = 1 if nid and op in {"REINFORCE", "CHALLENGE"} else 0
+    challenge = 1 if op == "CHALLENGE" and targeted else 0
+    return (
+        targeted,
+        challenge,
+        float(item.get("change_magnitude") or 0.0),
+        float(item.get("target_importance") or 0.0),
+        float(item.get("epistemic_strength") or 0.0),
+        str(nid or ""),
+    )
+
+
+def _pred_primary(row: dict) -> tuple[str | None, str | None]:
+    """Public Update(Operation, Target). Not any-effect matching."""
     upd = row.get("update")
     if isinstance(upd, dict) and upd.get("operation"):
         op = str(upd["operation"]).upper()
         if op in UPDATE_OPERATIONS:
             nid = upd.get("target_node_id")
-            return [(op, str(nid) if nid else None)]
-    updates: list[tuple[str, str | None]] = []
+            return op, (str(nid) if nid else None)
+    legal: list[dict] = []
     for effect in _pred_effect_rows(row):
         op = _pred_operation_of(effect)
         if not op:
             continue
         nid = effect.get("target_kernel_node_id")
-        updates.append((op, str(nid) if nid else None))
-    return updates
+        if op in {"REINFORCE", "CHALLENGE"} and not nid:
+            continue
+        mag = effect.get("change_magnitude")
+        if mag is not None and float(mag) < 0.35:
+            continue
+        legal.append(effect)
+    if not legal:
+        return None, None
+    chosen = max(legal, key=_effect_primary_key)
+    op = _pred_operation_of(chosen)
+    nid = chosen.get("target_kernel_node_id")
+    if op == "OPEN_NEW":
+        nid = None
+    return op, (str(nid) if nid else None)
+
+
+def _pred_updates(row: dict) -> list[tuple[str, str | None]]:
+    op, nid = _pred_primary(row)
+    if not op:
+        return []
+    return [(op, nid)]
 
 
 def _id_to_title(row: dict) -> dict[str, str]:
@@ -223,13 +260,13 @@ def _update_operation_metrics(rows: list[dict]) -> dict:
         if not op:
             continue
         scored += 1
-        pred_ops = {item[0] for item in _pred_updates(row)}
-        if op in pred_ops:
+        pred_op, _pred_tgt = _pred_primary(row)
+        if pred_op == op:
             hit += 1
     return {
         "update_operation_accuracy": _div(hit, scored),
         "denominator": scored,
-        "note": "Predicted update.operation is scored directly against REINFORCE | CHALLENGE | OPEN_NEW.",
+        "note": "Predicted update.operation is scored independently against REINFORCE | CHALLENGE | OPEN_NEW.",
     }
 
 
@@ -238,20 +275,42 @@ def _target_metrics(rows: list[dict]) -> dict:
     for row in rows:
         gold = _gold_model(row)
         update = gold.update
-        if not update or not update.operation:
+        if not update or update.operation not in {"REINFORCE", "CHALLENGE"}:
+            continue
+        if not update.target_node_id:
             continue
         scored += 1
-        pred_targets = _resolved_pred_targets(row)
-        if update.operation == "OPEN_NEW":
-            if all(t is None for t in pred_targets):
-                hit += 1
-            continue
-        if update.target_node_id and update.target_node_id in {t for t in pred_targets if t}:
+        _pred_op, pred_nid = _pred_primary(row)
+        resolved = _resolve_pred_target(pred_nid, _id_to_title(row))
+        if resolved == update.target_node_id:
             hit += 1
     return {
         "target_accuracy": _div(hit, scored),
         "denominator": scored,
-        "note": "Target is the predicted update's Kernel Snapshot node, not a retrieval/topic hit.",
+        "note": "Target is scored only when gold is REINFORCE/CHALLENGE on an existing Kernel Snapshot node.",
+    }
+
+
+def _exact_update_metrics(rows: list[dict]) -> dict:
+    scored = hit = 0
+    for row in rows:
+        gold = _gold_model(row)
+        update = gold.update
+        if not update or not update.operation:
+            continue
+        scored += 1
+        pred_op, pred_nid = _pred_primary(row)
+        if update.operation == "OPEN_NEW":
+            if pred_op == "OPEN_NEW":
+                hit += 1
+            continue
+        resolved = _resolve_pred_target(pred_nid, _id_to_title(row))
+        if pred_op == update.operation and resolved == update.target_node_id:
+            hit += 1
+    return {
+        "exact_update_accuracy": _div(hit, scored),
+        "denominator": scored,
+        "note": "Exact Update requires the primary operation and, for REINFORCE/CHALLENGE, the existing target. OPEN_NEW hits only when explicitly predicted as OPEN_NEW.",
     }
 
 
@@ -378,6 +437,10 @@ def render_markdown(summary: dict) -> str:
         "## Target",
         f"- Target Accuracy: {target.get('target_accuracy')}",
         f"- {target.get('note')}",
+        "",
+        "## Exact Update",
+        f"- Exact Update Accuracy: {(summary.get('exact_update') or {}).get('exact_update_accuracy')}",
+        f"- {(summary.get('exact_update') or {}).get('note')}",
         "",
         "## Delta Content",
         f"- cases with Delta Content text: {dc.get('n_with_delta_content')}",

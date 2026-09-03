@@ -316,12 +316,14 @@ def test_report_scores_new_contract_fields():
     assert metrics["disposition"]["disposition_accuracy"] == 1.0
     assert metrics["update_operation"]["update_operation_accuracy"] == 1.0
     assert metrics["target"]["target_accuracy"] == 1.0
+    assert metrics["exact_update"]["exact_update_accuracy"] == 1.0
     assert metrics["delta_content"]["n_with_delta_content"] == 1
     assert metrics["delta_content"]["auto_scored"] is False
     md = render_markdown(metrics)
     assert "## Disposition" in md
     assert "## Update Operation" in md
     assert "## Target" in md
+    assert "## Exact Update" in md
     assert "## Delta Content" in md
     assert "attention_state" not in md
     assert "Processing Mode" not in md
@@ -368,6 +370,7 @@ def test_report_scores_legacy_gold_without_refine_mapping():
     assert metrics["disposition"]["disposition_accuracy"] == 1.0
     assert metrics["update_operation"]["update_operation_accuracy"] == 1.0
     assert metrics["target"]["target_accuracy"] == 1.0
+    assert metrics["exact_update"]["exact_update_accuracy"] == 1.0
     assert metrics["n_labeled"] == 2
 
 
@@ -440,13 +443,31 @@ def test_target_hit_uses_update_node_not_retrieval():
     metrics = compute_metrics(rows)
     assert metrics["update_operation"]["update_operation_accuracy"] == 1.0
     assert metrics["target"]["target_accuracy"] == 0.0
+    assert metrics["exact_update"]["exact_update_accuracy"] == 0.0
 
 
-def test_open_new_target_not_hit_by_empty_retrieval_or_targeted_open_new():
-    empty_retrieval = {
+def test_open_new_is_not_a_target_metric_and_empty_pred_is_not_a_hit():
+    empty_pred = {
+        "id": "empty-pred",
+        "gold_status": "LABELED",
+        "disposition": "WATCH",
+        "matched_kernel_titles": [],
+        "matched_kernel_ids": [],
+        "kernel_matches": [],
+        "update": {"operation": None, "target_node_id": None},
+        "cognitive_impact": {"effects": []},
+        "human_gold": {
+            "disposition": "WATCH",
+            "update": {"operation": "OPEN_NEW", "target_node_id": None},
+            "delta_content": "A new branch, not an existing node.",
+        },
+        "prediction_source": "model",
+        "model_prediction": True,
+    }
+    reinforce_instead = {
         "id": "reinforce-existing",
         "gold_status": "LABELED",
-            "disposition": "WATCH",
+        "disposition": "WATCH",
         "matched_kernel_titles": [],
         "matched_kernel_ids": [],
         "kernel_matches": [],
@@ -459,28 +480,29 @@ def test_open_new_target_not_hit_by_empty_retrieval_or_targeted_open_new():
         "prediction_source": "model",
         "model_prediction": True,
     }
-    targeted_open = {
-        "id": "open-with-target",
+    explicit_open = {
+        "id": "explicit-open",
         "gold_status": "LABELED",
-            "disposition": "WATCH",
-        "matched_kernel_titles": ["Motor Intelligence"],
-        "matched_kernel_ids": ["abc"],
-        "kernel_matches": [{"node_id": "abc", "title": "Motor Intelligence"}],
-        "cognitive_impact": {"effects": [{"target_kernel_node_id": "abc", "operation": "OPEN_NEW"}]},
+        "disposition": "WATCH",
+        "update": {"operation": "OPEN_NEW", "target_node_id": None},
+        "cognitive_impact": {"effects": [{"target_kernel_node_id": None, "operation": "OPEN_NEW"}]},
         "human_gold": {
             "disposition": "WATCH",
             "update": {"operation": "OPEN_NEW", "target_node_id": None},
-            "delta_content": "OPEN_NEW gold has an empty target.",
+            "delta_content": "Explicit OPEN_NEW.",
         },
         "prediction_source": "model",
         "model_prediction": True,
     }
-    metrics = compute_metrics([empty_retrieval, targeted_open])
-    assert metrics["target"]["target_accuracy"] == 0.0
-    assert metrics["update_operation"]["update_operation_accuracy"] == 0.5
+    metrics = compute_metrics([empty_pred, reinforce_instead, explicit_open])
+    assert metrics["target"]["denominator"] == 0
+    assert metrics["update_operation"]["denominator"] == 3
+    assert metrics["update_operation"]["update_operation_accuracy"] == 1 / 3
+    assert metrics["exact_update"]["denominator"] == 3
+    assert metrics["exact_update"]["exact_update_accuracy"] == 1 / 3
 
 
-def test_open_new_target_misses_when_any_predicted_update_has_a_node():
+def test_primary_update_not_any_effect_open_new():
     rows = [
         {
             "id": "mixed",
@@ -491,8 +513,8 @@ def test_open_new_target_misses_when_any_predicted_update_has_a_node():
             "kernel_matches": [{"node_id": "abc", "title": "Motor Intelligence"}],
             "cognitive_impact": {
                 "effects": [
-                    {"target_kernel_node_id": "abc", "operation": "REINFORCE"},
-                    {"target_kernel_node_id": None, "operation": "OPEN_NEW"},
+                    {"target_kernel_node_id": "abc", "operation": "REINFORCE", "change_magnitude": 0.7, "target_importance": 0.65},
+                    {"target_kernel_node_id": None, "operation": "OPEN_NEW", "change_magnitude": 0.55, "target_importance": 0.55},
                 ]
             },
             "human_gold": {
@@ -505,8 +527,9 @@ def test_open_new_target_misses_when_any_predicted_update_has_a_node():
         }
     ]
     metrics = compute_metrics(rows)
-    assert metrics["update_operation"]["update_operation_accuracy"] == 1.0
-    assert metrics["target"]["target_accuracy"] == 0.0
+    assert metrics["update_operation"]["update_operation_accuracy"] == 0.0
+    assert metrics["target"]["denominator"] == 0
+    assert metrics["exact_update"]["exact_update_accuracy"] == 0.0
 
 
 def test_live_eval_records_stage_provenance_and_visible_fallback(tmp_path):
@@ -658,6 +681,7 @@ def test_live_eval_row_from_production_pipeline(client):
     assert "delta_content" in row
     assert isinstance(row["kernel_matches"], list)
     assert row["lexical_fallback"] is True
+    assert isinstance(row.get("retrieval_candidates"), list)
     assert row["scheduler_features"]
     assert "delta_summary" in row
     assert row["stage_provenance"] is not None

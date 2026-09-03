@@ -8,12 +8,15 @@ from fastapi.testclient import TestClient
 
 from app.enums import Disposition, ClaimType, CognitiveEffectKind, ExpectedOutput, Urgency
 from app.services.cognitive_impact import (
+    MEANINGFUL_CHANGE,
     CognitiveEffect,
     CognitiveImpactAssessment,
     assess_impact_from_rules,
     epistemic_cap,
     ground_effects,
+    primary_update,
     resolve_target_importance,
+    select_primary_effect,
 )
 from app.services.extraction import ExtractedClaim, ExtractionResult
 from app.services.matching import KernelMatch
@@ -265,6 +268,52 @@ def test_exploration_open_new_is_not_automatic_drop():
     assert assessment.exploration_candidate is True
     plan = route(assessment.features, assessment=assessment)
     assert plan.disposition != Disposition.DROP
+    assert plan.disposition == Disposition.WATCH
+
+
+def test_media_hype_open_new_is_not_watch():
+    extraction = ExtractionResult(
+        claims=[
+            ExtractedClaim(
+                text="One unsourced claim of 'real-time' with no architecture.",
+                claim_type=ClaimType.TECHNICAL,
+            )
+        ],
+        technical_claims=["One unsourced claim of 'real-time' with no architecture."],
+        evidence_maturity=0.2,
+    )
+    assessment = assess_impact_from_rules(
+        "Magical inspiring robot video. One unsourced claim of 'real-time' with no architecture.",
+        extraction,
+        [],
+        independent_source_count=1,
+    )
+    plan = route(assessment.features, assessment=assessment)
+    assert plan.disposition in {Disposition.DROP, Disposition.AWARE}
+    primary = select_primary_effect(assessment)
+    if primary is not None:
+        assert float(primary.change_magnitude) < MEANINGFUL_CHANGE
+
+
+def test_negated_architecture_is_not_keep_in_view():
+    extraction = ExtractionResult(
+        claims=[
+            ExtractedClaim(
+                text="The notes contain no architecture details.",
+                claim_type=ClaimType.TECHNICAL,
+            )
+        ],
+        technical_claims=["no architecture details"],
+        evidence_maturity=0.3,
+    )
+    assessment = assess_impact_from_rules(
+        "The notes contain no architecture details.",
+        extraction,
+        [],
+        independent_source_count=1,
+    )
+    plan = route(assessment.features, assessment=assessment)
+    assert plan.disposition in {Disposition.DROP, Disposition.AWARE}
 
 
 def test_irrelevant_hype_is_no_material_change_and_dropped():
@@ -447,6 +496,49 @@ def test_projection_never_emits_untargeted_reinforce_or_challenge():
     material = _projection_assessment(_features(change_magnitude=0.7, disagreement=0.1))
     assert material.effects == []
     assert primary_update(material) == {"operation": None, "target_node_id": None}
+
+
+def test_primary_effect_is_order_independent_and_not_list_head():
+    match = _match("MODEL")
+    reinforce = _effect(match, CognitiveEffectKind.REINFORCE, change_magnitude=0.7, target_importance=0.75)
+    opened = _effect(None, CognitiveEffectKind.OPEN_NEW, change_magnitude=0.9, target_importance=0.9)
+    forward = _assessment(opened, reinforce)
+    backward = _assessment(reinforce, opened)
+    assert select_primary_effect(forward).target_kernel_node_id == match.node_id
+    assert select_primary_effect(backward).target_kernel_node_id == match.node_id
+    assert primary_update(forward)["operation"] == CognitiveEffectKind.REINFORCE
+    assert primary_update(backward)["operation"] == CognitiveEffectKind.REINFORCE
+
+
+def test_route_uses_primary_effect_not_cross_effect_max():
+    weak_target = _match("BELIEF")
+    strong_open = _effect(
+        None,
+        CognitiveEffectKind.OPEN_NEW,
+        change_magnitude=0.9,
+        target_importance=0.9,
+        epistemic_strength=0.4,
+    )
+    weak_reinforce = _effect(
+        weak_target,
+        CognitiveEffectKind.REINFORCE,
+        change_magnitude=0.4,
+        target_importance=0.2,
+        epistemic_strength=0.2,
+    )
+    assessment = _assessment(strong_open, weak_reinforce)
+    plan = route(_features(change_magnitude=0.9, target_importance=0.9), assessment=assessment, matches=[weak_target])
+    assert plan.disposition != Disposition.ENGAGE
+    assert primary_update(assessment)["operation"] == CognitiveEffectKind.REINFORCE
+    assert plan.disposition == Disposition.WATCH
+
+
+def test_material_open_new_routes_to_watch_not_aware():
+    assessment = _assessment(
+        _effect(None, CognitiveEffectKind.OPEN_NEW, change_magnitude=0.55, target_importance=0.55)
+    )
+    plan = route(_features(marketing_heavy=False), assessment=assessment)
+    assert plan.disposition == Disposition.WATCH
 
 
 def test_untargeted_challenge_does_not_count_as_challenge_route():

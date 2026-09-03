@@ -47,7 +47,7 @@ from app.services.extraction import (
     ExtractedObservation,
     ExtractionResult,
 )
-from app.services.matching import KernelMatch, node_text
+from app.services.matching import KernelMatch, backfill_measurement_bottleneck_matches, node_text
 from app.services.retrieval import retrieve_kernel_candidates_traced, try_embed_query
 from app.services.scheduler import SchedulerFeatures
 
@@ -232,7 +232,7 @@ class ModelBackedCognitiveProvider:
             )
         matches: list[KernelMatch] = []
         for item in parsed.matches:
-            if item.kernel_node_id not in allowed and item.kernel_node_id not in by_id:
+            if item.kernel_node_id not in allowed:
                 continue
             node = by_id[item.kernel_node_id]
             rtype = item.relevance_type
@@ -247,7 +247,7 @@ class ModelBackedCognitiveProvider:
                     relevance_type=rtype,
                 )
             )
-        return matches
+        return backfill_measurement_bottleneck_matches(matches, candidates, blob)
 
     def reason_evidence(
         self,

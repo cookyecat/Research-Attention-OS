@@ -138,6 +138,10 @@ def analysis_payload_to_eval_row(payload: dict[str, Any]) -> dict[str, Any]:
         "lexical_fallback": retrieval.get("lexical_fallback"),
         "query_instruct_applied": retrieval.get("query_instruct_applied"),
         "retrieval_method": retrieval.get("method"),
+        "retrieval_candidates": retrieval.get("candidates") or [],
+        "primary_effect": (payload.get("cognitive_impact") or {}).get("primary_effect")
+        if isinstance(payload.get("cognitive_impact"), dict)
+        else None,
         "scheduler_features": features,
         "delta_summary": delta.get("summary"),
         "claim_texts": [c.get("text") for c in (payload.get("claims") or [])],
@@ -169,6 +173,8 @@ def _empty_eval_fields() -> dict[str, Any]:
         "lexical_fallback": None,
         "query_instruct_applied": None,
         "retrieval_method": None,
+        "retrieval_candidates": [],
+        "primary_effect": None,
         "scheduler_features": None,
         "cognitive_impact": None,
         "evidence_stage_skipped": None,
@@ -295,6 +301,7 @@ def run_case(case: LiveCase, *, dry_run: bool, db=None) -> dict[str, Any]:
         db = SessionLocal()
         close = True
     try:
+        print(f"live-eval case {case.id}", flush=True)
         payload = run_live_pipeline(db, case)
         if close:
             db.commit()

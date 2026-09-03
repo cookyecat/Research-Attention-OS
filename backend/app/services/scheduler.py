@@ -7,7 +7,7 @@ from app.services.evidence_gate import evidence_conflict_flags
 from app.services.extraction import ExtractionResult
 from app.services.matching import EQUITY_STRUCTURE, KernelMatch, tokenize
 
-SCHEDULER_VERSION = "raos-scheduler-0.3.0"
+SCHEDULER_VERSION = "raos-scheduler-0.4.0"
 # Compatibility projection cap for debug/Live Eval. Routing no longer branches on these scores.
 UNSUPPORTED_RELEVANCE_CAP = 0.34
 
@@ -359,33 +359,19 @@ def route(
     """
     from app.enums import CognitiveEffectKind
     from app.services.cognitive_impact import (
+        MATERIAL_CHANGE_MIN,
         MEANINGFUL_CHANGE,
-        has_effect,
+        effect_target_match,
         has_exploration_effect,
-        material_effects,
-        material_effects_on_type,
-        material_structural_effects,
-        max_change_magnitude,
-        max_epistemic_strength,
-        max_target_importance,
+        select_primary_effect,
     )
 
     runtime = runtime or RuntimeView()
     if assessment is None:
         assessment = _projection_assessment(features)
     matches = matches or []
-    material = material_effects(assessment)
-    targeted = [e for e in material if e.target_kernel_node_id is not None]
+    primary = select_primary_effect(assessment)
     explore = has_exploration_effect(assessment)
-    challenge = has_effect(assessment, CognitiveEffectKind.CHALLENGE)
-    change = max_change_magnitude(assessment)
-    epi = max_epistemic_strength(assessment)
-    importance = max_target_importance(assessment)
-    decision_fx = material_effects_on_type(assessment, matches, "DECISION")
-    bottleneck_fx = material_effects_on_type(assessment, matches, "BOTTLENECK")
-    synth_types = ("MODEL", "BELIEF", "QUESTION", "BOTTLENECK", "DECISION", "PROJECT")
-    synth_fx = material_effects_on_type(assessment, matches, *synth_types)
-    structural_fx = material_structural_effects(assessment, matches)
 
     # --- Source / runtime context (not cognitive value) ---
     if features.is_duplicate:
@@ -425,8 +411,8 @@ def route(
             cognitive_budget_minutes=_budget(Disposition.ENGAGE),
         )
 
-    # --- No material cognitive effect ---
-    if not material and not challenge:
+    # --- No material primary CognitiveEffect ---
+    if primary is None:
         if explore and not features.marketing_heavy:
             return PlanDraft(
                 disposition=Disposition.AWARE,
@@ -454,8 +440,26 @@ def route(
             cognitive_budget_minutes=_budget(Disposition.DROP),
         )
 
-    # --- DECISION target: matched DECISION node + material effect, not decision_relevance ---
-    if decision_fx:
+    op = primary.operation
+    if not isinstance(op, CognitiveEffectKind):
+        op = CognitiveEffectKind(str(getattr(op, "value", op)))
+    change = float(primary.change_magnitude)
+    epi = float(primary.epistemic_strength)
+    importance = float(primary.target_importance)
+    match = effect_target_match(primary, matches)
+    targeted = primary.target_kernel_node_id is not None and op in {
+        CognitiveEffectKind.REINFORCE,
+        CognitiveEffectKind.CHALLENGE,
+    }
+    challenge = op == CognitiveEffectKind.CHALLENGE and targeted
+    open_new = op == CognitiveEffectKind.OPEN_NEW
+    node_type = str(getattr(match, "node_type", "") or "").upper()
+    rel = str(getattr(match, "relevance_type", "") or "").upper()
+    structural = bool(match is not None and (getattr(match, "structural", False) or rel == "STRUCTURAL"))
+    synth = node_type in {"MODEL", "BELIEF", "QUESTION", "BOTTLENECK", "DECISION", "HYPOTHESIS"}
+
+    # --- DECISION target: primary effect on a Decision node, not decision_relevance ---
+    if targeted and node_type == "DECISION":
         return PlanDraft(
             disposition=Disposition.ENGAGE,
             urgency=Urgency.NORMAL,
@@ -464,13 +468,10 @@ def route(
             cognitive_budget_minutes=_budget(Disposition.ENGAGE),
         )
 
-    # --- Meaningful change on an existing Kernel target, or a CHALLENGE ---
-    targeted_or_challenge = bool(targeted) or challenge
+    # --- Meaningful change on the primary Kernel target, or a primary CHALLENGE ---
     meaningful = change >= MEANINGFUL_CHANGE
-    important = importance >= 0.55 or bool(synth_fx) or challenge
-    open_only = explore and not targeted and not challenge
-
-    if targeted_or_challenge and meaningful and important and not open_only:
+    important = importance >= 0.55 or synth or challenge
+    if targeted and meaningful and important:
         reason_parts: list[str] = [
             "Material cognitive effect with meaningful change magnitude on an important Kernel target."
         ]
@@ -489,25 +490,25 @@ def route(
             features.high_quality_technical and not challenge and not low_epi and features.disagreement < 0.4
         ):
             reason_parts.append("Foundational / high-quality technical treatment of a mechanism.")
-        if synth_fx or challenge:
+        if synth or challenge:
             reason_parts.append("Integrate against an existing Model, Belief, Question, Bottleneck, or Decision.")
         expected = ExpectedOutput.KERNEL_PATCH if change >= MEANINGFUL_CHANGE else ExpectedOutput.SUMMARY
         if features.evidence_maturity < 0.45 and expected != ExpectedOutput.KERNEL_PATCH:
             expected = ExpectedOutput.WATCH
-        urgency = Urgency.PRIORITY if bottleneck_fx and change >= MEANINGFUL_CHANGE else Urgency.NORMAL
+        urgency = Urgency.PRIORITY if node_type == "BOTTLENECK" and change >= MEANINGFUL_CHANGE else Urgency.NORMAL
         return PlanDraft(
             disposition=Disposition.ENGAGE,
             urgency=urgency,
             expected_output=expected,
             reason=" ".join(reason_parts),
             watch_after_processing=features.evidence_maturity < 0.5,
-            watch_triggers=_default_watch_triggers(features, assessment, matches),
+            watch_triggers=_default_watch_triggers(features, primary=primary, matches=matches),
             cognitive_budget_minutes=_budget(Disposition.ENGAGE),
         )
 
-    # --- Structural effect without a topic-driven ENGAGE ---
-    if structural_fx and change >= 0.4:
-        expected = ExpectedOutput.DECISION_REVIEW if decision_fx else ExpectedOutput.KERNEL_PATCH
+    # --- Structural primary effect without a topic-driven ENGAGE ---
+    if targeted and structural and change >= 0.4:
+        expected = ExpectedOutput.DECISION_REVIEW if node_type == "DECISION" else ExpectedOutput.KERNEL_PATCH
         return PlanDraft(
             disposition=Disposition.ENGAGE,
             expected_output=expected,
@@ -515,25 +516,34 @@ def route(
             cognitive_budget_minutes=_budget(Disposition.ENGAGE),
         )
 
-    # --- Moderate change, insufficient justification ---
-    if material and change >= 0.35 and (targeted or challenge):
+    # --- Moderate targeted change, insufficient justification ---
+    if targeted and change >= MATERIAL_CHANGE_MIN:
         return PlanDraft(
             disposition=Disposition.WATCH,
             expected_output=ExpectedOutput.WATCH,
             reason="Potentially important cognitive effect with insufficient current evidence; transfer future attention to the system.",
             watch_after_processing=True,
-            watch_triggers=_default_watch_triggers(features, assessment, matches),
+            watch_triggers=_default_watch_triggers(features, primary=primary, matches=matches),
             cognitive_budget_minutes=_budget(Disposition.WATCH),
         )
 
-    # --- Exploration: conservative AWARE; high-value new direction may ENGAGE ---
-    if explore and not features.marketing_heavy:
+    # --- OPEN_NEW: keep a real new branch on WATCH; only dive in when it is immediately high-value ---
+    if open_new and not features.marketing_heavy:
         if change >= 0.65 and importance >= 0.7:
             return PlanDraft(
                 disposition=Disposition.ENGAGE,
                 expected_output=ExpectedOutput.SUMMARY,
                 reason="High-value OPEN_NEW direction; ENGAGE to absorb a new cognitive branch.",
                 cognitive_budget_minutes=_budget(Disposition.ENGAGE),
+            )
+        if change >= MEANINGFUL_CHANGE:
+            return PlanDraft(
+                disposition=Disposition.WATCH,
+                expected_output=ExpectedOutput.WATCH,
+                reason="Material OPEN_NEW branch is worth keeping in view, but not immediately diving into.",
+                watch_after_processing=True,
+                watch_triggers=_default_watch_triggers(features, primary=primary, matches=matches),
+                cognitive_budget_minutes=_budget(Disposition.WATCH),
             )
         return PlanDraft(
             disposition=Disposition.AWARE,
@@ -550,11 +560,13 @@ def route(
     )
 
 
-def _default_watch_triggers(features: SchedulerFeatures, assessment=None, matches=None) -> list[str]:
-    from app.services.cognitive_impact import material_effects_on_type
+def _default_watch_triggers(features: SchedulerFeatures, assessment=None, matches=None, primary=None) -> list[str]:
+    from app.services.cognitive_impact import effect_target_match
 
     triggers = ["PAPER_RELEASE", "CODE_RELEASE", "INDEPENDENT_REPLICATION"]
-    if material_effects_on_type(assessment, matches, "BOTTLENECK") or features.bottleneck_alignment >= 0.4:
+    match = effect_target_match(primary, matches) if primary is not None else None
+    bottleneck = str(getattr(match, "node_type", "") or "").upper() == "BOTTLENECK"
+    if bottleneck or features.bottleneck_alignment >= 0.4:
         triggers.extend(["BENCHMARK_UPDATE", "NEW_EVIDENCE"])
     return triggers
 

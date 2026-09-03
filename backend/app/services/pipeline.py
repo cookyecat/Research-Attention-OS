@@ -25,7 +25,7 @@ from app.services.extraction import (
 )
 from app.services.ingestion import attach_or_create_event
 from app.services.kernel_commit import create_patch
-from app.services.matching import KernelMatch
+from app.services.matching import KernelMatch, expand_locate_query
 from app.services.scheduler import (
     RuntimeView,
     SchedulerFeatures,
@@ -257,6 +257,7 @@ def run_pipeline(
         plan_public,
         run_public,
     )
+    from app.services.cognitive_impact import epistemic_text
     from app.services.embeddings import embedding_model_label, load_node_embeddings, retrieve_ids_pgvector
     from app.services.retrieval import query_instruct_enabled, try_embed_query
 
@@ -330,7 +331,20 @@ def run_pipeline(
         blob = " ".join(
             [source.content_text or "", source.title or ""] + [e.content_text or "" for e in extras]
         )
-        qvec, emb_model = try_embed_query(blob[:4000])
+        epi = epistemic_text(extraction)
+        locate_query = expand_locate_query(
+            " ".join(
+                part
+                for part in (
+                    source.title or "",
+                    epi,
+                    (source.content_text or "")[:2000],
+                )
+                if part
+            ).strip()
+            or blob[:4000]
+        )
+        qvec, emb_model = try_embed_query(locate_query[:4000])
         ranked_ids = None
         node_emb = None
         if qvec:
@@ -342,7 +356,7 @@ def run_pipeline(
         matches = provider.match_kernel(
             extraction,
             nodes,
-            extra_text=blob,
+            extra_text=locate_query or blob,
             query_embedding=qvec,
             node_embeddings=node_emb,
             ranked_ids=ranked_ids,

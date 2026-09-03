@@ -32,7 +32,13 @@ def extraction_user_prompt(source_type: str, title: str | None, text: str) -> st
 
 
 MATCH_SYSTEM = """You match extracted information to a researcher's Cognitive Kernel.
-Embedding retrieval already narrowed candidates. You decide relevance.
+Embedding + lexical retrieval already narrowed candidates. You decide location, not the cognitive update.
+
+Prefer recall over precision at this stage:
+- Include a candidate when the information might matter for that Kernel location.
+- A profiler, latency, evaluation, or systems write-up may locate a Bottleneck even if it is not a robotics paper.
+- Topic adjacency (tooling, measurement, hardware) is enough to keep a candidate. Impact will decide whether cognition actually changes.
+- Empty list only when no candidate is even locationally related.
 
 Two first-class relevance types:
 - TOPIC: same subject matter (robotics article ↔ Motor Intelligence project)
@@ -60,7 +66,7 @@ Return JSON:
     "reason": ""
   }}]
 }}
-Only include matches that genuinely relate. Empty list is allowed."""
+Only include matches that might matter for location. Empty list only when none of the candidates are locationally related."""
 
 EVIDENCE_SYSTEM = """Relate Claims, Observations, and Inferences.
 Stances: SUPPORTS, WEAKENS, REFUTES, NEUTRAL.
@@ -145,6 +151,8 @@ If the source does not provide evidence at the target Kernel scope, omit that ef
 Explicit narrower-scope evidence may support a directional operation.
 A topic-relevant marketing article is not a Decision review.
 OPEN_NEW with exploration_candidate=true is allowed when no Kernel target fits but a useful new direction appears.
+Set OPEN_NEW change_magnitude >= 0.55 only for a real new cognitive branch worth keeping in view (a paper, method, or located near current Goal/Project without updating existing cognition). Changelog, leaderboard, minor-version news, and unsourced media hype should be empty effects or well below 0.55.
+A profiler / measurement / systems write-up may REINFORCE a Bottleneck about latency or evaluation when it changes how that bottleneck should be measured or decomposed. That is not a Goal/Project topical hit. A tutorial that informs measurement without closing the bottleneck should use moderate change_magnitude (below 0.55) so Attention Policy can WATCH rather than ENGAGE.
 Low topic similarity alone must not imply an empty effects list when a STRUCTURAL or new-direction effect is present.
 Popularity is not importance. Disagreement is verification value, not a reason to ignore.
 Return JSON only."""

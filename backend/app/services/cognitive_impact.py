@@ -105,8 +105,10 @@ class CognitiveImpactAssessment:
     features: object | None = None
 
     def as_dict(self) -> dict:
+        primary = select_primary_effect(self)
         return {
             "effects": [e.as_dict() for e in self.effects],
+            "primary_effect": primary.as_dict() if primary is not None else None,
             "attention_cost": round(float(self.attention_cost), 3),
             "exploration_candidate": bool(self.exploration_candidate),
         }
@@ -185,6 +187,24 @@ def claim_scope_aligned(extraction: ExtractionResult, match: KernelMatch) -> boo
     return len(overlap) >= need
 
 
+def _unnegated(low: str, cue: str) -> bool:
+    """True when `cue` occurs at least once without a local negation."""
+    if cue not in low:
+        return False
+    remnants = low
+    for neg in (
+        f"no {cue}",
+        f"not {cue}",
+        f"without {cue}",
+        f"without a {cue}",
+        f"without an {cue}",
+        f"lacks {cue}",
+        f"lack of {cue}",
+    ):
+        remnants = remnants.replace(neg, " ")
+    return cue in remnants
+
+
 def _parse_operation(raw) -> CognitiveEffectKind | None:
     value = _kind(raw)
     if value not in KNOWN_OPERATIONS:
@@ -254,17 +274,45 @@ def _legal_public_effect(effect: CognitiveEffect) -> bool:
     return False
 
 
+def _primary_sort_key(effect: CognitiveEffect) -> tuple:
+    """Order-independent rank for one coherent primary effect.
+
+    Targeted REINFORCE/CHALLENGE outranks OPEN_NEW. CHALLENGE outranks REINFORCE.
+    Then change × importance, then epistemic strength. Node id is a stable tie-break
+    so list order never decides.
+    """
+    op = _kind(effect.operation)
+    targeted = 1 if effect.target_kernel_node_id is not None and op in {"REINFORCE", "CHALLENGE"} else 0
+    challenge = 1 if op == "CHALLENGE" and targeted else 0
+    nid = str(effect.target_kernel_node_id) if effect.target_kernel_node_id else ""
+    return (
+        targeted,
+        challenge,
+        round(float(effect.change_magnitude), 6),
+        round(float(effect.target_importance), 6),
+        round(float(effect.epistemic_strength), 6),
+        nid,
+    )
+
+
+def select_primary_effect(assessment: CognitiveImpactAssessment | None) -> CognitiveEffect | None:
+    """The one CognitiveEffect that public Update and Attention Policy both use."""
+    legal = [e for e in material_effects(assessment) if _legal_public_effect(e)]
+    if not legal:
+        return None
+    return max(legal, key=_primary_sort_key)
+
+
 def primary_update(assessment: CognitiveImpactAssessment | None) -> dict:
     """Single Cognitive Update for the public contract: operation × target_node_id."""
-    effects = [e for e in material_effects(assessment) if _legal_public_effect(e)]
-    if not effects:
+    chosen = select_primary_effect(assessment)
+    if chosen is None:
         return {"operation": None, "target_node_id": None}
-    chosen = next((e for e in effects if _kind(e.operation) == CognitiveEffectKind.CHALLENGE), effects[0])
     op = _kind(chosen.operation)
     nid = str(chosen.target_kernel_node_id) if chosen.target_kernel_node_id else None
     if op == CognitiveEffectKind.OPEN_NEW:
         nid = None
-    return {"operation": op, "target_node_id": nid}
+    return {"operation": chosen.operation if isinstance(chosen.operation, CognitiveEffectKind) else CognitiveEffectKind(op), "target_node_id": nid}
 
 
 def max_change_magnitude(assessment: CognitiveImpactAssessment | None) -> float:
@@ -472,22 +520,25 @@ def features_from_impact(
         effects = assessment_or_effects.effects
         attention_cost = assessment_or_effects.attention_cost
         exploration_candidate = assessment_or_effects.exploration_candidate or exploration_candidate
+        assessment = assessment_or_effects
     else:
         effects = list(assessment_or_effects)
+        assessment = CognitiveImpactAssessment(effects=effects, attention_cost=attention_cost)
 
     links_present, conflict = evidence_conflict_flags(
         extraction, independent_source_count=independent_source_count
     )
-    material = [e for e in effects if _is_operation(e.operation)]
-    max_change = max((e.change_magnitude for e in material), default=0.0)
-    if not material:
-        max_change = max((e.change_magnitude for e in effects), default=0.0)
-    max_epi = max((e.epistemic_strength for e in (material or effects)), default=0.2)
-    max_importance = max((e.target_importance for e in (material or effects)), default=0.0)
-    challenge = max(
-        (e.change_magnitude for e in effects if _kind(e.operation) == CognitiveEffectKind.CHALLENGE),
-        default=0.0,
-    )
+    primary = select_primary_effect(assessment)
+    if primary is not None:
+        max_change = float(primary.change_magnitude)
+        max_epi = float(primary.epistemic_strength)
+        max_importance = float(primary.target_importance)
+        challenge = max_change if _kind(primary.operation) == CognitiveEffectKind.CHALLENGE else 0.0
+    else:
+        max_change = 0.0
+        max_epi = 0.2
+        max_importance = 0.0
+        challenge = 0.0
     disagreement = max(disagreement, challenge, 0.8 if conflict else 0.0)
 
     topic = max(
@@ -641,6 +692,17 @@ def assess_impact_from_rules(
             technical = bool(extraction.technical_claims) or paperish
             located = any(is_location_node(m.node_type) for m in matches)
             conflict = probe.disagreement >= 0.55 or probe.sources_conflict
+            media_hype = "unsourced" in low or (
+                "video" in low and any(w in low for w in ("magical", "inspiring", "hype"))
+            )
+            shallow_news = (
+                ("minor" in low and "version" in low)
+                or "leaderboard" in low
+                or "changelog" in low
+                or "funding recap" in low
+                or "tweeted" in low
+                or media_hype
+            )
             if conflict and not promo:
                 effects.append(
                     CognitiveEffect(
@@ -653,7 +715,13 @@ def assess_impact_from_rules(
                         exploration_candidate=True,
                     )
                 )
-            elif technical and not promo and not equity_only:
+            elif technical and not promo and not equity_only and not shallow_news:
+                keep_in_view = (
+                    paperish
+                    or located
+                    or _unnegated(low, "architecture")
+                    or any(k in low for k in ("introduces", "we propose", "abstraction"))
+                )
                 reason = (
                     "Located near an existing Goal/Project, but no existing cognition is actually updated."
                     if located
@@ -663,9 +731,9 @@ def assess_impact_from_rules(
                     CognitiveEffect(
                         target_kernel_node_id=None,
                         operation=CognitiveEffectKind.OPEN_NEW,
-                        change_magnitude=0.55,
+                        change_magnitude=0.55 if keep_in_view else 0.4,
                         epistemic_strength=min(0.3, cap),
-                        target_importance=0.55,
+                        target_importance=0.55 if keep_in_view else 0.4,
                         reason=reason,
                         exploration_candidate=True,
                     )
