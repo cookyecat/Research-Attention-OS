@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     embedding_dimensions: int | None = None
     max_upload_bytes: int = 20 * 1024 * 1024
     url_fetch_timeout_seconds: float = 15.0
-    scheduler_version: str = "raos-scheduler-0.4.0"
-    attention_policy_version: str = "raos-attention-policy-0.4.0"
+    scheduler_version: str = "raos-scheduler-0.5.0"
+    attention_policy_version: str = "raos-attention-policy-0.5.0"
     fingerprint_version: str = "fp-v1"
     cors_origins: str = "http://localhost:3000"
     long_source_chunk_chars: int = 6000

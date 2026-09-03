@@ -141,6 +141,29 @@ def _contains_any(text: str, cues: tuple[str, ...]) -> bool:
     return any(cue in low for cue in cues)
 
 
+def _unnegated(low: str, cue: str) -> bool:
+    """True when `cue` occurs at least once without a local negation."""
+    if cue not in low:
+        return False
+    remnants = low
+    for neg in (
+        f"no {cue}",
+        f"not {cue}",
+        f"without {cue}",
+        f"without a {cue}",
+        f"without an {cue}",
+        f"lacks {cue}",
+        f"lack of {cue}",
+    ):
+        remnants = remnants.replace(neg, " ")
+    return cue in remnants
+
+
+def _contains_unnegated_any(text: str, cues: tuple[str, ...]) -> bool:
+    low = (text or "").lower()
+    return any(_unnegated(low, cue) for cue in cues)
+
+
 @dataclass
 class ExtractedClaim:
     text: str
@@ -258,7 +281,7 @@ def extract_from_text(text: str, source_type: str = "TEXT", title: str | None = 
     if title:
         result.event_title = title
     result.event_summary = (text or "")[:400]
-    result.marketing_heavy = _contains_any(text or "", PROMOTIONAL_CUES) and not _contains_any(
+    result.marketing_heavy = _contains_any(text or "", PROMOTIONAL_CUES) and not _contains_unnegated_any(
         text or "", TECHNICAL_CUES
     )
 

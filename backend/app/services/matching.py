@@ -46,74 +46,6 @@ def _overlap(a: set[str], b: set[str]) -> float:
     return len(inter) / max(1, min(len(a), len(b)))
 
 
-# Locate-only measurement cues. Impact still decides whether cognition changes.
-MEASUREMENT_LOCATE_CUES = (
-    "profiler",
-    "torch.profiler",
-    "cuda",
-    "kernel launch",
-    "perfetto",
-    "overhead-bound",
-    "耗时",
-    "延迟",
-    "性能剖析",
-    "瓶颈",
-)
-LOCATE_MEASUREMENT_EXPAND = (
-    " latency energy evaluation bottleneck high-frequency embodied control"
-)
-
-
-def query_has_measurement_locate_cues(text: str) -> bool:
-    low = (text or "").lower()
-    return any(cue in low for cue in MEASUREMENT_LOCATE_CUES)
-
-
-def expand_locate_query(query_text: str) -> str:
-    """Inject English measurement tokens so lexical/embedding Locate can reach BT1."""
-    text = query_text or ""
-    if not text or not query_has_measurement_locate_cues(text):
-        return text
-    if "latency energy evaluation bottleneck" in text.lower():
-        return text
-    return text + LOCATE_MEASUREMENT_EXPAND
-
-
-def backfill_measurement_bottleneck_matches(
-    matches: list[KernelMatch],
-    candidates: list[KernelNode],
-    query_text: str,
-) -> list[KernelMatch]:
-    """Keep a retrieved latency/evaluation Bottleneck that the matcher omitted.
-
-    Locate prefers recall. Impact still filters false-positive updates.
-    """
-    if not query_has_measurement_locate_cues(query_text):
-        return matches
-    have = {m.node_id for m in matches}
-    extra: list[KernelMatch] = []
-    for node in candidates:
-        if node.id in have or node.deleted_at is not None:
-            continue
-        if str(node.node_type or "").upper() != "BOTTLENECK":
-            continue
-        nlow = node_text(node).lower()
-        if not any(k in nlow for k in ("latency", "energy", "evaluation", "bottleneck")):
-            continue
-        extra.append(
-            KernelMatch(
-                node_id=node.id,
-                node_type=node.node_type,
-                title=node.title,
-                score=0.45,
-                reason="locate recall: measurement/profiler write-up near a latency-evaluation bottleneck",
-                structural=False,
-                relevance_type="BOTTLENECK",
-            )
-        )
-    return matches + extra
-
-
 EQUITY_STRUCTURE = {
     "equity", "minority", "ownership", "shareholder", "employment", "employee",
     "contract", "investment", "investor", "shares", "role",
@@ -175,21 +107,7 @@ def match_kernel(extraction: ExtractionResult, nodes: list[KernelNode], extra_te
             score = max(score, 0.72)
             reason_bits.append("collective/world-model overlap")
         if "bottleneck" in nlow or node.node_type == "BOTTLENECK":
-            if any(
-                k in low
-                for k in (
-                    "latency",
-                    "energy",
-                    "evaluation",
-                    "high-frequency",
-                    "motor",
-                    "profiler",
-                    "cuda",
-                    "耗时",
-                    "延迟",
-                    "性能剖析",
-                )
-            ):
+            if any(k in low for k in ("latency", "energy", "evaluation", "high-frequency", "motor")):
                 score = max(score, 0.68)
                 reason_bits.append("bottleneck alignment")
         if score >= 0.28:
@@ -211,4 +129,4 @@ def match_kernel(extraction: ExtractionResult, nodes: list[KernelNode], extra_te
                 )
             )
     matches.sort(key=lambda m: m.score, reverse=True)
-    return backfill_measurement_bottleneck_matches(matches, nodes, blob)
+    return matches

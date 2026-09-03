@@ -189,42 +189,16 @@ def test_lexical_union_keeps_bottleneck_when_embedding_score_is_low():
     assert any(row["node_id"] == str(bottleneck.id) for row in trace.candidates)
 
 
-def test_measurement_query_expansion_retrieves_latency_bottleneck():
-    from app.services.matching import expand_locate_query
-
-    bottleneck = KernelNode(
-        node_type="BOTTLENECK",
-        title="Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
-        status="ACTIVE",
-        payload={"description": "Lack of latency × energy × task-success evaluation for high-frequency embodied control."},
-    )
-    bottleneck.id = uuid4()
-    other = KernelNode(
-        node_type="PROJECT",
-        title="Collective Intelligence",
-        status="ACTIVE",
-        payload={"description": "Collective Intelligence"},
-    )
-    other.id = uuid4()
-    query = "torch.profiler 性能剖析 CUDA kernel 耗时 延迟"
-    expanded = expand_locate_query(query)
-    assert "latency" in expanded
-    hits, trace = retrieve_kernel_candidates_traced(query, [bottleneck, other], top_k=1)
-    ids = {n.id for n in hits}
-    assert bottleneck.id in ids
-    assert any(row["node_id"] == str(bottleneck.id) for row in trace.candidates)
-
-
-def test_rule_matcher_locates_bottleneck_from_profiler_writeup():
+def test_shared_evaluation_language_locates_a_measurement_bottleneck():
     from app.services.extraction import ExtractedClaim
     from app.services.matching import match_kernel
     from app.enums import ClaimType
 
     bottleneck = KernelNode(
         node_type="BOTTLENECK",
-        title="Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+        title="Missing latency evaluation for the control loop.",
         status="ACTIVE",
-        payload={"description": "Lack of latency × energy × task-success evaluation for high-frequency embodied control."},
+        payload={"description": "Missing latency evaluation for the control loop."},
     )
     bottleneck.id = uuid4()
     other = KernelNode(
@@ -235,32 +209,20 @@ def test_rule_matcher_locates_bottleneck_from_profiler_writeup():
     )
     other.id = uuid4()
     extraction = ExtractionResult(
-        claims=[ExtractedClaim(text="torch.profiler 显示 CUDA kernel 启动延迟。", claim_type=ClaimType.TECHNICAL)],
-        technical_claims=["torch.profiler"],
+        claims=[ExtractedClaim(text="The write-up measures latency evaluation methodology for CPU and GPU time.", claim_type=ClaimType.TECHNICAL)],
+        technical_claims=["latency evaluation"],
     )
     matches = match_kernel(
         extraction,
         [bottleneck, other],
-        extra_text="PyTorch 性能剖析 torch.profiler CUDA 耗时 延迟",
+        extra_text="latency evaluation methodology for measuring CPU and GPU time",
     )
     assert any(m.node_id == bottleneck.id for m in matches)
 
 
-def test_backfill_keeps_omitted_latency_bottleneck():
-    from app.services.matching import KernelMatch, backfill_measurement_bottleneck_matches
+def test_locate_has_no_kernel_answer_injection():
+    import app.services.matching as matching
 
-    bottleneck = KernelNode(
-        node_type="BOTTLENECK",
-        title="Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
-        status="ACTIVE",
-        payload={"description": "Lack of latency × energy × task-success evaluation for high-frequency embodied control."},
-    )
-    bottleneck.id = uuid4()
-    filled = backfill_measurement_bottleneck_matches(
-        [],
-        [bottleneck],
-        "torch.profiler CUDA 耗时 延迟",
-    )
-    assert len(filled) == 1
-    assert filled[0].node_id == bottleneck.id
-    assert filled[0].relevance_type == "BOTTLENECK"
+    assert not hasattr(matching, "expand_locate_query")
+    assert not hasattr(matching, "backfill_measurement_bottleneck_matches")
+    assert "high-frequency embodied control" not in (matching.__doc__ or "")

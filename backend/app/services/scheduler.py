@@ -7,7 +7,7 @@ from app.services.evidence_gate import evidence_conflict_flags
 from app.services.extraction import ExtractionResult
 from app.services.matching import EQUITY_STRUCTURE, KernelMatch, tokenize
 
-SCHEDULER_VERSION = "raos-scheduler-0.4.0"
+SCHEDULER_VERSION = "raos-scheduler-0.5.0"
 # Compatibility projection cap for debug/Live Eval. Routing no longer branches on these scores.
 UNSUPPORTED_RELEVANCE_CAP = 0.34
 
@@ -123,7 +123,6 @@ def _compatibility_features(
     structural = max((m.score for m in matches if m.structural), default=0.0)
     decision = max((m.score for m in matches if m.node_type == "DECISION"), default=0.0)
     bottleneck = max((m.score for m in matches if m.node_type == "BOTTLENECK"), default=0.0)
-    belief_match = max((m.score for m in matches if m.node_type == "BELIEF"), default=0.0)
 
     marketing = extraction.marketing_heavy
     credibility = 0.35 if marketing else 0.65
@@ -139,14 +138,6 @@ def _compatibility_features(
     if conflict:
         disagreement = 0.8
     low = text.lower()
-    # Conflict with "large unified models may be unsuitable"
-    if any(p in low for p in ("end-to-end will eventually replace", "unified model", "one large model")):
-        if belief_match >= 0.28 or any(k in low for k in ("embodied", "motor", "humanoid", "control")):
-            disagreement = max(disagreement, 0.85)
-    if "opposite" in low or "unsuitable" in low and "suitable" in low:
-        disagreement = max(disagreement, 0.8)
-    if "argues opposite" in low or "contradicts the belief" in low or "large unified models are necessary" in low:
-        disagreement = max(disagreement, 0.9)
 
     kernel_delta = match_score
     topic = match_score
@@ -412,22 +403,24 @@ def route(
         )
 
     # --- No material primary CognitiveEffect ---
+    # marketing_heavy is source framing, not a DROP rule. DROP here means there
+    # is nothing to absorb: no effect, no exploration, no technical signal.
     if primary is None:
-        if explore and not features.marketing_heavy:
+        if explore:
             return PlanDraft(
                 disposition=Disposition.AWARE,
                 expected_output=ExpectedOutput.SUMMARY,
                 reason="OPEN_NEW exploration candidate: missing Kernel localization is not automatic DROP.",
                 cognitive_budget_minutes=_budget(Disposition.AWARE),
             )
-        if features.marketing_heavy:
+        if features.high_quality_technical or features.foundational_paper:
             return PlanDraft(
-                disposition=Disposition.DROP,
-                urgency=Urgency.BACKGROUND,
-                reason="No material cognitive effect; marketing-heavy source is not worth current attention.",
-                cognitive_budget_minutes=_budget(Disposition.DROP),
+                disposition=Disposition.AWARE,
+                expected_output=ExpectedOutput.SUMMARY,
+                reason="No material cognitive change expected. Technical source framing is not a DROP rule.",
+                cognitive_budget_minutes=_budget(Disposition.AWARE),
             )
-        if features.topic_relevance >= 0.25:
+        if features.topic_relevance >= 0.25 and not features.marketing_heavy:
             return PlanDraft(
                 disposition=Disposition.AWARE,
                 expected_output=ExpectedOutput.SUMMARY,
@@ -527,20 +520,29 @@ def route(
             cognitive_budget_minutes=_budget(Disposition.WATCH),
         )
 
-    # --- OPEN_NEW: keep a real new branch on WATCH; only dive in when it is immediately high-value ---
-    if open_new and not features.marketing_heavy:
-        if change >= 0.65 and importance >= 0.7:
+    # --- OPEN_NEW: keep a real new branch on WATCH; marketing only lowers confidence ---
+    if open_new:
+        low_epi = epi < 0.45
+        conflict = features.sources_conflict or features.disagreement >= 0.55
+        if change >= 0.65 and importance >= 0.7 and (not low_epi or conflict):
             return PlanDraft(
                 disposition=Disposition.ENGAGE,
                 expected_output=ExpectedOutput.SUMMARY,
-                reason="High-value OPEN_NEW direction; ENGAGE to absorb a new cognitive branch.",
+                reason=(
+                    "High-value OPEN_NEW direction; ENGAGE to absorb a new cognitive branch."
+                    if not conflict
+                    else "Claims and observations conflict on a new branch; verification is the cognitive work."
+                ),
                 cognitive_budget_minutes=_budget(Disposition.ENGAGE),
             )
         if change >= MEANINGFUL_CHANGE:
+            reason = "Material OPEN_NEW branch is worth keeping in view, but not immediately diving into."
+            if low_epi or features.marketing_heavy:
+                reason += " Source framing / low epistemic strength caps confidence, not cognitive change."
             return PlanDraft(
                 disposition=Disposition.WATCH,
                 expected_output=ExpectedOutput.WATCH,
-                reason="Material OPEN_NEW branch is worth keeping in view, but not immediately diving into.",
+                reason=reason,
                 watch_after_processing=True,
                 watch_triggers=_default_watch_triggers(features, primary=primary, matches=matches),
                 cognitive_budget_minutes=_budget(Disposition.WATCH),

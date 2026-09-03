@@ -666,6 +666,22 @@ def test_manifest_example_loads():
     assert "expected_delta:" not in text
 
 
+def test_pilot12_v2_adjudicates_only_project_location_gold():
+    original = load_manifest(ROOT / "eval" / "live" / "manifest.pilot12.yaml")
+    v2 = load_manifest(ROOT / "eval" / "live" / "manifest.pilot12.v2.yaml")
+    assert len(original.cases) == len(v2.cases) == 12
+    first_o, first_v = original.cases[0], v2.cases[0]
+    assert first_o.id == first_v.id == "pilot12-01"
+    assert first_o.human_gold.update.operation == "REINFORCE"
+    assert first_o.human_gold.update.target_node_id == "P1"
+    assert first_v.human_gold.update.operation == "OPEN_NEW"
+    assert first_v.human_gold.update.target_node_id is None
+    assert first_v.human_gold.disposition == first_o.human_gold.disposition == "WATCH"
+    for left, right in zip(original.cases[1:], v2.cases[1:]):
+        assert left.id == right.id
+        assert dump_human_gold(left.human_gold) == dump_human_gold(right.human_gold)
+
+
 def test_live_eval_row_from_production_pipeline(client):
     from tests.conftest import add_text, analyze
 

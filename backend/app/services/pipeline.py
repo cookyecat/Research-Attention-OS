@@ -25,7 +25,7 @@ from app.services.extraction import (
 )
 from app.services.ingestion import attach_or_create_event
 from app.services.kernel_commit import create_patch
-from app.services.matching import KernelMatch, expand_locate_query
+from app.services.matching import KernelMatch
 from app.services.scheduler import (
     RuntimeView,
     SchedulerFeatures,
@@ -332,18 +332,15 @@ def run_pipeline(
             [source.content_text or "", source.title or ""] + [e.content_text or "" for e in extras]
         )
         epi = epistemic_text(extraction)
-        locate_query = expand_locate_query(
-            " ".join(
-                part
-                for part in (
-                    source.title or "",
-                    epi,
-                    (source.content_text or "")[:2000],
-                )
-                if part
-            ).strip()
-            or blob[:4000]
-        )
+        locate_query = " ".join(
+            part
+            for part in (
+                source.title or "",
+                epi,
+                (source.content_text or "")[:2000],
+            )
+            if part
+        ).strip() or blob[:4000]
         qvec, emb_model = try_embed_query(locate_query[:4000])
         ranked_ids = None
         node_emb = None

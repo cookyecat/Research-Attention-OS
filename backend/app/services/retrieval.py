@@ -7,7 +7,7 @@ from uuid import UUID
 from app.cognitive.client import EmbeddingDimensionError, LLMError, embed_texts
 from app.config import settings
 from app.models.kernel import KernelNode
-from app.services.matching import expand_locate_query, node_text, tokenize, _overlap
+from app.services.matching import node_text, tokenize, _overlap
 
 RAOS_QUERY_EMBED_INSTRUCT = (
     "Given a new research information item, retrieve relevant Cognitive Kernel nodes "
@@ -137,7 +137,6 @@ def retrieve_kernel_candidates_traced(
     embedding_model: str | None = None,
 ) -> tuple[list[KernelNode], RetrievalTrace]:
     """Locate candidates for the LLM matcher. Embedding ∪ lexical. Not a truth judgment."""
-    query_text = expand_locate_query(query_text)
     instruct = query_instruct_enabled()
     had_embedding = query_embedding is not None or bool(ranked_ids)
     active = [n for n in nodes if n.deleted_at is None]

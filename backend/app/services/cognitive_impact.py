@@ -165,6 +165,13 @@ def node_proposition(node_or_match) -> str:
     return str(getattr(node_or_match, "title", None) or "")
 
 
+def distinctive_target_tokens(match: KernelMatch) -> set[str]:
+    from app.services.matching import tokenize
+
+    target_tokens = tokenize(node_proposition(match)) | tokenize(str(match.title or ""))
+    return {t for t in target_tokens if t not in GENERIC_TOPIC_TOKENS}
+
+
 def claim_scope_aligned(extraction: ExtractionResult, match: KernelMatch) -> bool:
     """True only when epistemic objects overlap the target's distinctive scope.
 
@@ -175,8 +182,7 @@ def claim_scope_aligned(extraction: ExtractionResult, match: KernelMatch) -> boo
         return True
     from app.services.matching import tokenize
 
-    target_tokens = tokenize(node_proposition(match)) | tokenize(str(match.title or "")) | tokenize(str(match.reason or ""))
-    distinctive = {t for t in target_tokens if t not in GENERIC_TOPIC_TOKENS}
+    distinctive = distinctive_target_tokens(match)
     if len(distinctive) < 2:
         return False
     source_tokens = tokenize(epistemic_text(extraction))
@@ -185,6 +191,102 @@ def claim_scope_aligned(extraction: ExtractionResult, match: KernelMatch) -> boo
     # alone attach an update. Models/bottlenecks may align on one technical term.
     need = 2 if str(match.node_type or "").upper() in {"BELIEF", "QUESTION"} else 1
     return len(overlap) >= need
+
+
+# Comparative / exclusive / counterexample / causal cues. Not route names.
+CONTRASTIVE_EVIDENCE_CUES = (
+    "unlike",
+    "rather than",
+    "instead of",
+    "compared to",
+    "compared with",
+    "as opposed to",
+    "not necessary",
+    "unnecessary",
+    "unsuitable",
+    "does not require",
+    "do not need",
+    "cannot",
+    "is false",
+    "are false",
+    "refute",
+    "contradict",
+    "counterexample",
+    "opposite",
+    "fails when",
+    "insufficient",
+    "invalidates",
+    "no longer",
+    "no separate",
+    "不适合",
+    "不需要",
+    "无法",
+    "而不是",
+    "相比",
+    "反例",
+)
+
+
+NEGATIVE_PROPOSITION_CUES = (
+    "unsuitable",
+    "unnecessary",
+    "cannot",
+    "is false",
+    "are false",
+    "should not",
+    "does not",
+    "not sufficient",
+    "不适合",
+    "不需要",
+)
+
+
+def source_addresses_proposition_polarity(extraction: ExtractionResult, match: KernelMatch) -> bool:
+    """A success/existence claim about another route does not confirm a negative proposition."""
+    if getattr(match, "structural", False) or str(getattr(match, "relevance_type", "") or "").upper() == "STRUCTURAL":
+        return True
+    text = epistemic_text(extraction)
+    if not (text or "").strip():
+        return True
+    prop = f"{node_proposition(match)} {match.title or ''}".lower()
+    cues = [c for c in NEGATIVE_PROPOSITION_CUES if c in prop]
+    if not cues:
+        return True
+    return any(c in text.lower() for c in cues)
+
+
+def direct_challenge_evidence(extraction: ExtractionResult, match: KernelMatch) -> bool:
+    """CHALLENGE needs evidence that addresses the target proposition itself.
+
+    Evidence that some other route works, exists, or succeeds is not enough.
+    STRUCTURAL matches already carry analogical challenge structure.
+    Empty epistemic text cannot disprove an already-judged CHALLENGE (caps only).
+    """
+    if getattr(match, "structural", False) or str(getattr(match, "relevance_type", "") or "").upper() == "STRUCTURAL":
+        return True
+    text = epistemic_text(extraction)
+    if not (text or "").strip():
+        return True
+    if not claim_scope_aligned(extraction, match):
+        exclusive = any(cue in text.lower() for cue in CONTRASTIVE_EVIDENCE_CUES)
+        return exclusive
+    distinctive = distinctive_target_tokens(match)
+    if not distinctive:
+        return any(cue in text.lower() for cue in CONTRASTIVE_EVIDENCE_CUES)
+    from app.services.extraction import split_sentences
+    from app.services.matching import tokenize
+
+    for sentence in split_sentences(text) or [text]:
+        low = sentence.lower()
+        if not any(cue in low for cue in CONTRASTIVE_EVIDENCE_CUES):
+            continue
+        if distinctive & tokenize(sentence):
+            return True
+        # Exclusive/comparative syntax can challenge even when distinctive tokens
+        # sit in the title rather than the same sentence.
+        if any(cue in low for cue in ("rather than", "instead of", "compared to", "no separate", "as opposed to")):
+            return True
+    return False
 
 
 def _unnegated(low: str, cue: str) -> bool:
@@ -275,28 +377,28 @@ def _legal_public_effect(effect: CognitiveEffect) -> bool:
 
 
 def _primary_sort_key(effect: CognitiveEffect) -> tuple:
-    """Order-independent rank for one coherent primary effect.
+    """Order-independent rank: maximum useful cognitive change.
 
-    Targeted REINFORCE/CHALLENGE outranks OPEN_NEW. CHALLENGE outranks REINFORCE.
-    Then change × importance, then epistemic strength. Node id is a stable tie-break
-    so list order never decides.
+    Existing-target REINFORCE/CHALLENGE and OPEN_NEW compete on the same
+    value: how much cognition could change × how much that change matters.
+    Having an existing node is not a bonus. Operation type is not a bonus.
+    Epistemic strength is a tie-break, not the definition of the update.
+    Node id is a stable last key so list order never decides.
     """
-    op = _kind(effect.operation)
-    targeted = 1 if effect.target_kernel_node_id is not None and op in {"REINFORCE", "CHALLENGE"} else 0
-    challenge = 1 if op == "CHALLENGE" and targeted else 0
+    change = round(float(effect.change_magnitude), 6)
+    importance = round(float(effect.target_importance), 6)
+    epi = round(float(effect.epistemic_strength), 6)
     nid = str(effect.target_kernel_node_id) if effect.target_kernel_node_id else ""
-    return (
-        targeted,
-        challenge,
-        round(float(effect.change_magnitude), 6),
-        round(float(effect.target_importance), 6),
-        round(float(effect.epistemic_strength), 6),
-        nid,
-    )
+    useful = round(change * importance, 6)
+    return (useful, change, importance, epi, nid)
 
 
 def select_primary_effect(assessment: CognitiveImpactAssessment | None) -> CognitiveEffect | None:
-    """The one CognitiveEffect that public Update and Attention Policy both use."""
+    """The one CognitiveEffect that public Update and Attention Policy both use.
+
+    Primary = the coherent effect that best represents the largest useful
+    cognitive change after absorbing the information.
+    """
     legal = [e for e in material_effects(assessment) if _legal_public_effect(e)]
     if not legal:
         return None
@@ -450,8 +552,9 @@ def ground_effects(
 ) -> list[CognitiveEffect]:
     """Deterministic caps plus Location ≠ Update.
 
-    Does not reverse REINFORCE ↔ CHALLENGE on eligible epistemic targets.
-    A Goal/Project topical hit without claim-scope alignment becomes OPEN_NEW.
+    Does not reverse REINFORCE ↔ CHALLENGE on a justified eligible target.
+    Unjustified targeted updates become OPEN_NEW: the information may still
+    open a branch, but it does not modify that existing proposition.
     """
     allowed = {m.node_id for m in matches}
     cap = epistemic_cap(extraction, independent_source_count=independent_source_count)
@@ -467,12 +570,23 @@ def ground_effects(
             continue
         else:
             match = next((m for m in matches if m.node_id == target), None)
-            # Location ≠ update: a Goal/Project topical hit is not REINFORCE/CHALLENGE
-            # unless claim scope actually aligns with that node's distinctive content.
-            if (
-                match is not None
-                and is_location_node(match.node_type)
-                and not claim_scope_aligned(extraction, match)
+            if match is None:
+                continue
+            aligned = claim_scope_aligned(extraction, match)
+            if is_location_node(match.node_type) and not aligned:
+                operation = CognitiveEffectKind.OPEN_NEW
+                target = None
+            elif (
+                operation == CognitiveEffectKind.CHALLENGE
+                and (epistemic_text(extraction) or "").strip()
+                and not direct_challenge_evidence(extraction, match)
+            ):
+                operation = CognitiveEffectKind.OPEN_NEW
+                target = None
+            elif (
+                operation == CognitiveEffectKind.REINFORCE
+                and (epistemic_text(extraction) or "").strip()
+                and not source_addresses_proposition_polarity(extraction, match)
             ):
                 operation = CognitiveEffectKind.OPEN_NEW
                 target = None
@@ -641,99 +755,108 @@ def assess_impact_from_rules(
     low = text.lower()
     tokens = tokenize(text)
     effects: list[CognitiveEffect] = []
-    hype_only = probe.marketing_heavy and not extraction.technical_claims
 
-    if hype_only or (probe.marketing_heavy and not matches):
-        effects = []
-    else:
-        for match in matches:
-            if is_location_node(match.node_type):
-                # GOAL / PROJECT localize where the information sits. They are not
-                # automatic REINFORCE / CHALLENGE targets.
-                continue
-            if not is_update_eligible_node(match.node_type):
-                continue
-            if not claim_scope_aligned(extraction, match):
-                continue
-            importance = resolve_target_importance(node=nodes_by_id.get(match.node_id), node_type=match.node_type)
-            change = match.score
-            epi = min(probe.credibility, cap)
-            if "minor" in low and "version" in low:
-                continue
-            if match.node_type == "BELIEF" and probe.disagreement >= 0.55:
+    for match in matches:
+        if is_location_node(match.node_type):
+            # GOAL / PROJECT localize where the information sits. They are not
+            # automatic REINFORCE / CHALLENGE targets.
+            continue
+        if not is_update_eligible_node(match.node_type):
+            continue
+        if not claim_scope_aligned(extraction, match):
+            continue
+        importance = resolve_target_importance(node=nodes_by_id.get(match.node_id), node_type=match.node_type)
+        change = match.score
+        epi = min(probe.credibility, cap)
+        if "minor" in low and "version" in low:
+            continue
+        if match.node_type == "BELIEF":
+            if direct_challenge_evidence(extraction, match):
                 kind = CognitiveEffectKind.CHALLENGE
                 change = max(change, 0.7)
-            elif match.node_type == "BELIEF":
-                kind = CognitiveEffectKind.REINFORCE
-            elif match.node_type == "DECISION" or match.structural or match.relevance_type == "STRUCTURAL":
-                kind = CognitiveEffectKind.REINFORCE
-            elif match.node_type in {"MODEL", "QUESTION", "BOTTLENECK", "HYPOTHESIS"}:
-                kind = CognitiveEffectKind.REINFORCE
-            else:
+            elif not source_addresses_proposition_polarity(extraction, match):
                 continue
-            if probe.marketing_heavy:
+            else:
+                kind = CognitiveEffectKind.REINFORCE
+        elif match.node_type == "DECISION" or match.structural or match.relevance_type == "STRUCTURAL":
+            kind = CognitiveEffectKind.REINFORCE
+        elif match.node_type in {"MODEL", "QUESTION", "BOTTLENECK", "HYPOTHESIS"}:
+            kind = CognitiveEffectKind.REINFORCE
+        else:
+            continue
+        if probe.marketing_heavy:
+            epi = min(epi, MARKETING_EPISTEMIC_CAP)
+        effects.append(
+            CognitiveEffect(
+                target_kernel_node_id=match.node_id,
+                operation=kind,
+                change_magnitude=change,
+                epistemic_strength=epi,
+                target_importance=importance,
+                reason=match.reason or f"{kind} on {match.title or match.node_type}",
+            )
+        )
+    if not effects:
+        from app.services.extraction import PROMOTIONAL_CUES, _contains_any
+
+        equity_only = bool(EQUITY_STRUCTURE & tokens) and not ({"robot", "embodied", "motor", "agent"} & tokens)
+        promo = probe.marketing_heavy or bool(extraction.promotional_framing) or _contains_any(text, PROMOTIONAL_CUES)
+        paperish = _unnegated(low, "paper") or _unnegated(low, "arxiv") or "foundational" in low
+        technical = bool(extraction.technical_claims) or paperish
+        located = any(is_location_node(m.node_type) for m in matches)
+        conflict = probe.disagreement >= 0.55 or probe.sources_conflict
+        media_hype = "unsourced" in low or (
+            "video" in low and any(w in low for w in ("magical", "inspiring", "hype"))
+        )
+        shallow_news = (
+            ("minor" in low and "version" in low)
+            or "leaderboard" in low
+            or "changelog" in low
+            or "funding recap" in low
+            or "tweeted" in low
+            or media_hype
+        )
+        if conflict:
+            epi = min(0.35, cap)
+            if promo:
                 epi = min(epi, MARKETING_EPISTEMIC_CAP)
             effects.append(
                 CognitiveEffect(
-                    target_kernel_node_id=match.node_id,
-                    operation=kind,
-                    change_magnitude=change,
+                    target_kernel_node_id=None,
+                    operation=CognitiveEffectKind.OPEN_NEW,
+                    change_magnitude=max(0.65, probe.kernel_delta, 0.55),
                     epistemic_strength=epi,
-                    target_importance=importance,
-                    reason=match.reason or f"{kind} on {match.title or match.node_type}",
+                    target_importance=0.75,
+                    reason="Claims and observations conflict, but no existing Kernel node is the right update target.",
+                    exploration_candidate=True,
                 )
             )
-        if not effects:
-            from app.services.extraction import PROMOTIONAL_CUES, _contains_any
-
-            equity_only = bool(EQUITY_STRUCTURE & tokens) and not ({"robot", "embodied", "motor", "agent"} & tokens)
-            promo = probe.marketing_heavy or bool(extraction.promotional_framing) or _contains_any(text, PROMOTIONAL_CUES)
-            paperish = "paper" in low or "arxiv" in low or "foundational" in low
-            technical = bool(extraction.technical_claims) or paperish
-            located = any(is_location_node(m.node_type) for m in matches)
-            conflict = probe.disagreement >= 0.55 or probe.sources_conflict
-            media_hype = "unsourced" in low or (
-                "video" in low and any(w in low for w in ("magical", "inspiring", "hype"))
+        elif technical and not equity_only and not shallow_news:
+            material_branch = (
+                paperish
+                or _unnegated(low, "architecture")
+                or any(k in low for k in ("introduces", "we propose", "abstraction"))
             )
-            shallow_news = (
-                ("minor" in low and "version" in low)
-                or "leaderboard" in low
-                or "changelog" in low
-                or "funding recap" in low
-                or "tweeted" in low
-                or media_hype
-            )
-            if conflict and not promo:
-                effects.append(
-                    CognitiveEffect(
-                        target_kernel_node_id=None,
-                        operation=CognitiveEffectKind.OPEN_NEW,
-                        change_magnitude=max(0.65, probe.kernel_delta, 0.55),
-                        epistemic_strength=min(0.35, cap),
-                        target_importance=0.75,
-                        reason="Claims and observations conflict, but no existing Kernel node is the right update target.",
-                        exploration_candidate=True,
-                    )
-                )
-            elif technical and not promo and not equity_only and not shallow_news:
-                keep_in_view = (
-                    paperish
-                    or located
-                    or _unnegated(low, "architecture")
-                    or any(k in low for k in ("introduces", "we propose", "abstraction"))
-                )
+            # Promotional framing without a real new method/paper/architecture is
+            # source quality, not a cognitive branch.
+            if promo and not material_branch:
+                pass
+            else:
                 reason = (
                     "Located near an existing Goal/Project, but no existing cognition is actually updated."
-                    if located
+                    if located and material_branch
                     else "No current Kernel target; possible new question or model candidate."
                 )
+                epi = min(0.3, cap)
+                if promo:
+                    epi = min(epi, MARKETING_EPISTEMIC_CAP)
                 effects.append(
                     CognitiveEffect(
                         target_kernel_node_id=None,
                         operation=CognitiveEffectKind.OPEN_NEW,
-                        change_magnitude=0.55 if keep_in_view else 0.4,
-                        epistemic_strength=min(0.3, cap),
-                        target_importance=0.55 if keep_in_view else 0.4,
+                        change_magnitude=0.55 if material_branch else 0.4,
+                        epistemic_strength=epi,
+                        target_importance=0.55 if material_branch else 0.4,
                         reason=reason,
                         exploration_candidate=True,
                     )
@@ -749,7 +872,7 @@ def assess_impact_from_rules(
                 ),
                 None,
             )
-            if belief is not None:
+            if belief is not None and direct_challenge_evidence(extraction, belief):
                 effects.append(
                     CognitiveEffect(
                         target_kernel_node_id=belief.node_id,
@@ -814,15 +937,19 @@ def assess_impact_from_rules(
     features.marketing_heavy = probe.marketing_heavy
     features.disagreement = max(features.disagreement, probe.disagreement)
     features.credibility = probe.credibility
-    material = [e for e in effects if _is_operation(e.operation)]
-    max_change = max((e.change_magnitude for e in material), default=0.0)
-    if not material:
+    primary = select_primary_effect(
+        CognitiveImpactAssessment(effects=effects, attention_cost=float(attention_cost), exploration_candidate=explore)
+    )
+    if primary is None:
         features.kernel_delta = min(probe.kernel_delta, 0.1)
+        features.change_magnitude = 0.0
+        features.epistemic_strength = 0.2
+        features.target_importance = 0.0
     else:
-        features.kernel_delta = max(probe.kernel_delta, max_change)
-    features.change_magnitude = round(max_change, 3)
-    features.epistemic_strength = round(max((e.epistemic_strength for e in material), default=0.2), 3)
-    features.target_importance = round(max((e.target_importance for e in material), default=0.0), 3)
+        features.kernel_delta = float(primary.change_magnitude)
+        features.change_magnitude = round(float(primary.change_magnitude), 3)
+        features.epistemic_strength = round(float(primary.epistemic_strength), 3)
+        features.target_importance = round(float(primary.target_importance), 3)
     features.attention_cost = float(attention_cost)
     features.cognitive_cost = float(attention_cost)
     features.exploration_candidate = explore

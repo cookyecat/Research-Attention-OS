@@ -115,16 +115,16 @@ def _pred_operation_of(item: dict) -> str | None:
 
 
 def _effect_primary_key(item: dict) -> tuple:
-    op = _pred_operation_of(item) or ""
+    """Same ranking as production: useful change, not existing-target bonus."""
+    change = float(item.get("change_magnitude") or 0.0)
+    importance = float(item.get("target_importance") or 0.0)
+    epi = float(item.get("epistemic_strength") or 0.0)
     nid = item.get("target_kernel_node_id")
-    targeted = 1 if nid and op in {"REINFORCE", "CHALLENGE"} else 0
-    challenge = 1 if op == "CHALLENGE" and targeted else 0
     return (
-        targeted,
-        challenge,
-        float(item.get("change_magnitude") or 0.0),
-        float(item.get("target_importance") or 0.0),
-        float(item.get("epistemic_strength") or 0.0),
+        round(change * importance, 6),
+        change,
+        importance,
+        epi,
         str(nid or ""),
     )
 

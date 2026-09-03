@@ -1,0 +1,226 @@
+# RAOS Live Eval — Pilot-12 v2
+# Historical calibration artifact: eval/live/manifest.pilot12.yaml is frozen and unmodified.
+# v2 adjudicates gold that conflict with the current Cognitive Dynamics contract.
+# Currently only pilot12-01: Project is Kernel Location, not a Cognitive Update Target.
+#
+name: raos-live-eval-pilot12-v2
+cases:
+- id: pilot12-01
+  source_kind: paper
+  cognitive_tasks:
+  - structural_relevance
+  gold_status: LABELED
+  source:
+    type: PAPER
+    title: 'The unstable queen: Uncertainty, mechanics, and tactile feedback'
+    url: null
+    local_file: eval/live/sources/pilot12/01_the_unstable_queen.txt
+    text: null
+  kernel_fixture: mvp
+  human_gold:
+    disposition: WATCH
+    update:
+      operation: OPEN_NEW
+      target_node_id: null
+    delta_content: Robotic dexterity may come less from precisely modeling every contact and more from using tactile feedback
+      to actively regulate contact modes, thereby turning uncertain frictional dynamics into simpler, more controllable interactions.
+- id: pilot12-02
+  source_kind: news
+  cognitive_tasks:
+  - structural_relevance
+  gold_status: LABELED
+  source:
+    type: POST
+    title: 'Lauren Tan: AI coding 最大的问题不是生成代码，而是验证代码'
+    url: null
+    local_file: eval/live/sources/pilot12/02_ai_coding_workflow.txt
+    text: null
+  kernel_fixture: mvp
+  human_gold:
+    disposition: WATCH
+    update:
+      operation: OPEN_NEW
+      target_node_id: null
+    delta_content: 用 AI coding 最大的问题不是生成代码，而是验证代码。用 Agents 更像是工程管理：先设计好环境、流程和验收机制，再让团队并行工作。
+- id: pilot12-03
+  source_kind: paper
+  cognitive_tasks:
+  - structural_relevance
+  - belief_conflict
+  gold_status: LABELED
+  source:
+    type: PAPER
+    title: Learning vision-driven reactive soccer skills for humanoid robots
+    url: null
+    local_file: eval/live/sources/pilot12/03_reactive_soccer_humanoid.txt
+    text: null
+  kernel_fixture: mvp
+  human_gold:
+    disposition: ENGAGE
+    update:
+      operation: REINFORCE
+      target_node_id: M1
+    delta_content: 高动态具身控制可以由一个紧凑、任务相关的感知—动作闭环承担：不必依赖完整场景重建或高层认知模型，而是用结构化视觉线索、短时历史状态和对感知噪声/延迟的训练，让低层策略直接形成快速、鲁棒的 reactive
+      sensorimotor intelligence；高层战术决策可以与这一时间敏感的运动控制层保持部分解耦。
+- id: pilot12-04
+  source_kind: paper
+  cognitive_tasks:
+  - structural_relevance
+  gold_status: LABELED
+  source:
+    type: PAPER
+    title: Physical AI is enabled by mechanical hardware
+    url: null
+    local_file: eval/live/sources/pilot12/04_physical_ai_hardware.txt
+    text: null
+  kernel_fixture: mvp
+  human_gold:
+    disposition: WATCH
+    update:
+      operation: OPEN_NEW
+      target_node_id: null
+    delta_content: Motor Intelligence 不能只被理解为感知—控制算法的智能；机器人本体的摩擦、惯量、顺应性、回驱性、力控带宽和被动动力学共同规定了控制器能够实现的行为边界。高性能 physical intelligence
+      因而可能需要算法、执行器和机械动力学的协同设计，而不是单纯依靠更强的软件模型弥补硬件。
+- id: pilot12-05
+  source_kind: technical_blog
+  cognitive_tasks:
+  - evidence_verification
+  gold_status: LABELED
+  source:
+    type: TEXT
+    title: PyTorch 性能剖析（第 1 部分）：torch.profiler 入门指南
+    url: null
+    local_file: eval/live/sources/pilot12/05_pytorch_profiling_part1.txt
+    text: null
+  kernel_fixture: mvp
+  human_gold:
+    disposition: WATCH
+    update:
+      operation: REINFORCE
+      target_node_id: BT1
+    delta_content: 高频 Motor Intelligence 的 latency 评测不能只记录一个端到端耗时，而应通过 profiler 将延迟分解到 CPU 调度、CUDA kernel launch、GPU execution、同步等待、初始化和
+      profiler 自身开销等环节；只有先定位真实 bottleneck，latency × energy × task-success 的系统级评价才具有解释力。
+- id: pilot12-06
+  source_kind: investment
+  cognitive_tasks:
+  - decision_relevance
+  - structural_relevance
+  gold_status: LABELED
+  source:
+    type: TEXT
+    title: Sam Altman 最新访谈：我在几件事上判断错了，AI改变世界没那么快
+    url: null
+    local_file: eval/live/sources/pilot12/06_sam_altman_interview.txt
+    text: null
+  kernel_fixture: mvp
+  human_gold:
+    disposition: WATCH
+    update:
+      operation: OPEN_NEW
+      target_node_id: null
+    delta_content: 真正的 AI 原生公司，CEO 必须亲自下场，持续使用工具、重构工作流并形成一线手感；真正重要的创业与研究机会，往往来自少数高杠杆、非共识但一旦成功价值巨大的押注。
+- id: pilot12-07
+  source_kind: paper
+  cognitive_tasks:
+  - structural_relevance
+  gold_status: LABELED
+  source:
+    type: PAPER
+    title: 'ZEST: Zero-shot Embodied Skill Transfer for Athletic Robot Control'
+    url: null
+    local_file: eval/live/sources/pilot12/07_zest.txt
+    text: null
+  kernel_fixture: mvp
+  human_gold:
+    disposition: ENGAGE
+    update:
+      operation: REINFORCE
+      target_node_id: M1
+    delta_content: Motor Intelligence 可以作为一个相对独立、可复用的低层能力层存在：通过统一的 motion-conditioned control recipe，可以把 MoCap、视频和动画中的运动技能迁移到不同机器人
+      embodiment 上，而不需要把高层认知、复杂任务规划或显式接触建模塞进同一个控制模型。真正可扩展的 motor intelligence 可能更像一个跨技能、跨本体的 physical skill interface。
+- id: pilot12-08
+  source_kind: paper
+  cognitive_tasks:
+  - evidence_verification
+  - structural_relevance
+  gold_status: LABELED
+  source:
+    type: PAPER
+    title: Bridging the latency gap with a continuous stream evaluation framework in event-driven perception
+    url: null
+    local_file: eval/live/sources/pilot12/08_stare_latency_aware_event_perception.txt
+    text: null
+  kernel_fixture: mvp
+  human_gold:
+    disposition: ENGAGE
+    update:
+      operation: REINFORCE
+      target_node_id: BT1
+    delta_content: 高频具身智能的评测不能只看离线 accuracy，而必须把 perception-to-action latency 纳入在线任务评价；模型的实际价值取决于最新输出到达下游控制器时是否仍然有效。延迟不仅会降低
+      accuracy，还会反转模型排名，并最终直接决定真实机器人任务成败，因此 latency-aware online evaluation 应成为 Motor Intelligence benchmark 的核心组成部分。
+- id: pilot12-09
+  source_kind: news
+  cognitive_tasks:
+  - topic_relevance
+  gold_status: LABELED
+  source:
+    type: POST
+    title: What's your most reliable model, even if it's "outdated"?
+    url: null
+    local_file: eval/live/sources/pilot12/09_reliable_model_reddit.txt
+    text: null
+  kernel_fixture: mvp
+  human_gold:
+    disposition: AWARE
+    update: null
+    delta_content: ''
+- id: pilot12-10
+  source_kind: wechat
+  cognitive_tasks:
+  - topic_relevance
+  gold_status: LABELED
+  source:
+    type: TEXT
+    title: 刚刚！“虚拟组织” AI大模型《Nature》
+    url: null
+    local_file: eval/live/sources/pilot12/10_virtual_tissues_nature.txt
+    text: null
+  kernel_fixture: mvp
+  human_gold:
+    disposition: AWARE
+    update: null
+    delta_content: ''
+- id: pilot12-11
+  source_kind: wechat
+  cognitive_tasks:
+  - topic_relevance
+  gold_status: LABELED
+  source:
+    type: TEXT
+    title: 刚刚，Qwen3.8-Flash震撼发布，我们看到了Qwen4的骨架
+    url: null
+    local_file: eval/live/sources/pilot12/11_qwen38_flash.txt
+    text: null
+  kernel_fixture: mvp
+  human_gold:
+    disposition: AWARE
+    update: null
+    delta_content: ''
+- id: pilot12-12
+  source_kind: wechat
+  cognitive_tasks:
+  - structural_relevance
+  gold_status: LABELED
+  source:
+    type: TEXT
+    title: 独家专访临界点CEO乔天杰：机器人运动会7冠背后，灵巧手真正该比什么？
+    url: null
+    local_file: eval/live/sources/pilot12/12_dexterous_hand_interview.txt
+    text: null
+  kernel_fixture: mvp
+  human_gold:
+    disposition: WATCH
+    update:
+      operation: OPEN_NEW
+      target_node_id: null
+    delta_content: 具身智能的能力评价不能只看模型、自由度或单项参数，而应看硬件与控制系统能否在真实任务中长期、稳定地兑现能力；机械性能会直接约束算法可采用的策略空间，因此 physical intelligence 的评价需要把硬件、控制、可靠性和真实任务成功统一起来。

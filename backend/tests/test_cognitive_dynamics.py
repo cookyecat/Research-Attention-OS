@@ -316,6 +316,16 @@ def test_negated_architecture_is_not_keep_in_view():
     assert plan.disposition in {Disposition.DROP, Disposition.AWARE}
 
 
+def test_negated_technical_cue_does_not_block_promotional_framing():
+    from app.services.extraction import extract_from_text
+
+    result = extract_from_text(
+        "Unlock a revolutionary seamless lifestyle robot. No architecture, no measurements.",
+        "TEXT",
+    )
+    assert result.marketing_heavy is True
+
+
 def test_irrelevant_hype_is_no_material_change_and_dropped():
     extraction = ExtractionResult(
         claims=[ExtractedClaim(text="Unlock a revolutionary seamless lifestyle robot.", claim_type=ClaimType.PROMOTIONAL)],
@@ -461,6 +471,113 @@ def test_bottleneck_update_requires_claim_scope_alignment():
     assert all(e.target_kernel_node_id != bottleneck.node_id for e in missed.effects)
 
 
+def test_success_of_one_route_is_not_challenge_or_reinforce_of_a_competing_negative():
+    belief = KernelMatch(
+        node_id=uuid4(),
+        node_type="BELIEF",
+        title="Approach Beta is unsuitable for task Tau.",
+        score=0.8,
+        reason="test",
+        relevance_type="TOPIC",
+    )
+    extraction = ExtractionResult(
+        claims=[
+            ExtractedClaim(
+                text="Approach Alpha succeeds on task Tau with a compact method.",
+                claim_type=ClaimType.TECHNICAL,
+            )
+        ],
+        technical_claims=["compact method"],
+        evidence_maturity=0.6,
+    )
+    challenged = ground_effects(
+        [_effect(belief, CognitiveEffectKind.CHALLENGE, change_magnitude=0.8)],
+        [belief],
+        extraction,
+    )
+    reinforced = ground_effects(
+        [_effect(belief, CognitiveEffectKind.REINFORCE, change_magnitude=0.8)],
+        [belief],
+        extraction,
+    )
+    assert all(e.operation == CognitiveEffectKind.OPEN_NEW for e in challenged)
+    assert all(e.target_kernel_node_id is None for e in challenged)
+    assert all(e.operation == CognitiveEffectKind.OPEN_NEW for e in reinforced)
+    assert all(e.target_kernel_node_id is None for e in reinforced)
+
+
+def test_direct_counterevidence_can_challenge_a_belief():
+    belief = KernelMatch(
+        node_id=uuid4(),
+        node_type="BELIEF",
+        title="Approach Beta is unsuitable for task Tau.",
+        score=0.8,
+        reason="test",
+        relevance_type="TOPIC",
+    )
+    extraction = ExtractionResult(
+        claims=[
+            ExtractedClaim(
+                text="Approach Beta is unsuitable is false; compared to Alpha it handles task Tau within the latency bound.",
+                claim_type=ClaimType.TECHNICAL,
+            )
+        ],
+        technical_claims=["latency"],
+        evidence_maturity=0.6,
+    )
+    grounded = ground_effects(
+        [_effect(belief, CognitiveEffectKind.CHALLENGE, change_magnitude=0.8)],
+        [belief],
+        extraction,
+    )
+    assert any(
+        e.operation == CognitiveEffectKind.CHALLENGE and e.target_kernel_node_id == belief.node_id
+        for e in grounded
+    )
+
+
+def test_marketing_heavy_caps_epistemic_strength_but_keeps_material_effect():
+    match = _match("MODEL")
+    extraction = ExtractionResult(
+        claims=[ExtractedClaim(text="A new temporal abstraction for tactile control.", claim_type=ClaimType.TECHNICAL)],
+        technical_claims=["temporal abstraction"],
+        promotional_framing=["revolutionary"],
+        marketing_heavy=True,
+        evidence_maturity=0.3,
+    )
+    assessment = assess_impact_from_rules(
+        "Revolutionary new temporal abstraction for tactile control. We propose a new method.",
+        extraction,
+        [],
+        independent_source_count=1,
+    )
+    assert any(e.operation == CognitiveEffectKind.OPEN_NEW for e in assessment.effects)
+    assert all(e.epistemic_strength <= 0.35 for e in assessment.effects)
+    plan = route(assessment.features, assessment=assessment)
+    assert plan.disposition != Disposition.DROP
+
+
+def test_primary_null_and_marketing_is_not_automatic_drop():
+    """marketing_heavy is framing, not a DROP rule, when a technical signal remains."""
+    assessment = _assessment()
+    plan = route(
+        _features(
+            marketing_heavy=True,
+            high_quality_technical=True,
+            topic_relevance=0.6,
+            change_magnitude=0.0,
+        ),
+        assessment=assessment,
+    )
+    assert plan.disposition == Disposition.AWARE
+
+
+def test_primary_null_promotional_without_cognitive_content_may_drop():
+    assessment = _assessment()
+    plan = route(_features(marketing_heavy=True, topic_relevance=0.6, change_magnitude=0.0), assessment=assessment)
+    assert plan.disposition == Disposition.DROP
+
+
 def test_primary_update_rejects_untargeted_reinforce_and_challenge():
     from app.services.cognitive_impact import primary_update
 
@@ -504,21 +621,36 @@ def test_primary_effect_is_order_independent_and_not_list_head():
     opened = _effect(None, CognitiveEffectKind.OPEN_NEW, change_magnitude=0.9, target_importance=0.9)
     forward = _assessment(opened, reinforce)
     backward = _assessment(reinforce, opened)
-    assert select_primary_effect(forward).target_kernel_node_id == match.node_id
-    assert select_primary_effect(backward).target_kernel_node_id == match.node_id
-    assert primary_update(forward)["operation"] == CognitiveEffectKind.REINFORCE
-    assert primary_update(backward)["operation"] == CognitiveEffectKind.REINFORCE
+    assert select_primary_effect(forward).operation == CognitiveEffectKind.OPEN_NEW
+    assert select_primary_effect(backward).operation == CognitiveEffectKind.OPEN_NEW
+    assert primary_update(forward)["operation"] == CognitiveEffectKind.OPEN_NEW
+    assert primary_update(backward)["target_node_id"] is None
+
+
+def test_stronger_open_new_outranks_weaker_targeted_reinforce():
+    weak_target = _match("BELIEF")
+    opened = _effect(None, CognitiveEffectKind.OPEN_NEW, change_magnitude=0.8, target_importance=0.8)
+    weak = _effect(weak_target, CognitiveEffectKind.REINFORCE, change_magnitude=0.4, target_importance=0.2)
+    assessment = _assessment(weak, opened)
+    chosen = select_primary_effect(assessment)
+    assert chosen.operation == CognitiveEffectKind.OPEN_NEW
+    assert chosen.target_kernel_node_id is None
+    plan = route(_features(), assessment=assessment, matches=[weak_target])
+    assert plan.disposition == Disposition.WATCH
+
+
+def test_stronger_targeted_still_outranks_weaker_open_new():
+    match = _match("MODEL")
+    reinforce = _effect(match, CognitiveEffectKind.REINFORCE, change_magnitude=0.8, target_importance=0.8)
+    opened = _effect(None, CognitiveEffectKind.OPEN_NEW, change_magnitude=0.4, target_importance=0.4)
+    assessment = _assessment(opened, reinforce)
+    chosen = select_primary_effect(assessment)
+    assert chosen.operation == CognitiveEffectKind.REINFORCE
+    assert chosen.target_kernel_node_id == match.node_id
 
 
 def test_route_uses_primary_effect_not_cross_effect_max():
     weak_target = _match("BELIEF")
-    strong_open = _effect(
-        None,
-        CognitiveEffectKind.OPEN_NEW,
-        change_magnitude=0.9,
-        target_importance=0.9,
-        epistemic_strength=0.4,
-    )
     weak_reinforce = _effect(
         weak_target,
         CognitiveEffectKind.REINFORCE,
@@ -526,11 +658,28 @@ def test_route_uses_primary_effect_not_cross_effect_max():
         target_importance=0.2,
         epistemic_strength=0.2,
     )
-    assessment = _assessment(strong_open, weak_reinforce)
+    assessment = _assessment(weak_reinforce)
     plan = route(_features(change_magnitude=0.9, target_importance=0.9), assessment=assessment, matches=[weak_target])
-    assert plan.disposition != Disposition.ENGAGE
     assert primary_update(assessment)["operation"] == CognitiveEffectKind.REINFORCE
     assert plan.disposition == Disposition.WATCH
+    assert plan.disposition != Disposition.ENGAGE
+
+
+def test_conflicting_open_new_can_engage_despite_low_epistemic_strength():
+    assessment = _assessment(
+        _effect(
+            None,
+            CognitiveEffectKind.OPEN_NEW,
+            change_magnitude=0.7,
+            target_importance=0.75,
+            epistemic_strength=0.3,
+        )
+    )
+    plan = route(
+        _features(sources_conflict=True, disagreement=0.8, marketing_heavy=False),
+        assessment=assessment,
+    )
+    assert plan.disposition == Disposition.ENGAGE
 
 
 def test_material_open_new_routes_to_watch_not_aware():

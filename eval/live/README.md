@@ -53,6 +53,10 @@ Update operation:
 | CHALLENGE | Change Existing — 已有 branch 需要被修改、削弱或推翻 |
 | OPEN_NEW | Create New — Kernel 中没有合适落点，产生新的 cognitive branch |
 
+**Primary Update** is the single coherent update that best represents the **largest useful cognitive change** after absorbing the information (`change_magnitude × target_importance`). An existing Kernel target does **not** outrank `OPEN_NEW` by default. `REINFORCE` / `CHALLENGE` / `OPEN_NEW` compete in the same value space.
+
+Project nodes are Kernel **Location**, not automatic Cognitive Update targets. Historical Pilot-12 gold that REINFORCE a Project is preserved in `manifest.pilot12.yaml`. Adjudicated gold lives in `manifest.pilot12.v2.yaml` (currently only `pilot12-01`: `OPEN_NEW`).
+
 Empty gold ⇒ `UNLABELED`: the run is stored, **excluded from accuracy denominators**.
 
 ## What Codex provides

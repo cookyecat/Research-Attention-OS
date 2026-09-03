@@ -47,7 +47,7 @@ from app.services.extraction import (
     ExtractedObservation,
     ExtractionResult,
 )
-from app.services.matching import KernelMatch, backfill_measurement_bottleneck_matches, node_text
+from app.services.matching import KernelMatch, node_text
 from app.services.retrieval import retrieve_kernel_candidates_traced, try_embed_query
 from app.services.scheduler import SchedulerFeatures
 
@@ -247,7 +247,7 @@ class ModelBackedCognitiveProvider:
                     relevance_type=rtype,
                 )
             )
-        return backfill_measurement_bottleneck_matches(matches, candidates, blob)
+        return matches
 
     def reason_evidence(
         self,

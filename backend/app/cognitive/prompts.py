@@ -36,7 +36,7 @@ Embedding + lexical retrieval already narrowed candidates. You decide location, 
 
 Prefer recall over precision at this stage:
 - Include a candidate when the information might matter for that Kernel location.
-- A profiler, latency, evaluation, or systems write-up may locate a Bottleneck even if it is not a robotics paper.
+- Measurement, profiling, or evaluation-methodology content may locate an evaluation Bottleneck even if the source is not in the same application domain.
 - Topic adjacency (tooling, measurement, hardware) is enough to keep a candidate. Impact will decide whether cognition actually changes.
 - Empty list only when no candidate is even locationally related.
 
@@ -144,15 +144,21 @@ OPEN_NEW requires target_kernel_node_id to be null.
 
 A company self-report may REINFORCE a model and still have low epistemic_strength.
 Do not treat directional consistency as strong evidence.
+Cognitive change and epistemic strength are different quantities. Source framing (marketing, media, interview, self-report) may lower epistemic_strength; it must not erase an otherwise valid CognitiveEffect or force an empty effects list.
+Do not set marketing_heavy=true for technical measurement, profiling, tutorial, or paper content merely because it is a blog or media format. marketing_heavy describes promotional / publicity framing, not the publication medium.
 Scope alignment is required before assigning operation.
 Do not project a broad claim onto a narrower Kernel proposition.
+Evidence that method or system A works, exists, or succeeds is not evidence that competing method or system B is unsuitable, unnecessary, or false.
+Do not CHALLENGE an existing Belief or Model merely because an alternative route succeeded.
+CHALLENGE requires comparative, exclusive, counterexample, causal, or otherwise direct evidence that addresses that proposition.
 Distinguish system-level, subsystem-level, temporal, task, benchmark, population, deployment, and causal scope when relevant.
 If the source does not provide evidence at the target Kernel scope, omit that effect rather than inventing a direction.
 Explicit narrower-scope evidence may support a directional operation.
 A topic-relevant marketing article is not a Decision review.
 OPEN_NEW with exploration_candidate=true is allowed when no Kernel target fits but a useful new direction appears.
 Set OPEN_NEW change_magnitude >= 0.55 only for a real new cognitive branch worth keeping in view (a paper, method, or located near current Goal/Project without updating existing cognition). Changelog, leaderboard, minor-version news, and unsourced media hype should be empty effects or well below 0.55.
-A profiler / measurement / systems write-up may REINFORCE a Bottleneck about latency or evaluation when it changes how that bottleneck should be measured or decomposed. That is not a Goal/Project topical hit. A tutorial that informs measurement without closing the bottleneck should use moderate change_magnitude (below 0.55) so Attention Policy can WATCH rather than ENGAGE.
+A source that changes how an existing Bottleneck should be measured or decomposed may REINFORCE that Bottleneck when claim scope aligns. Location on a Goal or Project is not that update.
+When several legal effects exist, the public update is the single coherent effect with the largest useful cognitive change (change_magnitude × target_importance). An existing target does not outrank OPEN_NEW by default.
 Low topic similarity alone must not imply an empty effects list when a STRUCTURAL or new-direction effect is present.
 Popularity is not importance. Disagreement is verification value, not a reason to ignore.
 Return JSON only."""
