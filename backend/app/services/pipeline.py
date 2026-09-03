@@ -492,6 +492,21 @@ def run_pipeline(
             retrieval=retrieval,
             assessment=assessment,
         )
+        from app.services.impact_input import capture_impact_input
+
+        payload["impact_input"] = capture_impact_input(
+            source_text=blob,
+            extraction=extraction,
+            matches=matches,
+            nodes=nodes,
+            is_duplicate=is_duplicate,
+            independent_source_count=independence["independent_sources"],
+            secondary_report_count=independence["secondary_reports"],
+            analysis_run_id=str(run.id),
+            input_hash=in_hash,
+            kernel_snapshot_hash=k_hash,
+            assessment=assessment,
+        )
         payload["analysis_run"] = {
             "id": str(run.id),
             "identity_key": ident,

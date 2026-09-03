@@ -27,6 +27,7 @@ from app.db import SessionLocal  # noqa: E402
 from app.services.impact_replay import (  # noqa: E402
     ImpactReplayConfig,
     compare_replays,
+    repeatability_report,
     replay_analysis_run,
 )
 
@@ -53,7 +54,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--reasoning-effort", default=None)
     parser.add_argument("--timeout", type=float, default=None)
     parser.add_argument("--label", default=None)
-    parser.add_argument("--twice", action="store_true", help="Run twice and assert stage reproducibility")
+    parser.add_argument(
+        "--twice",
+        action="store_true",
+        help="Run twice: require identical frozen-input fingerprints; stage equality only for deterministic providers",
+    )
     parser.add_argument("--ab", action="store_true", help="Controlled A/B with two Impact configs")
     parser.add_argument("--provider-a", default=None)
     parser.add_argument("--provider-b", default=None)
@@ -97,15 +102,20 @@ def main(argv: list[str] | None = None) -> int:
             first = replay_analysis_run(db, run_id, config=cfg, persist=True)
             second = replay_analysis_run(db, run_id, config=cfg, persist=True)
             db.commit()
-            same = first["stages"] == second["stages"] and first["input_fingerprint"] == second["input_fingerprint"]
+            repeatability = repeatability_report(first, second)
             payload = {
                 "first": first,
                 "second": second,
-                "reproducible": same,
+                "reproducible": repeatability["input_reproducible"],
+                "repeatability": repeatability,
                 "comparison": compare_replays(first, second),
             }
-            if not same:
-                print("Replay stages diverged on identical frozen input", file=sys.stderr)
+            if not repeatability["input_reproducible"]:
+                print("Frozen Impact input identity was not reproducible", file=sys.stderr)
+                print(json.dumps(payload, indent=2, default=str))
+                return 1
+            if repeatability["deterministic"] and not repeatability["stages_identical"]:
+                print("Deterministic replay stages diverged on identical frozen input", file=sys.stderr)
                 print(json.dumps(payload, indent=2, default=str))
                 return 1
         else:
