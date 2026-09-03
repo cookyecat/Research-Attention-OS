@@ -11,39 +11,65 @@ from sqlalchemy.orm import Session
 
 from app.enums import CognitiveEffectKind, Disposition, FeedbackKind
 from app.models.analysis import AnalysisRun
+from app.models.kernel import KernelNode
 from app.models.scheduler import AttentionFeedback, AttentionPlan
-from app.services.cognitive_impact import assessment_from_dict, primary_update
+from app.services.cognitive_impact import is_update_eligible_node
 
 DISPOSITIONS = frozenset(d.value for d in Disposition)
 UPDATE_OPERATIONS = frozenset(o.value for o in CognitiveEffectKind)
+TARGETED_OPERATIONS = frozenset(
+    {CognitiveEffectKind.REINFORCE.value, CognitiveEffectKind.CHALLENGE.value}
+)
 
 
-def _normalize_update(raw: dict | None) -> dict:
-    base = raw if isinstance(raw, dict) else {}
-    op = base.get("operation")
-    operation = str(op).upper() if op is not None else None
-    if operation not in UPDATE_OPERATIONS:
-        operation = None
-    target = base.get("target_node_id")
+def _operation_value(raw) -> str | None:
+    if raw is None:
+        return None
+    if hasattr(raw, "value"):
+        raw = raw.value
+    op = str(raw).upper()
+    return op if op in UPDATE_OPERATIONS else None
+
+
+def public_update(raw) -> dict | None:
+    """Public contract Update: {operation, target_node_id} or null (no cognitive update)."""
+    if raw is None:
+        return None
+    if not isinstance(raw, dict):
+        return None
+    operation = _operation_value(raw.get("operation"))
+    if operation is None:
+        return None
+    target = raw.get("target_node_id")
     target_node_id = str(target) if target else None
     if operation == CognitiveEffectKind.OPEN_NEW.value:
         target_node_id = None
     return {"operation": operation, "target_node_id": target_node_id}
 
 
-def system_prediction_from_plan(plan: AttentionPlan, run: AnalysisRun | None = None) -> dict:
-    """Immutable system judgment snapshot for provenance."""
-    impact = (plan.score_debug or {}).get("cognitive_impact") if isinstance(plan.score_debug, dict) else None
-    update = _normalize_update(primary_update(assessment_from_dict(impact)) if impact else None)
-    delta_content = ""
-    if run is not None and isinstance(run.result_payload, dict):
-        delta_content = run.result_payload.get("delta_content") or ""
-        if not delta_content:
-            delta_content = (run.result_payload.get("model_delta") or {}).get("summary") or ""
+def system_prediction_from_run(run: AnalysisRun | None) -> dict:
+    """Snapshot the AnalysisRun's frozen public prediction. Never re-derive from current code."""
+    payload = run.result_payload if run is not None and isinstance(run.result_payload, dict) else {}
+    stored_plan = payload.get("attention_plan") if isinstance(payload.get("attention_plan"), dict) else {}
+
+    disposition = payload.get("disposition") or stored_plan.get("disposition")
+
+    if "update" in payload:
+        update = public_update(payload.get("update"))
+    elif "update" in stored_plan:
+        update = public_update(stored_plan.get("update"))
+    else:
+        update = None
+
+    if "delta_content" in payload:
+        delta_content = payload.get("delta_content") or ""
+    else:
+        delta_content = (payload.get("model_delta") or {}).get("summary") or ""
+
     return {
-        "disposition": plan.disposition,
+        "disposition": disposition,
         "update": update,
-        "delta_content": delta_content,
+        "delta_content": delta_content if delta_content is not None else "",
     }
 
 
@@ -51,48 +77,95 @@ def _validate_public_contract(prediction: dict) -> None:
     disposition = prediction.get("disposition")
     if disposition not in DISPOSITIONS:
         raise HTTPException(422, f"Invalid disposition: {disposition}")
-    update = _normalize_update(prediction.get("update"))
-    op = update["operation"]
-    target = update["target_node_id"]
-    if op in {CognitiveEffectKind.REINFORCE.value, CognitiveEffectKind.CHALLENGE.value} and not target:
+    update = prediction.get("update")
+    if update is None:
+        return
+    normalized = public_update(update)
+    if normalized is None:
+        prediction["update"] = None
+        return
+    op = normalized["operation"]
+    target = normalized["target_node_id"]
+    if op in TARGETED_OPERATIONS and not target:
         raise HTTPException(422, f"{op} requires target_node_id")
     if op == CognitiveEffectKind.OPEN_NEW.value and target:
         raise HTTPException(422, "OPEN_NEW requires target_node_id to be null")
-    prediction["update"] = update
+    prediction["update"] = normalized
+
+
+def _validate_update_target(db: Session, update: dict | None) -> None:
+    if not update:
+        return
+    op = update.get("operation")
+    if op not in TARGETED_OPERATIONS:
+        return
+    raw_id = update.get("target_node_id")
+    try:
+        node_id = UUID(str(raw_id))
+    except (TypeError, ValueError) as exc:
+        raise HTTPException(422, "target_node_id must be a Kernel node UUID") from exc
+    node = db.get(KernelNode, node_id)
+    if node is None or node.deleted_at is not None:
+        raise HTTPException(422, "target_node_id must refer to an existing Kernel node")
+    if not is_update_eligible_node(node.node_type):
+        raise HTTPException(422, f"{node.node_type} is not an update-eligible Kernel node")
 
 
 def _diff_fields(system: dict, user: dict) -> list[str]:
     corrected: list[str] = []
     if system.get("disposition") != user.get("disposition"):
         corrected.append("disposition")
-    sys_up = _normalize_update(system.get("update"))
-    usr_up = _normalize_update(user.get("update"))
-    if sys_up.get("operation") != usr_up.get("operation"):
-        corrected.append("update.operation")
-    if sys_up.get("target_node_id") != usr_up.get("target_node_id"):
-        corrected.append("update.target_node_id")
+    sys_up = public_update(system.get("update"))
+    usr_up = public_update(user.get("update"))
+    if sys_up is None and usr_up is None:
+        pass
+    elif sys_up is None or usr_up is None:
+        corrected.append("update")
+    else:
+        if sys_up.get("operation") != usr_up.get("operation"):
+            corrected.append("update.operation")
+        if sys_up.get("target_node_id") != usr_up.get("target_node_id"):
+            corrected.append("update.target_node_id")
     if (system.get("delta_content") or "") != (user.get("delta_content") or ""):
         corrected.append("delta_content")
     return corrected
 
 
-def merge_correction(system: dict, overrides: dict) -> dict:
-    """Apply partial human overrides onto the system prediction."""
+def merge_correction(system: dict, overrides: dict, db: Session | None = None) -> dict:
+    """Apply partial human overrides. Omitted keys keep system values; explicit null is a value."""
     merged = deepcopy(system)
-    merged["update"] = _normalize_update(merged.get("update"))
-    if overrides.get("disposition") is not None:
+    merged["update"] = public_update(merged.get("update"))
+
+    if "disposition" in overrides:
+        if overrides["disposition"] is None:
+            raise HTTPException(422, "disposition cannot be null")
         merged["disposition"] = overrides["disposition"]
-    if overrides.get("update") is not None:
-        patch = overrides["update"] if isinstance(overrides["update"], dict) else {}
-        if patch.get("operation") is not None:
-            merged["update"]["operation"] = str(patch["operation"]).upper()
-        if "target_node_id" in patch:
-            merged["update"]["target_node_id"] = str(patch["target_node_id"]) if patch["target_node_id"] else None
-        if merged["update"]["operation"] == CognitiveEffectKind.OPEN_NEW.value:
-            merged["update"]["target_node_id"] = None
-    if "delta_content" in overrides and overrides["delta_content"] is not None:
-        merged["delta_content"] = overrides["delta_content"]
+
+    if "update" in overrides:
+        patch = overrides["update"]
+        if patch is None:
+            merged["update"] = None
+        elif isinstance(patch, dict):
+            if "operation" in patch and patch["operation"] is None:
+                merged["update"] = None
+            else:
+                current = merged["update"] or {"operation": None, "target_node_id": None}
+                if "operation" in patch and patch["operation"] is not None:
+                    current["operation"] = str(patch["operation"]).upper()
+                if "target_node_id" in patch:
+                    current["target_node_id"] = str(patch["target_node_id"]) if patch["target_node_id"] else None
+                if current.get("operation") == CognitiveEffectKind.OPEN_NEW.value:
+                    current["target_node_id"] = None
+                merged["update"] = public_update(current)
+        else:
+            raise HTTPException(422, "update must be an object or null")
+
+    if "delta_content" in overrides:
+        merged["delta_content"] = overrides["delta_content"] if overrides["delta_content"] is not None else ""
+
     _validate_public_contract(merged)
+    if db is not None:
+        _validate_update_target(db, merged.get("update"))
     return merged
 
 
@@ -133,20 +206,48 @@ def feedback_for_run(db: Session, run_id: UUID) -> list[AttentionFeedback]:
     )
 
 
+def overrides_from_body(body) -> dict:
+    """Build correction overrides. Presence in model_fields_set distinguishes omit vs explicit null."""
+    overrides: dict = {}
+    if "disposition" in body.model_fields_set:
+        overrides["disposition"] = body.disposition
+    if "update" in body.model_fields_set:
+        if body.update is None:
+            overrides["update"] = None
+        else:
+            patch: dict = {}
+            if "operation" in body.update.model_fields_set:
+                patch["operation"] = body.update.operation
+            if "target_node_id" in body.update.model_fields_set:
+                patch["target_node_id"] = (
+                    str(body.update.target_node_id) if body.update.target_node_id else None
+                )
+            overrides["update"] = patch
+    if "delta_content" in body.model_fields_set:
+        overrides["delta_content"] = body.delta_content
+    return overrides
+
+
 def record_feedback(
     db: Session,
     *,
     plan_id: UUID,
     kind: str,
-    disposition: str | None = None,
-    update: dict | None = None,
-    delta_content: str | None = None,
+    overrides: dict | None = None,
 ) -> AttentionFeedback:
     plan = db.get(AttentionPlan, plan_id)
     if plan is None:
         raise HTTPException(404, "AttentionPlan not found")
+    if plan.analysis_run_id:
+        from app.services.analysis_runs import attention_plans_for_run
+
+        latest_plans = attention_plans_for_run(db, plan.analysis_run_id)
+        if latest_plans and latest_plans[0].id != plan.id:
+            raise HTTPException(422, "Feedback must target the latest AttentionPlan for this AnalysisRun")
+
     run = db.get(AnalysisRun, plan.analysis_run_id) if plan.analysis_run_id else None
-    system = system_prediction_from_plan(plan, run)
+    system = system_prediction_from_run(run)
+    _validate_public_contract(system)
 
     kind_upper = str(kind).upper()
     if kind_upper not in {FeedbackKind.CONFIRM.value, FeedbackKind.CORRECT.value}:
@@ -156,16 +257,9 @@ def record_feedback(
         user = deepcopy(system)
         corrected_fields: list[str] = []
     else:
-        overrides: dict = {}
-        if disposition is not None:
-            overrides["disposition"] = disposition
-        if update is not None:
-            overrides["update"] = update
-        if delta_content is not None:
-            overrides["delta_content"] = delta_content
         if not overrides:
             raise HTTPException(422, "CORRECT requires at least one field to change")
-        user = merge_correction(system, overrides)
+        user = merge_correction(system, overrides, db=db)
         corrected_fields = _diff_fields(system, user)
         if not corrected_fields:
             raise HTTPException(422, "CORRECT must change at least one field from the system prediction")

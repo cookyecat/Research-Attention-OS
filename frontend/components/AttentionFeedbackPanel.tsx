@@ -10,7 +10,7 @@ type CognitiveUpdate = {
 
 type Prediction = {
   disposition?: string;
-  update?: CognitiveUpdate;
+  update?: CognitiveUpdate | null;
   delta_content?: string;
 };
 
@@ -26,21 +26,29 @@ type Feedback = {
 type KernelNode = { id: string; title: string; node_type?: string };
 
 const DISPOSITIONS = ["DROP", "AWARE", "WATCH", "ENGAGE"];
-const OPERATIONS = ["REINFORCE", "CHALLENGE", "OPEN_NEW"];
+const OPERATIONS = ["NONE", "REINFORCE", "CHALLENGE", "OPEN_NEW"];
+const UPDATE_ELIGIBLE = new Set(["BELIEF", "MODEL", "QUESTION", "HYPOTHESIS", "DECISION", "BOTTLENECK"]);
+
+function publicUpdate(raw: unknown): CognitiveUpdate | null {
+  if (raw == null || typeof raw !== "object") return null;
+  const op = String((raw as CognitiveUpdate).operation || "").toUpperCase();
+  if (!op || op === "NONE") return null;
+  return {
+    operation: op,
+    target_node_id: op === "OPEN_NEW" ? null : (raw as CognitiveUpdate).target_node_id || null,
+  };
+}
 
 function predictionFromAnalysis(analysis: Record<string, unknown>): Prediction {
-  const plan = (analysis.attention_plan || {}) as Record<string, unknown>;
-  const update = (analysis.update || plan.update || {}) as CognitiveUpdate;
+  const latest = (analysis.latest_attention_plan || analysis.attention_plan || {}) as Record<string, unknown>;
+  const rawUpdate = analysis.update !== undefined ? analysis.update : latest.update;
   const delta =
-    (analysis.delta_content as string) ||
-    ((analysis.model_delta as Record<string, unknown> | undefined)?.summary as string) ||
+    (typeof analysis.delta_content === "string" ? analysis.delta_content : undefined) ??
+    ((analysis.model_delta as Record<string, unknown> | undefined)?.summary as string) ??
     "";
   return {
-    disposition: (analysis.disposition as string) || (plan.disposition as string),
-    update: {
-      operation: update.operation || null,
-      target_node_id: update.target_node_id || null,
-    },
+    disposition: (analysis.disposition as string) || (latest.disposition as string),
+    update: publicUpdate(rawUpdate),
     delta_content: delta,
   };
 }
@@ -61,14 +69,14 @@ export default function AttentionFeedbackPanel({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [disposition, setDisposition] = useState(system.disposition || "AWARE");
-  const [operation, setOperation] = useState(system.update?.operation || "OPEN_NEW");
+  const [operation, setOperation] = useState(system.update?.operation || "NONE");
   const [targetNodeId, setTargetNodeId] = useState(system.update?.target_node_id || "");
   const [deltaContent, setDeltaContent] = useState(system.delta_content || "");
   const [kernelNodes, setKernelNodes] = useState<KernelNode[]>([]);
 
   useEffect(() => {
     setDisposition(system.disposition || "AWARE");
-    setOperation(system.update?.operation || "OPEN_NEW");
+    setOperation(system.update?.operation || "NONE");
     setTargetNodeId(system.update?.target_node_id || "");
     setDeltaContent(system.delta_content || "");
   }, [system]);
@@ -78,25 +86,15 @@ export default function AttentionFeedbackPanel({
       .then((k) => {
         const flat: KernelNode[] = [];
         for (const [nodeType, nodes] of Object.entries(k)) {
+          if (!UPDATE_ELIGIBLE.has(nodeType)) continue;
           for (const n of nodes || []) {
-            flat.push({ id: n.id, title: n.title, node_type: nodeType });
+            flat.push({ id: n.id, title: n.title, node_type: n.node_type || nodeType });
           }
         }
         setKernelNodes(flat);
       })
       .catch(() => undefined);
   }, []);
-
-  const matchNodes = useMemo(() => {
-    const matches = (analysis.kernel_matches as Array<{ node_id: string; title: string; node_type?: string }>) || [];
-    const byId = new Map(kernelNodes.map((n) => [n.id, n]));
-    for (const m of matches) {
-      if (!byId.has(m.node_id)) {
-        byId.set(m.node_id, { id: m.node_id, title: m.title, node_type: m.node_type });
-      }
-    }
-    return [...byId.values()];
-  }, [analysis.kernel_matches, kernelNodes]);
 
   async function submit(kind: "CONFIRM" | "CORRECT") {
     setBusy(true);
@@ -105,18 +103,20 @@ export default function AttentionFeedbackPanel({
       const body: Record<string, unknown> = { kind };
       if (kind === "CORRECT") {
         if (disposition !== system.disposition) body.disposition = disposition;
-        const sysOp = system.update?.operation || null;
-        const sysTarget = system.update?.target_node_id || null;
-        const opChanged = operation !== sysOp;
-        const targetChanged =
-          (operation === "REINFORCE" || operation === "CHALLENGE") &&
-          (targetNodeId || null) !== (sysTarget || null);
-        const opSwitchToOpenNew = operation === "OPEN_NEW" && sysOp !== "OPEN_NEW";
-        if (opChanged || targetChanged || opSwitchToOpenNew) {
-          body.update = {
-            operation,
-            target_node_id: operation === "OPEN_NEW" ? null : targetNodeId || null,
-          };
+        const sysUpdate = system.update ?? null;
+        const nextUpdate =
+          operation === "NONE" || !operation
+            ? null
+            : {
+                operation,
+                target_node_id: operation === "OPEN_NEW" ? null : targetNodeId || null,
+              };
+        const updateChanged =
+          (sysUpdate == null) !== (nextUpdate == null) ||
+          sysUpdate?.operation !== nextUpdate?.operation ||
+          (sysUpdate?.target_node_id || null) !== (nextUpdate?.target_node_id || null);
+        if (updateChanged) {
+          body.update = nextUpdate;
         }
         if ((deltaContent || "") !== (system.delta_content || "")) {
           body.delta_content = deltaContent;
@@ -139,15 +139,17 @@ export default function AttentionFeedbackPanel({
     <div className="card">
       <h3>Human feedback</h3>
       <p className="lede">
-        Confirm or correct the system judgment. Corrections are stored alongside the original prediction — they do not rewrite the AnalysisRun or mutate the Kernel.
+        Confirm or correct the frozen AnalysisRun judgment. Corrections stay beside the original prediction — they do not rewrite the run or mutate the Kernel.
       </p>
       <div className="row">
         <span className="badge">{system.disposition}</span>
-        {system.update?.operation && (
+        {system.update?.operation ? (
           <span className="badge">
             {system.update.operation}
             {system.update.target_node_id ? ` → ${system.update.target_node_id.slice(0, 8)}…` : ""}
           </span>
+        ) : (
+          <span className="badge">no update</span>
         )}
       </div>
       {system.delta_content && <p>{system.delta_content}</p>}
@@ -177,11 +179,11 @@ export default function AttentionFeedbackPanel({
               </option>
             ))}
           </select>
-          <label>Update operation</label>
+          <label>Update</label>
           <select value={operation} onChange={(e) => setOperation(e.target.value)}>
             {OPERATIONS.map((o) => (
               <option key={o} value={o}>
-                {o}
+                {o === "NONE" ? "No cognitive update" : o}
               </option>
             ))}
           </select>
@@ -190,7 +192,7 @@ export default function AttentionFeedbackPanel({
               <label>Target node</label>
               <select value={targetNodeId} onChange={(e) => setTargetNodeId(e.target.value)}>
                 <option value="">Select kernel node…</option>
-                {matchNodes.map((n) => (
+                {kernelNodes.map((n) => (
                   <option key={n.id} value={n.id}>
                     [{n.node_type}] {n.title}
                   </option>

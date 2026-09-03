@@ -69,11 +69,18 @@ class KernelNodeCreate(BaseModel):
 
 
 class CognitiveUpdateFeedbackIn(BaseModel):
+    """Partial Update patch. Omitted fields keep the system value; explicit null is a value."""
+
     operation: str | None = None
     target_node_id: UUID | None = None
 
 
 class AttentionFeedbackIn(BaseModel):
+    """Confirm or correct the public contract. Omitted fields ≠ explicit null.
+
+    `update: null` means no cognitive update. Omitting `update` keeps the system Update.
+    """
+
     kind: str
     disposition: str | None = None
     update: CognitiveUpdateFeedbackIn | None = None

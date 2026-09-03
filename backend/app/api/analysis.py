@@ -107,18 +107,13 @@ def list_run_feedback(run_id: UUID, db: Session = Depends(get_db)):
 
 @router.post("/attention-plans/{plan_id}/feedback")
 def submit_attention_feedback(plan_id: UUID, body: AttentionFeedbackIn, db: Session = Depends(get_db)):
-    from app.services.attention_feedback import feedback_public, record_feedback
+    from app.services.attention_feedback import feedback_public, overrides_from_body, record_feedback
 
-    update_payload = None
-    if body.update is not None:
-        update_payload = body.update.model_dump(exclude_unset=True)
     row = record_feedback(
         db,
         plan_id=plan_id,
         kind=body.kind,
-        disposition=body.disposition,
-        update=update_payload,
-        delta_content=body.delta_content,
+        overrides=overrides_from_body(body),
     )
     db.commit()
     return feedback_public(row)

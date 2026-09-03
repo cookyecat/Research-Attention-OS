@@ -90,17 +90,26 @@ export default function AttentionPage() {
           <div className="card">
             <h3>AttentionPlan</h3>
             <div className="row">
-              <span className={`badge ${analysis.disposition || analysis.attention_plan.disposition}`}>{analysis.disposition || analysis.attention_plan.disposition}</span>
+              <span className={`badge ${(analysis.latest_attention_plan || analysis.attention_plan).disposition}`}>
+                {(analysis.latest_attention_plan || analysis.attention_plan).disposition}
+              </span>
               {analysis.update?.operation && (
                 <span className="badge">{analysis.update.operation}{analysis.update.target_node_id ? ` → ${analysis.update.target_node_id}` : ""}</span>
               )}
-              <span className={`badge ${analysis.attention_plan.urgency}`}>{analysis.attention_plan.urgency}</span>
+              <span className={`badge ${(analysis.latest_attention_plan || analysis.attention_plan).urgency}`}>
+                {(analysis.latest_attention_plan || analysis.attention_plan).urgency}
+              </span>
             </div>
-            <p>{analysis.attention_plan.reason}</p>
+            <p>{(analysis.latest_attention_plan || analysis.attention_plan).reason}</p>
+            {analysis.original_attention_plan?.id &&
+              analysis.latest_attention_plan?.id &&
+              analysis.original_attention_plan.id !== analysis.latest_attention_plan.id && (
+                <p className="lede">Original plan retained as provenance only.</p>
+              )}
           </div>
-          {analysis.attention_plan?.id && (
+          {(analysis.latest_attention_plan || analysis.attention_plan)?.id && (
             <AttentionFeedbackPanel
-              planId={analysis.attention_plan.id}
+              planId={(analysis.latest_attention_plan || analysis.attention_plan).id}
               analysis={analysis}
               onSubmitted={async () => {
                 if (!sourceId) return;
