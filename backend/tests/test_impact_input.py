@@ -8,6 +8,7 @@ from app.models.kernel import KernelNode
 from app.services.extraction import ExtractedClaim, ExtractionResult
 from app.services.impact_input import (
     FIDELITY_EXACT,
+    SNAPSHOT_VERSION,
     capture_impact_input,
     fingerprint_snapshot,
     freeze_kernel_target,
@@ -69,6 +70,12 @@ def test_fingerprint_covers_kernel_target_semantics():
     ]
     assert fingerprint_snapshot(drifted) != baseline
 
+    drifted_importance = dict(frozen)
+    drifted_importance["kernel_targets"] = [
+        {**frozen["kernel_targets"][0], "importance": 0.1, "priority": 0.2}
+    ]
+    assert fingerprint_snapshot(drifted_importance) != baseline
+
     same_label_fields = dict(frozen)
     same_label_fields["analysis_run_id"] = str(uuid4())
     same_label_fields["input_hash"] = "other"
@@ -102,6 +109,8 @@ def test_fingerprint_covers_source_text_and_extraction():
 def test_incomplete_stored_snapshot_is_not_exact():
     node = _node(proposition="p")
     assert "proposition" in freeze_kernel_target(node)
+    assert "importance" in freeze_kernel_target(node)
+    assert "priority" in freeze_kernel_target(node)
     assert not stored_is_exact(None)
     assert not stored_is_exact({"source_text": "x"})
     assert not stored_is_exact(
@@ -117,3 +126,31 @@ def test_incomplete_stored_snapshot_is_not_exact():
             },
         }
     )
+
+
+def test_exact_requires_v02_schema_and_target_importance_priority():
+    target = {
+        "id": "abc",
+        "type": "BELIEF",
+        "title": "t",
+        "proposition": "p",
+        "scope": None,
+    }
+    payload = {
+        "schema_version": SNAPSHOT_VERSION,
+        "source_text": "x",
+        "extraction": {},
+        "matches": [{"node_id": "abc"}],
+        "kernel_targets": [target],
+        "independence": {
+            "is_duplicate": False,
+            "independent_source_count": 1,
+            "secondary_report_count": 0,
+        },
+    }
+    assert not stored_is_exact(payload)
+    payload["kernel_targets"] = [{**target, "importance": None, "priority": None}]
+    assert stored_is_exact(payload)
+    without_version = dict(payload)
+    without_version["schema_version"] = "impact-input-v0.1"
+    assert not stored_is_exact(without_version)

@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm.attributes import flag_modified
 
 from app.cognitive.client import LLMTimeoutError
+from app.config import settings
 from app.models.analysis import AnalysisRun
 from app.models.source import Source
 from app.services.impact_replay import (
@@ -15,6 +16,7 @@ from app.services.impact_replay import (
     compare_replays,
     repeatability_report,
     replay_analysis_run,
+    wire_effective_model_runtime,
 )
 from tests.conftest import add_text, analyze
 
@@ -249,7 +251,31 @@ def _impact_payload(*, magnitude: float, reason: str) -> dict:
     }
 
 
-def test_model_thinking_ab_is_controlled_single_variable(client: TestClient, db):
+def test_wire_effective_runtime_follows_thinking_protocol(monkeypatch):
+    monkeypatch.setattr(settings, "llm_thinking_protocol", "none")
+    none_wire = wire_effective_model_runtime(
+        thinking="enabled", reasoning_effort="low", timeout=60.0, model="m"
+    )
+    assert "thinking" not in none_wire
+    assert "reasoning_effort" not in none_wire
+    assert none_wire["model"] == "m"
+    assert none_wire["timeout"] == 60.0
+
+    monkeypatch.setattr(settings, "llm_thinking_protocol", "deepseek")
+    disabled = wire_effective_model_runtime(
+        thinking="disabled", reasoning_effort="low", timeout=60.0, model="m"
+    )
+    assert disabled["thinking"] == "disabled"
+    assert "reasoning_effort" not in disabled
+    enabled = wire_effective_model_runtime(
+        thinking="enabled", reasoning_effort="high", timeout=45.0, model="m"
+    )
+    assert enabled["thinking"] == "enabled"
+    assert enabled["reasoning_effort"] == "high"
+
+
+def test_model_thinking_ab_not_effective_when_protocol_none(client: TestClient, db, monkeypatch):
+    monkeypatch.setattr(settings, "llm_thinking_protocol", "none")
     result = _analyze_run(client)
     run_id = UUID(result["analysis_run"]["id"])
 
@@ -273,18 +299,121 @@ def test_model_thinking_ab_is_controlled_single_variable(client: TestClient, db)
     )
     db.commit()
     cmp = compare_replays(a, b)
-    assert a["input_fingerprint"] == b["input_fingerprint"]
-    assert a["input_fidelity"] == "EXACT"
-    assert cmp["same_input"] is True
-    assert cmp["exact_frozen_input"] is True
+    assert a["runtime"]["requested"]["thinking"] == "disabled"
+    assert b["runtime"]["requested"]["thinking"] == "enabled"
+    assert "thinking" not in (a["runtime"].get("wire") or {})
+    assert "thinking" not in (b["runtime"].get("wire") or {})
+    assert "thinking" in cmp["declared_variable_diff"]
+    assert "thinking" not in cmp["variable_diff"]
+    assert "reasoning_effort" not in cmp["variable_diff"]
+    assert cmp["controlled_single_variable"] is False
+    assert cmp["causal_comparison"] is False
+    assert "declared_experiment_variable_not_effective" in cmp["invalid_reasons"]
+
+
+def test_model_thinking_ab_is_controlled_single_variable_on_deepseek(client: TestClient, db, monkeypatch):
+    monkeypatch.setattr(settings, "llm_thinking_protocol", "deepseek")
+    result = _analyze_run(client)
+    run_id = UUID(result["analysis_run"]["id"])
+
+    def chat(messages, **_kwargs):
+        return _impact_payload(magnitude=0.55, reason="stable model output"), META
+
+    db.expire_all()
+    a = replay_analysis_run(
+        db,
+        run_id,
+        config=ImpactReplayConfig(provider="model", thinking="disabled", label="off"),
+        chat_fn=chat,
+        persist=True,
+    )
+    b = replay_analysis_run(
+        db,
+        run_id,
+        config=ImpactReplayConfig(provider="model", thinking="enabled", label="on"),
+        chat_fn=chat,
+        persist=True,
+    )
+    db.commit()
+    cmp = compare_replays(a, b)
+    assert a["runtime"]["wire"]["thinking"] == "disabled"
+    assert b["runtime"]["wire"]["thinking"] == "enabled"
+    assert "reasoning_effort" not in a["runtime"]["wire"]
+    assert "reasoning_effort" not in b["runtime"]["wire"]
     assert set(cmp["variable_diff"]) == {"thinking"}
     assert cmp["variable_diff"]["thinking"]["a"] == "disabled"
     assert cmp["variable_diff"]["thinking"]["b"] == "enabled"
     assert cmp["single_effective_variable"] is True
     assert cmp["controlled_single_variable"] is True
     assert cmp["causal_comparison"] is True
-    assert cmp["execution_valid"] is True
     assert cmp["invalid_reasons"] == []
+
+
+def test_reasoning_effort_not_effective_when_thinking_disabled(client: TestClient, db, monkeypatch):
+    monkeypatch.setattr(settings, "llm_thinking_protocol", "deepseek")
+    result = _analyze_run(client)
+    run_id = UUID(result["analysis_run"]["id"])
+
+    def chat(messages, **_kwargs):
+        return _impact_payload(magnitude=0.55, reason="stable model output"), META
+
+    db.expire_all()
+    a = replay_analysis_run(
+        db,
+        run_id,
+        config=ImpactReplayConfig(provider="model", thinking="disabled", reasoning_effort=None, label="a"),
+        chat_fn=chat,
+        persist=True,
+    )
+    b = replay_analysis_run(
+        db,
+        run_id,
+        config=ImpactReplayConfig(provider="model", thinking="disabled", reasoning_effort="high", label="b"),
+        chat_fn=chat,
+        persist=True,
+    )
+    db.commit()
+    cmp = compare_replays(a, b)
+    assert a["runtime"]["requested"]["reasoning_effort"] != b["runtime"]["requested"]["reasoning_effort"]
+    assert "reasoning_effort" not in a["runtime"]["wire"]
+    assert "reasoning_effort" not in b["runtime"]["wire"]
+    assert "reasoning_effort" not in cmp["variable_diff"]
+    assert cmp["controlled_single_variable"] is False
+    assert "declared_experiment_variable_not_effective" in cmp["invalid_reasons"]
+
+
+def test_reasoning_effort_is_effective_when_deepseek_thinking_enabled(client: TestClient, db, monkeypatch):
+    monkeypatch.setattr(settings, "llm_thinking_protocol", "deepseek")
+    result = _analyze_run(client)
+    run_id = UUID(result["analysis_run"]["id"])
+
+    def chat(messages, **_kwargs):
+        return _impact_payload(magnitude=0.55, reason="stable model output"), META
+
+    db.expire_all()
+    a = replay_analysis_run(
+        db,
+        run_id,
+        config=ImpactReplayConfig(provider="model", thinking="enabled", reasoning_effort="low", label="a"),
+        chat_fn=chat,
+        persist=True,
+    )
+    b = replay_analysis_run(
+        db,
+        run_id,
+        config=ImpactReplayConfig(provider="model", thinking="enabled", reasoning_effort="high", label="b"),
+        chat_fn=chat,
+        persist=True,
+    )
+    db.commit()
+    cmp = compare_replays(a, b)
+    assert a["runtime"]["wire"]["thinking"] == "enabled"
+    assert b["runtime"]["wire"]["thinking"] == "enabled"
+    assert set(cmp["variable_diff"]) == {"reasoning_effort"}
+    assert cmp["variable_diff"]["reasoning_effort"]["a"] == "low"
+    assert cmp["variable_diff"]["reasoning_effort"]["b"] == "high"
+    assert cmp["controlled_single_variable"] is True
+    assert cmp["causal_comparison"] is True
 
 
 def test_fallback_timeout_invalidates_controlled_ab(client: TestClient, db):

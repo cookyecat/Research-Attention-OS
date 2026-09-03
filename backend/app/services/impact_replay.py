@@ -14,6 +14,7 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.cognitive.client import thinking_request_fields
 from app.cognitive.factory import FallbackProvider
 from app.cognitive.model_provider import ModelBackedCognitiveProvider
 from app.cognitive.rule_provider import RuleBasedCognitiveProvider
@@ -34,6 +35,7 @@ from app.services.impact_input import (
 )
 
 EXPERIMENTAL_KEYS = ("provider", "model", "thinking", "reasoning_effort", "timeout")
+WIRE_CONDITION_KEYS = ("model", "thinking", "reasoning_effort", "timeout")
 NON_EXPERIMENTAL_KEYS = ("label",)
 FALLBACK_STATUSES = frozenset({"fallback", "rule-after-fallback", "error"})
 INVALIDATING_ERROR_TYPES = frozenset({"timeout", "schema", "LLMTimeoutError", "LLMError"})
@@ -121,6 +123,45 @@ def is_deterministic_replay(config: dict | None, runtime: dict | None) -> bool:
     kind = _provider_kind(config)
     provider_type = str(runtime.get("provider_type") or kind).lower()
     return kind == "rule" and not provider_type.startswith("model")
+
+
+def thinking_protocol_label(raw: str | None = None) -> str:
+    protocol = (raw if raw is not None else settings.llm_thinking_protocol or "none").strip().lower()
+    if protocol in {"deepseek", "thinking"}:
+        return "deepseek"
+    return "none"
+
+
+def flatten_thinking_wire(fields: dict | None) -> dict:
+    """Collapse thinking_request_fields() into scalar Impact runtime keys."""
+    out = {}
+    fields = fields or {}
+    if "thinking" in fields:
+        raw = fields["thinking"]
+        out["thinking"] = raw.get("type") if isinstance(raw, dict) else raw
+    if "reasoning_effort" in fields:
+        out["reasoning_effort"] = fields["reasoning_effort"]
+    return out
+
+
+def wire_effective_model_runtime(
+    *,
+    thinking: str | None,
+    reasoning_effort: str | None,
+    timeout,
+    model: str | None,
+) -> dict:
+    """Runtime fields actually placed on the provider/model request.
+
+    protocol=none: thinking / reasoning_effort are omitted.
+    deepseek: thinking is sent; reasoning_effort only when thinking=enabled.
+    """
+    wire = {
+        "model": _norm_value(model),
+        "timeout": _norm_value(timeout),
+    }
+    wire.update(flatten_thinking_wire(thinking_request_fields(thinking, reasoning_effort)))
+    return wire
 
 
 def execution_validity(runtime: dict | None) -> dict:
@@ -264,15 +305,47 @@ def _runtime_from_provider(provider) -> dict:
         provenance = getattr(provider, "stage_provenance", None) or {}
         impact_rec = provenance.get("impact") if isinstance(provenance, dict) else {}
     meta = getattr(provider, "last_meta", None) or {}
-    runtime = {
-        "provider_type": getattr(provider, "provider_type", None),
-        "fallback_used": bool(getattr(provider, "fallback_used", False)),
-        "model": impact_rec.get("model") or meta.get("model"),
-        "thinking": impact_rec.get("thinking") if impact_rec.get("thinking") is not None else stage_runtime.get("thinking"),
-        "reasoning_effort": impact_rec.get("reasoning_effort")
+    requested_thinking = (
+        impact_rec.get("thinking") if impact_rec.get("thinking") is not None else stage_runtime.get("thinking")
+    )
+    requested_effort = (
+        impact_rec.get("reasoning_effort")
         if impact_rec.get("reasoning_effort") is not None
-        else stage_runtime.get("reasoning_effort"),
-        "timeout": impact_rec.get("timeout") if impact_rec.get("timeout") is not None else stage_runtime.get("timeout"),
+        else stage_runtime.get("reasoning_effort")
+    )
+    timeout = impact_rec.get("timeout") if impact_rec.get("timeout") is not None else stage_runtime.get("timeout")
+    model = impact_rec.get("model") or meta.get("model")
+    fallback = bool(getattr(provider, "fallback_used", False))
+    status = impact_rec.get("status") or "success"
+    provider_type = getattr(provider, "provider_type", None)
+    protocol = thinking_protocol_label()
+    requested = {
+        "thinking": requested_thinking,
+        "reasoning_effort": requested_effort,
+        "timeout": timeout,
+        "model": model,
+    }
+    model_path = (not fallback) and str(provider_type or "").lower().startswith("model")
+    wire = (
+        wire_effective_model_runtime(
+            thinking=requested_thinking,
+            reasoning_effort=requested_effort,
+            timeout=timeout,
+            model=model or settings.llm_model,
+        )
+        if model_path
+        else {}
+    )
+    runtime = {
+        "provider_type": provider_type,
+        "fallback_used": fallback,
+        "model": model,
+        "timeout": timeout,
+        "requested": requested,
+        "wire": wire,
+        "thinking_protocol": protocol,
+        "thinking": wire.get("thinking"),
+        "reasoning_effort": wire.get("reasoning_effort"),
         "latency_ms": impact_rec.get("latency_ms") if impact_rec.get("latency_ms") is not None else meta.get("latency_ms"),
         "prompt_tokens": impact_rec.get("prompt_tokens")
         if impact_rec.get("prompt_tokens") is not None
@@ -285,7 +358,7 @@ def _runtime_from_provider(provider) -> dict:
         else meta.get("estimated_cost_usd"),
         "error": impact_rec.get("error"),
         "error_type": impact_rec.get("error_type"),
-        "status": impact_rec.get("status") or "success",
+        "status": status,
         "stage_provenance": provenance.get("impact") if isinstance(provenance, dict) else None,
     }
     runtime["execution"] = execution_validity(runtime)
@@ -511,8 +584,42 @@ def resolved_declared_config(config: dict | None) -> dict:
     }
 
 
+def _wire_from_replay(replay: dict) -> dict:
+    """Actual provider/model request fields that governed this replay."""
+    runtime = replay.get("runtime") or {}
+    config = replay.get("config") or {}
+    wire = runtime.get("wire")
+    if isinstance(wire, dict) and wire:
+        return {key: _norm_value(wire[key]) for key in WIRE_CONDITION_KEYS if key in wire}
+    fallback = bool(runtime.get("fallback_used")) or runtime.get("status") in FALLBACK_STATUSES
+    kind = _provider_kind(config)
+    provider_type = str(runtime.get("provider_type") or kind).lower()
+    if fallback or kind == "rule" or provider_type == "rule":
+        return {}
+    requested = runtime.get("requested") if isinstance(runtime.get("requested"), dict) else {}
+    resolved = resolved_declared_config(config)
+    recomputed = wire_effective_model_runtime(
+        thinking=requested.get("thinking") or runtime.get("thinking") or resolved.get("thinking"),
+        reasoning_effort=(
+            requested.get("reasoning_effort")
+            if requested.get("reasoning_effort") is not None
+            else resolved.get("reasoning_effort")
+        ),
+        timeout=(
+            requested.get("timeout")
+            if requested.get("timeout") is not None
+            else (runtime.get("timeout") if runtime.get("timeout") is not None else resolved.get("timeout"))
+        ),
+        model=requested.get("model") or runtime.get("model") or resolved.get("model"),
+    )
+    return {key: _norm_value(recomputed[key]) for key in WIRE_CONDITION_KEYS if key in recomputed}
+
+
 def effective_conditions(replay: dict) -> dict:
-    """Runtime conditions that actually governed this Impact execution."""
+    """Runtime conditions that actually governed this Impact execution.
+
+    thinking / reasoning_effort appear only when they were placed on the wire.
+    """
     runtime = replay.get("runtime") or {}
     config = replay.get("config") or {}
     validity = runtime.get("execution") or execution_validity(runtime)
@@ -527,24 +634,14 @@ def effective_conditions(replay: dict) -> dict:
         provider = "model"
     cond = {"provider": provider}
     if provider == "model":
-        cond["model"] = _norm_value(runtime.get("model") or config.get("model") or settings.llm_model)
-        cond["thinking"] = _norm_value(runtime.get("thinking") or resolved_declared_config(config).get("thinking"))
-        cond["reasoning_effort"] = _norm_value(
-            runtime.get("reasoning_effort")
-            if runtime.get("reasoning_effort") is not None
-            else resolved_declared_config(config).get("reasoning_effort")
-        )
-        cond["timeout"] = _norm_value(
-            runtime.get("timeout")
-            if runtime.get("timeout") is not None
-            else resolved_declared_config(config).get("timeout")
-        )
+        cond.update(_wire_from_replay(replay))
     return {
         **cond,
         "execution_valid": bool(validity.get("valid")),
         "fallback_used": fallback,
         "error_type": runtime.get("error_type"),
         "status": runtime.get("status") or "success",
+        "thinking_protocol": runtime.get("thinking_protocol") or thinking_protocol_label(),
     }
 
 

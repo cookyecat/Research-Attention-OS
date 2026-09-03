@@ -62,7 +62,7 @@ FINGERPRINT_COVERAGE = {
     "independence": "is_duplicate, independent_source_count, secondary_report_count",
 }
 
-_TARGET_REQUIRED = ("id", "type", "title", "proposition", "scope")
+_TARGET_REQUIRED = ("id", "type", "title", "proposition", "scope", "importance", "priority")
 
 
 def canonical_json(value) -> str:
@@ -384,6 +384,8 @@ def stored_is_exact(stored: dict | None) -> bool:
     if not isinstance(stored, dict):
         return False
     if stored.get("input_fidelity") == FIDELITY_RECONSTRUCTED:
+        return False
+    if stored.get("schema_version") != SNAPSHOT_VERSION:
         return False
     if "source_text" not in stored or not isinstance(stored.get("source_text"), str):
         return False
