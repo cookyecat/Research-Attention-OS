@@ -103,6 +103,7 @@ class CognitiveImpactAssessment:
     attention_cost: float = 2.0
     exploration_candidate: bool = False
     features: object | None = None
+    raw_effects: list[CognitiveEffect] = field(default_factory=list)
 
     def as_dict(self) -> dict:
         primary = select_primary_effect(self)
@@ -902,6 +903,7 @@ def assess_impact_from_rules(
                     )
                 )
 
+    raw_effects = list(effects)
     effects = ground_effects(effects, matches, extraction, independent_source_count=independent_source_count)
     explore = any(e.exploration_candidate for e in effects)
     attention_cost = probe.cognitive_cost
@@ -963,4 +965,5 @@ def assess_impact_from_rules(
         attention_cost=attention_cost,
         exploration_candidate=explore,
         features=features,
+        raw_effects=raw_effects,
     )

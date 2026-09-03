@@ -2,6 +2,7 @@ from app.models.analysis import AnalysisRun
 from app.models.claim import Claim
 from app.models.event import Event, EventSource
 from app.models.evidence import EvidenceLink, TemporalPolicy
+from app.models.impact_replay import ImpactReplay
 from app.models.inference import Inference, InferenceSource
 from app.models.ingestion import IngestionJob, ParserRun
 from app.models.kernel import KernelEdge, KernelEmbedding, KernelNode, KernelPatch, KernelVersion
@@ -20,6 +21,7 @@ __all__ = [
     "Observation",
     "Inference",
     "InferenceSource",
+    "ImpactReplay",
     "EvidenceLink",
     "TemporalPolicy",
     "KernelNode",

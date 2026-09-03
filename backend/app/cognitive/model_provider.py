@@ -4,7 +4,7 @@ import json
 from uuid import UUID
 
 from app.cognitive.client import SchemaValidationError, chat_json, chat_json_schema, estimate_cost_usd
-from app.cognitive.runtime import STAGE_RUNTIME
+from app.cognitive.runtime import STAGE_RUNTIME, StageRuntime
 from app.cognitive.prompts import (
     DELTA_SYSTEM,
     DELTA_USER,
@@ -57,8 +57,10 @@ class ModelBackedCognitiveProvider:
 
     provider_type = "model"
 
-    def __init__(self, chat_fn=chat_json):
+    def __init__(self, chat_fn=chat_json, *, model: str | None = None, impact_runtime: StageRuntime | None = None):
         self._chat = chat_fn
+        self._impact_model = model
+        self._impact_runtime = impact_runtime
         self.last_meta: dict = {
             "latency_ms": 0,
             "prompt_tokens": 0,
@@ -71,10 +73,14 @@ class ModelBackedCognitiveProvider:
         self.last_stage_runtime: dict = {}
         self.last_retrieval: dict | None = None
         self.last_impact: CognitiveImpactAssessment | None = None
+        self.last_raw_effects: list[CognitiveEffect] = []
 
     def _set_stage_runtime(self, stage: str, *, llm_called: bool) -> dict:
-        if stage in STAGE_RUNTIME:
-            runtime = {**STAGE_RUNTIME[stage].as_dict(), "stage": stage, "llm_called": llm_called}
+        budget = STAGE_RUNTIME.get(stage)
+        if stage == "impact" and self._impact_runtime is not None:
+            budget = self._impact_runtime
+        if budget is not None:
+            runtime = {**budget.as_dict(), "stage": stage, "llm_called": llm_called}
         else:
             runtime = {
                 "thinking": None,
@@ -92,6 +98,7 @@ class ModelBackedCognitiveProvider:
             [{"role": "system", "content": system}, {"role": "user", "content": user}],
             schema_cls,
             chat_fn=self._chat,
+            model=self._impact_model if stage == "impact" else None,
             thinking=budget["thinking"],
             reasoning_effort=budget["reasoning_effort"],
             timeout=budget["timeout"],
@@ -447,6 +454,8 @@ class ModelBackedCognitiveProvider:
                     exploration_candidate=item.exploration_candidate,
                 )
             )
+        raw_effects = list(effects)
+        self.last_raw_effects = raw_effects
         effects = ground_effects(
             effects, matches, extraction, independent_source_count=independent_source_count
         )
@@ -461,6 +470,7 @@ class ModelBackedCognitiveProvider:
             effects=effects,
             attention_cost=parsed.attention_cost,
             exploration_candidate=explore,
+            raw_effects=raw_effects,
         )
         assessment.features = features_from_impact(
             assessment,

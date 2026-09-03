@@ -93,3 +93,19 @@ class SourceEdgeCreate(BaseModel):
     relationship: str
     confidence: float = 1.0
     evidence: str | None = None
+
+
+class ImpactReplayIn(BaseModel):
+    """Override a single Impact runtime/model variable for a frozen replay."""
+
+    provider: str | None = None
+    model: str | None = None
+    thinking: str | None = None
+    reasoning_effort: str | None = None
+    timeout: float | None = None
+    label: str | None = None
+
+
+class ImpactReplayAbIn(BaseModel):
+    a: ImpactReplayIn = Field(default_factory=ImpactReplayIn)
+    b: ImpactReplayIn = Field(default_factory=ImpactReplayIn)

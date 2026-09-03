@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.db import get_db
 from app.models.scheduler import RuntimeContext
 from app.models.source import Source
-from app.schemas.api import AttentionFeedbackIn, ExtractIn, PlanIn
+from app.schemas.api import AttentionFeedbackIn, ExtractIn, ImpactReplayAbIn, ImpactReplayIn, PlanIn
 from app.services.analysis_runs import hydrate_run, latest_run_for_source
 from app.services.pipeline import run_pipeline
 from app.services.scheduler import RuntimeView
@@ -103,6 +103,47 @@ def list_run_feedback(run_id: UUID, db: Session = Depends(get_db)):
     if run is None:
         raise HTTPException(404, "AnalysisRun not found")
     return [feedback_public(f) for f in feedback_for_run(db, run_id)]
+
+
+def _replay_config(body: ImpactReplayIn | None):
+    from app.services.impact_replay import ImpactReplayConfig
+
+    body = body or ImpactReplayIn()
+    return ImpactReplayConfig(
+        provider=body.provider,
+        model=body.model,
+        thinking=body.thinking,
+        reasoning_effort=body.reasoning_effort,
+        timeout=body.timeout,
+        label=body.label,
+    )
+
+
+@router.post("/{run_id}/impact-replay")
+def replay_impact(run_id: UUID, body: ImpactReplayIn | None = None, db: Session = Depends(get_db)):
+    from app.services.impact_replay import replay_analysis_run
+
+    return replay_analysis_run(db, run_id, config=_replay_config(body), persist=True)
+
+
+@router.get("/{run_id}/impact-replays")
+def list_impact_replays(run_id: UUID, db: Session = Depends(get_db)):
+    from app.models.analysis import AnalysisRun
+    from app.services.impact_replay import list_replays_for_run, replay_public
+
+    run = db.get(AnalysisRun, run_id)
+    if run is None:
+        raise HTTPException(404, "AnalysisRun not found")
+    return [replay_public(row) for row in list_replays_for_run(db, run_id)]
+
+
+@router.post("/{run_id}/impact-replay/ab")
+def replay_impact_ab(run_id: UUID, body: ImpactReplayAbIn, db: Session = Depends(get_db)):
+    from app.services.impact_replay import compare_replays, replay_analysis_run
+
+    a = replay_analysis_run(db, run_id, config=_replay_config(body.a), persist=True)
+    b = replay_analysis_run(db, run_id, config=_replay_config(body.b), persist=True)
+    return {"a": a, "b": b, "comparison": compare_replays(a, b)}
 
 
 @router.post("/attention-plans/{plan_id}/feedback")

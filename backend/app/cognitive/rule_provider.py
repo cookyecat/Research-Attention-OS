@@ -41,7 +41,7 @@ class RuleBasedCognitiveProvider:
         threatens_active_work: bool | None = None,
         nodes=None,
     ) -> CognitiveImpactAssessment:
-        return assess_impact_from_rules(
+        assessment = assess_impact_from_rules(
             text,
             extraction,
             matches,
@@ -51,6 +51,8 @@ class RuleBasedCognitiveProvider:
             threatens_active_work=threatens_active_work,
             nodes=nodes,
         )
+        self.last_raw_effects = list(assessment.raw_effects or [])
+        return assessment
 
     def judge_features(
         self,

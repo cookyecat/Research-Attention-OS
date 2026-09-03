@@ -16,6 +16,7 @@ from app.models import (  # noqa: F401
     AnalysisRun,
     Claim,
     Event,
+    ImpactReplay,
     KernelNode,
     Source,
     Watch,
