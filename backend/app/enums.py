@@ -136,6 +136,13 @@ class Disposition(StrEnum):
     ENGAGE = "ENGAGE"
 
 
+class FeedbackKind(StrEnum):
+    """Human feedback on an AttentionPlan's cognitive judgment."""
+
+    CONFIRM = "CONFIRM"
+    CORRECT = "CORRECT"
+
+
 # SCAN / LEARN / REASON / CREATE interpret Disposition depth; they are not a system dimension.
 DISPOSITION_DEPTH = {
     Disposition.DROP: (),

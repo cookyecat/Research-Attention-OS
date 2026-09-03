@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.db import get_db
 from app.models.scheduler import RuntimeContext
 from app.models.source import Source
-from app.schemas.api import ExtractIn, PlanIn
+from app.schemas.api import AttentionFeedbackIn, ExtractIn, PlanIn
 from app.services.analysis_runs import hydrate_run, latest_run_for_source
 from app.services.pipeline import run_pipeline
 from app.services.scheduler import RuntimeView
@@ -92,6 +92,47 @@ def get_run_attention_plans(run_id: UUID, db: Session = Depends(get_db)):
         "latest_attention_plan": latest,
         "attention_plans": [plan_public(p) for p in plans],
     }
+
+
+@router.get("/{run_id}/feedback")
+def list_run_feedback(run_id: UUID, db: Session = Depends(get_db)):
+    from app.models.analysis import AnalysisRun
+    from app.services.attention_feedback import feedback_for_run, feedback_public
+
+    run = db.get(AnalysisRun, run_id)
+    if run is None:
+        raise HTTPException(404, "AnalysisRun not found")
+    return [feedback_public(f) for f in feedback_for_run(db, run_id)]
+
+
+@router.post("/attention-plans/{plan_id}/feedback")
+def submit_attention_feedback(plan_id: UUID, body: AttentionFeedbackIn, db: Session = Depends(get_db)):
+    from app.services.attention_feedback import feedback_public, record_feedback
+
+    update_payload = None
+    if body.update is not None:
+        update_payload = body.update.model_dump(exclude_unset=True)
+    row = record_feedback(
+        db,
+        plan_id=plan_id,
+        kind=body.kind,
+        disposition=body.disposition,
+        update=update_payload,
+        delta_content=body.delta_content,
+    )
+    db.commit()
+    return feedback_public(row)
+
+
+@router.get("/attention-plans/{plan_id}/feedback")
+def list_plan_feedback(plan_id: UUID, db: Session = Depends(get_db)):
+    from app.models.scheduler import AttentionPlan
+    from app.services.attention_feedback import feedback_for_plan, feedback_public
+
+    plan = db.get(AttentionPlan, plan_id)
+    if plan is None:
+        raise HTTPException(404, "AttentionPlan not found")
+    return [feedback_public(f) for f in feedback_for_plan(db, plan_id)]
 
 
 @router.post("/plan")

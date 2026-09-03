@@ -68,6 +68,18 @@ class KernelNodeCreate(BaseModel):
     payload: dict = Field(default_factory=dict)
 
 
+class CognitiveUpdateFeedbackIn(BaseModel):
+    operation: str | None = None
+    target_node_id: UUID | None = None
+
+
+class AttentionFeedbackIn(BaseModel):
+    kind: str
+    disposition: str | None = None
+    update: CognitiveUpdateFeedbackIn | None = None
+    delta_content: str | None = None
+
+
 class SourceEdgeCreate(BaseModel):
     source_id: UUID
     target_id: UUID

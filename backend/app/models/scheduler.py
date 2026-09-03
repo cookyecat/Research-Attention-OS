@@ -46,7 +46,15 @@ class AttentionPlan(UUIDPrimaryKeyMixin, Base):
 class AttentionFeedback(UUIDPrimaryKeyMixin, Base):
     __tablename__ = "attention_feedback"
 
-    attention_plan_id: Mapped[UUID] = mapped_column(Uuid, ForeignKey("attention_plans.id"), nullable=False)
+    attention_plan_id: Mapped[UUID] = mapped_column(Uuid, ForeignKey("attention_plans.id"), nullable=False, index=True)
+    analysis_run_id: Mapped[UUID | None] = mapped_column(
+        Uuid, ForeignKey("analysis_runs.id"), nullable=True, index=True
+    )
+    feedback_kind: Mapped[str] = mapped_column(String, nullable=False)
+    system_prediction: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    user_correction: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    corrected_fields: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    # Legacy compatibility columns (mirrored from cognitive contract when present).
     system_attention_state: Mapped[str | None] = mapped_column(String, nullable=True)
     user_attention_state: Mapped[str | None] = mapped_column(String, nullable=True)
     system_modes: Mapped[list | None] = mapped_column(JSON, nullable=True)

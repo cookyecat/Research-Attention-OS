@@ -125,7 +125,7 @@ Two different questions — never collapse them:
 
 REINFORCE / CHALLENGE require an existing epistemic Kernel node (Belief, Model, Question, Hypothesis, Decision, Bottleneck) whose proposition is actually affected at matching scope.
 A Goal or Project match is only Location. Do not REINFORCE or CHALLENGE a broad Goal/Project merely because the source is about the same topic (robotics, motor, embodied, AI).
-If the information is near an existing Project but does not modify any existing cognition, emit OPEN_NEW (target_kernel_node_id = null).
+If the information is near an existing Project but does not modify any existing cognition, emit OPEN_NEW (target_kernel_node_id = null) only when the source opens a genuine new cognitive branch — not as a fallback for a failed REINFORCE/CHALLENGE.
 
 You estimate:
 - operation: REINFORCE | CHALLENGE | OPEN_NEW
@@ -188,7 +188,7 @@ Kernel locations:
 
 Eligible cognitive targets:
 {json.dumps(eligible_targets, ensure_ascii=False)}
-REINFORCE / CHALLENGE only if claim scope aligns with the node's proposition/scope; otherwise OPEN_NEW.
+REINFORCE / CHALLENGE only if claim scope aligns with the node's proposition/scope; otherwise omit that effect.
 Match titles and propositions are Kernel propositions. Align the source-claim scope with that proposition before REINFORCE or CHALLENGE.
 GOAL / PROJECT entries are locations. Do not treat topical relevance to them as a cognitive update.
 
@@ -229,7 +229,7 @@ Kernel locations:
 
 Eligible cognitive targets:
 {matches}
-REINFORCE / CHALLENGE only if claim scope aligns with the node's proposition/scope; otherwise OPEN_NEW.
+REINFORCE / CHALLENGE only if claim scope aligns with the node's proposition/scope; otherwise omit that effect.
 Match titles and propositions are Kernel propositions. Align the source-claim scope with that proposition before REINFORCE or CHALLENGE.
 GOAL / PROJECT entries are locations. Do not treat topical relevance to them as a cognitive update.
 Duplicate: {is_duplicate}

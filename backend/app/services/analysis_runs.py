@@ -24,9 +24,11 @@ from app.cognitive.versions import (
 from app.config import settings
 from app.models.analysis import AnalysisRun
 from app.models.kernel import KernelNode, KernelPatch
-from app.models.scheduler import AttentionPlan
+from app.models.analysis import AnalysisRun
+from app.models.scheduler import AttentionFeedback, AttentionPlan
 from app.models.source import Source
 from app.services.cognitive_impact import assessment_from_dict, primary_update
+from app.services.attention_feedback import feedback_for_plan, feedback_public
 
 
 def kernel_snapshot_hash(nodes: list[KernelNode]) -> str:
@@ -373,9 +375,14 @@ def hydrate_run(db: Session, run: AnalysisRun) -> dict:
     if plans:
         payload["latest_attention_plan"] = plan_public(plans[0])
         payload["attention_plan_history"] = [plan_public(p) for p in plans]
+        latest_feedback = feedback_for_plan(db, plans[0].id)
+        payload["attention_feedback"] = [feedback_public(f) for f in latest_feedback]
+        payload["latest_attention_feedback"] = feedback_public(latest_feedback[0]) if latest_feedback else None
     else:
         payload["latest_attention_plan"] = payload.get("attention_plan")
         payload["attention_plan_history"] = [payload["attention_plan"]] if payload.get("attention_plan") else []
+        payload["attention_feedback"] = []
+        payload["latest_attention_feedback"] = None
     return _normalize_public_contract(payload)
 
 

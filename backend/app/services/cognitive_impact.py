@@ -543,6 +543,25 @@ def epistemic_cap(
     return cap
 
 
+def _targeted_effect_is_valid(
+    operation: CognitiveEffectKind,
+    match: KernelMatch,
+    extraction: ExtractionResult,
+) -> bool:
+    """REINFORCE/CHALLENGE must pass scope, location, and epistemic grounding."""
+    if is_location_node(match.node_type) and not claim_scope_aligned(extraction, match):
+        return False
+    if operation == CognitiveEffectKind.CHALLENGE:
+        if (epistemic_text(extraction) or "").strip() and not direct_challenge_evidence(extraction, match):
+            return False
+    if operation == CognitiveEffectKind.REINFORCE:
+        if (epistemic_text(extraction) or "").strip() and not source_addresses_proposition_polarity(
+            extraction, match
+        ):
+            return False
+    return True
+
+
 def ground_effects(
     effects: list[CognitiveEffect],
     matches: list[KernelMatch],
@@ -552,9 +571,8 @@ def ground_effects(
 ) -> list[CognitiveEffect]:
     """Deterministic caps plus Location ≠ Update.
 
-    Does not reverse REINFORCE ↔ CHALLENGE on a justified eligible target.
-    Unjustified targeted updates become OPEN_NEW: the information may still
-    open a branch, but it does not modify that existing proposition.
+    Invalid targeted REINFORCE/CHALLENGE effects are discarded — not rewritten
+    as OPEN_NEW. OPEN_NEW must come from positive new-branch recognition.
     """
     allowed = {m.node_id for m in matches}
     cap = epistemic_cap(extraction, independent_source_count=independent_source_count)
@@ -572,24 +590,8 @@ def ground_effects(
             match = next((m for m in matches if m.node_id == target), None)
             if match is None:
                 continue
-            aligned = claim_scope_aligned(extraction, match)
-            if is_location_node(match.node_type) and not aligned:
-                operation = CognitiveEffectKind.OPEN_NEW
-                target = None
-            elif (
-                operation == CognitiveEffectKind.CHALLENGE
-                and (epistemic_text(extraction) or "").strip()
-                and not direct_challenge_evidence(extraction, match)
-            ):
-                operation = CognitiveEffectKind.OPEN_NEW
-                target = None
-            elif (
-                operation == CognitiveEffectKind.REINFORCE
-                and (epistemic_text(extraction) or "").strip()
-                and not source_addresses_proposition_polarity(extraction, match)
-            ):
-                operation = CognitiveEffectKind.OPEN_NEW
-                target = None
+            if not _targeted_effect_is_valid(operation, match, extraction):
+                continue
         epi = min(float(effect.epistemic_strength), cap)
         change = max(0.0, min(1.0, float(effect.change_magnitude)))
         importance = max(0.0, min(1.0, float(effect.target_importance)))

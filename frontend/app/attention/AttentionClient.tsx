@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { api, apiOrNull } from "@/lib/api";
 import KernelPatchCard from "@/components/KernelPatchCard";
+import AttentionFeedbackPanel from "@/components/AttentionFeedbackPanel";
 
 export default function AttentionPage() {
   const params = useSearchParams();
@@ -97,6 +98,17 @@ export default function AttentionPage() {
             </div>
             <p>{analysis.attention_plan.reason}</p>
           </div>
+          {analysis.attention_plan?.id && (
+            <AttentionFeedbackPanel
+              planId={analysis.attention_plan.id}
+              analysis={analysis}
+              onSubmitted={async () => {
+                if (!sourceId) return;
+                const existing = await apiOrNull<any>(`/analysis/by-source/${sourceId}`);
+                if (existing) setAnalysis(existing);
+              }}
+            />
+          )}
           <div className="grid2">
             <div className="card">
               <h3>Claims</h3>

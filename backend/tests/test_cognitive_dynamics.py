@@ -415,7 +415,7 @@ def test_project_location_is_not_automatic_reinforce():
     assert any(e.operation == CognitiveEffectKind.OPEN_NEW for e in assessment.effects)
 
 
-def test_ground_effects_converts_unaligned_project_reinforce_to_open_new():
+def test_ground_effects_discards_unaligned_project_reinforce():
     project = _match("PROJECT", "TOPIC", 0.9)
     extraction = ExtractionResult(
         claims=[ExtractedClaim(text="A new tactile feedback controller for uncertain contact.", claim_type=ClaimType.TECHNICAL)],
@@ -433,9 +433,7 @@ def test_ground_effects_converts_unaligned_project_reinforce_to_open_new():
         )
     ]
     grounded = ground_effects(raw, [project], extraction, independent_source_count=1)
-    assert len(grounded) == 1
-    assert grounded[0].operation == CognitiveEffectKind.OPEN_NEW
-    assert grounded[0].target_kernel_node_id is None
+    assert grounded == []
 
 
 def test_bottleneck_update_requires_claim_scope_alignment():
@@ -471,7 +469,7 @@ def test_bottleneck_update_requires_claim_scope_alignment():
     assert all(e.target_kernel_node_id != bottleneck.node_id for e in missed.effects)
 
 
-def test_success_of_one_route_is_not_challenge_or_reinforce_of_a_competing_negative():
+def test_invalid_targeted_effect_is_discarded_not_open_new():
     belief = KernelMatch(
         node_id=uuid4(),
         node_type="BELIEF",
@@ -500,10 +498,8 @@ def test_success_of_one_route_is_not_challenge_or_reinforce_of_a_competing_negat
         [belief],
         extraction,
     )
-    assert all(e.operation == CognitiveEffectKind.OPEN_NEW for e in challenged)
-    assert all(e.target_kernel_node_id is None for e in challenged)
-    assert all(e.operation == CognitiveEffectKind.OPEN_NEW for e in reinforced)
-    assert all(e.target_kernel_node_id is None for e in reinforced)
+    assert challenged == []
+    assert reinforced == []
 
 
 def test_direct_counterevidence_can_challenge_a_belief():
