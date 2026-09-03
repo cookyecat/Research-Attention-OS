@@ -32,7 +32,11 @@ def _operation_value(raw) -> str | None:
 
 
 def public_update(raw) -> dict | None:
-    """Public contract Update: {operation, target_node_id} or null (no cognitive update)."""
+    """Compatibility normalize for stored AnalysisRun payloads.
+
+    Historical `{operation: null}` and retired ops become no-update. OPEN_NEW
+    targets are dropped. Human Correction must not use this path.
+    """
     if raw is None:
         return None
     if not isinstance(raw, dict):
@@ -47,12 +51,10 @@ def public_update(raw) -> dict | None:
     return {"operation": operation, "target_node_id": target_node_id}
 
 
-def system_prediction_from_run(run: AnalysisRun | None) -> dict:
-    """Snapshot the AnalysisRun's frozen public prediction. Never re-derive from current code."""
+def frozen_update_and_delta_from_run(run: AnalysisRun | None) -> tuple[dict | None, str]:
+    """Read Update × DeltaContent from the frozen AnalysisRun public output. Never re-derive."""
     payload = run.result_payload if run is not None and isinstance(run.result_payload, dict) else {}
     stored_plan = payload.get("attention_plan") if isinstance(payload.get("attention_plan"), dict) else {}
-
-    disposition = payload.get("disposition") or stored_plan.get("disposition")
 
     if "update" in payload:
         update = public_update(payload.get("update"))
@@ -65,32 +67,51 @@ def system_prediction_from_run(run: AnalysisRun | None) -> dict:
         delta_content = payload.get("delta_content") or ""
     else:
         delta_content = (payload.get("model_delta") or {}).get("summary") or ""
+    return update, delta_content if delta_content is not None else ""
 
+
+def system_prediction_from_plan(plan: AttentionPlan, run: AnalysisRun | None) -> dict:
+    """What the user saw: Disposition(plan) × Update(run) × DeltaContent(run).
+
+    Disposition is the persisted AttentionPlan value (no re-route). Update and
+    DeltaContent come from the associated AnalysisRun public output (no score_debug).
+    """
+    update, delta_content = frozen_update_and_delta_from_run(run)
     return {
-        "disposition": disposition,
+        "disposition": plan.disposition,
         "update": update,
-        "delta_content": delta_content if delta_content is not None else "",
+        "delta_content": delta_content,
     }
 
 
-def _validate_public_contract(prediction: dict) -> None:
-    disposition = prediction.get("disposition")
+def _validate_disposition(disposition) -> None:
     if disposition not in DISPOSITIONS:
         raise HTTPException(422, f"Invalid disposition: {disposition}")
-    update = prediction.get("update")
-    if update is None:
-        return
-    normalized = public_update(update)
-    if normalized is None:
-        prediction["update"] = None
-        return
-    op = normalized["operation"]
-    target = normalized["target_node_id"]
-    if op in TARGETED_OPERATIONS and not target:
-        raise HTTPException(422, f"{op} requires target_node_id")
-    if op == CognitiveEffectKind.OPEN_NEW.value and target:
+
+
+def _strict_correction_update(raw) -> dict | None:
+    """Validate a Human Correction Update against the public contract. No silent coercion."""
+    if raw is None:
+        return None
+    if not isinstance(raw, dict):
+        raise HTTPException(422, "update must be an object or null")
+    raw_op = raw.get("operation")
+    if raw_op is None:
+        if raw.get("target_node_id"):
+            raise HTTPException(422, "update.operation is required when setting target_node_id")
+        return None
+    if hasattr(raw_op, "value"):
+        raw_op = raw_op.value
+    op = str(raw_op).upper()
+    if op not in UPDATE_OPERATIONS:
+        raise HTTPException(422, f"Invalid update operation: {raw_op}")
+    target = raw.get("target_node_id")
+    target_node_id = str(target) if target else None
+    if op == CognitiveEffectKind.OPEN_NEW.value and target_node_id:
         raise HTTPException(422, "OPEN_NEW requires target_node_id to be null")
-    prediction["update"] = normalized
+    if op in TARGETED_OPERATIONS and not target_node_id:
+        raise HTTPException(422, f"{op} requires target_node_id")
+    return {"operation": op, "target_node_id": target_node_id}
 
 
 def _validate_update_target(db: Session, update: dict | None) -> None:
@@ -149,21 +170,29 @@ def merge_correction(system: dict, overrides: dict, db: Session | None = None) -
             if "operation" in patch and patch["operation"] is None:
                 merged["update"] = None
             else:
-                current = merged["update"] or {"operation": None, "target_node_id": None}
-                if "operation" in patch and patch["operation"] is not None:
-                    current["operation"] = str(patch["operation"]).upper()
+                current = dict(merged["update"] or {})
+                if "operation" in patch:
+                    raw_op = patch["operation"]
+                    op = str(raw_op).upper() if raw_op is not None else None
+                    if op not in UPDATE_OPERATIONS:
+                        raise HTTPException(422, f"Invalid update operation: {raw_op}")
+                    current["operation"] = op
                 if "target_node_id" in patch:
-                    current["target_node_id"] = str(patch["target_node_id"]) if patch["target_node_id"] else None
-                if current.get("operation") == CognitiveEffectKind.OPEN_NEW.value:
+                    current["target_node_id"] = (
+                        str(patch["target_node_id"]) if patch["target_node_id"] else None
+                    )
+                elif current.get("operation") == CognitiveEffectKind.OPEN_NEW.value:
                     current["target_node_id"] = None
-                merged["update"] = public_update(current)
+                merged["update"] = current
         else:
             raise HTTPException(422, "update must be an object or null")
 
     if "delta_content" in overrides:
         merged["delta_content"] = overrides["delta_content"] if overrides["delta_content"] is not None else ""
 
-    _validate_public_contract(merged)
+    _validate_disposition(merged.get("disposition"))
+    if merged.get("update") is not None:
+        merged["update"] = _strict_correction_update(merged["update"])
     if db is not None:
         _validate_update_target(db, merged.get("update"))
     return merged
@@ -246,8 +275,8 @@ def record_feedback(
             raise HTTPException(422, "Feedback must target the latest AttentionPlan for this AnalysisRun")
 
     run = db.get(AnalysisRun, plan.analysis_run_id) if plan.analysis_run_id else None
-    system = system_prediction_from_run(run)
-    _validate_public_contract(system)
+    system = system_prediction_from_plan(plan, run)
+    _validate_disposition(system.get("disposition"))
 
     kind_upper = str(kind).upper()
     if kind_upper not in {FeedbackKind.CONFIRM.value, FeedbackKind.CORRECT.value}:

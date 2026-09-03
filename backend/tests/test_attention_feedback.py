@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timedelta, timezone
 from uuid import UUID, uuid4
 
 from fastapi import HTTPException
@@ -9,7 +10,8 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm.attributes import flag_modified
 
 from app.models.analysis import AnalysisRun
-from app.services.attention_feedback import merge_correction, public_update, system_prediction_from_run
+from app.services.attention_feedback import merge_correction, public_update, system_prediction_from_plan
+from tests.acceptance.test_cases import CASE_J
 from tests.conftest import add_text, analyze, kernel_index
 
 
@@ -33,6 +35,11 @@ def _freeze_run_prediction(db, run_id: str, **fields) -> dict:
 class _Run:
     def __init__(self, payload: dict):
         self.result_payload = payload
+
+
+class _Plan:
+    def __init__(self, disposition: str):
+        self.disposition = disposition
 
 
 def test_public_update_null_means_no_cognitive_update():
@@ -71,9 +78,9 @@ def test_system_prediction_reads_frozen_payload_not_score_debug():
             },
         }
     )
-    pred = system_prediction_from_run(run)
+    pred = system_prediction_from_plan(_Plan("ENGAGE"), run)
     assert pred == {
-        "disposition": "WATCH",
+        "disposition": "ENGAGE",
         "update": {"operation": "CHALLENGE", "target_node_id": target},
         "delta_content": "frozen-delta",
     }
@@ -102,7 +109,7 @@ def test_system_prediction_does_not_rederive_when_update_absent():
             },
         }
     )
-    pred = system_prediction_from_run(run)
+    pred = system_prediction_from_plan(_Plan("AWARE"), run)
     assert pred["disposition"] == "AWARE"
     assert pred["update"] is None
 
@@ -139,6 +146,38 @@ def test_merge_omitted_target_keeps_system_target():
     }
     merged = merge_correction(system, {"update": {"operation": "CHALLENGE"}})
     assert merged["update"] == {"operation": "CHALLENGE", "target_node_id": target}
+
+
+def test_merge_unknown_operation_rejected_not_coerced_to_null():
+    system = {
+        "disposition": "WATCH",
+        "update": {"operation": "OPEN_NEW", "target_node_id": None},
+        "delta_content": "hello",
+    }
+    for illegal in ("REFINE", "NO_MATERIAL_CHANGE", "NOT_A_REAL_OP"):
+        try:
+            merge_correction(system, {"update": {"operation": illegal}})
+        except HTTPException as exc:
+            assert exc.status_code == 422, illegal
+        else:
+            raise AssertionError(f"expected 422 for operation {illegal}")
+
+
+def test_merge_explicit_open_new_target_rejected_not_stripped():
+    system = {
+        "disposition": "WATCH",
+        "update": {"operation": "OPEN_NEW", "target_node_id": None},
+        "delta_content": "hello",
+    }
+    try:
+        merge_correction(
+            system,
+            {"update": {"operation": "OPEN_NEW", "target_node_id": str(uuid4())}},
+        )
+    except HTTPException as exc:
+        assert exc.status_code == 422
+    else:
+        raise AssertionError("expected 422 for explicit OPEN_NEW target")
 
 
 def test_merge_explicit_null_target_on_targeted_op_rejected():
@@ -330,10 +369,12 @@ def test_system_prediction_api_uses_frozen_run_not_current_derivation(client: Te
     result = analyze(client, src["id"])
     plan_id = _plan_id_from_analysis(result)
     target = kernel_index(client)["B1"]["id"]
+    plan_disp = result["attention_plan"]["disposition"]
+    other = "WATCH" if plan_disp != "WATCH" else "AWARE"
     _freeze_run_prediction(
         db,
         result["analysis_run"]["id"],
-        disposition="ENGAGE",
+        disposition=other,
         update={"operation": "CHALLENGE", "target_node_id": target},
         delta_content="immutable-run-output",
     )
@@ -341,7 +382,8 @@ def test_system_prediction_api_uses_frozen_run_not_current_derivation(client: Te
     resp = client.post(f"/analysis/attention-plans/{plan_id}/feedback", json={"kind": "CONFIRM"})
     assert resp.status_code == 200, resp.text
     pred = resp.json()["system_prediction"]
-    assert pred["disposition"] == "ENGAGE"
+    assert pred["disposition"] == plan_disp
+    assert pred["disposition"] != other
     assert pred["update"] == {"operation": "CHALLENGE", "target_node_id": target}
     assert pred["delta_content"] == "immutable-run-output"
 
@@ -420,7 +462,7 @@ def test_feedback_targets_latest_plan_not_original(client: TestClient):
     ok = client.post(f"/analysis/attention-plans/{latest_id}/feedback", json={"kind": "CONFIRM"})
     assert ok.status_code == 200, ok.text
     assert ok.json()["attention_plan_id"] == latest_id
-    assert ok.json()["system_prediction"]["disposition"] == first["disposition"]
+    assert ok.json()["system_prediction"]["disposition"] == planned.json()["attention_plan"]["disposition"]
     assert public_update(ok.json()["system_prediction"]["update"]) == public_update(first["update"])
 
     stored = client.get(f"/analysis/by-source/{src['id']}").json()
@@ -461,3 +503,79 @@ def test_http_omitted_target_keeps_system_target(client: TestClient, db):
         json={"kind": "CORRECT", "update": {"operation": "CHALLENGE", "target_node_id": None}},
     )
     assert null_target.status_code == 422
+
+
+def test_http_unknown_operation_and_illegal_open_new_target_rejected(client: TestClient):
+    src = add_text(client, "Motor intelligence latency evaluation paper.", title="fb-illegal-op")
+    result = analyze(client, src["id"])
+    plan_id = _plan_id_from_analysis(result)
+    belief = client.post(
+        "/kernel/nodes",
+        json={"node_type": "BELIEF", "title": "Target for illegal OPEN_NEW", "payload": {"proposition": "z"}},
+    ).json()
+
+    unknown = client.post(
+        f"/analysis/attention-plans/{plan_id}/feedback",
+        json={"kind": "CORRECT", "update": {"operation": "REFINE"}},
+    )
+    assert unknown.status_code == 422
+
+    retired = client.post(
+        f"/analysis/attention-plans/{plan_id}/feedback",
+        json={"kind": "CORRECT", "update": {"operation": "NO_MATERIAL_CHANGE"}},
+    )
+    assert retired.status_code == 422
+
+    illegal_open = client.post(
+        f"/analysis/attention-plans/{plan_id}/feedback",
+        json={
+            "kind": "CORRECT",
+            "update": {"operation": "OPEN_NEW", "target_node_id": belief["id"]},
+        },
+    )
+    assert illegal_open.status_code == 422
+
+
+def test_reschedule_system_prediction_uses_latest_plan_disposition(client: TestClient):
+    src = add_text(client, CASE_J, title="fb-reschedule-disp")
+    first = client.post(
+        "/scheduler/plan",
+        json={
+            "source_id": src["id"],
+            "runtime_context": {
+                "current_task": "reading",
+                "interruptibility": "HIGH",
+                "cognitive_capacity": "HIGH",
+            },
+        },
+    )
+    assert first.status_code == 200, first.text
+    original = first.json()["attention_plan"]
+    original_update = public_update(first.json()["update"])
+    original_delta = first.json().get("delta_content") or ""
+    deadline = (datetime.now(timezone.utc) + timedelta(hours=2)).isoformat()
+    planned = client.post(
+        "/scheduler/plan",
+        json={
+            "source_id": src["id"],
+            "runtime_context": {
+                "current_task": "camera-ready",
+                "interruptibility": "LOW",
+                "cognitive_capacity": "LOW",
+                "deadline_at": deadline,
+            },
+        },
+    )
+    assert planned.status_code == 200, planned.text
+    latest = planned.json()["attention_plan"]
+    assert latest["id"] != original["id"]
+    assert latest["disposition"] != original["disposition"]
+
+    ok = client.post(f"/analysis/attention-plans/{latest['id']}/feedback", json={"kind": "CONFIRM"})
+    assert ok.status_code == 200, ok.text
+    pred = ok.json()["system_prediction"]
+    assert pred["disposition"] == latest["disposition"]
+    assert pred["disposition"] != original["disposition"]
+    assert public_update(pred["update"]) == original_update
+    assert pred["delta_content"] == original_delta
+    assert planned.json()["analysis_run"]["id"] == first.json()["analysis_run"]["id"]

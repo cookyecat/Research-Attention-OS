@@ -47,7 +47,7 @@ function predictionFromAnalysis(analysis: Record<string, unknown>): Prediction {
     ((analysis.model_delta as Record<string, unknown> | undefined)?.summary as string) ??
     "";
   return {
-    disposition: (analysis.disposition as string) || (latest.disposition as string),
+    disposition: (latest.disposition as string) || (analysis.disposition as string),
     update: publicUpdate(rawUpdate),
     delta_content: delta,
   };
