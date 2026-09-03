@@ -1,0 +1,283 @@
+PREPRINT. Definitive version published in Science Robotics Vol. 6, Issue 54 on May 26, 2021, DOI: 10.1126/scirobotics.abi4667
+
+SCIENCE ROBOTICS | FOCUS
+ROBOTIC MANIPULATION
+
+Copyright © 2021
+
+The unstable queen: Uncertainty, mechanics,
+and tactile feedback
+
+The Authors, some
+rights reserved;
+exclusive licensee
+American Association
+for the Advancement
+of Science. No claim
+
+Alberto Rodriguez
+
+to original U.S.
+Government Works
+
+Tactile feedback is a natural pathway to robot dexterity in unstructured settings.
+
+Uncertainty is at the core of robotic manipulation. Mason (1) recalled trying to program
+a robot to repeatedly pick up and put down
+a queen chess piece. When grasped from
+the top, the queen would end up falling after
+five or six pick-and-place cycles. The simple
+act of grasping and placing seemed to turn
+the queen “unstable.” But this did not happen
+when the robot grasped the queen from the side.
+Mason’s insight was to consider uncer-
+
+Using passive mechanical feedback, without sensors, is quite extended in industry. It
+makes sense; it leads to simple, efficient,
+elegant, and responsive solutions, by specializing to the task. Probably the most
+impactful and inspirational examples are the
+use of vibratory bowl feeders for automatic
+part orienting and the use of passive Remote
+Center of Compliance devices for automatic
+alignment in insertion tasks.
+
+tainty in the mechanics of contact and how
+the natural dynamics of physical interaction
+can be exploited to tame that uncertainty.
+
+This philosophy has motivated the development of many naturally stable manipulation
+strategies, for example, based on tray-tilting
+
+TACTILE FEEDBACK
+Staying within the control perspective, sometimes it can be more effective to use a sensor-
+
+tion, without the need of sensing, define a
+
+negative passive feedback loop that regulates the task. In the case of the unstable
+queen, instead, the process of grasping and
+placing from the top defines a positive feedback loop that destabilizes the alignment of
+queen and gripper.
+
+that, “There has been a longstanding and
+widely held expectation that tactile sensors
+would have a major impact on industrial robotics and automation. However, this promise has not been realized, and few, if any,
+
+or push-grasping (5) among many others.
+These strategies exploit natural invariances
+
+in the dynamics of manipulation, ensuring
+that they are used to reduce task errors. From
+a control perspective, we would say that in
+those strategies the dynamics of manipula-
+
+settings that are structured or are suscepti-
+
+ble to being structured might not be the
+most straightforward application for tactile
+feedback. The corollary is that, in unstruc-
+
+based feedback loop than a mechanical
+one—for example, using an optical encoder
+and a PID loop to control the speed of an
+engine or actuator instead of a mechanical
+governor. It is then natural to ask when it
+would be a good idea to use a sensor instead
+of mechanical feedback in manipulation
+control loops.
+In a review on the state of the art on the
+
+(2), squeeze-grasping (3), stable-pushing (4),
+
+tactile sensors can be found in factory-based
+applications.” He goes on to justify that it is
+the structured nature of many industrial
+settings that reduces the potential benefits
+from the flexibility that tactile feedback provides. If sufficiently structured, highly engineered solutions will always win, so industrial
+
+use of tactile feedback, Lee (6) pointed out
+
+tured settings, solutions that are designed to
+exploit the natural dynamics of manipulation will have a harder time.
+The ability to deal with this type of unstructured uncertainty, such as when carefully
+reorienting an unknown grasped object or
+when controlling the forceful grasp on an
+oddly shaped handle, is key to building flexible manipulation systems. In these unstructured settings, with uncertain or unknown
+geometries, materials, and configurations,
+
+tactile feedback provides a natural means to
+regulate manipulation control loops. An
+emerging class of tactile sensors (7) collocated
+at the frictional contact surfaces of a robot
+(Fig. 1) provide accurate, dense, and timely
+feedback on the same variables that we use to
+model the mechanics of contact: spatial distributions of contact geometry and of contact
+forces, as well as the events captured by
+their derivatives, such as slip or making/
+breaking contact.
+
+BUT WHAT MANIPULATION CONTROL
+LOOPS DO WE NEED TO REGULATE?
+
+Fig. 1. Grasp of a queen chess piece making an edge contact with the board. Tactile sensors GelSlim (7) capture
+feedback ofthe physical interaction and estimate shape, slip, pressure, and shear force distributions.
+
+The mechanics of frictional contact,
+even the approximations we commonly
+use in robotics, lead to complex dynamic
+systems that are underactuated and hybrid and consequently difficult to control.
+I believe a key role of tactile feedback, if
+not its key role, is to regulate manipulation around states that benefit from simpler dynamics.
+
+Massachusetts Institute of Technology, Cambridge, MA, USA. Email: albertor@mit.edu
+
+tactile sensing in robotic manipulation:
+
+Tactile feedback
+
+Pressure
+
+Shear force
+
+Howe (8) writes in an early review on
+
+Rodriguez, Sci. Robot. 6, eabi4667 (2021)
+
+26 May 2021
+
+1of2
+
+PREPRINT. Definitive version published in Science Robotics Vol. 6, Issue 54 on May 26, 2021, DOI: 10.1126/scirobotics.abi4667
+
+SCIENCE ROBOTICS | FOCUS
+“Human dexterity
+is a marvelous thing: People can grasp a wide variety of shapes and
+sizes, perform complex tasks, and switch
+between grasps in response to changing task
+requirements...in large measure, this control capability is founded on tactile and force
+sensing, especially the ability to sense conditions at the finger-object contact.” These
+contact conditions that Howe refers to include
+contact modes such as making and breaking
+contact, rolling, or sliding.
+I conjecture that regulating contact
+modes is one primary way by which tactile
+feedback control can simplify the dynamics
+of contact, for example, by enforcing that contacts are maintained/released or by preventing/
+regulating slip. The principle is to think of
+tactile feedback control loops as responsible for forcing contacts to behave more like
+the ideal models that we then use for simulation and planning. We have recently shown
+the use of regulated contact modes to facilitate dexterous manipulation of rigid and
+deformable objects with sticking (9) and
+sliding (10) contacts.
+
+to observe the interaction firsthand through
+tactile feedback is matched with the challenge of adapting to an uncertain environment that can be fixed, or can be moving, or
+can be movable. This problem is related to
+skills like probing, contour following, or
+shared grasping.
+2) Control of a multiple-contact configuration. Maintaining a contact mode in a
+multi-contact formation, for example, in
+the grasp of an uncertain or unknown object. Here the challenge is to regulate modes
+that involve the internal forces in a forceful
+stable grasp or modes involving the simultaneous sticking/sliding of contacts in fine object manipulation.
+3) Control of an external contact. Maintaining a contact mode at the interaction
+
+between a grasped object and its environment—
+for example, the contact between the unstable
+queen and the chess board. The challenge
+now is in controlling an unsensed contact,
+indirectly through feedback at the sensed contacts at the grasp. This problem is related to
+skills like placing an object, guiding an in-
+
+robotics includes many unstructured settings such as agriculture, health care, or
+home service, where tactile feedback can
+help close the gap.
+REFERENCES
+1.
+
+Robotics Seminar (5 April 2019); https://youtu.be/
+
+LfWiBdOc2FI?t=620.
+2.
+
+Below I list three tactile-feedback control
+problems aimed at addressing the absence
+of accurate models of geometries, materials,
+or configurations:
+
+1) Control of a single contact. Maintaining
+a contact mode (e.g., stick, slip, or desired
+
+pressure distribution) between a robot finger and its environment. The opportunity
+
+Rodriguez, Sci. Robot. 6, eabi4667 (2021)
+
+26 May 2021
+
+In summary, a key role of tactile feedback in manipulation is to simplify the dynamics of frictional contact. Robots can do
+this by regulating contact modes, for example, by enforcing that contacts slip or slide
+when they are supposed to. This improves
+our ability to simulate and plan complex
+dexterous manipulation. While the efficiency of mechanical feedback is desirable in
+many structured applications, the promise of
+
+M.A. Erdmann, M.T. Mason, An exploration
+of sensorless manipulation. /EEE
+J. Robot. Autom. 4,
+
+369-379 (1988).
+3. K. Goldberg, Orienting polygonal parts without sensors.
+Algorithmica 10, 201-225 (1993).
+4.
+
+K.M.Lynch, M. T. Mason, Stable pushing: Mechanics,
+
+controllability, and planning. Int. J. Robot. Res. 15,
+533-556 (1996).
+5. M. Dogar, S. Srinivasa, A framework for pushgrasping in clutter, in Robotics: Science and Systems
+(RSS) (2011).
+6.
+
+M.H. Lee, Tactile sensing: New directions, new
+challenges. Int. J. Robot. Res. 19, 636-643 (2000).
+
+7. \. Taylor, S. Dong and A. Rodriguez, GelSlim 3.0:
+High-resolution measurement of shape, force and slip
+in a compact tactile-sensing finger, https://arxiv.org/
+abs/2103.12269 (2021).
+8.
+
+R. Howe, Tactile sensing and control of robotic
+manipulation.
+Adv. Robot. 8, 245-261 (1993).
+
+9.
+
+F.R.Hogan, J. Ballester, S. Dong, A. Rodriguez, Tactile
+
+dexterity: Manipulation primitives with tactile feedback,
+in 2020 IEEE International Conference on Robotics and
+
+sertion, or using a tool.
+
+THREE TACTILE CONTROL PROBLEMS
+
+M. Mason, Models of robotic manipulation, MIT
+
+Automation (ICRA), Paris, France, 31 May to 31 August
+
+2020, pp. 8863-8869.
+10.
+
+Y. She, S. Dong, S. Wang, N. Sunil, A. Rodriguez and
+E. Adelson, Cable manipulation with a tactile-
+
+reactive gripper, in Robotics: Science and Systems
+(RSS) (2020).
+
+10.1126/scirobotics.abi4667
+Citation: A. Rodriguez, The unstable queen: Uncertainty,
+mechanics, and tactile feedback. Sci. Robot. 6, eabi4667 (2021).
+
+2 of2
+
+

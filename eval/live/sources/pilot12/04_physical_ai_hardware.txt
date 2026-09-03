@@ -1,0 +1,287 @@
+Science Robotics | Focus
+HUMANOID ROBOTS
+
+Physical AI is enabled by mechanical hardware
+Jonathan Hurst1,2*
+We are entering an era where AI enables multipurpose applications, but the mechanical hardware must be done right.
+
+AI WILL HAVE ITS BIGGEST INFLUENCE
+THROUGH HUMAN-­CENTRIC ROBOTS
+
+HARDWARE DYNAMICS DRIVE WHAT IS
+PHYSICALLY POSSIBLE
+
+It is easy to make a robot that looks like a human but much more difficult to make a robot
+that moves like a human, especially when
+making contact with the physical world. Although we can observe the morphology and
+motion trajectory of a person or robot, we do
+not have a complete understanding of how
+humans achieve such capable manipulation
+and locomotion and, thus, cannot yet recreate
+it. Even a robot that looks convincingly like a
+person may have very different dynamics—
+joint friction, inertia, or compliance—and
+those hardware dynamics are the only path
+through which any control approach, AI or
+otherwise, can act on the world. They are
+at least as important as the morphology of
+the robot and can be either a barrier to control or an essential partner, depending on
+their properties.
+
+PREDICTIONS FOR THE BEST
+HARDWARE PATH
+
+Human-­centric robots will be bipedal, with
+an upright torso, and bimanual. They will
+have human-­robot interaction features like
+a face, but that is where similarities will end:
+There is no reason for human-­centric machines to look just like us. In the future,
+looking back on some of today’s humanoid
+robots with precise human dimensions or
+five-­fingered hands will be akin to looking
+back at early heavier-­than-­air flying machine
+prototypes. Some had flapping wings and
+other birdlike biomimetic features, because
+we did not yet understand the physics of
+flying, just as the physics of locomanipulation are presently in their early days. However, once the industry well understands the
+physics of locomanipulation and the softer science of human-­robot interaction, we
+will see a proliferation of human-­centric
+machines with familiar features but distinct
+
+1
+Agility Robotics, Salem, OR, USA. 2School of Mechanical, Industrial, and Manufacturing Engineering, Oregon
+State University, Corvallis, OR, USA.
+*Corresponding author. Email: jonathan.​hurst@​oregonstate.​edu
+
+Hurst﻿, Sci. Robot. 11, eaee2921 (2026)
+
+12 August 2026
+
+differences, just as we see a proliferation of aircraft that still have wings (but not feathers).
+The basic humanoid form comes from
+first principles. Dynamic stability (balance)
+is important for operating in small spaces
+like hallways while reaching up high, and
+legs can be far more stable than wheels, because the feet can more quickly move to new
+locations to support the center of mass when
+there is a disturbance. An upright torso further enables a narrow footprint while allowing space for computation and batteries and
+improving the ability to balance by leaning in
+the direction of acceleration. A pair of arms
+mounted at the highest points on the torso
+(the shoulder locations) enables a good workspace for lifting large objects from the ground
+to the highest possible shelf, a good workspace for catching a fall, and excellent inertial
+actuation for turning or balance.
+Primary actuators will be electromagnetic,
+a refinement and evolution of the brushless linear dc motors that we see now, and will achieve
+much higher torque for a given motor mass
+than today’s motors. We will see new motor
+forms that improve manufacturability along
+with torque density through new configurations like the YASA axial flux motors (1) used
+in cars now, transverse flux variants, or just refinements of a standard radial flux motor that
+are enabled by new three-­dimensional electromagnetic modeling methods, new high-­flux
+magnetically soft materials, and new manufacturing approaches. Even with higher torque
+density in motors, a transmission will always
+be necessary, especially for larger robots, because scaling laws mean that larger machines
+are proportionally weaker than smaller machines (ants can lift many times their weight,
+but elephants cannot jump). New classes and
+types of actuators, such as polymer muscles,
+are still far away, and pneumatic or hydraulic
+actuators have fundamental flaws in energy
+efficiency and performance in a humanoid
+application.
+The transmission of choice for large joints
+(knee, elbow, etc.) will be rolling-­contact cycloids. They offer an unmatched combination
+1 of 3
+
+Downloaded from https://www.science.org at Beijing Institute of Technology on August 21, 2026
+
+A human motion is more than a series of
+positions; it is also an entire set of dynamics
+As humanoids enter the public sphere, fore- that will respond in particular ways when encasters are trying to predict where the technol- countering the environment. It is possible to
+ogy will go. Some are suggesting that hardware generate trajectories for the robot to follow
+will become a commodity, leading to largely that look extremely convincing until some
+software-­defined general-­purpose machines, disturbance, like an unexpected step down,
+but this goes too far. Artificial intelligence (AI) shows major performance and visual differis just software trapped behind the physics of ences between the motions of the robot and a
+the hardware it is running on. Existing indus- person. How can we make robot arms that
+trial robotic automation solutions are better swing freely for balance during locomotion,
+than humans at achieving high-­precision po- whose motion is determined by the pendular
+sition trajectories and, thus, better at ma- swing of their mass and near-­passive joints,
+chining metal, spot welding, or high-­speed while still being able to apply large forces to
+pick-­and-­place operations. However, humans lift heavy things? How can we place a foot
+remain much better at going over any sort of gently while walking on uneven terrain, reterrain, mobile manipulation, assembly tasks, peatedly making contact that is never perfectand other things that require a soft, force-­ ly anticipated? And how can we make fingers
+based approach to physical interaction. AI with the compliance, strength, and force senalone, or any software, will not bridge the gap sitivity for dexterous manipulation?
+between these two sets of capabilities.
+
+Copyright © 2026 The
+Authors, some rights
+reserved; exclusive
+licensee American
+Association for the
+Advancement of
+Science. No claim to
+original U.S.
+Government Works
+
+Science Robotics | Focus
+
+CREDIT: COURTESY OF AGILITY ROBOTICS
+
+of low friction, high durability, wear characteristics even with regular impacts, compact form
+factor, torque density for their mass, and manufacturability without exotic methods. They
+can be integrated well with electromagnetic
+actuators into a convenient module to be used
+at robot joints. In combination with the high
+torque density of new motors, nothing will
+match their high-­bandwidth torque control
+and backdrivability.
+Hands and fingers will be tendon driven,
+using series elastic actuators. Tendons, combined with links that are only in compression
+loading in a tensegrity-­style approach, are the
+most structurally efficient way to apply large
+forces at the ends of thin digits (2). Actuators
+will be in the forearm, as the muscles that
+power human hands are, because of the high
+power and force needed. Given the extreme
+compactness and forces needed from hand
+actuators, even when moved to the forearm,
+speed reductions will be high, and they will
+not be directly backdrivable, as the large-­
+joint cycloids can be. However, we will need
+exceptional force control and impact tolerance in the fingers; thus, series elasticity will
+be required (3). Last, tendons are not durable.
+They will be replaceable wear components,
+like the soles of the feet.
+Walking will require a functional heel strike
+to absorb the impact of foot contact and transition from leg swing to a firm stance (4). To
+power the gait for efficient, faster walking, a
+toe-­off will also be required. This is because a
+humanoid will have a near-­straight knee most
+of the time so that it will not be using excessive
+energy to support its weight. The heel strike
+insulates the large leg motors from the initial
+Hurst﻿, Sci. Robot. 11, eaee2921 (2026)
+
+12 August 2026
+
+impact, applies torque about the ankle, and allows the knee to begin bending and absorb the
+rest of the impact, and the toe-­off extends the
+leg beyond the straight-­knee configuration
+to add energy with each stride. There will be
+structure in the foot to handle this well, beyond
+the flat metal plates that we see today.
+LOOKING FORWARD
+
+Humanoids are beginning to provide utility
+today in commercial and industrial environments, doing work that has been designed
+for humans, in spaces designed for humans.
+These first robot tasks are still process automated: They are more variable than typical
+robot tasks, and, thus, humans still do them,
+but they still meet the classic three “D’s” of
+robotics, being dull, dirty, or dangerous, like
+moving totes around, sorting packages, or
+simple kitting processes. As humanoids gain
+increasing capability and generality, become
+safe, and benefit from an increasingly detailed regulatory framework and as they come
+down in price, they will expand into many
+more commercial and industrial settings, including familiar retail environments. They will
+move gradually from the back room to more
+public spaces as certifiably safe operation is
+addressed. Safety, of course, relies not only
+on perception and context-­aware intelligent
+choices but also on actuators that can reliably
+(a safety-­certified, redundant level of reliably)
+apply safe forces in safe locations when they
+physically interact with people, by avoiding
+pinch points, falling on someone’s foot, and
+other physical risks (5, 6). Only after robot
+locomotion and manipulation have achieved
+
+broadly general capabilities in environments
+as varied as people’s homes, have been scaled
+to the point where the cost is affordable to
+families, and have gradually improved and
+proven their safe operation to the point where
+we can trust them around our children and
+pets will they begin to enter homes and become part of everyday life for most people.
+Humanoids, enabled by AI, bring a new
+era of robotics: unlocking operations wherever people work without requiring architectural
+modifications. Additionally, multipurpose robots will address a variety of tasks that could
+not be automated easily with single-­purpose
+machinery. These two features, operating in
+human spaces and being multipurpose, are
+going to redefine labor and amplify human
+ambition in a way that will be analogous to an
+accelerated industrial revolution. There will be
+an array of humanoid robots as varied as vehicles on the road, with their own specialties and features. Humans will soon have
+robot helpers in a way that humanity has never
+experienced before.
+REFERENCES AND NOTES
+1.	T. J. Woolmer, M. D. McCulloch, “Analysis of the
+yokeless and segmented armature machine” in 2007
+IEEE International Electric Machines & Drives Conference
+(IEEE, 2007), pp. 704–708; 10.1109/
+IEMDC.2007.382753.
+2. S. M. Levin, Continuous tension, discontinuous
+compression, a model for biomechanical support of the
+body. Bull. Struct. Integr. 8, 29–34 (1982).
+3. G. Pratt, M. Williamson, “Series elastic actuators” in
+Proceedings 1995 IEEE/RSJ International Conference on
+Intelligent Robots and Systems. Human Robot Interaction
+and Cooperative Robots (IEEE, 1995), vol. 1,
+pp. 399–406.
+4. J. J. Rond, M. C. Cardani, M. I. Campbell, J. W. Hurst,
+Mitigating peak impact forces by customizing the
+
+2 of 3
+
+Downloaded from https://www.science.org at Beijing Institute of Technology on August 21, 2026
+
+Agility’s Digit robot, the first humanoid robot deployed commercially to do physical work.
+
+Science Robotics | Focus
+passive foot dynamics of legged robots. J. Mech. Robot.
+12, 051010 (2020).
+5. A. Prather, “A pathway study for future humanoid standards”
+(IEEE Humanoid Study Group, 2025); www.therobotreport.
+com/wp-­content/uploads/2025/09/IEEE-­Humanoid-­Report-­
+of-­Future-­Standards-­Development.pdf.
+
+6. A. De Santis, B. Siciliano, A. De Luca, A. Bicchi, An atlas of
+physical human-­robot interaction. Mech. Mach. Theory
+43, 253–270 (2008).
+Acknowledgments: I thank D. Collins, J. Jasper, and A. Abate
+for important fact-­checking, editing, suggestions, and other
+
+support for this article. Competing interests: J.H. works at
+Agility Robotics and has equity interest in the company,
+which produces the Digit humanoid robot.
+
+10.1126/scirobotics.aee2921
+
+Downloaded from https://www.science.org at Beijing Institute of Technology on August 21, 2026
+
+Hurst﻿, Sci. Robot. 11, eaee2921 (2026)
+
+12 August 2026
+
+3 of 3
+
+Physical AI is enabled by mechanical hardware
+Jonathan Hurst
+
+Sci. Robot. 11 (117), eaee2921. DOI: 10.1126/scirobotics.aee2921
+
+Use of this article is subject to the Terms of service
+Science Robotics (ISSN 2470-9476) is published by the American Association for the Advancement of Science. 1200 New York Avenue
+NW, Washington, DC 20005. The title Science Robotics is a registered trademark of AAAS.
+Copyright © 2026 The Authors, some rights reserved; exclusive licensee American Association for the Advancement of Science. No claim
+to original U.S. Government Works
+
+Downloaded from https://www.science.org at Beijing Institute of Technology on August 21, 2026
+
+View the article online
+https://www.science.org/doi/10.1126/scirobotics.aee2921
+Permissions
+https://www.science.org/help/reprints-and-permissions
+
+

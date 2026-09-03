@@ -578,9 +578,56 @@ def test_fallback_excluded_from_model_accuracy():
     metrics = compute_metrics(rows)
     assert metrics["n_labeled"] == 2
     assert metrics["n_fallback"] == 1
-    assert metrics["fallback_excluded_from_model_metrics"] is True
+    assert metrics["fallback_excluded_from_model_metrics"] is False
+    assert metrics["stage_scoped_scoring"] is True
     assert metrics["disposition"]["denominator"] == 1
     assert metrics["disposition"]["disposition_accuracy"] == 1.0
+
+
+def test_delta_fallback_does_not_exclude_impact_metrics():
+    rows = [
+        {
+            "id": "mixed",
+            "gold_status": "LABELED",
+            "disposition": "ENGAGE",
+            "update": {"operation": "REINFORCE", "target_node_id": "M1"},
+            "human_gold": {
+                "disposition": "ENGAGE",
+                "update": {"operation": "REINFORCE", "target_node_id": "M1"},
+                "delta_content": "Separable motor intelligence.",
+            },
+            "prediction_source": "mixed",
+            "fallback": True,
+            "fallback_stages": ["delta"],
+            "model_prediction": True,
+            "scorable": {
+                "disposition": True,
+                "update": True,
+                "target": True,
+                "delta_content": False,
+            },
+            "stage_provenance": {
+                "extraction": {"provider": "model", "status": "success"},
+                "impact": {"provider": "model", "status": "success"},
+                "delta": {
+                    "provider": "rule",
+                    "status": "fallback",
+                    "fallback_from": "model",
+                    "error_type": "LLMError",
+                    "error": "model did not return JSON",
+                },
+            },
+        }
+    ]
+    metrics = compute_metrics(rows)
+    assert metrics["n_fallback"] == 1
+    assert metrics["n_model_predictions"] == 1
+    assert metrics["disposition"]["denominator"] == 1
+    assert metrics["disposition"]["disposition_accuracy"] == 1.0
+    assert metrics["update_operation"]["denominator"] == 1
+    assert metrics["update_operation"]["update_operation_accuracy"] == 1.0
+    assert metrics["target"]["denominator"] == 1
+    assert metrics["delta_content"]["n_with_delta_content"] == 0
 
 
 def test_manifest_example_loads():

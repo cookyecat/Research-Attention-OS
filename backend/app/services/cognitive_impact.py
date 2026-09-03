@@ -39,6 +39,38 @@ MARKETING_EPISTEMIC_CAP = 0.25
 
 KNOWN_OPERATIONS = frozenset({"REINFORCE", "CHALLENGE", "OPEN_NEW"})
 
+# Kernel Match localizes work context. These types are not automatic update targets.
+LOCATION_NODE_TYPES = frozenset({"GOAL", "PROJECT"})
+# Nodes whose content can actually be reinforced or challenged.
+UPDATE_ELIGIBLE_NODE_TYPES = frozenset(
+    {"BELIEF", "MODEL", "QUESTION", "HYPOTHESIS", "DECISION", "BOTTLENECK"}
+)
+# Shared topical words that must not by themselves justify REINFORCE / CHALLENGE.
+GENERIC_TOPIC_TOKENS = frozenset(
+    {
+        "model",
+        "models",
+        "motor",
+        "intelligence",
+        "embodied",
+        "control",
+        "robot",
+        "robots",
+        "robotics",
+        "ai",
+        "unified",
+        "system",
+        "systems",
+        "agent",
+        "agents",
+        "learning",
+        "paper",
+        "large",
+        "high",
+        "frequency",
+    }
+)
+
 
 @dataclass
 class CognitiveEffect:
@@ -91,6 +123,66 @@ def _kind(value) -> str:
 
 def _is_operation(value) -> bool:
     return _kind(value) in KNOWN_OPERATIONS
+
+
+def is_location_node(node_type) -> bool:
+    return str(node_type or "").upper() in LOCATION_NODE_TYPES
+
+
+def is_update_eligible_node(node_type) -> bool:
+    return str(node_type or "").upper() in UPDATE_ELIGIBLE_NODE_TYPES
+
+
+def epistemic_text(extraction: ExtractionResult) -> str:
+    """Claim / Observation / Inference text — the Impact stage's primary input."""
+    parts: list[str] = []
+    for item in getattr(extraction, "claims", None) or []:
+        text = getattr(item, "text", None)
+        if text:
+            parts.append(str(text))
+    for item in getattr(extraction, "observations", None) or []:
+        text = getattr(item, "text", None)
+        if text:
+            parts.append(str(text))
+    for item in getattr(extraction, "inferences", None) or []:
+        text = getattr(item, "text", None)
+        if text:
+            parts.append(str(text))
+    for item in getattr(extraction, "technical_claims", None) or []:
+        if item:
+            parts.append(str(item))
+    return "\n".join(parts)
+
+
+def node_proposition(node_or_match) -> str:
+    payload = getattr(node_or_match, "payload", None) or {}
+    if isinstance(payload, dict):
+        for key in ("proposition", "text", "description", "rationale", "scope"):
+            if payload.get(key):
+                return str(payload[key])
+    return str(getattr(node_or_match, "title", None) or "")
+
+
+def claim_scope_aligned(extraction: ExtractionResult, match: KernelMatch) -> bool:
+    """True only when epistemic objects overlap the target's distinctive scope.
+
+    Generic topical words (motor / model / unified / robot) are not enough.
+    STRUCTURAL matches are analogical, not keyword overlap, and count as aligned.
+    """
+    if getattr(match, "structural", False) or str(getattr(match, "relevance_type", "") or "").upper() == "STRUCTURAL":
+        return True
+    from app.services.matching import tokenize
+
+    target_tokens = tokenize(node_proposition(match)) | tokenize(str(match.title or "")) | tokenize(str(match.reason or ""))
+    distinctive = {t for t in target_tokens if t not in GENERIC_TOPIC_TOKENS}
+    if len(distinctive) < 2:
+        return False
+    source_tokens = tokenize(epistemic_text(extraction))
+    overlap = distinctive & source_tokens
+    # Beliefs/questions need two distinctive tokens so "loop" or "unified" cannot
+    # alone attach an update. Models/bottlenecks may align on one technical term.
+    need = 2 if str(match.node_type or "").upper() in {"BELIEF", "QUESTION"} else 1
+    return len(overlap) >= need
 
 
 def _parse_operation(raw) -> CognitiveEffectKind | None:
@@ -308,7 +400,11 @@ def ground_effects(
     *,
     independent_source_count: int = 1,
 ) -> list[CognitiveEffect]:
-    """Deterministic caps. LLM remains the operation judge. Does not rewrite operation direction."""
+    """Deterministic caps plus Location ≠ Update.
+
+    Does not reverse REINFORCE ↔ CHALLENGE on eligible epistemic targets.
+    A Goal/Project topical hit without claim-scope alignment becomes OPEN_NEW.
+    """
     allowed = {m.node_id for m in matches}
     cap = epistemic_cap(extraction, independent_source_count=independent_source_count)
     grounded: list[CognitiveEffect] = []
@@ -321,6 +417,17 @@ def ground_effects(
             target = None
         elif target is None or target not in allowed:
             continue
+        else:
+            match = next((m for m in matches if m.node_id == target), None)
+            # Location ≠ update: a Goal/Project topical hit is not REINFORCE/CHALLENGE
+            # unless claim scope actually aligns with that node's distinctive content.
+            if (
+                match is not None
+                and is_location_node(match.node_type)
+                and not claim_scope_aligned(extraction, match)
+            ):
+                operation = CognitiveEffectKind.OPEN_NEW
+                target = None
         epi = min(float(effect.epistemic_strength), cap)
         change = max(0.0, min(1.0, float(effect.change_magnitude)))
         importance = max(0.0, min(1.0, float(effect.target_importance)))
@@ -489,23 +596,30 @@ def assess_impact_from_rules(
         effects = []
     else:
         for match in matches:
+            if is_location_node(match.node_type):
+                # GOAL / PROJECT localize where the information sits. They are not
+                # automatic REINFORCE / CHALLENGE targets.
+                continue
+            if not is_update_eligible_node(match.node_type):
+                continue
+            if not claim_scope_aligned(extraction, match):
+                continue
             importance = resolve_target_importance(node=nodes_by_id.get(match.node_id), node_type=match.node_type)
             change = match.score
             epi = min(probe.credibility, cap)
             if "minor" in low and "version" in low:
                 continue
-            elif match.node_type == "BELIEF" and probe.disagreement >= 0.55:
+            if match.node_type == "BELIEF" and probe.disagreement >= 0.55:
                 kind = CognitiveEffectKind.CHALLENGE
                 change = max(change, 0.7)
+            elif match.node_type == "BELIEF":
+                kind = CognitiveEffectKind.REINFORCE
             elif match.node_type == "DECISION" or match.structural or match.relevance_type == "STRUCTURAL":
                 kind = CognitiveEffectKind.REINFORCE
-            elif match.node_type in {"MODEL", "QUESTION", "BOTTLENECK"}:
+            elif match.node_type in {"MODEL", "QUESTION", "BOTTLENECK", "HYPOTHESIS"}:
                 kind = CognitiveEffectKind.REINFORCE
-            elif match.node_type == "PROJECT" and extraction.technical_claims:
-                kind = CognitiveEffectKind.REINFORCE
-                change = max(change, 0.65)
             else:
-                kind = CognitiveEffectKind.REINFORCE
+                continue
             if probe.marketing_heavy:
                 epi = min(epi, MARKETING_EPISTEMIC_CAP)
             effects.append(
@@ -518,14 +632,33 @@ def assess_impact_from_rules(
                     reason=match.reason or f"{kind} on {match.title or match.node_type}",
                 )
             )
-        if not matches:
+        if not effects:
             from app.services.extraction import PROMOTIONAL_CUES, _contains_any
 
             equity_only = bool(EQUITY_STRUCTURE & tokens) and not ({"robot", "embodied", "motor", "agent"} & tokens)
             promo = probe.marketing_heavy or bool(extraction.promotional_framing) or _contains_any(text, PROMOTIONAL_CUES)
             paperish = "paper" in low or "arxiv" in low or "foundational" in low
             technical = bool(extraction.technical_claims) or paperish
-            if technical and not promo and not equity_only:
+            located = any(is_location_node(m.node_type) for m in matches)
+            conflict = probe.disagreement >= 0.55 or probe.sources_conflict
+            if conflict and not promo:
+                effects.append(
+                    CognitiveEffect(
+                        target_kernel_node_id=None,
+                        operation=CognitiveEffectKind.OPEN_NEW,
+                        change_magnitude=max(0.65, probe.kernel_delta, 0.55),
+                        epistemic_strength=min(0.35, cap),
+                        target_importance=0.75,
+                        reason="Claims and observations conflict, but no existing Kernel node is the right update target.",
+                        exploration_candidate=True,
+                    )
+                )
+            elif technical and not promo and not equity_only:
+                reason = (
+                    "Located near an existing Goal/Project, but no existing cognition is actually updated."
+                    if located
+                    else "No current Kernel target; possible new question or model candidate."
+                )
                 effects.append(
                     CognitiveEffect(
                         target_kernel_node_id=None,
@@ -533,14 +666,21 @@ def assess_impact_from_rules(
                         change_magnitude=0.55,
                         epistemic_strength=min(0.3, cap),
                         target_importance=0.55,
-                        reason="No current Kernel target; possible new question or model candidate.",
+                        reason=reason,
                         exploration_candidate=True,
                     )
                 )
 
     if probe.disagreement >= 0.55 or probe.sources_conflict:
         if not any(_kind(e.operation) == CognitiveEffectKind.CHALLENGE for e in effects):
-            belief = next((m for m in matches if m.node_type == "BELIEF"), None)
+            belief = next(
+                (
+                    m
+                    for m in matches
+                    if m.node_type == "BELIEF" and claim_scope_aligned(extraction, m)
+                ),
+                None,
+            )
             if belief is not None:
                 effects.append(
                     CognitiveEffect(

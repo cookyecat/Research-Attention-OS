@@ -111,7 +111,17 @@ Return JSON:
 IMPACT_SYSTEM = """Assess potential cognitive impact for Research Attention OS.
 You do NOT choose DROP/AWARE/WATCH/ENGAGE. You estimate what absorbing this information could mean for the current Cognitive Kernel.
 
-Kernel Match localizes where the information might matter. You estimate:
+Judge from Epistemic Objects (Claims, Observations, Inferences). Do not re-read the raw document to invent a cognitive update from keywords, titles, or words like unified / model / motor.
+
+Two different questions — never collapse them:
+1. Kernel Location: where this information sits relative to current work (Goal / Project / topical match). Location is not an update.
+2. Cognitive Update Target: which existing cognition would actually change, be strengthened, or be challenged.
+
+REINFORCE / CHALLENGE require an existing epistemic Kernel node (Belief, Model, Question, Hypothesis, Decision, Bottleneck) whose proposition is actually affected at matching scope.
+A Goal or Project match is only Location. Do not REINFORCE or CHALLENGE a broad Goal/Project merely because the source is about the same topic (robotics, motor, embodied, AI).
+If the information is near an existing Project but does not modify any existing cognition, emit OPEN_NEW (target_kernel_node_id = null).
+
+You estimate:
 - operation: REINFORCE | CHALLENGE | OPEN_NEW
 - change_magnitude: how much understanding could change if absorbed
 - epistemic_strength: how justified that effect is by current evidence (not the same as direction)
@@ -139,11 +149,75 @@ Low topic similarity alone must not imply an empty effects list when a STRUCTURA
 Popularity is not importance. Disagreement is verification value, not a reason to ignore.
 Return JSON only."""
 
-IMPACT_USER = """Text:
-{text}
 
-Matches: {matches}
-Match titles are Kernel propositions. Align the source-claim scope with that proposition before REINFORCE or CHALLENGE.
+def impact_user_prompt(
+    *,
+    claims: list,
+    observations: list,
+    inferences: list,
+    evidence: list,
+    locations: list,
+    eligible_targets: list,
+    is_duplicate: bool,
+    independent_source_count: int,
+    secondary_report_count: int,
+) -> str:
+    return f"""Epistemic objects (primary input — judge the cognitive update from these, not from raw document keywords):
+Claims: {json.dumps(claims, ensure_ascii=False)}
+Observations: {json.dumps(observations, ensure_ascii=False)}
+Inferences: {json.dumps(inferences, ensure_ascii=False)}
+Evidence links: {json.dumps(evidence, ensure_ascii=False)}
+
+Locations (where this information might matter; NOT automatic update targets):
+Kernel locations:
+{json.dumps(locations, ensure_ascii=False)}
+
+Eligible cognitive targets:
+{json.dumps(eligible_targets, ensure_ascii=False)}
+REINFORCE / CHALLENGE only if claim scope aligns with the node's proposition/scope; otherwise OPEN_NEW.
+Match titles and propositions are Kernel propositions. Align the source-claim scope with that proposition before REINFORCE or CHALLENGE.
+GOAL / PROJECT entries are locations. Do not treat topical relevance to them as a cognitive update.
+
+Duplicate: {is_duplicate}
+Independent sources: {independent_source_count}
+Secondary reports: {secondary_report_count}
+
+Return JSON:
+{{
+  "effects": [{{
+    "target_kernel_node_id": null,
+    "operation": "REINFORCE",
+    "change_magnitude": 0.0,
+    "epistemic_strength": 0.0,
+    "target_importance": 0.0,
+    "reason": "",
+    "exploration_candidate": false
+  }}],
+  "attention_cost": 0.0,
+  "exploration_candidate": false,
+  "evidence_maturity": 0.0,
+  "threatens_active_work": false,
+  "marketing_heavy": false,
+  "high_quality_technical": false,
+  "foundational_paper": false
+}}"""
+
+
+# Kept for tests and any remaining .format() callers. Prefer impact_user_prompt().
+IMPACT_USER = """Epistemic objects (primary input — judge the cognitive update from these, not from raw document keywords):
+Claims: {claims}
+Observations: {observations}
+Inferences: {inferences}
+
+Locations (where this information might matter; NOT automatic update targets):
+Kernel locations:
+{locations}
+
+Eligible cognitive targets:
+{matches}
+REINFORCE / CHALLENGE only if claim scope aligns with the node's proposition/scope; otherwise OPEN_NEW.
+Match titles and propositions are Kernel propositions. Align the source-claim scope with that proposition before REINFORCE or CHALLENGE.
+GOAL / PROJECT entries are locations. Do not treat topical relevance to them as a cognitive update.
 Duplicate: {is_duplicate}
 Independent sources: {independent_source_count}
 Secondary reports: {secondary_report_count}

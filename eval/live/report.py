@@ -7,20 +7,37 @@ from eval.live.kernel_snapshot import resolve_snapshot_node_id, snapshot_node_by
 from eval.live.schema import UPDATE_OPERATIONS, HumanGold
 
 
+def _stage_is_model(provenance, stage: str) -> bool:
+    if not isinstance(provenance, dict):
+        return False
+    rec = provenance.get(stage)
+    if not isinstance(rec, dict):
+        return False
+    if rec.get("status") in {"fallback", "rule-after-fallback"}:
+        return False
+    if rec.get("fallback_from"):
+        return False
+    return rec.get("status") == "success" and rec.get("provider") in {"model", None}
+
+
 def compute_metrics(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
     labeled = [r for r in case_rows if r.get("gold_status") == "LABELED"]
     unlabeled_n = sum(1 for r in case_rows if r.get("gold_status") != "LABELED")
-    fallback_rows = [r for r in case_rows if _is_rule_fallback(r)]
-    model_labeled = [r for r in labeled if not _is_rule_fallback(r)]
-    disposition = _disposition_metrics(model_labeled)
-    operation = _update_operation_metrics(model_labeled)
-    target = _target_metrics(model_labeled)
-    delta_content = _delta_content_metrics(model_labeled)
-    epistemic = _epistemic_metrics(model_labeled)
-    delta = _delta_metrics(model_labeled)
-    safety = _safety_metrics(model_labeled)
-    by_source_kind = _slice(model_labeled, "source_kind")
-    by_task = _slice_tasks(model_labeled)
+    fallback_rows = [r for r in labeled if r.get("fallback") is True or r.get("fallback_stages")]
+    disposition_rows = [r for r in labeled if _scorable(r, "disposition")]
+    update_rows = [r for r in labeled if _scorable(r, "update")]
+    target_rows = [r for r in labeled if _scorable(r, "target")]
+    delta_rows = [r for r in labeled if _scorable(r, "delta_content")]
+    extraction_rows = [r for r in labeled if _scorable(r, "epistemic_separation")]
+    disposition = _disposition_metrics(disposition_rows)
+    operation = _update_operation_metrics(update_rows)
+    target = _target_metrics(target_rows)
+    delta_content = _delta_content_metrics(delta_rows)
+    epistemic = _epistemic_metrics(extraction_rows)
+    delta = _delta_metrics(delta_rows)
+    safety = _safety_metrics(disposition_rows)
+    by_source_kind = _slice(disposition_rows, "source_kind")
+    by_task = _slice_tasks(disposition_rows)
     return {
         "n_cases": len(case_rows),
         "n_labeled": len(labeled),
@@ -28,7 +45,8 @@ def compute_metrics(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
         "n_fallback": len(fallback_rows),
         "n_model_predictions": sum(1 for r in case_rows if r.get("model_prediction") is True),
         "unlabeled_excluded_from_accuracy": True,
-        "fallback_excluded_from_model_metrics": True,
+        "fallback_excluded_from_model_metrics": False,
+        "stage_scoped_scoring": True,
         "disposition": disposition,
         "update_operation": operation,
         "target": target,
@@ -41,19 +59,25 @@ def compute_metrics(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def _is_rule_fallback(row: dict) -> bool:
-    if row.get("fallback") is True:
-        return True
-    if row.get("prediction_source") == "rule-fallback":
-        return True
-    if row.get("model_prediction") is False and row.get("prediction_source") == "rule-fallback":
-        return True
-    provenance = row.get("stage_provenance") or {}
-    if isinstance(provenance, dict):
-        for rec in provenance.values():
-            if isinstance(rec, dict) and rec.get("status") in {"fallback", "rule-after-fallback"}:
-                return True
-    return False
+def _scorable(row: dict, field: str) -> bool:
+    scorable = row.get("scorable")
+    if isinstance(scorable, dict) and field in scorable:
+        return bool(scorable[field])
+    aliases = {
+        "disposition": "impact",
+        "update": "impact",
+        "target": "impact",
+        "delta_content": "delta",
+        "epistemic_separation": "extraction",
+    }
+    provenance = row.get("stage_provenance")
+    if isinstance(provenance, dict) and provenance:
+        return _stage_is_model(provenance, aliases.get(field, "impact"))
+    if row.get("model_prediction") is False:
+        return False
+    if row.get("prediction_source") in {"rule-fallback", "rule"}:
+        return False
+    return True
 
 
 def _gold(row: dict) -> dict:
@@ -336,7 +360,9 @@ def render_markdown(summary: dict) -> str:
         "",
         f"- cases: {summary.get('n_cases')} (labeled {summary.get('n_labeled')}, unlabeled {summary.get('n_unlabeled')})",
         f"- unlabeled excluded from accuracy: {summary.get('unlabeled_excluded_from_accuracy')}",
-        f"- fallback cases (not counted as model predictions): {summary.get('n_fallback')}",
+        f"- fallback cases (any stage): {summary.get('n_fallback')}",
+        f"- model impact predictions scored: {summary.get('n_model_predictions')}",
+        f"- stage-scoped scoring: {summary.get('stage_scoped_scoring')}",
         "",
         "## Disposition",
         f"- Disposition Accuracy: {disp.get('disposition_accuracy')}",

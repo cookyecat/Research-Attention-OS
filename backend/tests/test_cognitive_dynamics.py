@@ -220,16 +220,23 @@ def test_explicit_payload_importance_outranks_type_prior_and_llm():
 
 
 def test_promotional_reinforce_keeps_epistemic_strength_low():
-    belief = _match("BELIEF", "TOPIC", 0.8)
+    belief = KernelMatch(
+        node_id=uuid4(),
+        node_type="BELIEF",
+        title="Household robots already generalize zero-shot.",
+        score=0.8,
+        reason="test",
+        relevance_type="TOPIC",
+    )
     extraction = ExtractionResult(
-        claims=[ExtractedClaim(text="The company says the robot generalizes zero-shot.", claim_type=ClaimType.TECHNICAL)],
+        claims=[ExtractedClaim(text="The company says household robots already generalize zero-shot.", claim_type=ClaimType.TECHNICAL)],
         technical_claims=["zero-shot"],
         promotional_framing=["revolutionary seamless"],
         marketing_heavy=True,
         evidence_maturity=0.4,
     )
     assessment = assess_impact_from_rules(
-        "The company says its embodied motor intelligence generalizes zero-shot. Revolutionary seamless leap.",
+        "The company says household robots already generalize zero-shot. Revolutionary seamless leap.",
         extraction,
         [belief],
         independent_source_count=1,
@@ -330,6 +337,79 @@ def test_impact_assessment_is_run_scoped_dataclass():
     assert "target_kernel_node_id" in CognitiveEffect(
         None, CognitiveEffectKind.OPEN_NEW, 0.5, 0.2, 0.5, "new", True
     ).as_dict()
+
+
+def test_project_location_is_not_automatic_reinforce():
+    project = _match("PROJECT", "TOPIC", 0.9)
+    extraction = ExtractionResult(
+        claims=[ExtractedClaim(text="A new tactile feedback controller for uncertain contact.", claim_type=ClaimType.TECHNICAL)],
+        technical_claims=["tactile feedback"],
+        evidence_maturity=0.5,
+    )
+    assessment = assess_impact_from_rules(
+        "A paper on tactile feedback for uncertain contact in manipulation.",
+        extraction,
+        [project],
+        independent_source_count=1,
+    )
+    assert all(e.target_kernel_node_id != project.node_id for e in assessment.effects)
+    assert any(e.operation == CognitiveEffectKind.OPEN_NEW for e in assessment.effects)
+
+
+def test_ground_effects_converts_unaligned_project_reinforce_to_open_new():
+    project = _match("PROJECT", "TOPIC", 0.9)
+    extraction = ExtractionResult(
+        claims=[ExtractedClaim(text="A new tactile feedback controller for uncertain contact.", claim_type=ClaimType.TECHNICAL)],
+        technical_claims=["tactile feedback"],
+        evidence_maturity=0.5,
+    )
+    raw = [
+        CognitiveEffect(
+            target_kernel_node_id=project.node_id,
+            operation=CognitiveEffectKind.REINFORCE,
+            change_magnitude=0.8,
+            epistemic_strength=0.4,
+            target_importance=0.65,
+            reason="same robotics topic as Motor Intelligence",
+        )
+    ]
+    grounded = ground_effects(raw, [project], extraction, independent_source_count=1)
+    assert len(grounded) == 1
+    assert grounded[0].operation == CognitiveEffectKind.OPEN_NEW
+    assert grounded[0].target_kernel_node_id is None
+
+
+def test_bottleneck_update_requires_claim_scope_alignment():
+    bottleneck = KernelMatch(
+        node_id=uuid4(),
+        node_type="BOTTLENECK",
+        title="Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+        score=0.8,
+        reason="test",
+        relevance_type="BOTTLENECK",
+    )
+    aligned = ExtractionResult(
+        claims=[
+            ExtractedClaim(
+                text="Latency evaluation must decompose energy and task-success rather than one end-to-end number.",
+                claim_type=ClaimType.TECHNICAL,
+            )
+        ],
+        technical_claims=["latency evaluation"],
+        evidence_maturity=0.5,
+    )
+    assessment = assess_impact_from_rules("profiler latency energy task-success", aligned, [bottleneck])
+    assert any(
+        e.operation == CognitiveEffectKind.REINFORCE and e.target_kernel_node_id == bottleneck.node_id
+        for e in assessment.effects
+    )
+    topical_only = ExtractionResult(
+        claims=[ExtractedClaim(text="A humanoid robot played soccer in a demo.", claim_type=ClaimType.FACTUAL)],
+        technical_claims=["humanoid"],
+        evidence_maturity=0.4,
+    )
+    missed = assess_impact_from_rules("humanoid soccer robot demo", topical_only, [bottleneck])
+    assert all(e.target_kernel_node_id != bottleneck.node_id for e in missed.effects)
 
 
 def test_primary_update_rejects_untargeted_reinforce_and_challenge():

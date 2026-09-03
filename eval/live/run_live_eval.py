@@ -21,6 +21,31 @@ from eval.live.schema import LiveCase, LiveManifest, gold_status_of, dump_human_
 
 FALLBACK_STAGE_STATUSES = {"fallback", "rule-after-fallback"}
 
+# Live Eval scores each Cognitive Dynamics field from the stage that produced it.
+METRIC_STAGE = {
+    "disposition": "impact",
+    "update": "impact",
+    "target": "impact",
+    "delta_content": "delta",
+    "epistemic_separation": "extraction",
+}
+
+
+def _stage_record(provenance, stage: str) -> dict:
+    if not isinstance(provenance, dict):
+        return {}
+    rec = provenance.get(stage)
+    return rec if isinstance(rec, dict) else {}
+
+
+def stage_is_model(provenance, stage: str) -> bool:
+    rec = _stage_record(provenance, stage)
+    if rec.get("status") in FALLBACK_STAGE_STATUSES:
+        return False
+    if rec.get("fallback_from"):
+        return False
+    return rec.get("status") == "success" and rec.get("provider") in {"model", None}
+
 
 def live_eval_runtime_fields(
     provider=None,
@@ -29,34 +54,58 @@ def live_eval_runtime_fields(
     fallback_used=None,
     provider_type=None,
 ) -> dict[str, Any]:
-    """Surface stage provenance and whether output is a model prediction."""
+    """Surface per-stage provenance. Fallback on one stage does not poison others."""
     provenance = provenance if provenance is not None else getattr(provider, "stage_provenance", None)
     fallback_used = bool(
         fallback_used if fallback_used is not None else getattr(provider, "fallback_used", False)
     )
     provider_type = provider_type if provider_type is not None else getattr(provider, "provider_type", None)
     fallback_stages: list[str] = []
+    model_stages: list[str] = []
+    prediction_source_by_stage: dict[str, str] = {}
     if isinstance(provenance, dict):
         for stage, rec in provenance.items():
             if not isinstance(rec, dict):
                 continue
             if rec.get("status") in FALLBACK_STAGE_STATUSES or rec.get("fallback_from"):
                 fallback_stages.append(stage)
-    is_fallback = fallback_used or bool(fallback_stages)
-    if is_fallback:
+                prediction_source_by_stage[stage] = "rule-fallback"
+            elif rec.get("provider") == "rule":
+                prediction_source_by_stage[stage] = "rule"
+            elif rec.get("status") == "success":
+                model_stages.append(stage)
+                prediction_source_by_stage[stage] = "model"
+            else:
+                prediction_source_by_stage[stage] = str(rec.get("provider") or rec.get("status") or "unknown")
+    any_fallback = fallback_used or bool(fallback_stages)
+    impact_model = stage_is_model(provenance, "impact")
+    if provider_type == "rule" and not model_stages:
+        source = "rule"
+    elif impact_model and not fallback_stages:
+        source = "model"
+    elif impact_model and fallback_stages:
+        source = "mixed"
+    elif any_fallback:
         source = "rule-fallback"
     elif provider_type == "model+rule-fallback":
-        source = "rule-fallback"
-    elif provider_type == "rule":
-        source = "rule"
+        source = "mixed"
     else:
         source = "model"
     return {
         "stage_provenance": provenance,
-        "fallback": is_fallback,
+        "fallback": any_fallback,
         "fallback_stages": fallback_stages,
+        "model_stages": model_stages,
+        "prediction_source_by_stage": prediction_source_by_stage,
         "prediction_source": source,
-        "model_prediction": source == "model",
+        "model_prediction": impact_model,
+        "scorable": {
+            "disposition": impact_model,
+            "update": impact_model,
+            "target": impact_model,
+            "delta_content": stage_is_model(provenance, "delta"),
+            "epistemic_separation": stage_is_model(provenance, "extraction"),
+        },
     }
 
 
@@ -207,8 +256,11 @@ def run_case(case: LiveCase, *, dry_run: bool, db=None) -> dict[str, Any]:
         "cost": None,
         "fallback": None,
         "fallback_stages": [],
+        "model_stages": [],
+        "prediction_source_by_stage": {},
         "prediction_source": None,
         "model_prediction": None,
+        "scorable": None,
         "stage_provenance": None,
         "disposition": None,
         "kernel_matches": [],
@@ -290,6 +342,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--timestamp", default=None, help="Stable stamp for reproducible reports")
     parser.add_argument("--dry-run", action="store_true", help="Validate manifest and write a report without calling a model")
     args = parser.parse_args(argv)
+    if not args.dry_run:
+        from app.config import settings
+        from app.db import Base, engine
+        import app.models  # noqa: F401
+
+        if settings.auto_create_tables:
+            Base.metadata.create_all(bind=engine)
     manifest = load_manifest(args.manifest)
     stamp = args.timestamp or datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out_dir = args.out_dir or (ROOT / "eval" / "live" / "results" / stamp)

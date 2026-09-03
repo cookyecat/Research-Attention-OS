@@ -64,7 +64,12 @@ class ScopeContractFake(SemanticFakeChat):
 
     def _impact(self, user: str) -> dict:
         parsed = super()._impact(user)
-        source, rest = _split_marker(user, "Matches:")
+        source, rest = _split_marker(user, "Eligible cognitive targets:")
+        if not rest:
+            source, rest = _split_marker(user, "Matches:")
+        epistemic, after_locations = _split_marker(source, "Kernel locations:")
+        if after_locations:
+            source = epistemic
         matches = _load_json_blob(rest)
         if not isinstance(matches, list):
             matches = []
@@ -133,6 +138,8 @@ def test_impact_prompt_requires_scope_alignment():
     assert "narrower" in low
     assert "reinforce" in low
     assert "open_new" in low or "open new" in low
+    assert "location" in low
+    assert "epistemic" in low
     assert "refine" not in low or "do not emit refine" in low
     assert "kernel propositions" in IMPACT_USER.lower()
 

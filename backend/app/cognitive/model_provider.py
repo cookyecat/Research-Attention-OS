@@ -13,7 +13,7 @@ from app.cognitive.prompts import (
     EXTRACT_SYSTEM,
     extraction_user_prompt,
     IMPACT_SYSTEM,
-    IMPACT_USER,
+    impact_user_prompt,
     MATCH_SYSTEM,
     MATCH_USER,
 )
@@ -33,6 +33,9 @@ from app.services.cognitive_impact import (
     CognitiveImpactAssessment,
     features_from_impact,
     ground_effects,
+    is_location_node,
+    is_update_eligible_node,
+    node_proposition,
     resolve_target_importance,
 )
 from app.services.deltas import ModelDelta, PatchDraft, propose_patches
@@ -344,22 +347,73 @@ class ModelBackedCognitiveProvider:
         threatens_active_work: bool | None = None,
         nodes: list[KernelNode] | None = None,
     ) -> CognitiveImpactAssessment:
+        del text  # Impact judges epistemic objects, not the raw document.
+        nodes_by_id = {n.id: n for n in (nodes or [])}
+
+        def _location_row(match: KernelMatch) -> dict:
+            return {
+                "id": str(match.node_id),
+                "type": match.node_type,
+                "title": match.title,
+                "score": match.score,
+                "rel": match.relevance_type,
+                "role": "location",
+            }
+
+        def _target_row(match: KernelMatch) -> dict:
+            node = nodes_by_id.get(match.node_id)
+            proposition = node_proposition(node) if node is not None else (match.title or "")
+            scope = None
+            payload = getattr(node, "payload", None) or {}
+            if isinstance(payload, dict):
+                scope = payload.get("scope")
+            kind = "location" if is_location_node(match.node_type) else "epistemic_object"
+            return {
+                "id": str(match.node_id),
+                "type": match.node_type,
+                "title": match.title,
+                "proposition": proposition,
+                "scope": scope,
+                "score": match.score,
+                "rel": match.relevance_type,
+                "kind": kind,
+                "role": "optional_target" if is_location_node(match.node_type) else "cognitive_target",
+            }
+
+        locations = [_location_row(m) for m in matches]
+        eligible = [
+            _target_row(m)
+            for m in matches
+            if is_update_eligible_node(m.node_type) or is_location_node(m.node_type)
+        ]
         parsed: CognitiveImpactResponse = self._complete(
             IMPACT_SYSTEM,
-            IMPACT_USER.format(
-                text=text[:8000],
-                matches=json.dumps(
-                    [
-                        {
-                            "id": str(m.node_id),
-                            "type": m.node_type,
-                            "title": m.title,
-                            "score": m.score,
-                            "rel": m.relevance_type,
-                        }
-                        for m in matches
-                    ]
-                ),
+            impact_user_prompt(
+                claims=[
+                    {
+                        "text": c.text,
+                        "claim_type": str(c.claim_type),
+                        "attributed_to": c.attributed_to,
+                    }
+                    for c in extraction.claims
+                ],
+                observations=[
+                    {"text": o.text, "observation_type": str(o.observation_type)}
+                    for o in extraction.observations
+                ],
+                inferences=[{"text": i.text} for i in extraction.inferences],
+                evidence=[
+                    {
+                        "source_role": e.source_role,
+                        "target_role": e.target_role,
+                        "stance": str(e.stance),
+                        "strength": str(getattr(e, "strength", "") or ""),
+                        "scope": getattr(e, "scope", "") or "",
+                    }
+                    for e in (extraction.evidence or [])
+                ],
+                locations=locations,
+                eligible_targets=eligible,
                 is_duplicate=is_duplicate,
                 independent_source_count=independent_source_count,
                 secondary_report_count=secondary_report_count,

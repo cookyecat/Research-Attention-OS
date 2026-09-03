@@ -20,7 +20,22 @@ HYPE = ("reimagine", "lifestyle", "delight", "game-changing", "unlock a revoluti
 
 
 def _split_marker(user: str, marker: str) -> tuple[str, str]:
-    idx = user.lower().find(marker.lower())
+    """Split on a header. 'Kernel locations:' still matches if a parenthetical
+    sits between the words and the colon, so Kernel titles cannot leak into
+    source-side keyword checks.
+    """
+    hay = user.lower()
+    needle = marker.lower()
+    idx = hay.find(needle)
+    if idx < 0 and needle.endswith(":"):
+        prefix = needle[:-1].rstrip()
+        idx = hay.find(prefix)
+        if idx < 0:
+            return user, ""
+        colon = hay.find(":", idx)
+        if colon < 0:
+            return user, ""
+        return user[:idx], user[colon + 1 :]
     if idx < 0:
         return user, ""
     return user[:idx], user[idx + len(marker) :]
@@ -28,19 +43,21 @@ def _split_marker(user: str, marker: str) -> tuple[str, str]:
 
 def _load_json_blob(user: str) -> Any:
     text = user.strip()
-    for candidate in (text, text.split("\n", 1)[0]):
+    decoder = json.JSONDecoder()
+    for candidate in (text, text.split("\n", 1)[0] if "\n" in text else text):
         try:
             return json.loads(candidate)
         except json.JSONDecodeError:
             continue
-    start = text.find("[")
-    if start < 0:
-        start = text.find("{")
-    if start >= 0:
+    for start_char in ("[", "{"):
+        start = text.find(start_char)
+        if start < 0:
+            continue
         try:
-            return json.loads(text[start:])
+            obj, _end = decoder.raw_decode(text[start:])
+            return obj
         except json.JSONDecodeError:
-            return None
+            continue
     return None
 
 
@@ -131,6 +148,26 @@ class SemanticFakeChat:
             add_claim("High-frequency embodied control may face latency and energy costs.", "TECHNICAL", "USER", "user")
         if any(k in low for k in ("necessary for high-frequency", "opposite of the belief", "large unified models are necessary")):
             add_claim("A paper argues large unified models are necessary for high-frequency embodied motor control.", "TECHNICAL", "PAPER", "paper")
+        if all(p in low for p in ("high-level", "planning", "low-level", "controller")):
+            add_claim(
+                "A general model performs high-level planning. A separate low-level controller executes high-frequency motor control. The architecture is hierarchical.",
+                "TECHNICAL",
+                "PAPER",
+                "paper",
+            )
+        if "same large model" in low and "directly" in low and ("500 hz" in low or "high-frequency joint" in low):
+            add_claim(
+                "The same large model directly outputs high-frequency joint commands at 500 Hz, with no separate low-level controller.",
+                "TECHNICAL",
+                "PAPER",
+                "paper",
+            )
+        if "unified" in low and "brain" in low and "entire robot" in low:
+            add_claim("A unified AI brain controls the entire robot.", "OPINION", "UNKNOWN", "source")
+        if "beats baseline on benchmark" in low:
+            add_claim("Method X beats baseline on Benchmark A.", "TECHNICAL", "PAPER", "paper")
+        if "correlat" in low and "one deployment" in low:
+            add_claim("Feature Y correlates with higher success in one deployment.", "TECHNICAL", "PAPER", "paper")
         if any(k in low for k in ("scale differently", "semantic task intelligence")):
             add_claim("Repeated evidence suggests semantic task intelligence and temporal motor intelligence scale differently.", "TECHNICAL", "RESEARCHER")
         if any(k in low for k in ("mmlu", "minor model version")):
@@ -384,7 +421,12 @@ class SemanticFakeChat:
         return self._impact(user)
 
     def _impact(self, user: str) -> dict:
-        source, rest = _split_marker(user, "Matches:")
+        source, rest = _split_marker(user, "Eligible cognitive targets:")
+        if not rest:
+            source, rest = _split_marker(user, "Matches:")
+        epistemic, after_locations = _split_marker(source, "Kernel locations:")
+        if after_locations:
+            source = epistemic
         low = source.lower()
         parsed = _load_json_blob(rest)
         matches = parsed if isinstance(parsed, list) else []
@@ -438,6 +480,7 @@ class SemanticFakeChat:
             "GOAL": 0.9,
         }
         effects = []
+        location_types = {"GOAL", "PROJECT"}
         if hype_only:
             effects = []
         else:
@@ -448,18 +491,34 @@ class SemanticFakeChat:
                 nid = item.get("id")
                 rel = str(item.get("rel") or "").upper()
                 score = float(item.get("score") or 0.5)
-                if disagreement and ntype == "BELIEF":
+                if ntype in location_types and rel != "STRUCTURAL":
+                    continue
+                belief_challenge = ntype == "BELIEF" and any(
+                    k in low
+                    for k in (
+                        "opposite",
+                        "necessary for high-frequency",
+                        "contradict",
+                        "unsuitable",
+                        "joint commands",
+                        "500 hz",
+                        "no separate",
+                    )
+                )
+                if belief_challenge:
                     kind = "CHALLENGE"
                     change = max(score, 0.75)
+                elif ntype == "BELIEF":
+                    kind = "REINFORCE"
+                    change = max(score, 0.55)
                 elif rel == "STRUCTURAL" or ntype == "DECISION":
                     kind = "REINFORCE"
                     change = max(score, 0.75)
                 elif ntype in {"MODEL", "QUESTION", "BOTTLENECK"}:
                     kind = "REINFORCE"
                     change = max(score, 0.65)
-                elif motor or ntype == "PROJECT":
-                    kind = "REINFORCE"
-                    change = max(score, 0.7)
+                elif ntype in location_types:
+                    continue
                 else:
                     kind = "REINFORCE"
                     change = score
@@ -478,7 +537,7 @@ class SemanticFakeChat:
                     }
                 )
             if not effects:
-                if motor and not hype_only:
+                if (motor or structural) and not hype_only:
                     effects.append(
                         {
                             "target_kernel_node_id": None,
@@ -486,7 +545,7 @@ class SemanticFakeChat:
                             "change_magnitude": 0.55,
                             "epistemic_strength": 0.3,
                             "target_importance": 0.55,
-                            "reason": "No Kernel target; possible new research direction.",
+                            "reason": "Located near Kernel work, but no existing cognition is actually updated.",
                             "exploration_candidate": True,
                         }
                     )

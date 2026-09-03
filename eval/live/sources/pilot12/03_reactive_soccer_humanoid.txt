@@ -1,0 +1,1009 @@
+S c i e n c e R o b o t i c s | R e s e ar c h A r t i c l e
+HUMANOID ROBOTS
+
+Learning vision-­driven reactive soccer skills for
+humanoid robots
+Yushi Wang1,2, Changsheng Luo1, Penghui Chen1,2, Jianran Liu2, Weijian Sun2, Tong Guo1,
+Kechang Yang3, Biao Hu3, Yangang Zhang2, Mingguo Zhao1,4,5*
+
+Copyright © 2026 The
+Authors, some rights
+reserved; exclusive
+licensee American
+Association for the
+Advancement of
+Science. No claim to
+original U.S.
+Government Works
+
+INTRODUCTION
+
+Soccer stands as a globally celebrated sport that epitomizes the pinnacle of human sensorimotor intelligence. Mastery of the game demands
+not only physical prowess but also an intuitive perception-­action coupling that enables a seamless fusion of acute visual perception, rapid
+decision-­making, and adaptive sensorimotor coordination. Human
+players track a fast-­moving ball, anticipate opponents’ actions, adjust
+their posture midstride, and strike with precise timing and force. These
+capabilities are precisely what humanoid robots require to operate
+autonomously in unstructured, dynamic environments. Unlike benchmarks that target either locomotion or manipulation skills, robot soccer serves as a focused testbed that compresses a broad spectrum of
+essential robotic competencies into a single continuous task, offering a
+practical arena that drives technological advances toward human-­level
+embodied intelligence in the real world.
+However, reproducing even the most basic soccer skills on humanoid robots remains a substantial challenge. The robot is required to
+generate long-­horizon behaviors that satisfy complex task demands
+while continuously adapting its motion in real time to rapidly changing sensory feedback. These challenges are further amplified by onboard visual perception that is noisy, delayed, and spatially constrained
+during dynamic motion, leading to distorted or incomplete observations of the environment state. The controller must remain robust and
+generalizable when exposed to disturbances introduced by competitive physical interactions and visually cluttered environments. To
+overcome these obstacles, the robot requires advanced locomotion
+1
+
+Department of Automation, Tsinghua University, Beijing 100084, China. 2ByteDance
+Seed, Beijing 100080, China. 3College of Engineering, China Agricultural University,
+Beijing 100083, China. 4Beijing Key Laboratory of Embodied Intelligence Systems,
+Beijing 100084, China. 5Institute for Embodied Intelligence and Robotics, Tsinghua
+University, Beijing 100084, China.
+*Corresponding author. Email: mgzhao@​tsinghua.​edu.​cn
+
+Wang et al., Sci. Robot. 11, eaed1152 (2026)
+
+19 August 2026
+
+capabilities, reliable visual tracking of dynamic targets, and rapid adjustment of foot placement and body orientation, ultimately achieving
+successful strikes through precise synchronization of timing, angle,
+and force. Achieving such tightly coupled perception-­action competence goes far beyond conventional locomotion control and becomes
+even more challenging under real-­world deployment constraints.
+Robot soccer has attracted substantial research attention, particularly under the auspices of RoboCup (1). Classical systems typically
+adopt modular pipelines that decompose the problem into separate
+perception, planning, and control components (2). Although such
+designs offer engineering convenience and interpretability, they often require extensive manual tuning and struggle to achieve agile
+and reactive behaviors in dynamic environments, given that effective
+responses rely heavily on accurate perception estimates. Learning-­
+based approaches have also been explored for robot soccer, with
+some studies focusing on isolated skills such as running (3), dribbling (4–7), shooting (8), or goalkeeping (9), whereas others target
+high-­level strategic planning such as team coordination (10, 11).
+However, these methods largely continue to decompose soccer into
+separate skills, limiting their ability to produce integrated and reactive behaviors.
+A major paradigm shift emerged with the introduction of end-­
+to-­end reinforcement learning (RL) for humanoid soccer, where
+unified policies were trained to acquire long-­horizon behaviors (12).
+This study demonstrated the feasibility of learning compound soccer behaviors through RL and represented a milestone for humanoid sports research. However, the learned policy relied on privileged
+state information provided by a motion capture system, which precluded deployment beyond laboratory environments and limited its
+applicability in real-­world settings. Although the subsequent work
+(13) extended this framework toward vision-­based control by incorporating egocentric perception rendered through neural radiance
+1 of 14
+
+Downloaded from https://www.science.org on August 20, 2026
+
+Humanoid soccer poses a representative challenge for embodied intelligence, requiring robots to coordinate agile locomotion with unreliable visual perception in dynamic environments. However, existing systems typically
+rely on modular pipelines that separate perception from control or assume ideal sensing, making it difficult to
+achieve coherent and reactive behavior under real-­world perceptual limitations. In this work, we present a unified
+reinforcement learning–based controller that enables humanoid robots to learn vision-­driven reactive soccer
+skills by directly coupling visual perception with locomotion control. The robot is trained in simulation to acquire
+soccer behaviors, and adversarial motion priors guide policy learning toward natural motion patterns. To support
+robust performance under imperfect sensing, we introduce an encoder-­decoder architecture together with a virtual perception system that models key characteristics of onboard vision, exposing the policy to perceptual noise
+and detection failures during training. This design encourages the policy to internalize perceptual uncertainty
+and continuously adapt its motion in a closed loop. The resulting controller produces coordinated soccer behaviors using only onboard vision, including ball searching, chasing, and multidirectional kicking. It reduces ball position estimation error by 46% and shortens time-­to-­kick by up to 64% compared with a rule-­based baseline,
+achieving around 90% kicking success in frontfield positions. Experiments across diverse environments and dynamic scenarios, including real RoboCup competitions, further demonstrate the robust performance of the controller. These results highlight the practical effectiveness of integrating perceptual uncertainty directly into policy
+learning for achieving reliable vision-­driven behaviors in humanoid robots operating under real-­world conditions.
+
+S c i e n c e R o b o t i c s | R e s e ar c h A r t i c l e
+
+Wang et al., Sci. Robot. 11, eaed1152 (2026)
+
+19 August 2026
+
+2 of 14
+
+Downloaded from https://www.science.org on August 20, 2026
+
+fields (14) during training, it still depended on computationally in- visual inputs and fuses them with odometry to support long-­horizon
+tensive scene-­specific modeling and training, restricting scalability spatial awareness. Built on this abstraction, a virtual perception systo real-­world scenarios. Moreover, the sim-­to-­real transfer exhibited tem emulates key characteristics of onboard vision, thereby exposnoticeable degradation in reactivity and success rate, highlighting the ing the policy to realistic sensing imperfections during simulation
+persistent challenges of robust visual perception and control cou- training. An encoder-­decoder architecture further compresses noisy
+pling in physical humanoid systems. Consequently, a vision-­driven observations into compact latent representations for control, forcing
+reactive humanoid controller capable of robust soccer behaviors in the policy to internalize imperfect sensory feedback and implicitly
+real-­world environments remains an open challenge.
+infer privileged states in its latent dynamics. This design allows perBeyond soccer, RL has driven advances in humanoid control, en- ceptual uncertainty to directly influence locomotion strategy and
+abling robust and agile behaviors such as running (15), jumping (16), motion generation, resulting in adaptive and reactive behaviors unparkour (17), and fall recovery (18, 19). Recently, learning from dem- der real-­world sensing constraints. Collectively, our work demononstrations has emerged as a popular framework, empowering hu- strates that a unified policy can effectively couple perception and
+manoid robots to replicate specific human behaviors in an expressive, locomotion to achieve robust vision-­driven soccer behaviors on
+humanlike manner, including stylized walking, dancing, leg kicks, and physical humanoid robots.
+acrobatic flips (20–25). By providing structured guidance from expert
+Extensive experiments validated the controller’s ability to execute
+data, these approaches substantially reduce exploration complexity agile and reactive soccer behaviors across diverse scenarios using
+and bias policy optimization toward desired behaviors (26). The most only onboard vision, including ball searching, chasing, and multidiwidely adopted feature-­based approaches, established by DeepMimic rectional kicking. The policy actively searched for and tracked the
+(27), construct dense tracking rewards on the basis of handcrafted mo- ball while implicitly compensating for perception noise, exhibiting
+tion features to achieve high-­fidelity imitation. Although effective in tight perception-­action coordination. By dynamically adapting its
+reproducing detailed motion patterns, such formulations rely on rigid gait to the ball’s position, the policy achieved fast and powerful shots
+temporal alignment and exhibit reduced adaptability. Subsequent work while maintaining stability. As the champion team of the Adult-­Size
+sought to improve flexibility via supervised distillation (28), hierarchi- Humanoid League in RoboCup 2025 and the 2025 World Humanoid
+cal generation of reference motions (29), or latent motion embeddings Robot Games, we further showcased the practical efficacy of the pro(4, 30–32), often at the cost of increased system complexity and multi- posed method in real-­world competitive settings, where the robot
+stage training pipelines. In contrast, generative adversarial network operated under strict sensing and interaction constraints yet deliv(GAN)–based approaches (33–37) have introduced another alterna- ered a strong performance.
+tive by learning implicit motion distributions from expert demonstrations and integrating imitation with task optimization. These methods
+avoid explicit temporal alignment and allow flexible adaptation to task RESULTS
+objectives, with further improvements achieved using Wasserstein Movie 1 summarizes the main results of our work. We evaluated the
+GAN formulations (38–40) to mitigate limitations like discriminator proposed learning framework through extensive simulations and
+saturation and mode collapse. Despite their promise, existing studies real-­world experiments. The results demonstrated that the learned
+primarily focus on motion imitation using proprioceptive or privileged policy enabled reactive soccer skills, seamlessly integrating real-­time
+state information, overlooking the integration of exteroceptive sensing ball tracking, agile locomotion, and accurate kicking while maintainand perception-­action coupling, which are indispensable for dynamic ing robust performance across diverse scenarios. We further analyzed
+and interactive tasks such as robot soccer.
+In this work, we formulate humanoid
+soccer as a perception-­constrained control problem. Moving beyond modular
+pipelines and idealized perception assumptions, we explicitly model realistic
+perceptual uncertainty as an integral component of the learning dynamics rather
+than treating perception as a preprocessing module that provides inputs to the
+controller. To this end, we developed a
+vision-­driven reactive control framework
+that tightly couples visual perception with
+locomotion, enabling the policy to internalize uncertainty and continuously adapt
+its motion in a closed loop. The robot is
+trained via RL to kick a ball toward the
+goal in a simulated soccer environment,
+and adversarial motion priors (AMP) (33)
+guide policy optimization toward expert-­
+like motion patterns. We designed a compact perception abstraction that extracts Movie 1. Summary of results and method. Our approach enables humanoid robots to perform vision-­driven reactask-­relevant structured cues from raw tive soccer skills under diverse conditions.
+
+S c i e n c e R o b o t i c s | R e s e ar c h A r t i c l e
+emergent perceptual and gait behaviors to reveal how the policy coupled visual cues with motion control.
+
+Wang et al., Sci. Robot. 11, eaed1152 (2026)
+
+19 August 2026
+
+3 of 14
+
+Downloaded from https://www.science.org on August 20, 2026
+
+We further validated the system’s ability to sustain extended rounds.
+As demonstrated in Movie 1, the policy successfully adapted to multiple balls placed at various locations on the field, enabling continuous
+System overview
+kicking with diverse and coherent behaviors. In interactive matches
+We deployed our policy on the Booster T1, a humanoid robot mea- against a human goalkeeper, the robot adjusted its movements to
+suring ∼1.2 m in height and 30 kg in mass. Booster T1 has been maintain consistent contact with the ball, continuously tracking and
+used as a humanoid platform for locomotion control (19), locoma- executing shots, and even occasionally overcoming the human denipulation (41, 42), navigation (43), and the development of RL al- fense. When ball tracking was temporarily lost, the robot exhibited acgorithms (44) and suites (45–47). For the present work, no specific tive visual search behaviors, thereby ensuring continuity in kicking and
+modifications were made to the robot’s original hardware. The robot enabling long-­duration interactions.
+is equipped with an Intel RealSense Depth Camera D455i, mounted
+The proposed controller was adopted as a module by the Tsinghua
+on its head with two joints to control its yaw and pitch orientation Hephaestus team in both the RoboCup 2025 Adult-­Size Humanoid
+during dynamic movements, allowing for active ball and field per- League and the 2025 World Humanoid Robot Games, where the team
+ception. We trained the soccer policy in simulation and deployed it won championships with 76 goals scored and only 11 conceded. In
+directly onto the real robot. As illustrated in Fig. 1, images captured these competitions, robots were required to operate fully autonomousby the camera are processed by the detection pipeline and projected ly, relying exclusively on onboard computation and sensing, and the
+into bird’s-­eye-­view (BEV) coordinates on the onboard Jetson AGX use of sensors exceeding human sensory capabilities, such as LIDAR
+Orin at 25 Hz. The policy receives proprioception data, ball detec- (light detection and ranging) or multiple camera systems, was strictly
+tions, and goal information from a separate odometry module, gen- prohibited. Moreover, adaptation time to the actual competition venue
+erating joint position commands at a frequency of 50 Hz.
+was highly limited. These factors collectively presented substantial
+challenges to the deployment of our method. Despite these constraints,
+Soccer skills performance
+our approach demonstrated its effectiveness and agility, contributing to
+We deployed the proposed controller across a diverse range of sce- multiple successful goals during the competitions. By enabling agile
+narios to assess its ability to execute robust reactive soccer skills, as kicking motions, this approach allowed the robot to gain an advantage
+shown in Fig. 2. The evaluation encompassed various surface types, in- in ball possession against opponents. The method also exhibited robust
+cluding grass, slabstone, soil, asphalt, and rubber, each characterized by performance in challenging scenarios, including accurate long-­range
+distinct terrain properties that led to varied interaction dynamics. In shots from the touchline midpoint and reliable operation despite visual
+addition, visual conditions such as color and illumination varied occlusion and external physical disturbances. To clarify how the prosubstantially across scenarios, occasionally causing detection failures. posed controller was integrated into the full RoboCup system, we deNotably, the controller was trained entirely in simulation without incor- scribe details of the deployment architecture used in real matches in
+porating data from these environments and was deployed to the real-­ the Supplementary Materials.
+world zero-­shot. Despite these challenges, the controller demonstrated
+robust adaptation, consistently achieving reliable ball tracking and lo- Kicking success rates
+comotion. Even in scenarios lacking field landmarks, the robot sus- We evaluated the proposed policy by measuring success rates across
+tained robust soccer performance using proprioceptive odometry.
+different regions of the soccer field, following the adult-­size specifications of the RoboCup Humanoid League.
+At the start of each trial, the ball was
+placed at predefined positions on the field,
+whereas the robot was always initialized at
+the center. A trial was considered successful if the robot kicked the ball into the goal
+and failed if the robot fell or the ball went
+out of bounds. If the ball remained in play,
+the robot was permitted to attempt additional kicks. Consecutive trials were conducted for each region, and the resulting
+success rates are summarized in Fig. 3A.
+We first evaluated the policy in simulation. To ensure consistency, external
+disturbances such as uneven terrain and
+physical perturbations to the ball or robot were removed, whereas the virtual
+perception system modeled after real-­
+world visual characteristics was retained.
+This setup allowed for a comprehensive
+Fig. 1. System overview. The real-­world robot is equipped with an onboard camera for visual perception. Image evaluation of the vision-­driven pipeline,
+detections are projected into the BEV space. Ball detections are provided directly to the policy, and field landmarks from perception to motor execution, reare processed by an odometry module to infer the goal location from long-­term information. The perception pipeline quiring the robot to handle perceptual
+is designed to efficiently extract and represent visual features for the RL policy.
+noise, accurately localize the ball, and
+
+S c i e n c e R o b o t i c s | R e s e ar c h A r t i c l e
+A
+
+D
+
+B
+
+C
+
+E
+
+F
+
+Downloaded from https://www.science.org on August 20, 2026
+
+G
+
+H
+
+I
+
+J
+
+K
+
+L
+
+Fig. 2. Performance of the controller in various scenarios. (A to C) Real match performance at the World Humanoid Robot Games. (D to F) Real match performance at
+RoboCup. (G to I) Reactive responses and real-­time adaptation to the ball. (J to L) Robust behavior across varying terrain and visually diverse environments.
+
+generate appropriate kicking motions. Results demonstrated the high
+reliability of the policy in executing soccer skills. In regions close to
+the goal, success rates were particularly high, reaching ∼90%, with
+only occasional failures. Performance declined as the distance from
+Wang et al., Sci. Robot. 11, eaed1152 (2026)
+
+19 August 2026
+
+the goal or angular offsets relative to the goal’s normal direction
+increased. This reduction was primarily due to tighter tolerance for
+kicking angle accuracy, especially in backfield regions, where angular deviations exceeding ±10° resulted in missed shots. In addition,
+4 of 14
+
+S c i e n c e R o b o t i c s | R e s e ar c h A r t i c l e
+A
+
+B
+
+C
+
+Downloaded from https://www.science.org on August 20, 2026
+
+D
+
+E
+
+Fig. 3. Validation and behavior analysis. (A) The background grid color represents the success rate of 8192 simulation tests, and the circles indicate the success rate of
+10 consecutive hardware tests. Owing to effective alignment, our policy delivers reliable hardware performance that closely matches simulation results. (B) The robot
+searches for the ball in the distance when starting near the field edge, guided by the policy’s estimated ball position. (C) The robot turns to search for the ball behind itself
+when it is near the field center. (D and E) The robot’s foothold locations and timing reveal adaptive gaits with shorter strides and faster cadence, enabling effective adjustment before kicking, as illustrated by the forward and backward kick examples.
+
+Wang et al., Sci. Robot. 11, eaed1152 (2026)
+
+19 August 2026
+
+5 of 14
+
+S c i e n c e R o b o t i c s | R e s e ar c h A r t i c l e
+success rates were lower when the ball was positioned directly along
+the line between the robot and the goal, given that the robot struggled
+to select the appropriate kicking foot, and when the ball was placed
+very close to the robot, because the limited time constrained accurate ball localization and gait adaptation. Nevertheless, the robot
+achieved successful kicks in most of the tested regions.
+We further validated the policy on the physical robot. The hardware experiments achieved success rates comparable to those observed
+in simulation, with ∼80 to 90% success in the frontfield positions
+and 60 to 70% success in the more challenging backfield regions
+over 10 consecutive tests per position. These findings confirmed
+that the virtual perception system effectively bridged the gap between simulation and the real world. Notably, the robot remained
+stable throughout all trials, with no falls recorded, underscoring the
+robustness of the proposed policy. These results collectively demonstrated the effectiveness of our controller in real-­world settings.
+
+Perception-­action coordination
+We investigated the policy’s perception-­action coordination, emphasizing its active adjustment of the robot’s torso and head orientations to
+sustain robust ball tracking under partially observable perceptual conditions. As illustrated in Fig. 4C, this behavior enabled the policy to
+keep the ball in the camera’s field of view (FOV) for the majority of the
+time. This active perceptual behavior, together with successful kick execution, was preserved even when explicit ball-­tracking rewards were
+removed. However, incorporating such rewards encouraged the robot
+to maintain the ball near the center of its FOV rather than at the periphery, thereby improving robustness in real-­world deployment. We further examined the active perception capability in dynamic scenarios. As
+shown in Fig. 4E, when the ball rolled toward the edge of the FOV, the
+policy adaptively rotated the robot’s head and torso toward the direction in which the ball was leaving the view, successfully repositioning it
+in the camera’s view to sustain tracking. The ball positions estimated by
+B
+
+C
+
+D
+
+Downloaded from https://www.science.org on August 20, 2026
+
+A
+
+E
+
+Fig. 4. Perception-­action coordination. (A) Training curves for different methods, reporting overall success rates in disturbed training environments. (B) Kick and goal-­
+scoring success rates under visual occlusion, evaluated over 8192 simulation trials per occlusion duration. Occlusion is simulated by synthetically canceling ball detections
+when the robot reaches within 1.4 m of the ball (∼1 s before kicking). (C) Distribution of angular distance between the ball and the camera center, evaluated over 1000
+steps across 2048 environments. The shaded area indicates the camera’s FOV. (D) Proportion of ball perception, average perception error, and policy’s ball position estimation error across 4096 kicking tests. (E) The policy’s estimate predicts the ball’s movement when the ball is removed from the robot’s FOV, guiding the robot to reacquire
+visual detection of the ball along the direction in which it disappeared.
+Wang et al., Sci. Robot. 11, eaed1152 (2026)
+
+19 August 2026
+
+6 of 14
+
+S c i e n c e R o b o t i c s | R e s e ar c h A r t i c l e
+
+Wang et al., Sci. Robot. 11, eaed1152 (2026)
+
+19 August 2026
+
+7 of 14
+
+Downloaded from https://www.science.org on August 20, 2026
+
+the decoder network in the policy confirmed that the robot deliberately consistently corresponded to field regions to be explored. For examoriented itself toward the predicted trajectory of ball motion.
+ple, while moving toward the center, the estimates often pointed to
+We further analyzed the policy’s ball position estimation and its distant outer areas, guiding the robot to expand its search range. Simalignment with the ground-­truth position. As shown in Fig. 4D, ilarly, when turning to scan behind, the estimates shifted to rearward
+compared with the raw visual perception, the policy’s estimates ex- regions not yet surveyed. This close coupling between search behavhibited substantially reduced noise, with the minimum root mean iors and predictive estimates highlighted the policy’s capacity to intesquare error in the last 1 s before kicking decreasing from 0.344 to grate spatial awareness of unexplored areas into decision-­making,
+0.186 m. This demonstrated the policy’s effectiveness in denoising thereby improving ball localization efficiency.
+perceptual data. Considering that the length of the robot’s arch is
+only 0.23 m, such an improvement is essential for accurate ball po- Gait behavior analysis
+sitioning and reliable strikes. This capability arose from the encoder-­ We analyzed the gait behaviors exhibited by our controller. Following
+decoder architecture in the policy network, where latent states retain the approach in (12), we applied Uniform Manifold Approximation
+ball information over a 1-­s observation window to achieve accurate and Projection (UMAP) (48) to reduce the dimensionality of the
+estimates. If the decoder was removed during policy training and joint-­space trajectories generated by our policy into a two-­dimensional
+trained separately afterward to estimate the ball position from latent (2D) space for visualization. As shown in Fig. 5, the resulting embeddings revealed five distinct gait clusters, corresponding to walking,
+states, the resulting predictions remained at the noise level.
+To further evaluate the robustness of this perception-­action coordi- turning left, turning right, left-­foot kicking, and right-­foot kicking.
+nation under transient perceptual failures, we examined the policy’s These results demonstrated that our controller produced a versatile set
+responsiveness to sudden visual occlusions. Specifically, we artificially of behaviors in a single policy and transitioned smoothly among
+disabled ball detection inputs for durations ranging from 0.1 to 1.0 s them, enabling coherent execution of tasks such as searching, chasing,
+before kicking in simulation. Given that the policy receives object-­ and kicking the ball. To further evaluate the effectiveness of AMP, we
+centric detection outputs rather than raw images, the synthetic occlu- projected the reference motion dataset into the same space. The policy
+sion is equivalent to temporary loss of ball observations caused by real trajectories broadly covered the dataset, indicating successful integravisual occlusions at the policy input level. As shown in Fig. 4B, when the tion of demonstrated motions, and extended beyond it to synthesize
+occlusion duration was no more than 0.3 s, the robot successfully kicked task-­specific behaviors. A representative example was the pivot hook
+the ball in more than 90% of trials and maintained a goal-­scoring suc- kick observed when the goal was behind the robot. In this case, the
+cess rate exceeding 50%. For longer occlusions, the robot failed to kick robot pivoted on the supporting foot and swung the kicking leg laterthe ball in ∼40% of trials, whereas the remaining trials still resulted in ally to hook the ball, eliminating the need for a full-­body rotation
+kicks but with markedly reduced precision. Similar qualitative behav- and thereby reducing execution time. This underscored the policy’s
+iors were also observed in real-­world experiments (Movie 1). Under short visual
+occlusions of ∼0.3 s, the robot continued
+chasing the ball and successfully completed the kick. In contrast, for longer occlusions of around 0.6 s, the robot lost track of
+the ball after the occlusion and switched to
+rotational search behaviors, likely because
+the prolonged absence of observations led
+the policy to interpret the ball as having left
+the FOV. These results suggested that the
+policy retained short-­term memory under
+temporary loss of visual observations.
+During the ball-­search phase, the policy also exhibited an adaptive strategy
+tailored to field position, as illustrated
+in Fig. 3 (B and C). When the robot was
+near the field edges, it first reoriented toward the center, enabling a wide visual
+sweep of the playing area. It then tended
+to move toward the central region, which
+provided a positional advantage for detecting balls located in distant corners or
+along the perimeter. Upon reaching the
+center, the robot switched to a rotational
+scanning pattern, covering all spatial zones
+to ensure full visual coverage. The search- Fig. 5. Versatile gait behaviors. Visualization of 20,000 collected joint-­space trajectory frames together with the
+ing strategy was strongly supported by reference motion dataset reduced to a 2D plane using UMAP. Five distinct clusters highlight the policy’s ability to inthe policy’s ball position estimates dur- tegrate reference motions and generalize beyond them to generate task-­specific behaviors. From each major cluster,
+ing the search. The predicted coordinates a representative trajectory is selected to illustrate the corresponding behavior.
+
+S c i e n c e R o b o t i c s | R e s e ar c h A r t i c l e
+
+A
+
+proximity and movement state. As illustrated in Fig. 3 (D and E),
+when the robot was at a greater distance from the ball, it used a gait
+with a slower step frequency, leading to a gait cycle duration of ∼0.7
+to 0.8 s, allowing the robot to maintain consistent visual tracking of
+the ball while conserving energy. In contrast, as the robot approached
+the ball, a notable increase in step frequency was observed, with the
+gait cycle duration reduced to ∼0.3 to 0.4 s, producing shorter and
+more rapid strides for accurate adjustment of foot placement in the
+vicinity of the ball. This accelerated gait pattern enhanced the robot’s
+maneuverability, enabling it to make subtle positional corrections to
+ensure alignment with the optimal kicking position.
+This gait adjustment became even more pronounced when chasing a rolling ball. When the ball rolled in front of the robot, the policy
+triggered rapid lateral steps in an attempt to intercept its trajectory
+before it moved out of range (Fig. 7A). Furthermore, agile turning
+behavior was exhibited when the ball rolled from the robot’s side toward its rear (Fig. 7B). In such scenarios, the robot executed a rapid
+rotational maneuver, where one foot pushed off the ground while the
+other pivoted, enabling full reorientation in as few as two steps, thereby retaining visual contact with the ball. To quantitatively evaluate the
+policy’s responsiveness and robustness to rolling balls, we conducted
+real-­world experiments in which the robot started at the field center
+while the ball rolled laterally from a position 3 m in front of and 1.5 m
+to the right of the robot at different initial speeds (movie S2). Because
+of unavoidable friction in real-­world settings, the ball velocity inevitably decayed during pursuit. To obtain a more systematic characterization, we further performed simulations with constant ball speeds
+ranging from 0.1 to 1.0 m/s under otherwise identical conditions.
+For direct comparison, the real-­world results were aligned with simulation according to the approximate average ball velocity during
+pursuit, as summarized in Fig. 7C. The policy maintained stable performance for rolling speeds below 0.5 m/s, exhibiting no substantial
+increase in time-­to-­kick and retaining a success rate of more than
+
+C
+
+D
+
+B
+
+E
+
+F
+
+Fig. 6. Comparison of the learned policy versus a rule-­based strategy representative of the current RoboCup state of the art. (A and B) Time from robot start to ball
+contact and the maximum angular velocity of the robot during this process, measured across various approach angles. The robot starts stationary from a 1.5-­m distance.
+Shaded regions indicate the SD, calculated from five tests per direction. (C and D) Representative behaviors when the robot kicks the ball forward (0°) and backward (180°)
+with the rule-­based strategy. (E and F) The learned policy enables the robot to integrate approaching and kicking the ball.
+Wang et al., Sci. Robot. 11, eaed1152 (2026)
+
+19 August 2026
+
+8 of 14
+
+Downloaded from https://www.science.org on August 20, 2026
+
+capacity to compose novel behaviors beyond demonstrated motions,
+effectively adapting to task requirements.
+We compared the learned policy with a state-­of-­the-­art rule-­based
+soccer strategy used by the runner-­up team in the RoboCup Humanoid
+League. The rule-­based approach leveraged the robot’s built-­in walking
+controller and relied on preprogrammed behavior trees to generate velocity commands for decision-­making. In our experiment, the ball was
+positioned at the center of the field, and the robot was initialized on a
+circle with a 1.5-­m radius centered on the ball. As illustrated in Fig. 6,
+we quantitatively evaluated performance in terms of kicking time and
+agility. Kicking time was defined as the interval between the onset of
+movement and the moment the ball was kicked out. Using the rule-­
+based strategy, the process required ∼2 s when the robot was oriented
+toward the goal but increased to about 5 s when the target direction was
+located behind the robot. This delay resulted from the need for extensive rotation and fine positional adjustments around the ball to achieve
+proper alignment. In contrast, the learned policy consistently achieved
+shorter times of ∼1.5 s across all orientations, with only minor variation. This improvement could be attributed to its capacity for dynamically adjusting foot placement, enabling a seamless transition from
+approaching the ball to executing the kick. Notably, the policy integrated the kicking motion into the final step of the approach gait
+rather than preceding it with a distinct preparatory phase. This compact motion pattern minimized execution delay and facilitated reactive kick behavior during ball interactions. We further analyzed the
+robot’s maximum angular velocity during the kicking process to assess agility. Although not a complete measure of agility, this metric
+reflected the presence of agile behavior. The learned policy attained
+higher turning speeds of 3 to 4 rad/s across all tested orientations,
+compared with ∼2 rad/s for the rule-­based strategy, underscoring its
+greater agility in aligning with the target direction.
+We further analyzed the gait characteristics exhibited by the policy
+during ball tracking, revealing adaptive patterns tailored to the ball’s
+
+S c i e n c e R o b o t i c s | R e s e ar c h A r t i c l e
+A(i)
+
+B(i)
+
+A(ii)
+Downloaded from https://www.science.org on August 20, 2026
+
+B(ii)
+
+C
+
+Fig. 7. Reactive kicking with rolling balls. (A) Agile lateral movement and kicking when the ball rolls horizontally: (i) robot and ball trajectories together with the corresponding foot contact patterns and (ii) snapshots of the robot’s behavior. (B) Agile turning and kicking when the ball rolls toward the robot’s rear, with (i) and (ii) showing the same types of results as in (A). (C) Kick and goal-­scoring success rates and time-­to-­kick versus ball velocity. Simulation results are shown as bars based on 8192
+trials per velocity, and real-­world results are shown as triangle markers based on 10 trials per velocity. Error bars indicate the SD across the simulation trials.
+
+50%. At higher speeds, the increased difficulty of rapid pursuit and precise foot placement led to longer interception times and a gradual decline in success rate. Real-­world experiments followed trends consistent
+with simulation and exhibited comparable response times, indicating
+effective sim-­to-­real transfer. The higher success rates observed on hardware were attributed to velocity decay during pursuit, which reduced the
+difficulty of interception. Collectively, these results demonstrated the
+policy’s ability to reactively couple visual feedback of ball motion with
+agile locomotion and precise kicking under dynamic conditions.
+Wang et al., Sci. Robot. 11, eaed1152 (2026)
+
+19 August 2026
+
+DISCUSSION
+
+In this work, we enabled reactive soccer skills for humanoid robots
+in challenging real-­world environments through an RL-­based controller that tightly integrated visual perception with agile locomotion. Building on the AMP framework, our approach incorporated
+perceptual feedback into the learning process, allowing the policy to
+acquire versatile soccer behaviors from human demonstrations while
+responding reactively to visual inputs. To achieve this, we introduced
+an encoder-­decoder architecture together with a virtual perception
+9 of 14
+
+S c i e n c e R o b o t i c s | R e s e ar c h A r t i c l e
+
+Wang et al., Sci. Robot. 11, eaed1152 (2026)
+
+19 August 2026
+
+This restricts its ability to perform complex team behaviors such as
+collaborative passing, defensive interception, or dynamic role allocation. A natural direction for future work is to extend the training
+framework to multiagent environments and augment the observation
+space with real-­time observations of other robots, enabling dynamic
+cooperation and adversarial adaptation in complex team-­based soccer scenarios. Second, although the policy demonstrates reliable walking and adaptive kicking across varied ball and goal configurations,
+it still falls short of reproducing the broader range of soccer behaviors observed in human play, such as dribbling, ball trapping, or
+strategic passing. This gap stems primarily from the policy’s limited
+ability to identify context-­specific action requirements across different situations, such as determining when to prioritize maintaining
+possession of the ball rather than striking it. The current training
+objective, which emphasizes goal-­scoring outcomes, tends to drive
+the policy toward a limited set of movement patterns. Incorporating
+strategic priors or task-­level decision cues, analogous to the tactical
+planning used by human players, could promote the emergence of
+richer and more context-­aware behaviors, bringing the robot’s performance closer to human-­level capabilities.
+In conclusion, this study demonstrates that incorporating perceptual characteristics into the learning framework enables humanoid
+robots to acquire vision-­driven soccer skills that transfer robustly
+from simulation to the real world. As humanoid robots move toward
+deployment in dynamic and unstructured environments, the ability
+to integrate perception with motion control will become increasingly
+essential for effective interaction with the physical world. Beyond the
+specific domain of soccer, our results suggest an approach for advancing real-­world humanoid capabilities through the integrated learning
+of perception and action, bringing robots closer to autonomous and
+adaptive embodied systems.
+MATERIALS AND METHODS
+
+Our main objective was to develop a system that enabled humanoid
+robots to kick the ball into the goal with onboard vision. An overview of our method is presented in Fig. 8.
+Training environment
+We trained the policy using RL in simulation and then transferred it
+to the real world. The simulation environment, constructed using
+NVIDIA Isaac Gym, comprised a robot and a ball on a soccer field.
+The field dimensions adhered to the adult-­size specifications of the
+RoboCup Humanoid League, measuring 14 m in length and 9 m in
+width, with two goals (each 2.6 m in width) positioned at opposite
+ends. With reference to the general characteristics of standard size
+5 soccer balls, we randomized the ball mass, friction, and restitution
+during training to capture diverse ball-­robot and ball-­terrain interaction dynamics, with detailed parameter ranges provided in the
+Supplementary Materials. Despite the flat terrain of the deployed
+real-­world field, mild terrain unevenness was incorporated during
+the training process to facilitate more stable locomotion in real-­
+world scenarios while enriching the diversity of ball-­terrain contact dynamics.
+At the start of each episode, the robot and the ball were randomly initialized in the field. An episode terminated when the robot fell,
+the ball went out of bounds, a goal was scored, or a time limit of 60
+s was reached. To facilitate the robot’s learning of continuous kicking skills, when the ball went out of bounds or entered the goal, only
+10 of 14
+
+Downloaded from https://www.science.org on August 20, 2026
+
+system based on a compact perception abstraction that promoted consistent visual representations across simulation and the real world.
+These components effectively bridged the mismatch between noisy
+real-­world perception and the precise motion control required for stable kicking, enabling robust motion imitation under real-­world constraints and reliable policy execution across diverse environments.
+The practical efficacy of the proposed controller was confirmed
+through experiments across a range of real-­world conditions. The
+humanoid robot maintained stable and fluent soccer performance
+across varied terrains, adapting seamlessly to variations in interaction dynamics and visual noise while exhibiting high agility and responsiveness. This adaptability manifested in dynamic movement
+adjustments to varying ball positions and trajectories, with the robot achieving faster ball possession compared with rule-­based strategies and reactively responding to rolling balls. This superiority was
+further validated in the RoboCup Humanoid League competition,
+where the robot successfully scored goals under strict constraints.
+These results underscore the practical value of our approach in real-­
+world competitive settings.
+The use of an adversarial discriminator provides implicit motion
+guidance for the policy to acquire soccer skills aligned with human
+motion patterns while reducing reliance on extensive reward engineering. The resulting unified policy exhibits versatile behaviors
+while preserving the flexibility required for dynamic scenarios. This
+unified policy not only simplifies the system architecture but also
+promotes seamless coordination between perception and locomotion, as evidenced by the robot’s ability to dynamically adjust its gait,
+head orientation, and kicking angle in response to real-­time ball and
+goal positions. In contrast with conventional rule-­based pipelines
+that separate strategic planning from motor control, our approach
+avoids the disjointed movements produced by modular systems. It
+also circumvents the rigidity of feature-­based imitation methods that
+rely on strict temporal alignment with reference motions and thus
+lack adaptability in dynamic scenarios.
+Robust performance across environments is further supported by
+the deliberate design of the observation space and perception pipeline. Instead of conditioning the policy on high-­dimensional raw images, we used a compact state space derived from ball detections,
+providing an abstract and consistent representation across simulation
+and hardware, thereby enhancing generalization to diverse real-­world
+conditions. An odometry module additionally provides long-­term
+memory of the robot’s location, improving robustness against temporary losses of visual landmarks. During training, the integration of
+the virtual perception system with the encoder-­decoder architecture
+encourages the policy to actively coordinate perception and action.
+This interaction allows the controller to mitigate perception noise
+and maintain accurate ball position estimates during motion, improving robustness to motion blur, partial observability, and other
+perceptual disturbances in dynamic soccer scenarios. The emergence
+of purposeful ball-­search and active tracking behaviors, together with
+the reduction in position estimation errors, further demonstrates
+how the perception pipeline enables the policy trained in simulation
+to operate reliably in real-­world environments.
+Despite these successes, our work has several limitations that warrant further exploration. First, the current controller focuses primarily
+on individual soccer skills and lacks the capability to coordinate with
+teammates or respond to opponents in multirobot scenarios. The policy’s observations are currently limited to the ball and goal, without
+incorporating information about other agents in the environment.
+
+S c i e n c e R o b o t i c s | R e s e ar c h A r t i c l e
+
++
+
+the ball’s position was reset, whereas the robot’s state remained unchanged. To simulate potential scenarios in real matches, the ball
+was randomly subjected to an additional velocity or teleported to
+another position on the field with a certain probability, thereby mimicking interventions on the ball by opponents or referees. Similarly,
+external forces or extra velocities were applied to the robot to simulate physical confrontations during gameplay. These configurations
+contributed to the development of robust behaviors.
+Training procedure
+We formulated the control problem as a partially observable Markov
+decision process (POMDP) and adopted asymmetric actor-­critic (49)
+and proximal policy optimization (PPO) (50) to train the policy. The
+actor and critic were represented by a policy network and a value network, parameterized by the multilayer perceptron (MLP). The value
+network was trained to estimate the state value, receiving the full state
+available only in the simulator. The policy had access only to partial
+information about the complete state, which was consistent with information that could be obtained from sensors on the robot in the
+real world, and output desired joint positions as actions that were
+tracked using a proportional-­derivative controller.
+Although the policy’s observations were noisy and incomplete,
+critical latent information could be inferred from historical observations (51, 52). To leverage this temporal context, we provided the
+Wang et al., Sci. Robot. 11, eaed1152 (2026)
+
+19 August 2026
+
+network with a time sequence of 50 preceding observation frames
+(covering 1 s of history) alongside the current observation. This sequence was encoded into a 64-­dimensional latent representation using an MLP, which was then concatenated with the current observation
+and fed into the actor network. Following the approach in (53), we
+further integrated a decoder that reconstructed auxiliary information
+critical to the task but unavailable during real-­world deployment from
+this latent state, such as the robot’s dynamic parameters and the ball’s
+true position. This design guided the policy to extract meaningful insights from historical data, facilitating the learning of more robust
+latent representations. By implicitly modeling the mapping between
+noisy observations and their underlying true states, the framework
+enhanced the policy’s ability to perform accurate state estimation and
+adaptive behavior in real-­world deployment.
+The agent’s objective was to kick the ball into the goal. To facilitate the learning of long-­horizon kicking behaviors, we addressed
+the high sparsity of goal-­scoring rewards by introducing two dense
+auxiliary rewards in addition to the terminal goal reward. One encouraged the robot to approach the ball, and another promoted the
+ball’s motion toward the goal. This design provided the agent with
+more frequent and informative feedback during training. The proximity rewards were constructed using potential-­based reward shaping (54), where the potential function was defined as the Euclidean
+distance between relevant entities, such as the robot and the ball or
+11 of 14
+
+Downloaded from https://www.science.org on August 20, 2026
+
+Fig. 8. The proposed learning framework. The actor receives partial observations and reconstructs the full state from historical data using an encoder-­decoder architecture. The policy is trained with PPO, using rewards from both the environment and a discriminator encoding motion priors, with multiple critics providing value estimates.
+The policy is trained in simulation with only the modules highlighted in blue deployed on hardware.
+
+S c i e n c e R o b o t i c s | R e s e ar c h A r t i c l e
+position estimation, conventional approaches typically filtered detected ball positions and fused them with odometry data to mitigate
+perceptual noise and detection failures. However, these methods
+often required slow calibration when the robot approached the ball
+to achieve accurate estimates and struggled to cope with highly dynamic kicking motions. Instead, we enabled the policy to directly
+process noisy or incomplete perceptual observations, allowing it to
+autonomously learn the optimal balance between perception and
+action for accurate ball positioning during kicking.
+Although ground-­truth ball positions were available in simulation, we introduced a virtual perception system in the simulation
+environment to expose the policy to realistic perceptual characteristics during training. This system replicated camera and perception
+processing behaviors observed on the real robot by modeling four
+key perceptual factors: detection probability, noise distribution, update frequency, and latency. Compared with prior work (5), we explicitly modeled the dependence of perceptual noise on ball distance
+and incorporated FOV constraints relative to head pose, enabling the
+policy to learn active perception through head motion and to recover reliable, low-­noise information from imperfect visual data via the
+encoder-­decoder architecture. These extensions addressed key challenges in agile motion, partial observability, and long-­horizon localPerception system
+ization that were particularly pronounced for humanoid soccer.
+Incorporating perception into RL training amplified the challenges
+To construct the virtual perception model, we collected data from
+of sim-­to-­real transfer. Raw RGB (red, green, and blue) camera in- the real robot observing the ball under diverse conditions, including
+puts introduced a substantial gap between simulation and the real varying head orientations and relative positions. A rule-­based ball-­
+world because of variations in lighting, texture, and noise character- tracking program, executed using the robot’s default walking gait, was
+istics. Although depth images (17, 57) and elevation maps (58, 59) deployed while a human operator moved the ball across the field to
+proved effective for terrain traversal by capturing geometric abstrac- collect ∼1 hour of data. Ground-­truth positions of both the robot and
+tions, they were less suited to dynamic soccer scenarios, where accurate the ball were obtained via a motion capture system, alongside logs of
+tracking of moving objects is essential. Alternative approaches that visually detected ball positions and the robot’s joint positions. Posilearned from synthetic RGB images (13, 60) in simulation demanded tional noise was modeled using a Gaussian distribution, with variextensive computational resources to cover the diverse visual condi- ance regressed as a linear function of the relative position between the
+tions of real environments, which limited scalability. To overcome robot and the ball. In addition, we estimated the robot’s FOV and
+these challenges, following prior work (5), we adopted an object-­ corresponding detection probabilities, as well as the perception upcentric perception abstraction that extracted task-­specific structured date frequency and latency between image capture and detection outinformation from visual inputs, which proved effective in narrowing put. These modeling efforts were essential for achieving accurate and
+the sim-­to-­real gap while preserving task relevance. After percep- reliable kicking behaviors on the physical robot. Notably, although
+tual processing, the policy received only the ball position with a ball the walking gait used for data collection differed from the learned
+detection flag, the goal center coordinates, and the goal normal di- policy, which introduced potential distribution discrepancies, the
+rection, all expressed in the robot’s coordinate frame. The detection simplicity of our perceptual modeling ensured strong generalization
+flag was a binary indicator of ball visibility, with the ball position set across locomotion patterns.
+to zero when the ball was not detected. This representation enabled
+the execution of vision-­driven behaviors and abstracted away irrel- Learning from demonstration
+evant visual complexity. By focusing solely on environmental cues To improve the robot’s kicking performance, we drew inspiration
+critical to soccer performance, our framework promoted the devel- from human kicking behaviors, where the arch of the foot was the
+opment of robust, generalizable behaviors with substantially reduced most frequently used part. The arch provided a larger contact area
+training overhead.
+with the ball compared with other parts of the foot, such as the curved
+Specifically, we used the You Only Look Once object detection toe, facilitating better ball control and higher kicking accuracy. This
+model (61), fine-­tuned on a self-­collected dataset from the robot’s characteristic avoided large deviations in kicking direction caused by
+onboard camera, to detect the ball and field landmarks such as goal- minor positional errors when using less-­stable contact points. To enposts and line intersections from RGB images. Further details are courage the policy to learn humanlike kicking behaviors and this speprovided in the Supplementary Materials. The pixel coordinates of cific kicking pattern, the AMP approach (33) was used to specify the
+these detected features in 2D images were projected into the BEV agent’s behavioral style by leveraging unstructured motion clip data­
+space through a fusion of depth-­based and geometric projections sets. This method enabled automatic balancing between task execuusing the estimated camera height and pose. The BEV positions of tion and motion imitation and could dynamically interpolate and
+field landmarks were then fused with proprioceptive odometry to generalize from the dataset without explicit clip selection, ensuring
+achieve stable long-­horizon localization, from which real-­time esti- that the robot performed the task effectively while exhibiting stylistimates of the goal center and normal direction were derived. For ball cally consistent movements.
+Wang et al., Sci. Robot. 11, eaed1152 (2026)
+
+19 August 2026
+
+12 of 14
+
+Downloaded from https://www.science.org on August 20, 2026
+
+the ball and the goal. This formulation guaranteed that the learned
+behaviors remained directed toward successful goal scoring.
+In our training setting, the goal-­related reward was sparse and
+nonsmooth. When a single critic was used to estimate the combined
+return, the high variance and intermittency of the task reward introduced substantial noise into the shared value estimates, resulting in
+noisy and unreliable policy gradients and degraded learning performance, as observed in Fig. 4A. In the later stages of training, the
+increasing magnitude and variability of the task reward further reduced the signal-­to-­noise ratio of policy updates and manifested as
+elevated policy entropy. To mitigate this issue, we adopted a multicritic
+framework (55), in which separate critics independently estimated
+returns for two reward groups. The first group comprised goal-­related
+rewards, and the second included auxiliary rewards such as style and
+regularization terms. Each reward group was treated as a dedicated
+subtask paired with its own critic, and a weighted sum of their respective advantages was then used by PPO to update the policy. This
+design allowed each advantage signal to be accurately estimated and
+independently normalized, preserving balanced gradient contributions
+across reward terms regardless of disparities in scale and sparsity (56),
+thereby mitigating interference between reward components.
+
+S c i e n c e R o b o t i c s | R e s e ar c h A r t i c l e
+
+Statistical analysis
+Statistical analyses were performed in Python using the NumPy library. Each simulation rollout or real-­world trial was treated as an
+independent sample. Means and SDs were computed from independent samples where applicable. Error bars and shaded regions represent SD unless otherwise specified. Sample sizes and analysis details
+were specified in the corresponding figure captions.
+Supplementary Materials
+The PDF file includes:
+Supplementary Methods
+Figs. S1 to S7
+Tables S1 to S4
+References (64, 65)
+Other Supplementary Material for this manuscript includes the following:
+Movies S1 to S4
+Data file S1
+MDAR Reproducibility Checklist
+
+REFERENCES AND NOTES
+1.	H. Kitano, M. Asada, Y. Kuniyoshi, I. Noda, E. Osawa, “RoboCup: The robot world cup
+initiative” in Proceedings of the First International Conference on Autonomous Agents
+(Association for Computing Machinery, 1997), pp. 340–347.
+
+Wang et al., Sci. Robot. 11, eaed1152 (2026)
+
+19 August 2026
+
+2. G. I. Fernandez, Y. Liu, C. Togashi, K. Gillespie, A. Zhu, Q. Wang, Y. Wang, H. Nam, S. Wang,
+R. Hou, M. Zhu, A. Navghare, A. Xu, T. Zhu, M. Sung Ahn, A. Flores Alvarez, J. Quan,
+E. Hong, D. W. Hong, “RoboCup 2024 adult-­sized humanoid champions guide for
+hardware, vision, and strategy” in RoboCup 2024: Robot World Cup XXVII (Springer, 2025),
+pp. 502–514.
+3. M. Abreu, L. P. Reis, N. Lau, “Learning to run faster in a humanoid robot soccer
+environment through reinforcement learning” in RoboCup 2019: Robot World Cup XXIII
+(Springer, 2019), pp. 3–15.
+4. S. Bohez, S. Tunyasuvunakool, P. Brakel, F. Sadeghi, L. Hasenclever, Y. Tassa, E. Parisotto,
+J. Humplik, T. Haarnoja, R. Hafner, M. Wulfmeier, M. Neunert, B. Moran, N. Siegel, A. Huber,
+F. Romano, N. Batchelor, F. Casarini, J. Merel, R. Hadsell, N. Heess, Imitate and repurpose:
+Learning reusable robot movement skills from human and animal behaviors.
+arXiv:2203.17138 [cs.RO] (2022).
+5. Y. Ji, G. B. Margolis, P. Agrawal, “DribbleBot: Dynamic legged manipulation in the wild”
+in IEEE International Conference on Robotics and Automation (ICRA) (IEEE, 2023),
+pp. 5155–5162.
+6. P. Ravichandar, L. Krishna, N. Sobanbabu, Q. Nguyen, “Preferenced oracle guided
+multi-­mode policies for dynamic bipedal loco-­manipulation” in IEEE/RSJ International
+Conference on Intelligent Robots and Systems (IROS) (IEEE, 2025), pp. 6600–6606.
+7. S. Yin, Y. Ze, H.-­X. Yu, C. K. Liu, J. Wu, VisualMimic: Visual humanoid loco-­manipulation via
+motion tracking and generation. arXiv:2509.20322 [cs.RO] (2025).
+8. Y. Ji, Z. Li, Y. Sun, X. B. Peng, S. Levine, G. Berseth, K. Sreenath, “Hierarchical reinforcement
+learning for precise soccer shooting skills using a quadrupedal robot” in IEEE/RSJ
+International Conference on Intelligent Robots and Systems (IROS) (IEEE, 2022),
+pp. 1479–1486.
+9. X. Huang, Z. Li, Y. Xiang, Y. Ni, Y. Chi, Y. Li, L. Yang, X. B. Peng, K. Sreenath, “Creating a
+dynamic quadrupedal robotic goalkeeper with reinforcement learning” in IEEE/RSJ
+International Conference on Intelligent Robots and Systems (IROS) (IEEE, 2023), pp.
+2715–2722.
+10. M. Abreu, L. P. Reis, N. Lau, Designing a skilled soccer team for RoboCup: Exploring
+skill-­set-­primitives through reinforcement learning. Neural Comput. Applic. 37,
+12699–12734 (2025).
+11. Z. Su, Y. Gao, E. Lukas, Y. Li, J. Cai, F. Talubah, F. Gao, C. Yu, Z. Li, Y. Wu, K. Sreenath, “Toward
+real-­world cooperative and competitive soccer with quadrupedal robot teams” in 9th
+Annual Conference on Robot Learning (OpenReview, 2025); https://openreview.net/
+forum?id=9lCTcsmZMV.
+12.	T. Haarnoja, B. Moran, G. Lever, S. H. Huang, D. Tirumala, J. Humplik, M. Wulfmeier,
+S. Tunyasuvunakool, N. Y. Siegel, R. Hafner, M. Bloesch, K. Hartikainen, A. Byravan,
+L. Hasenclever, Y. Tassa, F. Sadeghi, N. Batchelor, F. Casarini, S. Saliceti, C. Game,
+N. Sreendra, K. Patel, M. Gwira, A. Huber, N. Hurley, F. Nori, R. Hadsell, N. Heess, Learning
+agile soccer skills for a bipedal robot with deep reinforcement learning. Sci. Robot. 9,
+eadi8022 (2024).
+13. D. Tirumala, M. Wulfmeier, B. Moran, S. Huang, J. Humplik, G. Lever, T. Haarnoja,
+L. Hasenclever, A. Byravan, N. Batchelor, N. Sreendra, K. Patel, M. Gwira, F. Nori,
+M. Riedmiller, N. Heess, “Learning robot soccer from egocentric vision with deep
+reinforcement learning” in 8th Annual Conference on Robot Learning (OpenReview, 2024);
+https://openreview.net/forum?id=fC0wWeXsVm.
+14.	B. Mildenhall, P. P. Srinivasan, M. Tancik, J. T. Barron, R. Ramamoorthi, R. Ng, NeRF:
+Representing scenes as neural radiance fields for view synthesis. Commun. ACM 65,
+99–106 (2021).
+15. D. Crowley, J. Dao, H. Duan, K. Green, J. Hurst, A. Fern, “Optimizing bipedal locomotion for
+the 100m dash with comparison to human running” in IEEE International Conference on
+Robotics and Automation (ICRA) (IEEE, 2023), pp. 12205–12211.
+16. Z. Li, X. B. Peng, P. Abbeel, S. Levine, G. Berseth, K. Sreenath, Reinforcement learning for
+versatile, dynamic, and robust bipedal locomotion control. Int. J. Robot. Res. 44, 840–888
+(2025).
+17. Z. Zhuang, S. Yao, H. Zhao, “Humanoid parkour learning” in 8th Annual Conference on
+Robot Learning (OpenReview, 2024); https://openreview.net/forum?id=fs7ia3FqUM.
+18.	T. Huang, J. Ren, H. Wang, Z. Wang, Q. Ben, M. Wen, X. Chen, J. Li, J. Pang, “Learning
+humanoid standing-­up control across diverse postures” in Proceedings of Robotics: Science
+and Systems (RSS Foundation, 2025), 10.15607/RSS.2025.XXI.064.
+19. P. Chen, Y. Wang, C. Luo, W. Cai, M. Zhao, “HiFAR: Multi-­stage curriculum learning for
+high-­dynamics humanoid fall recovery” in IEEE/RSJ International Conference on Intelligent
+Robots and Systems (IROS) (IEEE, 2025), pp. 2908–2915.
+20.	T. Zhang, B. Zheng, R. Nai, Y. Hu, Y.-­J. Wang, G. Chen, F. Lin, J. Li, C. Hong, K. Sreenath,
+Y. Gao, “HuB: Learning extreme humanoid balance” in 9th Annual Conference on Robot
+Learning (OpenReview, 2025); https://openreview.net/forum?id=FCpYuGtN4j.
+21. W. Xie, J. Han, J. Zheng, H. Li, X. Liu, J. Shi, W. Zhang, C. Bai, X. Li, “KungfuBot: Physics-­based
+humanoid whole-­body control for learning highly-­dynamic skills” in Advances in Neural
+Information Processing Systems (Curran Associates Inc., 2025), vol. 38, pp. 62406–62433.
+22. Z. Chen, M. Ji, X. Cheng, X. Peng, X. B. Peng, X. Wang, GMT: General motion tracking for
+humanoid whole-­body control. arXiv:2506.14770 [cs.RO] (2025).
+
+13 of 14
+
+Downloaded from https://www.science.org on August 20, 2026
+
+Specifically, we first curated a dataset of reference motions encompassing relevant behaviors. We selected 76.28 s of omnidirectional
+walking data, covering forward, backward, turning, and side-­stepping
+motions, from the Advanced Computing Center for the Arts and Design motion capture dataset (62) and recorded 30 s of arch-­based kicking motions using an optical motion capture system. These human
+movements were retargeted to the robot to align with its physical dimensions and joint configuration using an optimization-­based retargeting method detailed in the Supplementary Materials. This dataset
+was used to train a discriminator network, which was adversarially optimized to distinguish state transitions (st, st+1) from the reference motion dataset (real samples) and those generated by the robot during
+training (fake samples), thereby learning a general metric for similarity
+between the robot’s motions and the stylistic characteristics embedded
+in the dataset. The discriminator’s predictions were used to compute a
+style reward that guided the robot toward movement patterns consistent with the reference dataset. The policy was trained via RL to maximize a cumulative reward that combined this style reward with other
+environmental rewards. This framework enabled the policy to autonomously compose skills, such as transitioning from walking to leg positioning for kicking, without the need for explicit motion sequencing.
+To stabilize adversarial training dynamics and prevent mode collapse, we adopted a Wasserstein GAN with gradient penalty (39) and
+applied a soft boundary constraint to the discriminator (40). In addition, we initialized the robot’s states by randomly sampling from reference motion clips (27), which aided in stabilizing training during
+the initial phase. We further introduced a mirror symmetry loss (63)
+to promote symmetric motions, which was critical for facilitating the
+policy’s acquisition of bilateral kicking capabilities and preventing
+convergence to a unilateral kicking strategy.
+To enable reliable deployment on real humanoid hardware, we integrated AMP with our perception pipeline to handle partial observability and adopted accurate physical modeling together with domain
+randomization to account for sensing and actuation imperfections in
+the real world. These designs collectively extended AMP toward practical real-­world control.
+
+S c i e n c e R o b o t i c s | R e s e ar c h A r t i c l e
+
+Wang et al., Sci. Robot. 11, eaed1152 (2026)
+
+19 August 2026
+
+47.	H. Geng, F. Wang, S. Wei, Y. Li, B. Wang, B. An, H. Lou, C. T. Cheng, P. Li, H. Chen, Y. Liang,
+Y. Qian, J. Mao, W. Wan, Y. Geng, M. Zhang, J. Lyu, S. Zhao, J. Zhang, C. Xu, J. Zhang, C. Zhao,
+H. Lu, Y. Ding, R. Gong, Y. Wang, Y. Kuang, R. Wu, B. Jia, H. Dong, S. Huang, Y. Wang, J. Malik,
+P. Abbeel, “RoboVerse: A unified platform, benchmark and dataset for scalable and
+generalizable robot learning” in Proceedings of Robotics: Science and Systems (RSS
+Foundation, 2025), 10.15607/RSS.2025.XXI.022.
+48. J. Healy, L. McInnes, Uniform manifold approximation and projection. Nat. Rev. Methods
+Primers 4, 82 (2024).
+49.	L. Pinto, M. Andrychowicz, P. Welinder, W. Zaremba, P. Abbeel, Asymmetric actor critic for
+image-­based robot learning. arXiv:1710.06542 [cs.RO] (2017).
+50. J. Schulman, F. Wolski, P. Dhariwal, A. Radford, O. Klimov, Proximal policy optimization
+algorithms. arXiv:1707.06347 [cs.LG] (2017).
+51. J. Lee, J. Hwangbo, L. Wellhausen, V. Koltun, M. Hutter, Learning quadrupedal locomotion
+over challenging terrain. Sci. Robot. 5, eabc5986 (2020).
+52. Z. Li, X. B. Peng, P. Abbeel, S. Levine, G. Berseth, K. Sreenath, “Robust and versatile bipedal
+jumping control through reinforcement learning” in Proceedings of Robotics: Science and
+Systems (RSS Foundation, 2023), 10.15607/RSS.2023.XIX.052.
+53. X. Gu, Y.-­J. Wang, X. Zhu, C. Shi, Y. Guo, Y. Liu, J. Chen, “Advancing humanoid locomotion:
+Mastering challenging terrains with denoising world model learning” in Proceedings of
+Robotics: Science and Systems (RSS Foundation, 2024), 10.15607/RSS.2024.XX.058.
+54. A. Y. Ng, D. Harada, S. Russell, “Policy invariance under reward transformations: Theory
+and application to reward shaping” in Proceedings of the Sixteenth International
+Conference on Machine Learning (Morgan Kaufmann Publishers Inc., 1999), pp. 278–287.
+55. S. Mysore, G. Cheng, Y. Zhao, K. Saenko, M. Wu, “Multi-­critic actor learning: Teaching RL
+policies to act with style” in International Conference on Learning Representations
+(OpenReview, 2022); https://openreview.net/forum?id=rJvY_5OzoI.
+56. F. Zargarbashi, J. Cheng, D. Kang, R. Sumner, S. Coros, “RobotKeyframing: Learning
+locomotion with high-­level objectives via mixture of dense and sparse rewards” in 8th
+Annual Conference on Robot Learning (OpenReview, 2024); https://openreview.net/
+forum?id=wcbrhPnOei.
+57. Z. Zhuang, Z. Fu, J. Wang, C. Atkeson, S. Schwertfeger, C. Finn, H. Zhao, “Robot parkour
+learning” in 7th Annual Conference on Robot Learning (OpenReview, 2023); https://
+openreview.net/forum?id=uo937r5eTE.
+58. D. Hoeller, N. Rudin, D. Sako, M. Hutter, Anymal parkour: Learning agile navigation for
+quadrupedal robots. Sci. Robot. 9, eadi7566 (2024).
+59.	H. Wang, Z. Wang, J. Ren, Q. Ben, T. Huang, W. Zhang, J. Pang, “BeamDojo: Learning agile
+humanoid locomotion on sparse footholds” in Proceedings of Robotics: Science and
+Systems (RSS Foundation, 2025), 10.15607/RSS.2025.XXI.068.
+60. A. Yu, G. Yang, R. Choi, Y. Ravan, J. Leonard, P. Isola, “Learning visual parkour from
+generated images” in 8th Annual Conference on Robot Learning (OpenReview, 2024);
+https://openreview.net/forum?id=cGswIOxHcN.
+61. G. Jocher, A. Chaurasia, J. Qiu, Ultralytics YOLOv8 (2023); https://github.com/ultralytics/
+ultralytics.
+62. Advanced Computing Center for the Arts and Design, “MoCap system and data”; https://
+accad.osu.edu/research/motion-­lab/mocap-­system-­and-­data.
+63. W. Yu, G. Turk, C. K. Liu, Learning symmetric and low-­energy locomotion. ACM Trans.
+Graph. 37, 1–12 (2018).
+64.	T. He, Z. Luo, W. Xiao, C. Zhang, K. Kitani, C. Liu, G. Shi, “Learning human-­to-­humanoid
+real-­time whole-­body teleoperation” in IEEE/RSJ International Conference on Intelligent
+Robots and Systems (IROS) (IEEE, 2024), pp. 8944–8951.
+65. M. Loper, N. Mahmood, J. Romero, G. Pons-­Moll, M. J. Black, SMPL: A skinned multi-­person
+linear model. ACM Trans. Graph. 34, 1–16 (2015).
+Acknowledgments: We thank Booster Robotics for providing the robot platform, experimental
+facilities, and technical support. We thank Beijing Beiao Group Corp. Ltd. for providing access to the
+testing venue. Funding: This work was partly supported by STI 2030-­Major Projects (nos.
+2021ZD0201402 and 2021ZD0201401), the Beijing Natural Science Foundation (no. L243004), and
+the Tsinghua University Initiative Scientific Research Program (Student Academic Research
+Advancement Program: Zhuiguang Special Project, no. 20257020011). Author contributions: Y.W.
+formulated the main ideas, trained the controller, and wrote the paper. Y.W., C.L., and T.G.
+conducted the experiments and analyzed the data. P.C. implemented the AMP framework. K.Y. and
+B.H. implemented the system interfaces and provided the baseline soccer strategy. Y.Z., J.L., W.S.,
+and M.Z. refined the ideas. M.Z. revised the manuscript and supervised the whole project.
+Competing interests: The authors declare that they have no competing interests. Data, code, and
+materials availability: All data needed to evaluate the conclusions in the paper are present in the
+paper or the Supplementary Materials. The data and code for this study have been deposited in the
+database https://doi.org/10.5061/dryad.jwstqjqps. No new materials were generated in this study.
+Submitted 30 October 2025
+Accepted 21 July 2026
+Published 19 August 2026
+10.1126/scirobotics.aed1152
+
+14 of 14
+
+Downloaded from https://www.science.org on August 20, 2026
+
+23. K. Yin, W. Zeng, K. Fan, M. Dai, Z. Wang, Q. Zhang, Z. Tian, J. Wang, J. Pang, W. Zhang,
+UniTracker: Learning universal whole-­body motion tracker for humanoid robots. IEEE
+Robot. Autom. Lett. 11, 8124–8131 (2026).
+24. W. Zeng, S. Lu, K. Yin, X. Niu, M. Dai, J. Wang, J. Pang, Behavior foundation model for
+humanoid robots. arXiv:2509.13780 [cs.RO] (2025).
+25. Z. Zhang, J. Guo, C. Chen, J. Wang, C. Lin, Y. Lian, H. Xue, Z. Wang, M. Liu, J. Lyu, H. Liu,
+H. Wang, L. Yi, Track any motions under any disturbances. arXiv:2509.13833 [cs.RO] (2025).
+26.	C. Li, M. Hutter, A. Krause, Feature-­based vs. GAN-­based learning from demonstrations:
+When and why. arXiv:2507.05906 [cs.LG] (2025).
+27. X. B. Peng, P. Abbeel, S. Levine, M. van de Panne, DeepMimic: Example-­guided deep
+reinforcement learning of physics-­based character skills. ACM Trans. Graph. 37, 1–14
+(2018).
+28. A. Allshire, H. Choi, J. Zhang, D. McAllister, A. Zhang, C. M. Kim, T. Darrell, P. Abbeel,
+J. Malik, A. Kanazawa, “Visual imitation enables contextual humanoid control” in 9th
+Annual Conference on Robot Learning (OpenReview, 2025); https://openreview.net/
+forum?id=C6VxzSpjrv.
+29. Q. Liao, T. E. Truong, X. Huang, Y. Gao, G. Tevet, K. Sreenath, C. K. Liu, BeyondMimic: From
+motion tracking to versatile humanoid control via guided diffusion. arXiv:2508.08241
+[cs.RO] (2025).
+30. Z. Zhang, C. Li, T. Miki, M. Hutter, “Motion priors reimagined: Adapting flat-­terrain skills for
+complex quadruped mobility” in 9th Annual Conference on Robot Learning (OpenReview,
+2025); https://openreview.net/forum?id=JXBm4Xfrvj.
+31. Z. Zhang, C. Chen, H. Xue, J. Wang, S. Liang, Y. Liu, Z. Zhang, H. Wang, L. Yi, Unleashing
+humanoid reaching potential via real-­world-­ready skill space. IEEE Robot. Autom. Lett. 11,
+2082–2089 (2026).
+32. D. Kang, J. Cheng, F. Zargarbashi, T. Yoon, S. Choi, S. Coros, Walk like dogs: Learning
+steerable imitation controllers for legged robots from unlabeled motion data.
+arXiv:2507.00677 [cs.RO] (2025).
+33. X. B. Peng, Z. Ma, P. Abbeel, S. Levine, A. Kanazawa, AMP: Adversarial motion priors for
+stylized physics-­based character control. ACM Trans. Graph. 40, 1–20 (2021).
+34. A. Escontrela, X. B. Peng, W. Yu, T. Zhang, A. Iscen, K. Goldberg, P. Abbeel, “Adversarial
+motion priors make good substitutes for complex reward functions” in IEEE/RSJ
+International Conference on Intelligent Robots and Systems (IROS) (IEEE, 2022), pp. 25–32.
+35.	E. Vollenweider, M. Bjelonic, V. Klemm, N. Rudin, J. Lee, M. Hutter, “Advanced skills through
+multiple adversarial motion priors in reinforcement learning” in IEEE International
+Conference on Robotics and Automation (ICRA) (IEEE, 2023), pp. 5120–5126.
+36. A. F. Alvarez, F. Zargarbashi, H. Liu, S. Wang, L. Edwards, J. Anz, A. Xu, F. Shi, S. Coros,
+D. W. Hong, “Learning to walk in costume: Adversarial motion priors for aesthetically
+constrained humanoids” in IEEE-­RAS 24th International Conference on Humanoid Robots
+(Humanoids) (IEEE, 2025), pp. 593–600.
+37. K. Wen, C. Li, J. He, M. Hutter, “Constrained style learning from imperfect demonstrations
+under task optimality” in 9th Annual Conference on Robot Learning (OpenReview, 2025);
+https://openreview.net/forum?id=TFbT7kHD89.
+38. M. Arjovsky, S. Chintala, L. Bottou, “Wasserstein generative adversarial networks” in
+Proceedings of the 34th International Conference on Machine Learning (PMLR, 2017), vol. 70,
+pp. 214–223.
+39.	I. Gulrajani, F. Ahmed, M. Arjovsky, V. Dumoulin, A. Courville, “Improved training of
+Wasserstein GANs” in Advances in Neural Information Processing Systems 30, I. Guyon,
+U. Von Luxburg, S. Bengio, H. Wallach, R. Fergus, S. Vishwanathan, R. Garnett, Eds. (Curran
+Associates Inc., 2017), pp. 5769–5779.
+40. A. Tang, T. Hiraoka, N. Hiraoka, F. Shi, K. Kawaharazuka, K. Kojima, K. Okada, M. Inaba,
+“HumanMimic: Learning natural locomotion and transitions for humanoid robot via
+Wasserstein adversarial imitation” in IEEE International Conference on Robotics and
+Automation (ICRA) (IEEE, 2024), pp. 13107–13114.
+41. Y. Zhang, Y. Yuan, P. Gurunath, I. Gupta, S. Omidshafiei, A.-­a. Agha-­mohammadi,
+M. Vazquez-­Chanlatte, L. Pedersen, T. He, G. Shi, “FALCON: Learning force-­adaptive
+humanoid loco-­manipulation” in Proceedings of the 8th Annual Learning for Dynamics and
+Control Conference (PMLR, 2026), vol. 331, pp. 265–281.
+42. J. Jang, Z. Wang, Z. Zhou, F. Wu, Y. Zhao, SEEC: Stable end-­effector control with
+model-­enhanced residual learning for humanoid loco-­manipulation. arXiv:2509.21231
+[cs.RO] (2025).
+43. A.-­C. Cheng, Y. Ji, Z. Yang, Z. Gongye, X. Zou, J. Kautz, E. Biyik, H. Yin, S. Liu, X. Wang,
+“NaVILA: Legged robot vision-­language-­action model for navigation” in Proceedings of
+Robotics: Science and Systems (RSS Foundation, 2025), 10.15607/RSS.2025.XXI.018.
+44. Y. Seo, C. Sferrazza, H. Geng, M. Nauman, Z.-­H. Yin, P. Abbeel, FastTD3: Simple, fast, and
+capable reinforcement learning for humanoid control. arXiv:2505.22642 [cs.RO] (2025).
+45. Y. Wang, P. Chen, X. Han, F. Wu, M. Zhao, Booster Gym: An end-­to-­end reinforcement
+learning framework for humanoid robot locomotion. arXiv:2506.15132 [cs.RO] (2025).
+46. K. Zakka, B. Tabanpour, Q. Liao, M. Haiderbhai, S. Holt, J. Y. Luo, A. Allshire, E. Frey,
+K. Sreenath, L. A. Kahrs, C. Sferrazza, Y. Tassa, P. Abbeel, “Demonstrating MuJoCo
+playground” in Proceedings of Robotics: Science and Systems (RSS Foundation, 2025),
+10.15607/RSS.2025.XXI.020.
+
+Learning vision-driven reactive soccer skills for humanoid robots
+Yushi Wang, Changsheng Luo, Penghui Chen, Jianran Liu, Weijian Sun, Tong Guo, Kechang Yang, Biao Hu, Yangang
+Zhang, and Mingguo Zhao
+
+Sci. Robot. 11 (117), eaed1152. DOI: 10.1126/scirobotics.aed1152
+
+Use of this article is subject to the Terms of service
+Science Robotics (ISSN 2470-9476) is published by the American Association for the Advancement of Science. 1200 New York Avenue
+NW, Washington, DC 20005. The title Science Robotics is a registered trademark of AAAS.
+Copyright © 2026 The Authors, some rights reserved; exclusive licensee American Association for the Advancement of Science. No claim
+to original U.S. Government Works
+
+Downloaded from https://www.science.org on August 20, 2026
+
+View the article online
+https://www.science.org/doi/10.1126/scirobotics.aed1152
+Permissions
+https://www.science.org/help/reprints-and-permissions
+
+

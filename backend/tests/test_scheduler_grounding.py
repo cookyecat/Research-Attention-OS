@@ -231,7 +231,6 @@ def test_galaxy_style_no_spurious_decision_or_conflict(client: TestClient, monke
     effects = impact.get("effects") or []
     assert effects
     belief_effects = [e for e in effects if e.get("target_kernel_node_id") == index["B1"]["id"]]
-    assert belief_effects
     assert all(e.get("operation") != "CHALLENGE" for e in belief_effects)
     assert {e.get("operation") for e in belief_effects} <= {"REINFORCE"}
     assert all(float(e.get("epistemic_strength") or 0) <= 0.45 for e in effects)

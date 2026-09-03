@@ -25,6 +25,7 @@ def _error_type(exc: Exception) -> str:
         return "schema"
     return type(exc).__name__
 
+
 STAGE_NAMES = {
     "extract_information": "extraction",
     "match_kernel": "matching",
@@ -35,9 +36,16 @@ STAGE_NAMES = {
     "propose_patches": "patches",
 }
 
+FALLBACK_STATUSES = frozenset({"fallback", "rule-after-fallback"})
+
 
 class FallbackProvider:
-    """Model-backed with sticky deterministic rule fallback. Stage provenance is recorded."""
+    """Model-backed with stage-scoped deterministic rule fallback.
+
+    Each stage tries the model independently. A later-stage failure must not
+    skip or overwrite earlier stages. Repeated calls to the same stage
+    (chunked extraction) keep the first failure's error/error_type.
+    """
 
     def __init__(self, primary: ModelBackedCognitiveProvider, fallback: RuleBasedCognitiveProvider):
         self.primary = primary
@@ -47,6 +55,48 @@ class FallbackProvider:
         self.stage_provenance: dict = {}
         self.last_retrieval: dict | None = None
 
+    def _attempt_record(self, rec: dict) -> dict:
+        keys = ("status", "provider", "error", "error_type", "fallback_from")
+        return {k: rec[k] for k in keys if rec.get(k) is not None}
+
+    def _merge_stage_record(self, stage: str, rec: dict) -> None:
+        prev = self.stage_provenance.get(stage)
+        if prev is None:
+            rec = dict(rec)
+            rec["attempts"] = [self._attempt_record(rec)]
+            self.stage_provenance[stage] = rec
+            return
+        merged = dict(prev)
+        attempts = list(prev.get("attempts") or [self._attempt_record(prev)])
+        attempts.append(self._attempt_record(rec))
+        merged["attempts"] = attempts
+        if not prev.get("error") and rec.get("error"):
+            merged["error"] = rec["error"]
+            merged["error_type"] = rec.get("error_type")
+            merged["fallback_from"] = rec.get("fallback_from") or prev.get("fallback_from")
+            if rec.get("validation_error") and not prev.get("validation_error"):
+                merged["validation_error"] = rec["validation_error"]
+        if rec.get("status") in FALLBACK_STATUSES or prev.get("status") in FALLBACK_STATUSES:
+            merged["status"] = "fallback"
+        providers = {prev.get("provider"), rec.get("provider")} - {None}
+        if len(providers) > 1:
+            merged["provider"] = "mixed"
+        elif rec.get("provider") and not prev.get("provider"):
+            merged["provider"] = rec["provider"]
+        if rec.get("model") and not merged.get("model"):
+            merged["model"] = rec["model"]
+        for key in ("latency_ms", "prompt_tokens", "completion_tokens"):
+            merged[key] = int(prev.get(key) or 0) + int(rec.get(key) or 0)
+        if rec.get("estimated_cost_usd") is not None or prev.get("estimated_cost_usd") is not None:
+            merged["estimated_cost_usd"] = float(prev.get("estimated_cost_usd") or 0) + float(
+                rec.get("estimated_cost_usd") or 0
+            )
+        events = list(prev.get("validation_events") or [])
+        events.extend(rec.get("validation_events") or [])
+        if events:
+            merged["validation_events"] = events
+        self.stage_provenance[stage] = merged
+
     def _call(self, name: str, *args, **kwargs):
         stage = STAGE_NAMES.get(name, name)
         before = {
@@ -54,19 +104,6 @@ class FallbackProvider:
             "prompt_tokens": int(getattr(self.primary, "last_meta", {}).get("prompt_tokens") or 0),
             "completion_tokens": int(getattr(self.primary, "last_meta", {}).get("completion_tokens") or 0),
         }
-        if self.fallback_used:
-            result = getattr(self.fallback, name)(*args, **kwargs)
-            self.stage_provenance[stage] = {
-                "provider": "rule",
-                "model": None,
-                "status": "rule-after-fallback",
-                "fallback_from": "model",
-                "thinking": None,
-                "reasoning_effort": None,
-                "timeout": None,
-                "note": "sticky fallback; not a model prediction",
-            }
-            return result
         try:
             result = getattr(self.primary, name)(*args, **kwargs)
             after = getattr(self.primary, "last_meta", {}) or {}
@@ -87,7 +124,7 @@ class FallbackProvider:
                 "validation_events": events,
             }
             rec.update(_runtime_fields(self.primary))
-            self.stage_provenance[stage] = rec
+            self._merge_stage_record(stage, rec)
             return result
         except Exception as exc:
             self.fallback_used = True
@@ -111,7 +148,7 @@ class FallbackProvider:
                 rec["validation_error"] = exc.errors
             if isinstance(exc, LLMTimeoutError):
                 rec["timeout"] = rec.get("timeout") if rec.get("timeout") is not None else exc.timeout
-            self.stage_provenance[stage] = rec
+            self._merge_stage_record(stage, rec)
             return result
 
     @property
@@ -124,7 +161,7 @@ class FallbackProvider:
     def match_kernel(self, *args, **kwargs):
         result = self._call("match_kernel", *args, **kwargs)
         rec = self.stage_provenance.get("matching") or {}
-        if rec.get("status") in {"fallback", "rule-after-fallback"}:
+        if rec.get("status") in FALLBACK_STATUSES:
             self.last_retrieval = {
                 "embedding_used": False,
                 "lexical_fallback": True,

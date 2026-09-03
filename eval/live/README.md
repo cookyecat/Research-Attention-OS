@@ -107,4 +107,4 @@ Live Eval v0.1.1+ runs the **production pipeline** (chunking → extraction → 
 
 Legacy gold keys (`attention_state`, `processing_modes`, `kernel_targets`, `cognitive_effects`, `expected_delta`, …) still parse on ingest if present. Retired operations (`REFINE`, `NO_MATERIAL_CHANGE`) are not mapped onto the live contract. They are not part of the default template and are not used to label new cases.
 
-A model-stage fallback is recorded as `prediction_source: "rule-fallback"` with `model_prediction: false` and is excluded from model accuracy denominators. Do not treat rule-fallback output as a successful model prediction.
+A model-stage fallback is recorded per stage in `stage_provenance`. Live Eval scores Disposition / Update / Target only when the **impact** stage is a model success. A later Delta fallback does not exclude those fields. `prediction_source_by_stage` and `scorable` are written on every cases.jsonl row.

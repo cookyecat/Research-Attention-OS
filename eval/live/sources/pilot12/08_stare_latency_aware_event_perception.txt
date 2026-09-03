@@ -1,0 +1,1807 @@
+Article
+
+https://doi.org/10.1038/s41467-026-70240-6
+
+Bridging the latency gap with a continuous
+stream evaluation framework in event-driven
+perception
+Received: 1 March 2025
+
+Check for updates
+
+1234567890():,;
+
+1234567890():,;
+
+Accepted: 23 February 2026
+
+Jie Chu 1,2,6, Runze Zhang 1,6, Chu Yang 3, Zongyou Yu 1, Zongtao Bu1,
+Haotian Liu1, Florian Röhrbein 4, Alois Knoll 5, Guang Chen 1,2,5 &
+Changjun Jiang1
+
+Neuromorphic vision systems process continuous event streams and offer
+transformative potential for real-time applications. However, their evaluation
+remains tethered to methodologies from RGB imaging. These approaches
+convert asynchronous event streams into synchronized frames and ignore
+perception latency, creating a critical gap between benchmarks and real-world
+performance. To address this, we introduce the STream-based lAtency-awaRe
+Evaluation (STARE) framework. STARE integrates two core components:
+Continuous Sampling, maximizing model throughput to reduce the impact of
+latency, and Latency-Aware Evaluation, quantifying latency-induced online
+accuracy. To rigorously validate STARE, we developed ESOT500, a highdynamic object tracking dataset with 500 Hz annotations. Experiments reveal
+that latency severely degrades online accuracy by over 50%. We further
+introduce two model enhancement strategies: Asynchronous Tracking, a fastslow architecture that boosts model throughput, and Context-Aware Sampling, which dynamically adapts input to handle low event density cases.
+Overall, our work bridges the latency gap between models’ theoretical
+potential and real-world deployment.
+
+Biological vision systems excel at perceiving dynamic environments
+through continuous, adaptive sensing1–3. In contrast, artiﬁcial vision
+systems, even those inspired by neural mechanisms, typically rely on
+discrete and frame-based processing inherited from conventional RGB
+cameras4–8, as shown in Fig. 1a–b. This mismatch introduces a critical
+limitation: the temporal discontinuity of static frames inherently
+induces perceptual delay between sensory inputs9–13. Such delay
+accumulates in real-world applications, degrading performance in
+tasks requiring rapid reactions, such as autonomous navigation or
+human-robot interaction9,14–17. Event cameras, which are neuromorphic
+sensors that asynchronously encode pixel-level intensity changes at
+
+microsecond resolution, promise to bridge this gap by capturing
+continuous event streams3,18–21.
+However, the traditional perception framework, which forces
+continuous event stream into ﬁxed-rate event frames3,4,21–24, as shown
+in Fig. 1b, reintroduces perceptual delays and discards the sensor’s
+inherent capacity for real-time, event-driven computation. Moreover,
+such framework typically evaluates model performance by comparing
+each model output against the ground truth of the corresponding
+input frame. This evaluation paradigm assumes instantaneous computation, failing to account for the inﬂuence of perception latency. We
+deﬁne perception latency as the total time elapsed from the moment
+
+1
+
+Generalist Embodied Intelligence Lab, School of Computer Science and Technology, Tongji University, Shanghai, China. 2Shanghai Innovation Institute,
+Shanghai, China. 3Shanghai Westwell Technology Co., Ltd, Shanghai, China. 4Chair of Neurorobotics, Technische Universität Chemnitz, Chemnitz, Germany.
+5
+Chair of Robotics, Artiﬁcial Intelligence and Real-time Systems, School of Computation, Information and Technology, Technische Universität München,
+e-mail: guangchen@tongji.edu.cn
+München, Germany. 6These authors contributed equally: Jie Chu, Runze Zhang.
+
+Nature Communications | (2026)17:2441
+
+1
+
+Article
+
+a
+
+https://doi.org/10.1038/s41467-026-70240-6
+
+Perception Process
+Time
+
+Y
+es
+Fram
+RGB
+
+Perceptual Delay
+
+Perceptual Delay
+
+Wait for Next Frame
+
+Wait for Next Frame
+
+1/FPS
+
+X
+
+b
+
+Time
+
+Y
+mes
+t Fra
+Even
+
+Perceptual Delay
+
+Perceptual Delay
+
+Wait for Next Frame
+
+Wait for Next Frame
+
+1/FPS
+
+X
+
+c
+Continuous Sampling: sampling occurred immediately after the inference ended
+
+Sampling
+
+Event Stream
+
+ti+1
+
+ti
+
+Event-Driven
+Perception Model
+
+ti+2
+
+tj
+
+t
+Latency-Aware
+Evaluation at tj
+
+Inference Start at ti
+Inference End at ti+1
+
+Inference Start at ti+1
+Inference End at ti+2
+
+vs.
+
+Inference Start at ti+2
+
+Perception Model
+Output
+
+Ground Truth
+
+d
+
+Y
+
+am
+t Stre
+Even
+Cont.
+
+Time
+
+X
+
+Perception Output (Latency-ignored)
+
+Perception Output (Latency-aware)
+
+Ground Truth
+
+Fig. 1 | STream-based lAtency-awaRe Evaluation (STARE) for event-driven
+perception. a Traditional RGB perception pipeline. Visual information is captured
+as discrete, ﬁxed-rate frames. The perception model processes frames sequentially,
+introducing perceptual delays as inference is gated by the arrival of each new frame
+(i.e., waiting for the next frame to start processing). b Frame-based, latency-ignored
+evaluation of event vision. Mirroring RGB paradigms, the continuous event stream
+is preprocessed into ﬁxed-rate event frames. Model outputs (orange bounding box)
+are evaluated against ground truth within the corresponding input frame, ignoring
+the impact of perception latency on real-time accuracy. c The proposed STreambased lAtency-awaRe Evaluation (STARE) framework. STARE operates directly on
+
+the continuous event stream: inference initiates immediately after the prior cycle
+concludes (at timestamps ti, ti+1, ti+2). Latency-Aware Evaluation matches each highfrequency ground truth (e.g., at tj) to the latest model prediction, directly penalizing stale outputs. d Illustrative example of event-driven perception under STARE.
+Compared to the frame-based approach in (b), STARE's Continuous Sampling
+enables higher throughput, reducing temporal misalignment between model predictions (blue bounding box) and ground truth (green bounding box). This visualization conceptually demonstrates the temporal advantage of Continuous
+Sampling.
+
+an event is triggered to the moment a downstream application
+receives the perception model’s corresponding output, which is a
+critical factor in real-world deployment. In such scenarios, downstream applications such as robotic control require continuous access
+to the most recent outputs of perception models, and even minor
+latency can lead to outdated predictions and compounding errors.
+This mismatch between evaluation and real-time application is especially pronounced in neuromorphic vision, where event cameras
+
+generate data at over 1 MHz, yet existing frameworks process these
+streams as low-frequency frames (typically ~25 Hz), discarding temporal precision and penalizing lightweight, high-speed algorithms by
+conﬁning them to suboptimal input frequencies.
+To unlock the potential of event cameras in real-time applications,
+recent advances in perception frameworks have attempted to reduce
+latency by either optimizing frame-based processing pipelines9,25–28 or
+redesigning the perception framework to directly process the online
+
+Nature Communications | (2026)17:2441
+
+2
+
+Article
+
+https://doi.org/10.1038/s41467-026-70240-6
+
+Fig. 2 | The ESOT500 dataset for high-dynamic event-driven perception.
+a Representative event stream samples from the low-resolution ESOT500-L subset
+(346 × 260, top row) and high-resolution ESOT500-H subset (1280 × 720, bottom
+row), showcasing diverse high-dynamic scenarios (e.g., ﬂag waving, bicycle riding,
+car driving, cap shaking, football playing, monkey swinging, fan rotating, pigeon
+taking off, bottle spinning, breakdancing). b Scene category distribution for
+ESOT500-L (left) and ESOT500-H (right), quantifying the percentage of sequences
+
+across attributes like object similarity, background complexity, deformation,
+occlusion, motion speed, and indoor/outdoor setting. c Comparison of eventbased object tracking datasets. ESOT500-L and ESOT500-H stand out with 500 Hz
+time-aligned annotations, high resolution (up to 1280 × 720 for ESOT500-H), and
+diverse scene coverage, addressing gaps in prior datasets (e.g., low annotation
+frequency, lack of time-aligned labels)5,21,24,63,71–84.
+
+streaming data29–32. Despite these improvements, evaluation methodologies remain predominantly based on ﬁxed frame-rate sequential
+data. To address this issue, we introduce the STream-based lAtencyawaRe Evaluation (STARE) framework, which is designed to transcend
+traditional limitations and realistically assess event-driven models
+through two core components, as shown in Fig. 1c. First, Continuous
+Sampling schedules the model to immediately process the latest
+events right after the previous cycle, maximizing model throughput
+for real-time use. Second, Latency-Aware Evaluation integrates latency
+into accuracy metrics: it aligns each timestamped ground truth with
+the latest available prediction, directly quantifying accuracy degradation caused by outdated model outputs. An example of the perception
+result from STARE is shown in Fig. 1d.
+Given that existing event datasets are constrained by low framerate annotations and designed for the traditional latency-ignored framework, we developed a new event dataset with high-frequency
+annotations: ESOT50033, a 500 Hz object tracking dataset in which
+each annotation simulates a real-world downstream query (Fig. 2). This
+annotation density ensures resistance to temporal aliasing34 and
+
+supports rigorous Latency-Aware Evaluation (Fig. 3). Leveraging
+STARE with ESOT500, we demonstrate that perception latency reduces accuracy by over 50% (Fig. 4a–b). Robotic experiments further
+validate this ﬁnding: a 55% increase in perception latency leading to
+complete task failure (Fig. 5).
+To address the accuracy degradation stemming from latency, we
+propose two model enhancement strategies that underscore the need
+for advanced architectural designs and operational paradigms for
+event-driven perception systems (Fig. 6). First, Asynchronous Tracking, which draws inspiration from harnessing the continuity of event
+streams to improve model throughput and thus fulﬁlls the dense query
+requirements from downstream applications9,25, adopts a dualcomponent architecture: a heavyweight base model generates highaccuracy yet low-frequency predictions, while a lightweight residual
+model is integrated to rapidly reﬁne the most recent output of the base
+model. Second, Context-Aware Sampling, which originates from our
+key observation that model performance correlates with the event
+density surrounding the target object. This method dynamically
+adjusts the model’s activation state based on this contextual event
+
+Nature Communications | (2026)17:2441
+
+3
+
+Article
+
+https://doi.org/10.1038/s41467-026-70240-6
+
+Fig. 3 | Temporal aliasing in event-driven perception and ESOT500’s solution.
+a Conceptual illustration of temporal aliasing. The green solid line denotes the true
+continuous object state over time; black dots are low-frequency periodic annotations; the yellow dashed line is the trajectory reconstructed from sparse annotations. For simple motion (top), reconstruction approximates the truth, but for
+complex motion (bottom), low-frequency sampling causes distorted reconstruction (temporal aliasing). b Reconstruction Error (RE, mean ± STD) for ESOT500-H
+(blue) and ESOT500-L (orange) as a function of annotation frequency. RE is substantial at low frequencies and gradually decreases when approaching 500 Hz,
+
+validating ESOT500's ability to mitigate aliasing via high-frequency annotation. c RE
+curves for representative sequences in ESOT500-L (airplane, book, cap, bike,
+umbrella). d RE curves for representative sequences in ESOT500-H (bird, bottle,
+badminton racket, skate player, fan). e Visual comparison of high-frequency ground
+truth annotations (green boxes) and sparse 20 Hz interpolated boxes (yellow) for
+three objects (fan, bottle, badminton racket). Interpolated boxes deviate signiﬁcantly from ground truth, emphasizing the need for dense annotation to
+address temporal aliasing.
+
+density. Experimental results demonstrate the efﬁcacy of these strategies: Asynchronous Tracking improves latency-aware accuracy by up
+to 60% (from 31.83 to 51.06 AUC) via a 78% enhancement in model
+throughput (from 118 Hz to 210 Hz), whereas Context-Aware Sampling
+further enhances robustness, yielding over 51% performance
+improvement (from 18.73 to 28.29 AUC) in challenging scenarios (Fig. 7).
+Our approach breaks free from the static, latency-ignored constraints of traditional vision research by centering on a critical,
+underaddressed principle: temporal congruence between event cameras’ continuous sensing, model computation, and real-world task
+demands. Unlike prior work that forces event streams into framebased pipelines or treats latency as an isolated metric, we present a
+cohesive solution that integrates STARE (a stream-based latency-aware
+evaluation framework that mirrors real deployment), ESOT500 (a
+dense 500 Hz dataset for validating the framework), and our asynchronous/context-aware strategies, thereby narrowing the divide
+between the theoretical speed of event cameras and their practical
+utility in real-time scenarios. This represents the main contribution of
+our work.
+
+constraints, namely Continuous Sampling and Latency-Aware
+Evaluation.
+
+The stream-based latency-aware evaluation framework
+
+Continuous sampling in STARE. The traditional framework operates
+ofﬂine by converting a continuous event stream into a sequence of
+ﬁxed-rate frames and processing them sequentially, as shown in
+Fig. 1b. However, adapting this ﬁxed-rate method for online operation
+would disrupt the event stream’s continuity, lowering model
+throughput and creating inefﬁciency. The core issue is the inherent
+misalignment between a model’s variable inference latency and the
+ﬁxed frame interval. This misalignment inevitably causes idle time for
+both faster and slower models, as they must wait for the next frame to
+arrive, thereby artiﬁcially limiting maximum throughput10–13. More
+details can be found in Section “Formal Deﬁnition”.
+To address this, STARE employs the Continuous Sampling strategy during the model’s perception stage. As shown in Fig. 1c, this
+approach leverages the continuity of the event stream by scheduling
+the model to sample the most recent events for processing immediately upon completing the prior processing cycle. As illustrated by the
+comparison between Fig. 1b, d, Continuous Sampling eliminates idle
+time and enables the model to operate at maximum throughput, which
+is critical for real-time applications such as robotic control or highspeed interaction.
+
+We developed the STream-based lAtency-awaRe Evaluation (STARE)
+framework: a realistic, rigorous benchmarking tool explicitly
+tailored to event-driven vision systems, designed to transcend the
+limitations of conventional latency-ignored paradigms. STARE’s
+design is anchored in two core, mutually reinforcing principles
+that govern both the operation of models in online streaming
+scenarios and the quantiﬁcation of their performance under real-time
+
+Latency-aware evaluation in STARE. The second core principle of
+STARE lies in its evaluation protocol, which explicitly integrates perception latency into the ﬁnal accuracy metrics. As shown in Fig. 1b, the
+traditional framework evaluates a model’s prediction against the
+ground truth at the input’s timestamp, implicitly assuming that predictions are available instantaneously6,7,35–39. Such an assumption
+
+Results
+
+Nature Communications | (2026)17:2441
+
+4
+
+Article
+
+https://doi.org/10.1038/s41467-026-70240-6
+
+Fig. 4 | Impact of perception latency on event-driven trackers across datasets
+and hardware. a Tracking accuracy (AUC) under STARE (-S, solid lines) vs. traditional frame-based evaluation (-F, dashed lines) on ESOT500-L. M_FETV2 stands for
+Mamba FETrackV2. Larger markers indicate faster inference. STARE reveals the
+impact of perception latency on accuracy hidden by traditional methods. Accuracy
+generally peaks at an optimal sampling window size under STARE. b Same as (a) but
+on ESOT500-H, validating STARE's consistency across dataset resolutions. The
+unimodal AUC vs. sampling window size trend persists. c STARE performance on
+FE10821: AUC vs. sampling window size for diverse trackers. The consistent unimodal trend across datasets (vs. ESOT500) highlights STARE's generalizability to
+external benchmarks. d STARE performance on VisEvent24: AUC vs. sampling window size. Results mirror (a-c), reinforcing the unimodal trend. e Ablation of sampling methods with HDETrack: Continuous Sampling (STARE, “Cont.'') vs. ﬁxed-rate
+
+sampling from preprocessed frames ("Prep.''), using EventFrame (EF)21 and VoxelGrid (VG)21 representations. Continuous Sampling outperforms, leveraging event
+stream temporal continuity. Performance ranking reversals under STARE at 2 ms
+(f), 20 ms (g), and 50 ms (h) sampling window sizes. Faster models (e.g., DiMP50,
+MixFormer) outperform slower counterparts with high traditional accuracy,
+demonstrating STARE's bias toward throughput. i Accuracy degradation with
+simulated inference latency (speed multiplier < 1 slows inference). All models show
+monotonic AUC drops, quantifying latency’s direct impact. STARE performance on
+hardware with varying conﬁgurations: (j) RTX 3090 (high-power), (k) RTX 3080 Ti
+(lower-power, accuracy drop vs. 3090), (l) RTX 3080 Ti with parallel task contention (further degradation), illustrating how different hardware conﬁgurations
+impact on latency.
+
+neglects the inevitable delay between sensory input and computational output, thereby overlooking the critical inﬂuence of perception
+latency on real-time performance9–13.
+To address this, as shown in Fig. 1c, STARE employs a LatencyAware Evaluation protocol, which simulates the interaction between
+the perception model and the downstream application. The core of
+this protocol involves comparing sparse model outputs against a
+dense sequence of high-frequency ground truth annotations, with
+each annotation representing a real-time query. For any query at time
+tquery, the most recent perception result prior to that time (i.e.,
+toutput≤tquery) is retrieved to calculate the performance metric (e.g.,
+AUC, IoU).
+This mechanism inherently highlights the impact of latency. When
+a model exhibits high latency, its sparse outputs result in a single
+
+prediction being repeatedly utilized as the best available estimate for a
+sequence of queries. For example, as shown in Fig. 1c, the perception
+result generated at time ti+2 is reused to evaluate queries after ti+2, such
+as tj where ti+2 < tj < ti+3, thereby accumulating error over time. This
+approach provides a direct quantiﬁcation of the performance degradation attributable to perception latency, yielding a faithful assessment of a model’s suitability for real-time deployment.
+
+Nature Communications | (2026)17:2441
+
+The stream-based latency-aware evaluation dataset
+To enable rigorous validation of the STARE framework and address the
+limitations of existing event datasets, which lack dense temporal
+annotations for Latency-Aware Evaluation, we introduce the ESOT500
+dataset. ESOT500 comprises two subsets with distinct sensor resolutions: ESOT500-L (346 × 260) and ESOT500-H (1280 × 720), covering
+5
+
+Article
+
+https://doi.org/10.1038/s41467-026-70240-6
+
+Fig. 5 | Real-world robotic ping-pong experiment. a Perception-action loop
+experimental setup. An event camera captures the ping-pong ball trajectory (event
+stream, red/blue points) at 1 MHz. An upstream tracker (orange) runs at tens of Hz,
+outputting bounding boxes (blue) to a downstream robotic policy (gray). The
+policy queries for target positions at 2 kHz and sends control actions to the robotic
+arm at 200 Hz. b An example of a successful robot hitting back a ping-pong ball.
+c Robotic ping-pong task success rate across perception models. Metrics include:
+
+ESOT500-L performance (AUC, latency-ignored vs. latency-aware), model speed
+(Hz, mean, min/max, STD), and success rate (successful hits / 20 trials). Underlined
+values indicate column maxima. MixFormer (high speed) achieves the highest
+success rate (7/20), while frame-based variants (e.g., MixFormer*) or high-ofﬂineaccuracy/low-speed models (KeepTrack) show reduced success, validating latency’s critical role in real-time task.
+
+diverse indoor/outdoor scenes, object classes, and challenging environmental conditions (Fig. 2a–b). A comparative analysis with related
+event datasets is presented in Fig. 2c, while detailed protocols for data
+capture, annotation, training/test splits, and implementation are provided in Supplementary Note 3. Latency-Aware Evaluation (a core goal
+of STARE) requires two critical dataset attributes, as identiﬁed in prior
+analysis: (1) dense ground truth to simulate the high-frequency queries
+of real-world downstream applications (e.g., robotic control)40–44, and
+(2) high temporal resolution to capture high-dynamic object motion
+without the temporal aliasing inherent in low-frequency
+annotations34,45. ESOT500 is purpose-built to satisfy both requirements via its 500 Hz annotation rate, as elaborated below.
+
+motion, addressing a critical shortcoming of low-frequency datasets,
+which struggle to resolve rapid, transient motion transitions. From an
+information-theoretic perspective, sampling continuous high-dynamic
+motion at discrete, low frequencies acts as a lossy channel45: the original fast-changing trajectory serves as the input signal, while sparse
+annotations produce degraded outputs that omit key motion details.
+As the speed or variability of object motion increases, this degradation
+becomes more severe (Fig. 3a)34, leading to substantial discrepancies
+between the true high-dynamic motion and trajectories interpolated
+from low-frequency sparse annotations (Fig. 3e).
+To quantify this distortion, we introduce the Reconstruction Error
+(RE) metric, which measures motion information loss at low sampling
+frequencies by: (1) downsampling ESOT500’s 500 Hz ground truth to a
+target frequency; (2) reconstructing the trajectory via linear interpolation; and (3) computing the error relative to the original 500 Hz
+data. As shown in Fig. 3b–d, RE is pronounced at conventional low
+frequencies (e.g., 25 Hz) but gradually declines as the sampling rate
+approaches 500 Hz. Fig. 3e presents several visual examples. These
+results conﬁrm that high temporal resolution is critical to preserve the
+integrity of high-dynamic motion. The RE curve is expected to be even
+steeper in more complex tasks (e.g., multi-object detection in dynamic
+scenes6, 6D pose estimation for high-speed targets25, visual odometry
+in rapid locomotion7), as higher degrees of freedom introduce greater
+uncertainty. These results provide quantitative evidence that
+ESOT500’s high-frequency annotations are crucial for validating
+
+Simulating dense downstream queries with 500 Hz annotations.
+The 500 Hz annotation frequency, which is ESOT500’s deﬁning feature, generates a dense ground truth sequence that mimics the continuous, high-rate query demands of downstream applications40–44.
+This enables STARE to directly assess latency-induced accuracy: by
+comparing a model’s sparse, timestamped outputs with ESOT500’s
+dense query stream, the framework captures how latency causes predictions to become outdated relative to real-time task demands, which
+would be impractical with low-frequency datasets.
+High-ﬁdelity capture of high-dynamic object motion. The 500 Hz
+annotation rate enables high-ﬁdelity capture of high-dynamic object
+
+Nature Communications | (2026)17:2441
+
+6
+
+Article
+
+Fig. 6 | Conceptual illustration of the proposed Asynchronous Tracking and
+Context-Aware Sampling. a Architecture of Asynchronous Tracking. A slow, highﬁdelity base model (orange) performs full inference on event segments, generating
+initial bounding boxes and sharing features with a fast residual model (green). The
+residual model recursively updates predictions using shared features and new
+events, producing high-frequency outputs between base model cycles, leveraging
+temporal continuity of event stream to boost throughput. b Qualitative example of
+Context-Aware Sampling in sparse-event scenarios. Top row: Baseline model fails to
+
+Nature Communications | (2026)17:2441
+
+https://doi.org/10.1038/s41467-026-70240-6
+
+localize the target (red box) as event density drops. Bottom row: Enhanced model
+detects sparse events, enters an inactive state, and reuses the last correct prediction (dashed green box) until dense events trigger accurate inference, preventing
+error accumulation. c Qualitative example of Context-Aware Sampling mitigating
+target drift during prolonged inactivity. Top row: Baseline tracker accumulates
+errors over time and loses the target. Bottom row: Enhanced tracker uses a timer to
+force reactivation after prolonged inactivity, re-localizing the slowly drifting target.
+
+7
+
+Article
+
+https://doi.org/10.1038/s41467-026-70240-6
+
+Fig. 7 | Quantitative evaluation of model enhancement strategies under STARE.
+a Accuracy (AUC) of OSTrack-based85 variants on ESOT500-L across sampling
+window sizes. Curves compare: Baseline (green), +Predictive Motion Extrapolation
+(+Pred, orange), +Context-Aware Sampling (+C, light blue), +Asynchronous
+Tracking (trained on 500 Hz annotations, yellow), and +Asynchronous Tracking
+(trained on 20 Hz annotations, gray). Asynchronous Tracking (500 Hz) combined
+with Context-Aware Sampling (+Async+C, dark blue) consistently outperforms
+other strategies. b Motion dynamism vs. Asynchronous Tracking effectiveness.
+Blue solid line: high-dynamism (left y-axis, negative performance gain from
+
+Predictive Motion Extrapolation, also deﬁned as the unpredictability score) for
+ESOT500-L sequences. Orange dashed line: Accuracy improvement (right y-axis)
+from Asynchronous Tracking. Higher dynamism poses greater challenge.
+c Context-Aware Sampling performance in some sparse-event scenarios. Blue line:
+Baseline accuracy (left y-axis). Orange line: Accuracy with Context-Aware Sampling
+(left y-axis). Green dashed line: Sparsity Rate (right y-axis, percentage of model
+inactivity). Context-Aware Sampling demonstrates robustness in low-motion
+contexts.
+
+event-driven models in high-dynamic scenarios. A formal deﬁnition of
+RE is provided in Section “Reconstruction Error” (Methods).
+
+perception latency has been largely overlooked by the traditional
+evaluation framework. While the accuracy drop was generally
+observed, the results under STARE highlighted the superiority of some
+lightweight models over heavy ones. As shown in Fig. 4f–h, some
+models that achieved higher ofﬂine accuracy in the traditional framework were outperformed by more lightweight models under
+STARE. For example, MixFormer47 outperformed KeepTrack48 under
+STARE, whereas KeepTrack performed better in the traditional framework. This result is consistent with our real-world robotic pingpong experiment in Fig. 5c. Notably, such performance ranking
+reversals are observed even on our RTX 3090 GPU with high computational power. It is reasonable to infer that the impact of latency is
+much more pronounced on resource-constrained devices, which are
+common in robotics and autonomous systems52,53. These ﬁndings
+provide direct experimental evidence that the traditional framework
+can yield misleading conclusions about a model’s practical capability,
+underscoring the necessity of a latency-aware evaluation paradigm
+such as STARE.
+Second, the performance of most trackers under STARE followed
+a unimodal trend with respect to the sampling window size. The
+average peak performance appeared around a 20 ms window,
+reﬂecting a trade-off: longer windows gather more information but risk
+redundancy, while shorter windows avoid redundancy but miss critical
+data. Drawing on this ﬁnding, we noticed the effectiveness of Continuous Sampling was inﬂuenced by sampling window size. Hence, we
+made a deeper observation on Continuous Sampling by comparing the
+model performance under STARE and a frame-based latency-aware
+evaluation. Under the frame-based latency-aware evaluation, the event
+stream was converted into event frames in advance, and the model was
+constrained to sample events only at the discrete timestamps of these
+frames. More details about the frame-based latency-aware evaluation
+
+Experimental results and analysis
+Event-driven perception evaluation with STARE. To quantify the
+impact of perception latency on event-driven perception, we leverage
+the STARE framework to evaluate state-of-the-art models. This evaluation centers on the ESOT500 dataset, tailored for high-dynamic,
+low-latency assessment, and extends to external benchmarks to verify
+generalizability.
+Experimental setting. We selected representative trackers spanning
+diverse model families, ofﬂine accuracy, and inference speeds
+(Fig. 4a–b): Siamese-based (PrDiMP1846), Transformer-based
+(MixFormer47), GNN-based (KeepTrack48), RNN-based (KYS49) and
+Segmentation-Centric (RTS50). We also incorporated models speciﬁcally designed for event streams, such as those operating directly on
+raw events (EGT29), grid-like representations21 (HDETrack5), and a
+recent cross-modal tracker using the Mamba architecture (MambaFETrackV251). Trackers were assessed under two paradigms: (a) Traditional framework: Event streams were preprocessed into 20 Hz
+ﬁxed-rate frames (with varying event durations per frame)22. (b) STARE
+framework: Trackers used Continuous Sampling, processing the most
+recent events within different sampling window sizes. More details
+about the experimental settings can be found in Supplementary Note 1.
+Evaluation on ESOT500. The results, summarized in Fig. 4a–b, reveal
+two key ﬁndings. First, most models experienced a substantial accuracy drop by up to 50% when moving from the traditional framework
+to STARE. This demonstrates that accuracy degradation caused by
+
+Nature Communications | (2026)17:2441
+
+8
+
+Article
+
+https://doi.org/10.1038/s41467-026-70240-6
+
+can be found in Section “Formal Deﬁnition” (Method). In contrast,
+under STARE with Continuous Sampling, the model sampled and
+processed the most recent events immediately after the previous
+processing was complete, not requiring any ﬁxed-rate preprocessing.
+We evaluated model under these two settings with varying sampling
+window size. As shown in Fig. 4e, Continuous Sampling improved
+the model’s online accuracy by 51–129% with various sampling
+windows, demonstrating that Continuous Sampling is able to improve
+the model throughput thereby enhances accuracy by leveraging
+the continuity of event data. Furthermore, Continuous Sampling
+worked the most effectively with a sampling window of 50 ms,
+which best balanced window size and information richness on our
+dataset. It revealed that the window size in Continuous Sampling
+should be carefully considered to unlock a model’s full real-time
+potential.
+The above experiments highlighted the impact of latency on
+model performance. To comprehensively evaluate a model under
+STARE in different latency conditions, we conducted experiments
+using a latency simulator, different physical GPU&CPU conﬁgurations,
+and resource contention from a parallel task. The results are shown in
+Fig. 4i–l, respectively. In all cases, we found that the accuracy dropped
+consistently under STARE as latency increased, demonstrating the
+consistent negative impact of perception latency on model
+performance.
+
+Continuous Sampling operation. This demonstrated that the traditional frame-based online setting failed to unlock the model’s real-time
+potential. In the ﬁnal setting, we selected KeepTrack48 that has a higher
+traditional ofﬂine accuracy than MixFormer (62.87 AUC vs 61.56 AUC)
+but has a lower processing speed (33.2 Hz). KeepTrack achieved a
+lower task success rate (1 out of 20 trials), highlighting the negative
+impact of high processing latency even though the model had a higher
+ofﬂine accuracy.
+Overall, these ﬁndings emphasize two essential requirements for
+evaluating event-driven systems. First, perception latency should be
+explicitly considered in evaluation to ensure that performance metrics
+reﬂect realistic deployment conditions rather than idealized assumptions. Second, to fully realize the capabilities of event-driven models,
+the evaluation methodology should preserve the continuous nature of
+event streams instead of constraining them into ﬁxed-rate frames,
+which can suppress real-time potential even when the nominal
+throughput appears high.
+
+Evaluation on other datasets. Apart from the proposed ESOT500
+dataset, we also applied STARE to two other commonly-used eventbased tracking datasets: FE10821 and VisEvent24. As shown in Fig. 4c–d,
+the performance of models on these datasets also followed the
+unimodal distribution with respect to the sampling window size,
+similarly to our ﬁndings on ESOT500. It is worth noting that the optimal sampling window for Continuous Sampling on FE108 (e.g., 20 ms
+for KYS49) is much shorter than that on VisEvent (e.g., 50 ms for KYS).
+This is likely because the objects in FE108 are hung on a stick and
+swung, generating high-density events. As a result, a short sampling
+window in this case would lead to more proper information
+aggregation.
+
+Asynchronous tracking. Increasing model throughput is a direct way
+to produce more timely predictions, which is critical for satisfying the
+high-frequency query demands from downstream applications (e.g.,
+robotic control). Event streams inherently provide continuous visual
+information at near-arbitrary timestamps, theoretically supporting
+ultra-high throughput. But this potential is not fully utilized by singlemodel architectures, which are limited by the computational latency
+of feature extraction. To leverage this continuity, we develop Asynchronous Tracking: a dual-model framework that uses a lightweight
+residual model to recursively update predictions from a heavyweight
+base model, thereby boosting throughput without sacriﬁcing
+accuracy.
+Figure 6a details the architecture: the heavyweight base model
+extracts high-quality features from the event stream to estimate target
+positions, but results in signiﬁcant computational latency. While the
+base model runs inference, the lightweight residual model processes
+the latest incoming events to reﬁne the base model’s features and
+predictions in real time. This design has two key advantages: it avoids
+redundant, computationally expensive feature extraction (by reusing
+the base model’s shared features) and integrates the most recent event
+information (preserving temporal continuity).
+Experimental validation (Fig. 7a) conﬁrms the strategy’s efﬁcacy:
+Asynchronous Tracking increases model throughput by 78% (from
+118 to 210 Hz) and lifts latency-aware accuracy by 60% (from 31.83 to
+51.06 AUC). For comparison, we also explored a single-model alternative, the Predictive Motion Extrapolation, which extrapolates
+future target positions via velocity vectors output by the base model
+(details in Method Section “Predictive Motion Extrapolation”). Both
+strategies aim to boost throughput by updating base model predictions, but Asynchronous Tracking outperforms Predictive Motion
+Extrapolation across all settings (Fig. 7b). We attribute this performance gap to the limitations of motion extrapolation in highdynamic scenarios, particularly critical for ESOT500’s 500 Hz annotated high-dynamic motion. To quantify this, we deﬁne the unpredictability score (negative accuracy gain of Predictive Motion
+Extrapolation relative to a non-predictive baseline), where higher
+scores indicate more unpredictable, namely high-dynamic motion.
+As shown in Fig. 7b, a model achieves sharply decreased accuracy
+while unpredictability scores increase, conﬁrming why predictive
+motion extrapolation underperforms.
+
+Evaluation on ping-pong robot player with STARE. To examine the
+real-world impact of perception latency, we developed an event-based
+ping-pong robot player. This platform enabled us to test the immediate impact of latency on applications that demand rapid responses.
+The system consisted of a robotic arm holding a bat, an event camera,
+a ball launcher, an event-driven tracker, and a robot control policy.
+These components formed a tightly coupled perception-action loop.
+The event camera recorded the ball’s trajectory at 1 MHz. The tracker,
+operating at tens of Hz, requested the latest event data and provided
+estimated 3D positions of the ball. The robot control policy queried the
+tracker at 2 kHz, computing hitting trajectories, and sent control
+commands to the arm at 200 Hz, guiding it to strike the ball. The
+complete setup is illustrated in Fig. 5a. An example of a successful
+robot hitting back a ping-pong ball is shown in Fig. 5b. More details are
+provided in Supplementary Note 2.
+To quantify the impact of perception latency on the ping-pong
+robot player, we conducted experiments under ﬁve conditions with
+results summarized in Fig. 5c. In the ﬁrst three settings, we applied
+STARE to the MixFormer47 model and simulated different levels of
+perception latency by varying the model processing speed. Increasing
+the processing speed from 23.0 Hz to 55.3 Hz improved the success
+rate from 0 to 7 out of 20 trials, demonstrating that reduced latency
+contributed to real-world task success. The fourth setting served as a
+critical ablation study to STARE by removing Continuous Sampling
+operation. When the event stream was converted into 40 Hz frames,
+the model success rate dropped to 2 out of 20 trials, lower than the
+second setting (5 out of 20) with a close processing speed but with
+
+Nature Communications | (2026)17:2441
+
+Strategies for continuous event-driven perception
+To mitigate latency-induced performance loss while aligning with the
+intrinsic continuity of event streams, we propose two targeted model
+enhancement strategies: Asynchronous Tracking (boosts throughput
+via dual-model collaboration) and Context-Aware Sampling (optimizes
+input efﬁciency via dynamic event selection).
+
+9
+
+Article
+Context-aware sampling. Our earlier STARE evaluations (Section
+“Event-Driven Perception Evaluation with STARE”) revealed a key
+insight: model performance exhibits a unimodal distribution with
+respect to event sampling window size. Speciﬁcally, too small a window lacks sufﬁcient motion information, while too large a window
+introduces redundant information. This ﬁnding motivated ContextAware Sampling: a dynamic input reﬁnement strategy that adapts the
+sampling window while activating/deactivating model inference based
+on event density surrounding the target’s last known location. The goal
+is to balance computational efﬁciency (avoiding unnecessary and
+inaccurate inference) and perception accuracy (preventing the target
+from slowly drifting).
+Qualitative examples in Fig. 6b–c illustrates the mechanism: When
+event density is low (indicating slow or no motion, shown in Fig. 6b),
+inference is deactivated, and the last valid prediction is reused. This
+can reduce computational latency without accuracy loss. To avoid
+target drift from prolonged deactivation (Fig. 6c), the strategy enforces periodic reactivation to re-localize the target using newly
+accumulated events. The detailed formulation of the event
+density threshold and reactivation interval is provided in Section
+“Context-Aware Sampling” (Method). Experimental results (Fig. 7a, c)
+conﬁrm its effectiveness: Context-Aware Sampling improves
+performance across most settings, and when combined with
+Asynchronous Tracking, achieves a 61% accuracy gain (from
+31.83 to 51.12 AUC), as shown in Fig. 7a. Its effectiveness is most pronounced in sparse-event scenarios. Fig. 7c shows the strategy lifts accuracy by over 51% from an average of 18.73 to 28.29 AUC,
+demonstrating its robustness in challenging scenarios with sparse
+events.
+
+Discussion
+Neuromorphic vision systems hold unique potential for real-time
+applications, yet their practical deployment has been hindered by
+misalignment between evaluation paradigms and the intrinsic properties of event streams. To address this critical gap, we developed the
+STream-based lAtency-awaRe Evaluation (STARE) framework, which is
+designed to prioritize the temporal continuity of event data and
+explicitly account for perception latency, two factors overlooked by
+traditional RGB-derived evaluation methods.
+STARE’s value lies in its ability to bridge theoretical benchmarks
+and real-world performance. By integrating Continuous Sampling and
+Latency-Aware Evaluation, the framework aligns model operation
+pipeline with the asynchronous nature of event streams: Continuous
+Sampling maximizes throughput by processing the latest events
+immediately after the prior processing cycle, while Latency-Aware
+Evaluation quantiﬁes latency-induced accuracy loss by matching
+high-frequency ground truth to the most recent available model
+output. This design ensures STARE captures performance
+degradation that traditional frame-based, latency-ignored framework
+misses. Our experiments show perception latency reduces
+online accuracy by over 50%, and even reverses model rankings
+(favoring
+lightweight,
+high-throughput
+architectures
+over
+computationally heavy alternatives). Critically, event-driven robotic
+tests validated this ﬁnding: a 55% increase in latency can lead to a
+complete (100%) drop in task success rate (ping-pong return accuracy), underscoring the consequences of ignoring latency in real-world
+systems.
+To enable rigorous validation of STARE, we developed the
+ESOT500 dataset, which provides 500 Hz dense annotations to accurately capture high-dynamic object motion and avoid temporal aliasing. This dataset addresses a key limitation of existing low-frequency
+event datasets, which fail to faithfully capture high-dynamic state
+changes and thus struggle with providing reliable Latency-Aware Evaluation results. Complementing STARE and ESOT500, we proposed
+two model enhancement strategies: Asynchronous Tracking and
+
+Nature Communications | (2026)17:2441
+
+https://doi.org/10.1038/s41467-026-70240-6
+
+Context-Aware Sampling that mitigate latency-induced degradation
+without sacriﬁcing model computational efﬁciency. Asynchronous
+Tracking boosts throughput via a dual lightweight-heavyweight
+architecture, while Context-Aware Sampling dynamically adapts
+input based on event density surrounding the target object. The two
+strategies together improve latency-induced accuracy by up to 61%
+and increase model speed by 78%. Furthermore, Asynchronous
+Tracking outperforms alternative approaches like Predictive Motion
+Extrapolation, which struggles in highly dynamic scenarios due to its
+reliance on trajectory forecasting rather than improving throughput
+by leveraging the continuous event stream.
+Despite these advances, our work has limitations that point to
+future research directions. First, while our vision is for the STARE framework to be applied across a wide range of perception tasks, our
+current work demonstrates its methodology on the single-object
+tracking task, chosen for its clarity as a foundational perception problem. In turn, this work paves the way for STARE’s application to other
+demanding real-time tasks, as more high temporal resolution datasets
+tailored to these scenarios are established in the future. Moreover, we
+currently treat upstream perception modules and downstream applications (e.g., robotic control) as decoupled systems, focusing on how
+perception latency impacts control outcomes rather than simultaneously optimizing them as a whole. A more integrated approach
+would involve co-designing perception and control policies within
+a uniﬁed latency-aware framework. Recent work has explored
+learning a separate high-level controller to make runtime decisions54 or
+directly forecasting future states to provide better state estimation55,
+effectively creating reactive policies that adapt to dynamic environments. But end-to-end policies probably offer even greater potential.
+For example, such policies could learn to prioritize safer, lower-risk
+actions when high perception latency is anticipated, which can make
+systems more efﬁcient, and more robust to latency-induced
+uncertainty.
+Looking forward, STARE also opens avenues to explore
+broader questions in neuromorphic vision, such as co-design of
+algorithms and hardware, real-time robotic control, and learningbased event sampling strategies. By centering temporal congruence in
+model operation and evaluation, our work provides a path towards
+unlocking the full potential of event-driven systems, enabling technologies that are accurate, low-latency, and reliable in real-world
+scenarios.
+
+Methods
+In this section, we employ VOT as a concrete example to formally
+describe the STARE framework and compare it with latency-ignored
+and frame-based approaches.
+
+Framework
+Formal deﬁnition
+Preliminary and Notation. Given an event stream
+N
+
+E = fei gi =e 0 ,
+
+ð1Þ
+
+we regard the sampled event stream segment as
+E l, r = fei gri = l ,
+
+ð2Þ
+
+where ei = (xi, ti, pi), including event coordinate, timestamp and
+polarity; Ne is the max event index and Ne + 1 is the total events number of an event stream; l, r are event indexes, corresponding to the left
+and right bounds of the sampled event stream segment. In this work,
+the basic sampling strategy can be divided into two types, one ﬁxes the
+time duration of sampled event stream, while another ﬁxes the sampled event number. Following that, the indexes l, r can be achieved by
+two indexing functions:
+10
+
+Article
+
+https://doi.org/10.1038/s41467-026-70240-6
+
+1) Given the window size of sampling time duration L, the timeﬁxed indexing function φτ can be deﬁned as
+½l τ , r τ  = φτ ðE, t, LÞ ,
+
+ð3Þ
+
+where
+r τ = maxfijðxi , t i , pi Þ 2 E, t i ≤ tg ,
+
+ð4Þ
+
+l τ = minfijðxi , t i , pi Þ 2 E, t i ≥ maxðt  L, t 0 Þg :
+
+ð5Þ
+
+2) Given the window size of sampled events number N, the
+number-ﬁxed indexing function φμ can be deﬁned as
+½l μ , r μ  = φμ ðE, t, NÞ ,
+
+ð6Þ
+
+where
+r μ = maxfijðxi , t i , pi Þ 2 E, t i ≤ tg ,
+
+ð7Þ
+
+l μ = maxðr μ  N, 0Þ :
+
+ð8Þ
+
+Before feeding the sampled event stream E l, r into the perception
+model, we need to convert it to an event frame with a speciﬁc event
+representation that the model can process. The general conversion
+process is denoted by the function χ
+b = χðE Þ :
+E
+l, r
+l, r
+
+ð9Þ
+
+As to the relevant event representations, we make a brief description
+in Supplementary Note 1.
+As illustrated in Section “Results”, to meet the Latency-Aware
+Evaluation paradigm, each ground truth bounding box Bj within an
+event stream sequence is attached with a timestamp tj. Speciﬁcally, we
+assume that the time starts from zero, and the total time duration of an
+event stream is T. We mark the ground truth set as
+N
+
+Q = fðBj , t j Þgj =gt0 ,
+
+ð10Þ
+
+where Ngt is the max ground truth index and Ngt + 1 is the total number
+of ground truth and B0 serves as the template bounding box for
+tracking. If the sampling frequency is H segments per second, we can
+calculate that
+N gt = bT  H c  1 :
+
+Fig. 8 | The traditional frame-based latency-ignored evaluation framework.
+This diagram illustrates the traditional pipeline for evaluating event-driven perception models. A continuous event stream is ﬁrst preprocessed into ﬁxed-rate
+event frames. Each frame is then fed into the model. The model’s output is used to
+calculate the deviation against the ground truth at the input timestamp, ignoring
+the model’s perception latency.
+
+Fig. 9 | The frame-based latency-aware evaluation framework. The frame-based
+latency-aware evaluation framework runs models on ﬁxed-rate frames, with event
+sampling restricted to periodic, ﬁxed timestamps (e.g., tk, tk+1). This design
+
+Nature Communications | (2026)17:2441
+
+ð11Þ
+
+Frame-based Latency-ignored Evaluation. As discussed in Section
+“Introduction” and illustrated in Fig. 8, frame-based latency-ignored
+evaluation involves processing preprocessed event frames one by one
+to calculate the ofﬂine accuracy. We mark the sequence of event
+frames as
+b gN f ,
+b = fE
+E
+f
+li , r i i = 0
+
+ð12Þ
+
+introduces a misalignment between the model’s processing latency and the frame
+interval, leading to unavoidable idle time periods where the model is forced to wait
+for the next frame before processing new events.
+
+11
+
+Article
+
+https://doi.org/10.1038/s41467-026-70240-6
+
+where Nf is the max event frame index and Nf + 1 is the total number of
+event frames. With the introduced notations above, we can get
+ð13Þ
+
+N f = N gt ,
+and
+½l i , r i  = φτ ðE,
+
+i+1
+, LÞ :
+H
+
+ð14Þ
+
+b should be fed into the model, we can
+Since each event frame in E
+f
+get the output bounding box set described as
+b gN f ,
+Qoffline = fB
+k k =1
+
+ð15Þ
+
+and the corresponding output-ground-truth pairs set described as
+N gt
+
+b ÞjB 2 Q, B
+b 2Q
+Doffline = fðBj , B
+j
+j
+j
+offline gj = 1 :
+
+ð16Þ
+
+With Doffline , we can calculate standard accuracy metrics, such as AUC
+and AP.
+Frame-based Latency-Aware Evaluation. As illustrated in Fig. 9,
+frame-based latency-aware evaluation evaluates a system’s reactivity
+to the external world by processing successively arriving frames and
+comparing the ground truth with corresponding timestamped outputs. The original and detailed deﬁnition can be found in ref. 10. We
+migrate it to the event-based vision with ﬁxed-rate event sampling
+mentioned in Fig. 9. Here we provide a brief description using the
+previously mentioned notations.
+Unlike frame-based latency-ignored evaluation, frame-based
+latency-aware evaluation framework does not schedule the model to
+b one by one. If a model is currently processing
+process each frame in E
+f
+the input, the coming frames will be skipped. And then, after ﬁnishing
+the inference, it brieﬂy idles while waiting for the next input, as shown
+in Fig. 9.
+The outputs contain not only the bounding boxes but also corresponding output timestamps for latency-aware evaluation. The
+output set can be marked as
+b b N streaming ,
+b
+Q
+streaming = fðBk , t k Þgk = 1
+
+b , bt Þ 2 Q
+b
+ðBj , t j Þ 2 Q, ðB
+kj kj
+streaming
+
+oN gt
+
+ð20Þ
+
+where the N STARE is the max output index and also the total number of
+b
+outputs. The method of aligning Q and Q
+STARE is consistent with the
+frame-based latency-aware evaluation. The matched output-groundtruth pair set DSTARE can be described as
+b ÞjðB , t Þ 2 Q, ðB
+b , bt Þ 2 Q
+b
+DSTARE = fðBj , B
+kj
+j j
+kj kj
+STARE g
+
+N gt
+j=1
+
+,
+
+ð21Þ
+
+where for each item in DSTARE satisﬁes
+b , bt Þ 2 Q
+b
+k j = maxfkjbt k ≤ t j , 8ðB
+k k
+STARE g :
+
+ð22Þ
+
+We can use the same way to calculate accuracy metrics as the
+frame-based latency-free evaluation with DSTARE , to get the perception
+model’s performance on stream-based tracking.
+Analysis. From the above description, we can see that for a given event
+stream E and sampling setting (fps and window size), both framebased latency-ignored evaluation and frame-based latency-aware evab as input. But the frame-based
+luation share the same event frame set E
+f
+latency-aware evaluation will skip some coming frames. Therefore, we
+can know that
+
+j=1
+
+b , bt Þ 2 Q
+b
+k j = maxfkjbt k ≤ t j , 8ðB
+k k
+streaming g :
+
+N streaming ≤ N gt  1 ,
+
+ð23Þ
+
+with equality if and only if
+Δt ≤
+
+1
+,
+H
+
+ð24Þ
+
+ð18Þ
+
+which means the model’s reasoning speed exceeds the time interval
+between frames. Consequently, the model will always wait for the
+arrival of the next frame and never skip it. When this equality holds, Eq.
+(19) can be simpliﬁed as
+
+ð19Þ
+
+kj = j  1 :
+
+,
+
+where each item in Dstreaming satisﬁes
+
+With Dstreaming , we can calculate metrics in the same way as framebased latency-ignored evaluation, however, to show the latency-aware
+results.
+Stream-based Latency-Aware Evaluation. As shown in Fig. 1c, in
+STARE, perception models get the input from continuous event
+streams instead of discrete frames. Algo. 1 of Supplementary Note 5
+
+Nature Communications | (2026)17:2441
+
+b b N STARE
+b
+Q
+STARE = fðBk , t k Þgk = 1 ,
+
+ð17Þ
+
+where Nstreaming is the max output index and the total number of
+timestamped outputs. To implement the latency-aware evaluation, we
+b
+still need to match each item in Q with an item in Q
+streaming . As shown in
+Fig. 9, the matching principle and the matched output-ground-truth
+pair set Dstreaming can be described as
+n
+b Þj
+Dstreaming = ðBj , B
+kj
+
+illustrates the stream-based tracking process implemented in
+our work.
+In general, we start by setting the ﬁrst ground truth bounding box
+B0’s timestamp as the current world time tcurr. The stream-based
+tracking process then begins, where in each cycle, we sample the event
+stream using the indexing function φ based on tcurr and the sampling
+window ω. The sampled segment E l, r is converted into an event frame
+b in a speciﬁc representation using the conversion function χ. We
+E
+l, r
+b into the model along with the latest output bounding
+then input E
+l, r
+b to predict a new bounding box and return the computational
+box B
+latency Δt. Then, we update tcurr, store the new timestamped output in
+b
+Q
+STARE , and repeat the process until tcurr surpasses end time T of the
+event stream. Notably, the ﬁrst cycle speciﬁcally serves to initialize the
+perception model with B0.
+After the end of the tracking, we can get the timestamped
+bounding box list, described as
+
+ð25Þ
+
+On the contrary, the STARE framework schedules the perception
+model to operate on the event stream continuously, called Continuous
+Sampling, avoiding idle time caused by waiting for subsequent frames.
+The perception model can instantly receive input right after generating the current bounding box, which leads to a higher frequency of
+outputs and maximally exploits the real-time capability of the perception system.
+12
+
+Article
+
+https://doi.org/10.1038/s41467-026-70240-6
+
+With the same algorithm for tracking and evaluation as in framebased latency-aware evaluation, we can get
+
+b . The improved loss forloss of inference result of current input, B
+curr
+mula can be expressed as
+
+N streaming ≤ N STARE ,
+
+b Þ + LossðB
+b
+LossðBcurr , B
+curr
+pred , Bpred Þ ,
+
+ð31Þ
+
+b
+b
+b
+B
+pred = κðBcurr , vcurr , latencyÞ :
+
+ð32Þ
+
+ð26Þ
+where
+
+with equality if and only if
+Δt = λ 
+
+1
+, λ 2 Z+ :
+H
+
+ð27Þ
+
+Moreover, in the STARE framework, it follows that
+N gt  1 < N STARE , if Δt <
+
+1
+:
+H
+
+ð28Þ
+
+In the real-world online scenarios, both H and Ngt can be considered inﬁnite, while Δt cannot be equal to zero. However, in
+computer-simulated evaluations, they are all ﬁnite. Thus, a higher
+value of H and Ngt aids in a more precise evaluation of a perception
+model’s real-time performance, to some extent motivating the creation of our ESOT500 dataset.
+
+Reconstruction error
+A signiﬁcant secondary beneﬁt of ESOT500’s 500 Hz annotation rate is
+its ability to faithfully capture high-dynamic object motion without the
+temporal aliasing34 inherent in lower-frequency datasets. Furthermore,
+the process of recording a continuous real-world motion trajectory at a
+discrete frequency can be viewed as a lossy information channel45. The
+original, continuous trajectory serves as the input signal, while the set
+of low-frequency annotations is the channel’s output. The fundamental
+question is: how much information about the original signal is preserved after passing through this channel?
+To quantify this, we deﬁne the Reconstruction Error (RE), which
+serves as a practical measure of the channel’s ﬁdelity. The RE evaluates
+our ability to reconstruct the original high-frequency trajectory Bhigh ,
+given only a downsampled set of low-frequency annotations Blow .
+Speciﬁcally, for a given low frequency flow, we generate Blow by subsampling Bhigh . We then use a linear interpolator L to reconstruct the
+trajectory between every two consecutive low-frequency samples Bt 0
+i
+and Bt 0 in Blow .
+i+1
+The RE at frequency flow is then the accumulated loss between the
+reconstructed trajectory Brecon and the original high-frequency ground
+truth:
+REð f low Þ = Et2½t 0 , t 0
+i
+
+i+1
+
+h
+
+
+i
+
+LossðBt , LððBt 0 , Bt 0 Þ, tÞÞ ,
+i
+
+i+1
+
+ð29Þ
+
+where Loss( ⋅ , ⋅ ) is a metric such as 1 − IoU. Here we adopt L2 distance.
+A high reconstruction error signiﬁes that the sampling frequency is too
+low to capture the signal’s complexity, leading to severe information
+loss, which is also known as temporal aliasing34. This error is thus a
+direct, quantitative measure of aliasing, reﬂecting the gap between the
+information content of the original signal.
+
+Details and insights of model enhancement
+Predictive motion extrapolation. We deﬁne the function κ to represent the linear compensation function based on model-predicted
+velocity, which can be formally described as
+b v
+b +v
+b, ΔtÞ = B
+b  Δt ,
+κðB,
+
+ð30Þ
+
+b and v
+b are both four-dimensional
+where the latency Δt is a scalar, and B
+vectors, including the information of coordinates of the top-left corner
+and the size of the bounding box.
+The predictive head is trained by adding the loss of predictive
+b
+inference result B
+pred , which is obtained by Eq. (30), in addition to the
+Nature Communications | (2026)17:2441
+
+b
+b
+The loss of B
+pred and Bcurr follows the same calculation formula
+deﬁned by the speciﬁc perception model. Furthermore, considering
+the tracked object does not always move in a straight line, the parameter latency is set to a small value (e.g., 8 ms) to facilitate model
+convergence. In fact, the predictive module is more effective at predicting the short future, and when the required compensation time is
+too long, it can lead to incorrect predictions.
+An intriguing ﬁnding during debugging was that simply equipping
+the model with predictive capability, even when its velocity prediction
+is not used for the ﬁnal output, already boosts STARE performance. If
+b
+b
+we further use κ to adjust B
+curr according to vcurr and Δt, the performance can be improved further.
+Asynchronous tracking. The sequential perception pipeline described in Algo. 1 of Supplementary Note 5 inherently suffers from processing latency. During the inference time Δt of the perception model,
+any newly arriving events are queued and not immediately processed.
+This creates a temporal gap between the latest available sensory
+information and the model output, thus hindering true low-latency
+perception.
+To mitigate this, we introduce an asynchronous tracking
+paradigm inspired by recent advancements in event-based vision9.
+As shown in Fig. 6a, this approach decouples the main tracking process into a heavyweight base model and a lightweight residual
+model. The base model is responsible for comprehensive
+feature extraction and state estimation, while the residual model
+provides rapid, incremental updates during the base model’s inference
+period.
+Let the base model Gbase be composed of a feature extracting
+backbone Gb and a prediction head Gh . In a standard cycle, the backbone ﬁrst extracts a feature representation hcurr from the input event
+b
+b
+frame E
+curr with the last output bounding box Blast :
+b Þ:
+b ,B
+hcurr = Gb ðE
+curr
+last
+
+ð33Þ
+
+b
+The prediction head then computes the bounding box B
+base from this
+feature, a process which contributes to the overall latency Δt:
+b
+B
+base = Gh ðhcurr Þ :
+
+ð34Þ
+
+b
+While the base model is computing hcurr and B
+base , a new stream of
+events arrives. We term the latest events in this new stream, within the
+current sampling window, as the residual event segment E res . The
+residual model Gres is a lightweight network designed to process these
+new events quickly. It takes the latest backbone feature hcurr from the
+b = χðE Þ as input to
+base model and the new residual event frame E
+res
+res
+generate an updated feature map hupdated:
+b Þ:
+hupdated = Gres ðhcurr , E
+res
+
+ð35Þ
+
+This updated feature, which now incorporates the most recent motion
+information, is immediately fed into the base model’s prediction head
+b
+Gh to yield a reﬁned, lower-latency bounding box B
+async :
+b
+B
+async = Gh ðhupdated Þ :
+
+ð36Þ
+
+13
+
+Article
+
+https://doi.org/10.1038/s41467-026-70240-6
+
+Notably, we schedule the residual model based on the speed ratio
+between the base model and the residual model running in parallel. For
+example, we might execute the residual model three times within the
+processing interval of a single base model run to ensure the speed
+b
+stability of the parallel running. By generating B
+async during the inference period, this asynchronous approach effectively utilizes the
+computational downtime of the sequential perception loop, leading to
+a more timely and accurate perception of the object state.
+Context-aware sampling
+Event density calculation. Following the given notations, we give a
+formal description of the function ϕ to calculate the event density ρ
+with respect to the bounding box area B− of the last active output,
+which is deﬁned as
+ρ = ϕðB , E l, r Þ =
+
+X
+
+ψðx, E l, r Þ ,
+
+ð37Þ
+
+if 9ðxi , t i , pi Þ 2 E l, r , s:t: x = xi
+otherwise :
+
+ð38Þ
+
+x2B
+
+and
+
+ψðx, E l, r Þ =
+
+1,
+0,
+
+The calculated density represents the number of event-triggered
+pixels within B−, instead of the full event number within B−. This is
+because, for perception models, whether there is an event triggered at
+a certain pixel position is far more critical than the total number of
+events triggered at that position.
+Furthermore, for Eq. (37), it should be noted that since the
+reference event density is constantly updated and the size of B− has
+signiﬁcant uncertainty, it is advisable not to divide the area of B− when
+calculating ρ.
+Activated sampling judgement. With given notations, we give here a
+formal description of how we implement the active sampling judgement function J , as
+8
+>
+< true ,
+J ðρ, ρ , dÞ = true ,
+>
+:
+false ,
+
+if ρ > α  ρ
+ifρ > β  ρ and d > γ
+otherwise
+
+ð39Þ
+
+where ρ and ρ− represent the event density of current sampling and
+last active sampling; d represent the lasting time of being inactive; α
+and β represent the high and low threshold ratios; γ represents the
+duration required to trigger the low threshold β. In our experiments, α
+and β are typically set to 0.5 and 0.05 respectively, and γ is set to 50ms.
+As detailed in Section “Strategies for Continuous Event-driven
+Perception”, every inactive sampling gives additional event data to the
+next cycle of tracking, enhancing its accuracy. However, the state of
+being inactive should not last for too long period, unless the object is
+really motionless, so we set an upper bound γ.
+Triggering of the strategy. Given that some perception models rely on
+previous outputs for prediction assistance (e.g., tracking algorithms
+require the last bounding box to deﬁne the search area), ContextAware Sampling can enhance prediction results even if it is not frequently triggered in a sequence. We present the trigger ratio (or
+sparsity) and the corresponding STARE performance improvement for
+a subset of ESOT500 sequences with the setting of 2 ms sampling
+window in Fig. 7c. More details are available in Supplementary Note 8.
+Modiﬁed STARE pipeline. The Algo. 1 of Supplementary Note 5 illustrates the STARE pipeline. The modiﬁed pipeline, extended to Predictive Motion Extrapolation (blue) and Context-Aware Sampling
+(orange), can be seen in Algo. 2 of Supplementary Note 5. The modiﬁed
+
+Nature Communications | (2026)17:2441
+
+pipeline for Asynchronous Tracking can be seen in Algo. 3 of Supplementary Note 5.
+In the provided algorithm, it is evident that the Context-Aware
+Sampling serves as an enhancement that is independent of speciﬁc
+tracking algorithms. This strategy is designed to mitigate issues originating from the input data or from suboptimal parameter conﬁgurations. Conversely, the Predictive Motion Extrapolation represents a
+form of enhancement that inherently depends on the neural network
+structure of the perception model, and its implementation approach
+and associated challenges vary across different kinds of perception
+models.
+
+Related work
+We provide an overview of related work.
+Asynchronous perception. To handle the unpredictability of highdynamic motion where simple extrapolation can fail, we proposed
+Asynchronous Tracking. The most closely related work is from ref. 9,
+which builds a dual-component object detector with a high-precision,
+slow CNN and a lightweight, fast GNN to balance accuracy and speed.
+This work focuses on the trade-off between data bandwidth and
+computational efﬁciency (FLOPS) in object detection. However, the
+proposed slow model still relies on the RGB modality, and this
+dependency bottlenecks the speed at which features are updated and
+shared to the fast model. Our Asynchronous Tracking, however, is
+focused on object tracking and is driven by the pure event stream. The
+essential challenge of high-dynamic scenarios is their
+unpredictability56,57. This challenge should be addressed not by extrapolating further into an uncertain future, but by increasing the sampling and output frequency to minimize the accuracy degradation
+caused by perception latency.
+Context-aware sampling. We designed context-aware sampling to
+address the sensitivity of event-based trackers to the sampling window
+size, as evidenced by the unimodal distributions observed in our
+experiments. In the neuromorphic vision community, related ideas for
+dynamically processing event streams exist. Existing approaches
+typically act as open-loop, feed-forward ﬁlters. These include
+methods like adaptive temporal windowing58,59, ﬁxed-count event
+packeting22, and saliency-based spatial ﬁltering60,61. These methods rely
+on low-level statistics to decide which events to feed into the model. In
+contrast, our Context-Aware Sampling operates in a closed-loop
+manner. Its sampling strategy is guided not only by the event
+stream statistics, but also by the model’s previous output, speciﬁcally
+the event density within the last predicted bounding box. This creates
+a runtime feedback loop, allowing the model to actively regulate its
+own input based on its perceived state. This methodological shift from
+an open-loop ﬁlter to a closed-loop system is the fundamental
+difference.
+Predictive motion extrapolation. Our Predictive Motion Extrapolation method was designed to explicitly compensate for perception
+latency by forecasting the object’s future state. In the neuromorphic
+vision community, several ideas have been explored in motion compensation or prediction, often by adapting classical state estimation
+algorithms. For instance, several studies have employed Kalman Filters
+to process the asynchronous event stream, predicting the future trajectory of objects like moving hands or drones25,62–65. Others have utilized variations like particle ﬁlters66,67 or assumed simpler constantvelocity models to achieve similar predictive capabilities68,69. More
+recent bio-inspired works have explored this problem by using an
+unsupervised SNN to learn motion features and predict ball
+trajectories70. While these classical and SNN-based methods rely on
+either handcrafted motion models or specialized, spike-based learning
+rules, our Predictive Motion Extrapolation is an end-to-end learning
+14
+
+Article
+system built upon a conventional Artiﬁcial Neural Network (ANN). The
+velocity vector used for extrapolation is not assumed or learned
+through unsupervised plasticity, but is directly learned as part of the
+perception model’s supervised training, allowing it to capture more
+complex dynamics from the data.
+
+Data availability
+The ESOT500 datasets generated in this study have been deposited in
+the Hugging Face repository and are openly available at https://
+huggingface.co/datasets/sii-geai-lab/ESOT500. The VisEvent dataset
+used in this study is available via Dropbox at https://www.dropbox.
+com/scl/fo/r406wsgll56fy0hhhwu62/AFo3cjXjSI4Dzjn5nlnXNW0?
+rlkey=ecgyd26j1ycﬂ1jbm4pwc3vbn&e=2&st=rzf95buf&dl=0.
+The
+FE108 dataset, used in this study, is available under restricted access by
+the third-party owners. Access can be obtained upon request to the
+owners via their website at http://fe108.dluticcd.com. Source data are
+provided with this paper.
+
+Code availability
+The source code, data details, and pre-trained models for this study are
+provided as Supplementary Code 1 and are also available at https://
+github.com/ispc-lab/STARE.
+
+References
+1.
+
+2.
+3.
+4.
+
+5.
+
+6.
+
+7.
+8.
+9.
+10.
+
+11.
+
+12.
+
+13.
+
+14.
+
+Gollisch, T. & Meister, M. Eye smarter than scientists believed:
+neural computations in circuits of the retina. Neuron 65,
+150–64 (2010).
+Wurtz, R. Neuronal mechanisms of visual stability. Vis. Res. 48,
+2070–89 (2008).
+Gallego, G. et al. Event-based vision: a survey. IEEE Trans. Pattern
+Anal. Mach. Intell. 44, 154–180 (2022).
+Zhang, J. et al. Spiking transformers for event-based single object
+tracking. 2022 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) 8791–8800 (2022).
+Wang, X. et al. Event stream-based visual object tracking: a highresolution benchmark dataset and a novel baseline. 2024 IEEE/CVF
+Conference on Computer Vision and Pattern Recognition (CVPR)
+19248–19257 (2024).
+Gehrig, M, Scaramuzza, D. Recurrent vision transformers for object
+detection with event cameras. 2023 IEEE/CVF Conference on
+Computer Vision and Pattern Recognition (CVPR)
+13884–13893 (2023).
+Klenk, S. et al. Deep event visual odometry. 2024 International
+Conference on 3D Vision (3DV) 739–749 (2024).
+Mueggler, E. et al. The event-camera dataset and simulator. Int. J.
+Rob. Res. 36, 142–149 (2017).
+Gehrig, D. & Scaramuzza, D. Low-latency automotive vision with
+event cameras. Nature 629, 1034–1040 (2024).
+Li, M, Wang, YX, Ramanan, D. Towards streaming perception in
+Computer Vision - ECCV 2020 (eds Vedaldi, A., Bischof, H., Brox, T.,
+Frahm, J. M.) (Springer International Publishing, Cham, 2020)
+473–488.
+Wang, X. et al. Are we ready for vision-centric driving streaming
+perception? the asap benchmark. 2023 IEEE/CVF Conference on
+Computer Vision and Pattern Recognition (CVPR)
+9600–9610 (2023).
+Yang, J. et al. Real-time object detection for streaming perception.
+2022 IEEE/CVF Conference on Computer Vision and Pattern
+Recognition (CVPR) 5375–5385 (2022).
+Li, B. et al. Pvt++: a simple end-to-end latency-aware visual tracking
+framework. 2023 IEEE/CVF International Conference on Computer
+Vision (ICCV) 9972–9982 (2023).
+Wang, Z. et al. Ev-catcher: high-speed object catching using lowlatency event-based neural networks. IEEE Robot. Autom. Lett. 7,
+8737–8744 (2022).
+
+Nature Communications | (2026)17:2441
+
+https://doi.org/10.1038/s41467-026-70240-6
+15. Falanga, D., Kim, S. & Scaramuzza, D. How fast is too fast? the role of
+perception latency in high-speed sense and avoid. IEEE Robot.
+Autom. Lett. 4, 1884–1891 (2019).
+16. Falanga, D., Kleber, K. & Scaramuzza, D. Dynamic obstacle avoidance for quadrotors with event cameras. Sci. Robot. 5,
+eaaz9712 (2020).
+17. He, T. et al. Agile but safe: learning collision-free high-speed legged
+locomotion. Proceedings of Robotics: Science and Systems (2024).
+18. Ramesh, B. et al. Long-term object tracking with a moving event
+camera. British Machine Vision Conference (2018).
+19. Chen, H. et al. Asynchronous tracking-by-detection on adaptive time
+surfaces for event-based object tracking. Proceedings of the 27th
+ACM International Conference on Multimedia, MM ’19 473-481 (2019).
+20. Chen, H. et al. End-to-end learning of object motion estimation from
+retinal events for event-based object tracking. Proc. AAAI Conf.
+Artif. Intell. 34, 10534–10541 (2020).
+21. Zhang, J. et al. Object tracking by jointly exploiting frame and event
+domain. 2021 IEEE/CVF International Conference on Computer
+Vision (ICCV) 13023–13032 (2021).
+22. Mostafavi, M., Wang, L., Yoon, K. J. Learning to reconstruct hdr
+images from events, with applications to depth and ﬂow prediction.
+Int. J. Comput. Vis. 129, 900–920 (2021).
+23. Gehrig, D. et al. End-to-end learning of representations for asynchronous event-based data. 2019 IEEE/CVF International Conference on Computer Vision (ICCV) 5632–5642 (2019).
+24. Wang, X. et al. Visevent: reliable object tracking via collaboration of frame and event ﬂows. IEEE Trans. Cybern. 54,
+1997–2010 (2024).
+25. Li, Z. et al. Hybrid object tracking with events and frames. 2023
+IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) 9057–9064 (2023).
+26. Kang, Y. et al. Direct 3d model-based object tracking with event
+camera by motion interpolation. 2024 IEEE International Conference
+on Robotics and Automation (ICRA) 2645-2651 (2024).
+27. Glover, A. et al. Edopt: Event-camera 6-dof dynamic object pose
+tracking. 2024 IEEE International Conference on Robotics and
+Automation (ICRA) 18200–18206 (2024).
+28. Ahmed, S. H., Finkbeiner, J., Neftci, E. Efﬁcient event-based object
+detection: a hybrid neural network with spatial and temporal
+attention. 2025 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) 13970–13979 (2025).
+29. Zhu, Z., Hou, J. & Lyu, X. Learning graph-embedded key-event backtracing for object tracking in event clouds. Adv. Neural Inf. Process.
+Syst. 35, 7462–7476 (2022).
+30. Dampfhoffer, M. et al. Graph neural network combining event
+stream and periodic aggregation for low-latency event-based
+vision. 2025 IEEE/CVF Conference on Computer Vision and Pattern
+Recognition (CVPR) 6909–6918 (2025).
+31. Annamalai, L., Ramanathan, V. & Thakur, C. S. Event-lstm: An
+unsupervised and asynchronous learning-based representation for
+event-based data. IEEE Robot. Autom. Lett. 7, 4678–4685 (2022).
+32. Sun, T. & Bohté, S. Dpsnn: spiking neural network for low-latency
+streaming speech enhancement. Neuromorphic Comput. Eng. 4,
+044008 (2024).
+33. Chu, J. et al. The ESOT500 dataset for high-dynamic event-driven
+visual object tracking. Hugging Face https://huggingface.co/
+datasets/sii-geai-lab/ESOT500 (2025).
+34. Nyquist, H. Certain topics in telegraph transmission theory. Trans.
+Am. Inst. Electr. Eng. 47, 617–644 (1928).
+35. Li, B. et al. High performance visual tracking with siamese region
+proposal network. 2018 IEEE/CVF Conference on Computer Vision
+and Pattern Recognition (CVPR) 8971-8980 (2018).
+36. Jung, I. et al. Real-Time mdnet in Computer Vision - ECCV 2018 (eds
+Ferrari, V., Hebert, M., Sminchisescu, C., Weiss, Y.) 89–104
+(Springer International Publishing, Cham, 2018).
+
+15
+
+Article
+37. Yan, B. et al. Learning spatio-temporal transformer for visual
+tracking. 2021 IEEE/CVF International Conference on Computer
+Vision (ICCV) 10428-10437 (2021).
+38. Chen, X. et al. Transformer tracking. 2021 IEEE/CVF Conference on
+Computer Vision and Pattern Recognition (CVPR) 8122–8131 (2021).
+39. Yan, B. et al. Alpha-reﬁne: Boosting tracking performance by precise bounding box estimation. 2021 IEEE/CVF Conference on
+Computer Vision and Pattern Recognition (CVPR) 5285–5294 (2021).
+40. Kim, S., Shukla, A. & Billard, A. Catching objects in ﬂight. IEEE Trans.
+Robot. 30, 1049–1065 (2014).
+41. DAmbrosio, D. B. et al. Achieving human level competitive robot
+table tennis. 2025 IEEE International Conference on Robotics and
+Automation (ICRA) 74–82 (2025).
+42. Salehian, S. S. M., Khoramshahi, M. & Billard, A. A dynamical system
+approach for softly catching a ﬂying object: theory and experiment.
+IEEE Trans. Robot. 32, 462–471 (2016).
+43. Sato, M., Takahashi, A., Namiki, A. High-speed catching by multivision robot hand. 2020 IEEE/RSJ International Conference on
+Intelligent Robots and Systems (IROS) 9131–9136 (2020).
+44. Ma, Y., Cramariuc, A., Farshidian, F. & Hutter, M. Learning coordinated badminton skills for legged manipulators. Sci. Robot. 10,
+eadu3922 (2025).
+45. Shannon, C. Communication in the presence of noise. Proc. IRE 37,
+10–21 (1949).
+46. Danelljan, M., Van Gool, L., Timofte, R. Probabilistic regression for
+visual tracking. 2020 IEEE/CVF Conference on Computer Vision and
+Pattern Recognition (CVPR) 7181–7190 (2020).
+47. Cui, Y., Jiang, C., Wang, L., Wu, G. Mixformer: End-to-end tracking
+with iterative mixed attention. 2022 IEEE/CVF Conference on
+Computer Vision and Pattern Recognition (CVPR)
+13598–13608 (2022).
+48. Mayer, C. et al. Learning target candidate association to keep track
+of what not to track. 2021 IEEE/CVF International Conference on
+Computer Vision (ICCV) 13424–13434 (2021).
+49. Bhat, G. et al. Know your surroundings: Exploiting scene information for object tracking. in Computer Vision - ECCV 2020: 16th
+European Conference, Glasgow, UK, August 23-28, 2020, Proceedings, Part XXIII 205-221 (Springer-Verlag, Berlin, Heidelberg, 2020).
+50. Paul, M. et al. Robust visual tracking by segmentation. in Computer
+Vision - ECCV 2022: 17th European Conference, Tel Aviv, Israel,
+October 23-27, 2022, Proceedings, Part XXII 571–588 (SpringerVerlag, Berlin, Heidelberg, 2022).
+51. Wang, S. et al. Mamba-fetrack v2: Revisiting state space model for
+frame-event based visual object tracking. arXiv (2025).
+52. Wu, H. A comprehensive of cpu and gpu performance and applications in autonomous vehicles. Sci. Technol. Eng. Chem. Environ.
+Prot. 1, 1–6 (2024).
+53. NVIDIA Corporation. The Ultimate Platform for Physical AI and
+Robotics. NVIDIA https://www.nvidia.com/en-us/autonomousmachines/embedded-systems (2024).
+54. Ghosh, A. et al. Chanakya: Learning runtime decisions for adaptive
+real-time perception. in Advances in Neural Information Processing
+Systems (eds Oh, A., Naumann, T., Globerson, A., Saenko, K., Hardt,
+M., Levine, S.) Vol. 36, 55668–55680 (Curran Associates, Inc., 2023).
+55. Wu, Q. et al. Directly Forecasting Belief for Reinforcement Learning
+with Delays (PMLR, 2025).
+56. Cover, T. M. Elements of Information Theory (John Wiley &
+Sons, 1999).
+57. Ay, N. et al. Predictive information and explorative behavior of
+autonomous robots. Eur. Phys. J. B 63, 329–339 (2008).
+58. Ye, C. et al. Unsupervised learning of dense optical ﬂow, depth and
+egomotion with event-based sensors. 2020 IEEE/RSJ International
+Conference on Intelligent Robots and Systems (IROS)
+5831–5838 (2020).
+
+Nature Communications | (2026)17:2441
+
+https://doi.org/10.1038/s41467-026-70240-6
+59. Stoffregen, T., Kleeman, L. Event cameras, contrast maximization
+and reward functions: an analysis. 2019 IEEE/CVF Conference on
+Computer Vision and Pattern Recognition (CVPR)
+12292–12300 (2019).
+60. Lagorce, X. et al. Hots: a hierarchy of event-based time-surfaces for
+pattern recognition. IEEE Trans. Pattern Anal. Mach. Intell. 39,
+1346–1359 (2017).
+61. Asgari, H., Risi, N., Indiveri, G. Fpga implementation of an eventdriven saliency-based selective attention model. 2022 IEEE Biomedical Circuits and Systems Conference (BioCAS) 307–311 (2022).
+62. Wang, Z. et al. Asynchronous blob tracker for event cameras. IEEE
+Trans. Robot. 40, 4750–4767 (2024).
+63. Mitrokhin, A. et al. Event-based moving object detection and
+tracking. 2018 IEEE/RSJ International Conference on Intelligent
+Robots and Systems (IROS) (2018).
+64. Rudnev, V. et al. Eventhands: Real-time neural 3d hand pose estimation from an event stream. 2021 IEEE/CVF International Conference on Computer Vision (ICCV) 12365–12375 (2021).
+65. Theurkauf, A. et al. Chance-constrained motion planning with
+event-triggered estimation. 2023 IEEE International Conference on
+Robotics and Automation (ICRA) 7944–7950 (2023).
+66. Duarte, L., Safeea, M. & Neto, P. Event-based tracking of human
+hands. Sens. Rev. 41, 382–389 (2021).
+67. Younis, A., Sudderth, E. B. Differentiable and stable long-range
+tracking of multiple posterior modes. Thirty-Seventh Conference on
+Neural Information Processing Systems (2023).
+68. Niu, J. et al. Esvo2: Direct visual-inertial odometry with stereo event
+cameras. IEEE Transactions on Robotics PP 1-20 (2025).
+69. Zhu, Q., Triesch, J. & Shi, B. E. An event-by-event approach for
+velocity estimation and object tracking with an active event camera.
+IEEE J. Emerg. Sel. Top. Circuits Syst. 10, 557–566 (2020).
+70. Debat, G. et al. Event-based trajectory prediction using spiking
+neural networks. Front. Comput. Neurosci. 15, 658764 (2021).
+71. Mitrokhin, A. et al. Ev-imo: Motion segmentation dataset and
+learning pipeline for event cameras. 2019 IEEE/RSJ International
+Conference on Intelligent Robots and Systems (IROS)
+6105–6112 (2019).
+72. Burner, L. et al. Evimo2: an event camera dataset for motion segmentation, optical ﬂow, structure from motion, and visual inertial
+odometry in indoor scenes with monocular or stereo algorithms.
+arXiv (2022).
+73. Tang, C. et al. Revisiting color-event based tracking: A uniﬁed network, dataset, and metric. arXiv (2024).
+74. Zhu, Y. et al. Crsot: cross-resolution object tracking using unaligned
+frame and event cameras. IEEE Trans. Multimed. 27,
+6529–6542 (2025).
+75. Wang, X. et al. Long-term visual object tracking with event cameras:
+An associative memory augmented tracker and a benchmark
+dataset. arXiv (2025).
+76. Brandli, C. et al. A 240 × 180 130 db 3 μs latency global shutter
+spatiotemporal vision sensor. IEEE J. Solid-State Circuits 49,
+2333–2341 (2014).
+77. Taverni, G. et al. Front and back illuminated dynamic and active
+pixel vision sensors comparison. IEEE Trans. Circuits Syst. II Express
+Briefs 65, 677–681 (2018).
+78. Prophesee. Prophesee gen3.1 vga sensor documentation. Prophesee https://docs.prophesee.ai/stable/hw/sensors/gen31.html
+(2025).
+79. Posch, C., Matolin, D. & Wohlgenannt, R. A qvga 143 db dynamic
+range frame-free pwm image sensor with lossless pixel-level video
+compression and time-domain cds. IEEE J. Solid-State Circuits 46,
+259–275 (2011).
+80. Son, B. et al. 4.1 a 640 × 480 dynamic vision sensor with a 9μm pixel
+and 300meps address-event representation. 2017 IEEE International
+Solid-State Circuits Conference (ISSCC) 66–67 (2017).
+16
+
+Article
+81. Prophesee. Prophesee evk4-hd documentation. Prophesee https://
+www.prophesee.ai/event-camera-evk4/ (2025).
+82. Finateu, T. et al. 5.10 a 1280 × 720 back-illuminated stacked temporal contrast event-based vision sensor with 4.86μm pixels,
+1.066geps readout, programmable event-rate controller and
+compressive data-formatting pipeline. 2020 IEEE International
+Solid-State Circuits Conference - (ISSCC) 112–114 (2020).
+83. Chen, S., Guo, M. Live demonstration: Celex-v: A 1m pixel multimode event-based sensor. 2019 IEEE/CVF Conference on Computer
+Vision and Pattern Recognition Workshops (CVPRW)
+1682–1683 (2019).
+84. DVSense. DVSync documentation. DVSense https://dvsense.com/
+dvsync (2025).
+85. Ye, B. et al. Joint feature learning and relation modeling for tracking:
+a one-stream framework. in Computer Vision - ECCV 2022 (eds
+Avidan, S., Brostow, G., Cissé, M., Farinella, G. M., Hassner, T.)
+341–357 (Springer Nature Switzerland, Cham, 2022).
+
+Acknowledgements
+This work was supported by funding from the National Key Research and
+Development Program of China (No. 2024YFE0211000 [G.C.]), in part by
+the European Union’s Horizon 2020 Framework Program for Research
+and Innovation under the Speciﬁc Grant Agreements No. 945539 [A.K.]
+(Human Brain Project SGA3), in part by the National Natural Science
+Foundation of China (No. 62372329 [G.C.]), in part by Shanghai Scientiﬁc
+Innovation Foundation (No. 23DZ1203400 [G.C.]), in part by TongjiQomolo Autonomous Driving Commercial Vehicle Joint Lab Project (No.
+0170920220536 [G.C.]), and in part by Xiaomi Young Talents Program
+(No. 2023 [G.C.]).
+
+Author contributions
+G.C. conceived the main idea. G.C., A.K. and C.J. supervised the work.
+G.C., J.C. and R.Z. led the work. J.C., R.Z., C.Y., and Z.B. developed the
+code for the core algorithm. J.C., R.Z., C.Y., Z.Y. and Z.B. collected and
+veriﬁed the dataset. J.C., R.Z., C.Y., Z.Y. and Z.B. designed and performed the data analysis. J.C., R.Z. and C.Y. designed the experiments.
+J.C., R.Z. and Z.Y. designed and performed the real-robot experiments.
+J.C., R.Z. and C.Y. wrote the initial version of the manuscript. J.C., R.Z.,
+Z.Y., H.L., F.R., A.K., G.C. and C.J. revised the manuscript.
+
+Nature Communications | (2026)17:2441
+
+https://doi.org/10.1038/s41467-026-70240-6
+
+Competing interests
+The authors declare no competing interests.
+
+Additional information
+Supplementary information The online version contains
+supplementary material available at
+https://doi.org/10.1038/s41467-026-70240-6.
+Correspondence and requests for materials should be addressed to
+Guang Chen.
+Peer review information Nature Communications thanks the anonymous, reviewer(s) for their contribution to the peer review of this work.
+A peer review ﬁle is available.
+Reprints and permissions information is available at
+http://www.nature.com/reprints
+Publisher’s note Springer Nature remains neutral with regard to jurisdictional claims in published maps and institutional afﬁliations.
+Open Access This article is licensed under a Creative Commons
+Attribution-NonCommercial-NoDerivatives 4.0 International License,
+which permits any non-commercial use, sharing, distribution and
+reproduction in any medium or format, as long as you give appropriate
+credit to the original author(s) and the source, provide a link to the
+Creative Commons licence, and indicate if you modiﬁed the licensed
+material. You do not have permission under this licence to share adapted
+material derived from this article or parts of it. The images or other third
+party material in this article are included in the article’s Creative
+Commons licence, unless indicated otherwise in a credit line to the
+material. If material is not included in the article’s Creative Commons
+licence and your intended use is not permitted by statutory regulation or
+exceeds the permitted use, you will need to obtain permission directly
+from the copyright holder. To view a copy of this licence, visit http://
+creativecommons.org/licenses/by-nc-nd/4.0/.
+© The Author(s) 2026
+
+17
+
+

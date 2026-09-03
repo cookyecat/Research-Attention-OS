@@ -163,9 +163,84 @@ def test_timeout_fallback_provenance():
 
     provider.match_kernel(result, [])
     later = provider.stage_provenance["matching"]
-    assert later["status"] == "rule-after-fallback"
-    assert later["fallback_from"] == "model"
-    assert later["note"]
+    assert later["status"] == "fallback"
+    assert later["error_type"] == "timeout"
+    assert later["error"]
+    assert provider.stage_provenance["extraction"]["error_type"] == "timeout"
+    assert provider.stage_provenance["extraction"]["error"]
+
+
+def test_delta_fallback_does_not_skip_or_overwrite_earlier_model_stages():
+    from app.cognitive.client import LLMError
+    from app.services.matching import KernelMatch
+    from uuid import uuid4
+
+    class FailDeltaChat(SemanticFakeChat):
+        def __call__(self, messages, **kwargs):
+            system = (messages[0].get("content") or "").lower()
+            if "model delta" in system or "what this information could change" in system:
+                raise LLMError("delta json failed")
+            return super().__call__(messages, **kwargs)
+
+    provider = FallbackProvider(
+        ModelBackedCognitiveProvider(chat_fn=FailDeltaChat()),
+        RuleBasedCognitiveProvider(),
+    )
+    extraction = provider.extract_information(EXTRACT_TEXT, "TEXT")
+    match = KernelMatch(
+        node_id=uuid4(),
+        node_type="MODEL",
+        title="Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+        score=0.8,
+        reason="test",
+        relevance_type="TOPIC",
+    )
+    node = KernelNode(node_type="MODEL", title=match.title, status="ACTIVE", payload={"description": match.title})
+    node.id = match.node_id
+    matches = provider.match_kernel(extraction, [node])
+    assessment = provider.assess_cognitive_impact(EXTRACT_TEXT, extraction, matches or [match], nodes=[node])
+    provider.propose_model_delta(EXTRACT_TEXT, extraction, matches or [match], assessment.features, [node])
+    prov = provider.stage_provenance
+    assert prov["extraction"]["status"] == "success"
+    assert prov["extraction"]["provider"] == "model"
+    assert "error" not in prov["extraction"] or not prov["extraction"].get("error")
+    assert prov["impact"]["status"] == "success"
+    assert prov["impact"]["provider"] == "model"
+    assert prov["delta"]["status"] == "fallback"
+    assert prov["delta"]["error_type"] == "LLMError"
+    assert "delta json failed" in (prov["delta"].get("error") or "")
+    assert prov["extraction"].get("status") != "rule-after-fallback"
+    assert prov["impact"].get("note") != "sticky fallback; not a model prediction"
+
+
+def test_first_extraction_failure_is_not_overwritten_by_later_chunk():
+    from app.cognitive.client import LLMError
+
+    class FailThenSucceedChat(SemanticFakeChat):
+        def __init__(self):
+            super().__init__()
+            self.extracts = 0
+
+        def __call__(self, messages, **kwargs):
+            system = (messages[0].get("content") or "").lower()
+            if "extraction stage" in system:
+                self.extracts += 1
+                if self.extracts == 1:
+                    raise LLMError("first chunk failed")
+            return super().__call__(messages, **kwargs)
+
+    provider = FallbackProvider(
+        ModelBackedCognitiveProvider(chat_fn=FailThenSucceedChat()),
+        RuleBasedCognitiveProvider(),
+    )
+    provider.extract_information("chunk one technical paper about motor latency.", "TEXT")
+    provider.extract_information("chunk two technical paper about motor latency.", "TEXT")
+    rec = provider.stage_provenance["extraction"]
+    assert rec["status"] == "fallback"
+    assert rec["error_type"] == "LLMError"
+    assert "first chunk failed" in rec["error"]
+    assert rec["provider"] == "mixed"
+    assert len(rec.get("attempts") or []) == 2
 
 
 def test_thinking_omitted_for_openai_compatible_protocol(monkeypatch):
