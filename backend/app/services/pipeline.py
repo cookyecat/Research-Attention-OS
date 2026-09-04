@@ -34,7 +34,8 @@ from app.services.scheduler import (
     route,
     validate_plan,
 )
-from app.services.source_graph import analysis_relational_context_digest, independence_report
+from app.services.analysis_execution import analysis_execution_digest, analysis_execution_snapshot
+from app.services.source_graph import freeze_analysis_relational_context
 
 
 def _active_kernel(db: Session) -> list[KernelNode]:
@@ -170,6 +171,7 @@ def extract_source(
     *,
     provider=None,
     analysis_run_id: UUID | None = None,
+    independent_source_count: int | None = None,
 ) -> tuple[ExtractionResult, list[Claim], list[Observation], list[Inference], list[EvidenceLink]]:
     from app.cognitive.factory import get_provider
     from app.services.chunking import split_source
@@ -195,7 +197,10 @@ def extract_source(
     for extra in extras:
         parts.append(_extract_one(extra))
     merged = merge_extractions(*parts) if len(parts) > 1 else primary
-    merged = provider.reason_evidence(merged, independent_source_count=1 + len(extras))
+    evidence_source_count = (
+        independent_source_count if independent_source_count is not None else 1 + len(extras)
+    )
+    merged = provider.reason_evidence(merged, independent_source_count=evidence_source_count)
     event = attach_or_create_event(db, source, merged.event_title or source.title, merged.event_summary)
     claims, observations, inferences, links = persist_extraction(
         db, source, merged, event.id, analysis_run_id=analysis_run_id
@@ -274,7 +279,9 @@ def run_pipeline(
     in_hash = input_hash(source, extras)
     k_hash = kernel_snapshot_hash(nodes)
     event_source_ids = [source.id] + [e.id for e in extras]
-    rel_digest = analysis_relational_context_digest(db, event_source_ids)
+    rel_ctx = freeze_analysis_relational_context(db, event_source_ids)
+    exec_snapshot = analysis_execution_snapshot(provider)
+    exec_digest = analysis_execution_digest(provider, snapshot=exec_snapshot)
     provider_type = getattr(provider, "provider_type", "rule")
     model_name = settings.llm_model if str(provider_type).startswith("model") else None
     emb_version = embedding_model_label()
@@ -284,7 +291,8 @@ def run_pipeline(
         provider_type=provider_type,
         model_name=model_name,
         embedding_model_version=emb_version,
-        relational_digest=rel_digest,
+        relational_digest=rel_ctx.digest,
+        execution_digest=exec_digest,
     )
     kind, run = acquire_run(
         db,
@@ -332,7 +340,12 @@ def run_pipeline(
 
     try:
         extraction, claims, observations, inferences, links = extract_source(
-            db, source, extras, provider=provider, analysis_run_id=run.id
+            db,
+            source,
+            extras,
+            provider=provider,
+            analysis_run_id=run.id,
+            independent_source_count=rel_ctx.independent_sources,
         )
         blob = " ".join(
             [source.content_text or "", source.title or ""] + [e.content_text or "" for e in extras]
@@ -376,17 +389,15 @@ def run_pipeline(
             emb_model if emb_model and emb_model != "none" else settings.embedding_model
         )
         retrieval.setdefault("query_instruct_applied", query_instruct_enabled())
-        independence = independence_report(db, event_source_ids)
-        is_duplicate = independence["secondary_reports"] >= 1 and str(source.id) in independence.get(
-            "secondary_source_ids", []
-        )
+        independence = rel_ctx.report()
+        is_duplicate = rel_ctx.is_duplicate
         assessment = provider.assess_cognitive_impact(
             blob,
             extraction,
             matches,
             is_duplicate=is_duplicate,
-            independent_source_count=independence["independent_sources"],
-            secondary_report_count=independence["secondary_reports"],
+            independent_source_count=rel_ctx.independent_sources,
+            secondary_report_count=rel_ctx.secondary_reports,
             nodes=nodes,
         )
         features = assessment.features
@@ -516,13 +527,16 @@ def run_pipeline(
             matches=matches,
             nodes=nodes,
             is_duplicate=is_duplicate,
-            independent_source_count=independence["independent_sources"],
-            secondary_report_count=independence["secondary_reports"],
+            independent_source_count=rel_ctx.independent_sources,
+            secondary_report_count=rel_ctx.secondary_reports,
             analysis_run_id=str(run.id),
             input_hash=in_hash,
             kernel_snapshot_hash=k_hash,
             assessment=assessment,
         )
+        payload["relational_context"] = rel_ctx.as_dict()
+        payload["execution_digest"] = exec_digest
+        payload["execution_snapshot"] = exec_snapshot
         payload["analysis_run"] = {
             "id": str(run.id),
             "identity_key": ident,

@@ -83,6 +83,7 @@ def identity_key(
     embedding_model_version: str,
     pipeline_version: str,
     relational_digest: str = "",
+    execution_digest: str = "",
 ) -> str:
     """Cognitive Analysis identity. Scheduler version and runtime context are excluded."""
     raw = "|".join(
@@ -100,6 +101,7 @@ def identity_key(
             prompt_version,
             embedding_model_version or EMBEDDING_MODEL_VERSION_NONE,
             pipeline_version,
+            execution_digest or "",
         ]
     )
     return hashlib.sha256(raw.encode()).hexdigest()
@@ -113,6 +115,7 @@ def compute_identity(
     model_name: str | None,
     embedding_model_version: str = EMBEDDING_MODEL_VERSION_NONE,
     relational_digest: str = "",
+    execution_digest: str = "",
 ) -> str:
     return identity_key(
         input_digest=input_digest,
@@ -128,6 +131,7 @@ def compute_identity(
         embedding_model_version=embedding_model_version,
         pipeline_version=PIPELINE_VERSION,
         relational_digest=relational_digest,
+        execution_digest=execution_digest,
     )
 
 

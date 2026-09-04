@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import hashlib
+import json
+from dataclasses import dataclass
 from uuid import UUID
 
 from sqlalchemy import or_, select
@@ -158,26 +161,100 @@ INDEPENDENCE_RELATIONSHIPS = (
 )
 
 
-def independence_report(db: Session, source_ids: list[UUID]) -> dict:
-    if not source_ids:
-        return {"independent_sources": 0, "secondary_reports": 0}
-    edges = db.execute(
-        select(SourceEdge).where(
-            SourceEdge.source_id.in_(source_ids),
-            SourceEdge.relationship.in_(list(INDEPENDENCE_RELATIONSHIPS)),
-        )
-    ).scalars().all()
-    secondary = {e.source_id for e in edges}
+@dataclass(frozen=True)
+class FrozenAnalysisRelationalContext:
+    """In-memory SourceGraph snapshot for one AnalysisRun. Not a domain object."""
+
+    digest: str
+    independent_sources: int
+    secondary_reports: int
+    independent_source_ids: tuple[str, ...]
+    secondary_source_ids: tuple[str, ...]
+    is_duplicate: bool
+    facts: tuple[tuple[str, str, str], ...]
+
+    def report(self) -> dict:
+        return {
+            "independent_sources": self.independent_sources,
+            "secondary_reports": self.secondary_reports,
+            "independent_source_ids": list(self.independent_source_ids),
+            "secondary_source_ids": list(self.secondary_source_ids),
+        }
+
+    def as_dict(self) -> dict:
+        return {
+            "digest": self.digest,
+            "independence": {
+                "independent_sources": self.independent_sources,
+                "secondary_reports": self.secondary_reports,
+                "independent_source_ids": list(self.independent_source_ids),
+                "secondary_source_ids": list(self.secondary_source_ids),
+                "is_duplicate": self.is_duplicate,
+            },
+            "facts": [list(fact) for fact in self.facts],
+        }
+
+
+def _digest_relational_facts(facts: list[tuple[str, str, str]]) -> str:
+    return hashlib.sha256(json.dumps(facts, separators=(",", ":")).encode("utf-8")).hexdigest()
+
+
+def _independence_from_facts(
+    source_ids: list[UUID],
+    facts: list[tuple[str, str, str]],
+) -> tuple[list[UUID], set[UUID]]:
+    secondary = {UUID(sid) for sid, _rel, _tid in facts if UUID(sid) in set(source_ids)}
     independent = [sid for sid in source_ids if sid not in secondary]
     if not independent:
         independent = source_ids[:1]
         secondary = set(source_ids[1:])
-    return {
-        "independent_sources": len(set(independent)),
-        "secondary_reports": len(secondary),
-        "independent_source_ids": [str(x) for x in independent],
-        "secondary_source_ids": [str(x) for x in secondary],
-    }
+    return independent, secondary
+
+
+def freeze_analysis_relational_context(
+    db: Session,
+    source_ids: list[UUID],
+) -> FrozenAnalysisRelationalContext:
+    """One SourceEdge read. Digest and independence report share the same facts."""
+    if not source_ids:
+        return FrozenAnalysisRelationalContext(
+            digest=hashlib.sha256(b"").hexdigest(),
+            independent_sources=0,
+            secondary_reports=0,
+            independent_source_ids=(),
+            secondary_source_ids=(),
+            is_duplicate=False,
+            facts=(),
+        )
+    edges = (
+        db.execute(
+            select(SourceEdge).where(
+                SourceEdge.source_id.in_(source_ids),
+                SourceEdge.relationship.in_(list(INDEPENDENCE_RELATIONSHIPS)),
+            )
+        )
+        .scalars()
+        .all()
+    )
+    facts = sorted((str(e.source_id), str(e.relationship), str(e.target_id)) for e in edges)
+    independent, secondary = _independence_from_facts(source_ids, facts)
+    primary = source_ids[0]
+    return FrozenAnalysisRelationalContext(
+        digest=_digest_relational_facts(facts),
+        independent_sources=len(set(independent)),
+        secondary_reports=len(secondary),
+        independent_source_ids=tuple(str(x) for x in independent),
+        secondary_source_ids=tuple(sorted(str(x) for x in secondary)),
+        is_duplicate=len(secondary) >= 1 and str(primary) in {str(x) for x in secondary},
+        facts=tuple(facts),
+    )
+
+
+def independence_report(db: Session, source_ids: list[UUID]) -> dict:
+    ctx = freeze_analysis_relational_context(db, source_ids)
+    if not source_ids:
+        return {"independent_sources": 0, "secondary_reports": 0}
+    return ctx.report()
 
 
 def analysis_relational_context_digest(db: Session, source_ids: list[UUID]) -> str:
@@ -186,22 +263,7 @@ def analysis_relational_context_digest(db: Session, source_ids: list[UUID]) -> s
     Only outgoing REPOSTS / DERIVED_FROM / REPORTS_ON edges from the event sources.
     Order-independent. Unrelated relationships (CITES, DISCUSSES, …) are excluded.
     """
-    import hashlib
-    import json
-
-    if not source_ids:
-        return hashlib.sha256(b"").hexdigest()
-    edges = db.execute(
-        select(SourceEdge).where(
-            SourceEdge.source_id.in_(source_ids),
-            SourceEdge.relationship.in_(list(INDEPENDENCE_RELATIONSHIPS)),
-        )
-    ).scalars().all()
-    facts = sorted(
-        (str(e.source_id), str(e.relationship), str(e.target_id))
-        for e in edges
-    )
-    return hashlib.sha256(json.dumps(facts, separators=(",", ":")).encode("utf-8")).hexdigest()
+    return freeze_analysis_relational_context(db, source_ids).digest
 
 
 def link_near_duplicates(db: Session, source: Source) -> list[Source]:
