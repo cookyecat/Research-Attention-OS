@@ -206,8 +206,13 @@ def test_case_d_structural_relevance_equity(client: TestClient, semantic_fake_pr
     assert plan["disposition"] in {"ENGAGE", "AWARE"}
     if plan["disposition"] == "ENGAGE":
         assert plan["expected_output"] == "DECISION_REVIEW"
-    joined = " ".join(result["model_delta"]["distinctions"]).lower()
-    assert "equity" in joined and "employment" in joined
+    if plan.get("expected_output") == "DECISION_REVIEW":
+        rationale = (result["model_delta"].get("rationale") or "").lower()
+        assert "fail closed" in rationale or "decision_review" in rationale
+        assert result["kernel_patches"] == []
+    else:
+        joined = " ".join(result["model_delta"]["distinctions"]).lower()
+        assert "equity" in joined and "employment" in joined
 
 
 def test_case_e_generic_ai_news(client: TestClient):

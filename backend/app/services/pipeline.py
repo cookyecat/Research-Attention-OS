@@ -8,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.config import settings
-from app.enums import AuthorType, CandidateType
+from app.enums import AuthorType, CandidateType, ExpectedOutput
 from app.models.claim import Claim
 from app.models.evidence import EvidenceLink
 from app.models.inference import Inference, InferenceSource
@@ -244,6 +244,75 @@ def _runtime_view(ctx: RuntimeContext | None) -> RuntimeView:
     )
 
 
+def _expected_output(value) -> ExpectedOutput:
+    if isinstance(value, ExpectedOutput):
+        return value
+    return ExpectedOutput(str(getattr(value, "value", value) or ExpectedOutput.NONE))
+
+
+def _placeholder_delta(authorized: ExpectedOutput, features: SchedulerFeatures) -> ModelDelta:
+    if authorized == ExpectedOutput.NONE:
+        return ModelDelta(
+            summary="Downstream synthesis skipped because ExpectedOutput is NONE.",
+            admission_allowed=False,
+            rationale="Attention Policy did not authorize a downstream cognitive artifact.",
+            evidence_maturity=features.evidence_maturity,
+        )
+    if authorized == ExpectedOutput.WATCH:
+        return ModelDelta(
+            summary="Watch obligation authorized. KernelPatch is not authorized.",
+            admission_allowed=False,
+            rationale="ExpectedOutput WATCH authorizes a Watch, not a Kernel mutation proposal.",
+            evidence_maturity=features.evidence_maturity,
+        )
+    return ModelDelta(
+        summary=f"ExpectedOutput {authorized.value} has no specialized artifact implementation.",
+        admission_allowed=False,
+        rationale=f"Fail closed: {authorized.value} is not executed as a generic KernelPatch.",
+        evidence_maturity=features.evidence_maturity,
+    )
+
+
+def _execute_authorized_artifacts(
+    authorized: ExpectedOutput,
+    *,
+    provider,
+    blob,
+    extraction,
+    matches,
+    features,
+    nodes,
+    assessment,
+    links,
+) -> tuple[ModelDelta, list]:
+    if authorized == ExpectedOutput.SUMMARY:
+        return (
+            provider.propose_model_delta(
+                blob, extraction, matches, features, nodes, assessment=assessment
+            ),
+            [],
+        )
+    if authorized == ExpectedOutput.KERNEL_PATCH:
+        delta = provider.propose_model_delta(
+            blob, extraction, matches, features, nodes, assessment=assessment
+        )
+        evidence_ids = [str(link.id) for link in links]
+        return (
+            delta,
+            provider.propose_patches(
+                blob,
+                delta,
+                matches,
+                features,
+                nodes,
+                evidence_ids,
+                assessment=assessment,
+                extraction=extraction,
+            ),
+        )
+    return _placeholder_delta(authorized, features), []
+
+
 def run_pipeline(
     db: Session,
     source_id: UUID,
@@ -455,31 +524,20 @@ def run_pipeline(
         )
         db.add(plan)
         db.flush()
-        if draft.disposition.value == "DROP":
-            delta = ModelDelta(
-                summary="Downstream synthesis skipped because current AttentionPlan is DROP.",
-                admission_allowed=False,
-                rationale="Attention Policy routed DROP. Canonical Δ_t is unchanged.",
-                evidence_maturity=features.evidence_maturity,
-            )
-            patch_drafts = []
-        else:
-            delta = provider.propose_model_delta(
-                blob, extraction, matches, features, nodes, assessment=assessment
-            )
-            evidence_ids = [str(link.id) for link in links]
-            patch_drafts = provider.propose_patches(
-                blob,
-                delta,
-                matches,
-                features,
-                nodes,
-                evidence_ids,
-                assessment=assessment,
-                extraction=extraction,
-            )
+        authorized = _expected_output(draft.expected_output)
+        delta, patch_drafts = _execute_authorized_artifacts(
+            authorized,
+            provider=provider,
+            blob=blob,
+            extraction=extraction,
+            matches=matches,
+            features=features,
+            nodes=nodes,
+            assessment=assessment,
+            links=links,
+        )
         patches: list[KernelPatch] = []
-        if draft.disposition.value != "DROP":
+        if authorized == ExpectedOutput.KERNEL_PATCH:
             for pd in patch_drafts:
                 patches.append(
                     create_patch(
@@ -497,7 +555,7 @@ def run_pipeline(
                 )
         watch_suggestions = suggest_watches(blob, features, delta)
         created_watches: list[Watch] = []
-        if persist_suggested_watches or draft.disposition.value == "WATCH":
+        if persist_suggested_watches or authorized == ExpectedOutput.WATCH:
             for sug in watch_suggestions:
                 watch = Watch(
                     target_type=sug["target_type"],

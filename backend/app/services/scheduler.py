@@ -296,18 +296,13 @@ def route(
     assessment=None,
     matches: list[KernelMatch] | None = None,
 ) -> PlanDraft:
-    """Attention Policy. CognitiveImpactAssessment is the semantic input.
+    """Attention Policy. Canonical Δ is the cognitive authority.
 
-    SchedulerFeatures supply source/runtime context (duplicate, threat, marketing,
-    foundational papers). Missing frozen CognitiveImpactAssessment is fail-closed
-    to NONE; legacy scores are not a Cognitive Transition source of truth.
+    Runtime may raise urgency or defer existing ENGAGE. It cannot invent
+    AWARE/WATCH/ENGAGE from Δ=NONE. exploration_candidate is not an authority.
+    Missing frozen CognitiveImpactAssessment is fail-closed to NONE.
     """
-    from app.enums import CognitiveEffectKind
     from app.services.cognitive_impact import (
-        MATERIAL_CHANGE_MIN,
-        MEANINGFUL_CHANGE,
-        effect_target_match,
-        has_exploration_effect,
         normalize_frozen_transition,
         select_primary_effect,
     )
@@ -318,9 +313,8 @@ def route(
     matches = matches or []
     assessment = normalize_frozen_transition(assessment, matches).assessment
     primary = select_primary_effect(assessment)
-    explore = has_exploration_effect(assessment)
 
-    # --- Source / runtime context (not cognitive value) ---
+    # --- Source identity (not cognitive value). Duplicate policy is unchanged. ---
     if features.is_duplicate:
         return PlanDraft(
             disposition=Disposition.DROP,
@@ -330,62 +324,24 @@ def route(
             cognitive_budget_minutes=_budget(Disposition.DROP),
         )
 
-    tight_deadline = runtime.deadline_minutes is not None and runtime.deadline_minutes <= 120
-    low_interrupt = (runtime.interruptibility or "MEDIUM") == "LOW"
-    if tight_deadline and low_interrupt and not features.threatens_active_work:
-        return PlanDraft(
-            disposition=Disposition.WATCH,
-            urgency=Urgency.BACKGROUND,
-            expected_output=ExpectedOutput.WATCH,
-            reason=(
-                "RuntimeContext: camera-ready/deadline is imminent and interruptibility is LOW. "
-                "Importance is not urgency; park as WATCH/BACKGROUND unless the item threatens the current submission."
-            ),
-            watch_after_processing=True,
-            watch_triggers=["NEW_EVIDENCE"],
-            cognitive_budget_minutes=_budget(Disposition.WATCH),
-        )
+    draft = _cognitive_disposition(features, primary, matches)
+    return _apply_runtime_overlays(draft, features, runtime, primary=primary, matches=matches)
 
-    if features.threatens_active_work:
-        return PlanDraft(
-            disposition=Disposition.ENGAGE,
-            urgency=Urgency.PREEMPT,
-            expected_output=ExpectedOutput.KERNEL_PATCH,
-            reason=(
-                "This item highly overlaps the active submission and may invalidate novelty. "
-                "PREEMPT is justified: interrupting current work is cheaper than discovering a novelty collision after submission."
-            ),
-            cognitive_budget_minutes=_budget(Disposition.ENGAGE),
-        )
 
-    # --- No material primary CognitiveEffect ---
-    # marketing_heavy is source framing, not a DROP rule. DROP here means there
-    # is nothing to absorb: no effect, no exploration, no technical signal.
+def _cognitive_disposition(features: SchedulerFeatures, primary, matches: list[KernelMatch]) -> PlanDraft:
+    """Disposition from canonical Δ only. Runtime and source-quality flags cannot invent value."""
+    from app.enums import CognitiveEffectKind
+    from app.services.cognitive_impact import (
+        MATERIAL_CHANGE_MIN,
+        MEANINGFUL_CHANGE,
+        effect_target_match,
+    )
+
     if primary is None:
-        if explore:
-            return PlanDraft(
-                disposition=Disposition.AWARE,
-                expected_output=ExpectedOutput.SUMMARY,
-                reason="OPEN_NEW exploration candidate: missing Kernel localization is not automatic DROP.",
-                cognitive_budget_minutes=_budget(Disposition.AWARE),
-            )
-        if features.high_quality_technical or features.foundational_paper:
-            return PlanDraft(
-                disposition=Disposition.AWARE,
-                expected_output=ExpectedOutput.SUMMARY,
-                reason="No material cognitive change expected. Technical source framing is not a DROP rule.",
-                cognitive_budget_minutes=_budget(Disposition.AWARE),
-            )
-        if features.topic_relevance >= 0.25 and not features.marketing_heavy:
-            return PlanDraft(
-                disposition=Disposition.AWARE,
-                expected_output=ExpectedOutput.SUMMARY,
-                reason="No material cognitive change expected. High topic relevance alone does not ENGAGE.",
-                cognitive_budget_minutes=_budget(Disposition.AWARE),
-            )
         return PlanDraft(
             disposition=Disposition.DROP,
-            reason="No material cognitive effect and no useful exploration signal.",
+            expected_output=ExpectedOutput.NONE,
+            reason="No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
             cognitive_budget_minutes=_budget(Disposition.DROP),
         )
 
@@ -407,7 +363,6 @@ def route(
     structural = bool(match is not None and (getattr(match, "structural", False) or rel == "STRUCTURAL"))
     synth = node_type in {"MODEL", "BELIEF", "QUESTION", "BOTTLENECK", "DECISION", "HYPOTHESIS"}
 
-    # --- DECISION target: primary effect on a Decision node, not decision_relevance ---
     if targeted and node_type == "DECISION":
         return PlanDraft(
             disposition=Disposition.ENGAGE,
@@ -417,7 +372,6 @@ def route(
             cognitive_budget_minutes=_budget(Disposition.ENGAGE),
         )
 
-    # --- Meaningful change on the primary Kernel target, or a primary CHALLENGE ---
     meaningful = change >= MEANINGFUL_CHANGE
     important = importance >= 0.55 or synth or challenge
     if targeted and meaningful and important:
@@ -455,7 +409,6 @@ def route(
             cognitive_budget_minutes=_budget(Disposition.ENGAGE),
         )
 
-    # --- Structural primary effect without a topic-driven ENGAGE ---
     if targeted and structural and change >= 0.4:
         expected = ExpectedOutput.DECISION_REVIEW if node_type == "DECISION" else ExpectedOutput.KERNEL_PATCH
         return PlanDraft(
@@ -465,7 +418,6 @@ def route(
             cognitive_budget_minutes=_budget(Disposition.ENGAGE),
         )
 
-    # --- Moderate targeted change, insufficient justification ---
     if targeted and change >= MATERIAL_CHANGE_MIN:
         return PlanDraft(
             disposition=Disposition.WATCH,
@@ -476,7 +428,6 @@ def route(
             cognitive_budget_minutes=_budget(Disposition.WATCH),
         )
 
-    # --- OPEN_NEW: keep a real new branch on WATCH; marketing only lowers confidence ---
     if open_new:
         low_epi = epi < 0.45
         conflict = features.sources_conflict or features.disagreement >= 0.55
@@ -506,7 +457,7 @@ def route(
         return PlanDraft(
             disposition=Disposition.AWARE,
             expected_output=ExpectedOutput.SUMMARY,
-            reason="OPEN_NEW exploration candidate: missing Kernel localization is not automatic DROP.",
+            reason="Canonical OPEN_NEW: missing Kernel localization is not automatic DROP.",
             cognitive_budget_minutes=_budget(Disposition.AWARE),
         )
 
@@ -516,6 +467,49 @@ def route(
         reason="Default AWARE: no ENGAGE-grade cognitive effect.",
         cognitive_budget_minutes=_budget(Disposition.AWARE),
     )
+
+
+def _apply_runtime_overlays(
+    draft: PlanDraft,
+    features: SchedulerFeatures,
+    runtime: RuntimeView,
+    *,
+    primary,
+    matches: list[KernelMatch],
+) -> PlanDraft:
+    """Runtime may raise urgency or defer existing attention. It cannot invent Δ."""
+    if draft.disposition == Disposition.DROP:
+        return draft
+
+    if features.threatens_active_work:
+        draft.urgency = Urgency.PREEMPT
+        if "preempt" not in draft.reason.lower() and "interrupt" not in draft.reason.lower():
+            draft.reason = (
+                f"{draft.reason} PREEMPT is justified: interrupting current work is cheaper "
+                "than discovering a novelty collision after submission."
+            ).strip()
+
+    tight_deadline = runtime.deadline_minutes is not None and runtime.deadline_minutes <= 120
+    low_interrupt = (runtime.interruptibility or "MEDIUM") == "LOW"
+    if (
+        draft.disposition == Disposition.ENGAGE
+        and tight_deadline
+        and low_interrupt
+        and not features.threatens_active_work
+    ):
+        draft.disposition = Disposition.WATCH
+        draft.urgency = Urgency.BACKGROUND
+        draft.expected_output = ExpectedOutput.WATCH
+        draft.watch_after_processing = True
+        draft.watch_triggers = draft.watch_triggers or _default_watch_triggers(
+            features, primary=primary, matches=matches
+        )
+        draft.cognitive_budget_minutes = _budget(Disposition.WATCH)
+        draft.reason = (
+            f"{draft.reason} RuntimeContext: camera-ready/deadline is imminent and interruptibility is LOW. "
+            "Defer existing ENGAGE to WATCH. Runtime cannot invent attention from Δ=NONE."
+        ).strip()
+    return draft
 
 
 def _default_watch_triggers(features: SchedulerFeatures, assessment=None, matches=None, primary=None) -> list[str]:

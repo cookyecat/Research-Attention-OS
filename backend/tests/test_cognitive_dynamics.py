@@ -555,7 +555,7 @@ def test_marketing_heavy_caps_epistemic_strength_but_keeps_material_effect():
 
 
 def test_primary_null_and_marketing_is_not_automatic_drop():
-    """marketing_heavy is framing, not a DROP rule, when a technical signal remains."""
+    """Source quality cannot invent attention when canonical Δ is NONE."""
     assessment = _assessment()
     plan = route(
         _features(
@@ -566,7 +566,8 @@ def test_primary_null_and_marketing_is_not_automatic_drop():
         ),
         assessment=assessment,
     )
-    assert plan.disposition == Disposition.AWARE
+    assert plan.disposition == Disposition.DROP
+    assert plan.expected_output == ExpectedOutput.NONE
 
 
 def test_primary_null_promotional_without_cognitive_content_may_drop():
