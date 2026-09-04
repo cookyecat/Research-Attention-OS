@@ -53,7 +53,7 @@ def _uses_model_llm(provider) -> bool:
     return _model_backend(provider) is not None
 
 
-def _uses_embedding_retrieval(provider) -> bool:
+def uses_embedding_retrieval(provider) -> bool:
     """Model/fallback Locate consumes embeddings. Rule matching is lexical-only."""
     return _model_backend(provider) is not None
 
@@ -120,7 +120,7 @@ def analysis_execution_snapshot(provider=None) -> dict[str, Any]:
     }
     if _uses_model_llm(provider):
         snapshot["llm"] = _llm_execution(_model_backend(provider))
-    if _uses_embedding_retrieval(provider):
+    if uses_embedding_retrieval(provider):
         snapshot["retrieval"] = _retrieval_execution()
     return snapshot
 

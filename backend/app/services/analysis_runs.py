@@ -31,18 +31,52 @@ from app.services.cognitive_impact import visible_prediction_from_frozen
 from app.services.attention_feedback import feedback_for_plan, feedback_public
 
 
-def kernel_snapshot_hash(nodes: list[KernelNode]) -> str:
-    payload = [
-        {
-            "id": str(n.id),
-            "type": n.node_type,
-            "version": n.current_version,
-            "status": n.status,
-            "title": n.title,
-        }
-        for n in sorted(nodes, key=lambda x: str(x.id))
-    ]
+def _kernel_identity_hash(records: list[dict]) -> str:
+    payload = sorted(records, key=lambda row: row["id"])
     return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+
+
+def kernel_snapshot_hash(nodes: list[KernelNode]) -> str:
+    return _kernel_identity_hash(
+        [
+            {
+                "id": str(n.id),
+                "type": n.node_type,
+                "version": n.current_version,
+                "status": n.status,
+                "title": n.title,
+            }
+            for n in nodes
+        ]
+    )
+
+
+def fresh_kernel_snapshot_hash(db: Session) -> str:
+    """Active Kernel identity from the DB, not the session identity map."""
+    rows = db.execute(
+        select(
+            KernelNode.id,
+            KernelNode.node_type,
+            KernelNode.current_version,
+            KernelNode.status,
+            KernelNode.title,
+        ).where(
+            KernelNode.deleted_at.is_(None),
+            KernelNode.status.notin_(["DEPRECATED", "ABANDONED", "COMPLETED"]),
+        )
+    ).all()
+    return _kernel_identity_hash(
+        [
+            {
+                "id": str(row.id),
+                "type": row.node_type,
+                "version": row.current_version,
+                "status": row.status,
+                "title": row.title,
+            }
+            for row in rows
+        ]
+    )
 
 
 def canonical_extra_sources(extras: list[Source] | None) -> list[Source]:

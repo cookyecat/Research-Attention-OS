@@ -34,7 +34,11 @@ from app.services.scheduler import (
     route,
     validate_plan,
 )
-from app.services.analysis_execution import analysis_execution_digest, analysis_execution_snapshot
+from app.services.analysis_execution import (
+    analysis_execution_digest,
+    analysis_execution_snapshot,
+    uses_embedding_retrieval,
+)
 from app.services.source_graph import freeze_analysis_relational_context
 
 
@@ -260,6 +264,7 @@ def run_pipeline(
         hydrate_run,
         canonical_extra_sources,
         compute_identity,
+        fresh_kernel_snapshot_hash,
         input_hash,
         kernel_snapshot_hash,
         plan_public,
@@ -360,15 +365,22 @@ def run_pipeline(
             )
             if part
         ).strip() or blob[:4000]
-        qvec, emb_model = try_embed_query(locate_query[:4000])
+        qvec, emb_model = None, "none"
         ranked_ids = None
         node_emb = None
-        if qvec:
-            ranked_ids = retrieve_ids_pgvector(db, qvec, model=emb_model)
-            try:
-                node_emb = load_node_embeddings(db, expected_model=emb_model, expected_dim=len(qvec))
-            except Exception:
-                node_emb = None
+        if uses_embedding_retrieval(provider):
+            qvec, emb_model = try_embed_query(locate_query[:4000])
+            if qvec:
+                ranked_ids = retrieve_ids_pgvector(db, qvec, model=emb_model)
+                try:
+                    node_emb = load_node_embeddings(db, expected_model=emb_model, expected_dim=len(qvec))
+                except Exception:
+                    node_emb = None
+            live_kernel_hash = fresh_kernel_snapshot_hash(db)
+            if live_kernel_hash != k_hash:
+                raise RuntimeError(
+                    "Kernel snapshot changed during analysis; refusing hybrid K0 identity / K1 retrieval"
+                )
         matches = provider.match_kernel(
             extraction,
             nodes,

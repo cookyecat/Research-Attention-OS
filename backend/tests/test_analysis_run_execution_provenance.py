@@ -6,10 +6,13 @@ import hashlib
 import json
 from uuid import UUID
 
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import select
+from sqlalchemy.orm import sessionmaker
 
 from app.config import settings
+from app.models.analysis import AnalysisRun
 from app.enums import SourceEdgeRelationship
 from app.models.kernel import KernelEmbedding, KernelNode
 from app.services.analysis_execution import (
@@ -17,7 +20,7 @@ from app.services.analysis_execution import (
     analysis_execution_snapshot,
     sanitized_endpoint_identity,
 )
-from app.services.analysis_runs import compute_identity, kernel_snapshot_hash
+from app.services.analysis_runs import compute_identity, fresh_kernel_snapshot_hash, kernel_snapshot_hash
 from app.services.source_graph import freeze_analysis_relational_context, persist_source_edge
 from tests.conftest import add_text, analyze
 
@@ -377,3 +380,93 @@ def test_kernel_create_changes_snapshot_when_embedding_refresh_can_run(client: T
         db.execute(select(KernelNode).where(KernelNode.deleted_at.is_(None))).scalars().all()
     )
     assert after != before
+
+
+def test_fresh_kernel_hash_sees_db_change_outside_identity_map(client: TestClient, db, engine):
+    db.expire_all()
+    nodes = db.execute(select(KernelNode).where(KernelNode.deleted_at.is_(None))).scalars().all()
+    assert nodes
+    node = nodes[0]
+    stale_version = node.current_version
+    stale_hash = kernel_snapshot_hash(nodes)
+
+    other = sessionmaker(bind=engine, expire_on_commit=False)()
+    try:
+        outsider = other.get(KernelNode, node.id)
+        outsider.current_version = stale_version + 7
+        other.commit()
+    finally:
+        other.close()
+
+    assert node.current_version == stale_version
+    assert kernel_snapshot_hash(nodes) == stale_hash
+    assert fresh_kernel_snapshot_hash(db) != stale_hash
+
+
+def _install_modelish_provider(monkeypatch, kind: str):
+    from app.cognitive.factory import FallbackProvider
+    from app.cognitive.model_provider import ModelBackedCognitiveProvider
+    from app.cognitive.rule_provider import RuleBasedCognitiveProvider
+    from tests.fakes import SemanticFakeChat
+
+    def _provider(**_k):
+        model = ModelBackedCognitiveProvider(chat_fn=SemanticFakeChat())
+        if kind == "model":
+            return model
+        return FallbackProvider(model, RuleBasedCognitiveProvider())
+
+    monkeypatch.setattr("app.cognitive.factory.get_provider", _provider)
+
+
+@pytest.mark.parametrize("kind", ["model", "fallback"])
+def test_kernel_change_during_retrieval_fails_closed(client: TestClient, db, monkeypatch, kind):
+    _install_modelish_provider(monkeypatch, kind)
+
+    def mutating_embed(_text):
+        row = db.execute(select(KernelNode).where(KernelNode.deleted_at.is_(None))).scalars().first()
+        row.current_version += 1
+        db.commit()
+        return [0.1, 0.2, 0.3], "test-emb"
+
+    monkeypatch.setattr("app.services.retrieval.try_embed_query", mutating_embed)
+    monkeypatch.setattr("app.services.embeddings.load_node_embeddings", lambda *_a, **_k: {})
+    monkeypatch.setattr("app.services.embeddings.retrieve_ids_pgvector", lambda *_a, **_k: None)
+
+    src = add_text(client, "A technical paper about motor intelligence latency.", title=f"hyb-{kind}")
+    r = client.post("/analysis/extract", json={"source_id": src["id"]})
+    assert r.status_code >= 500
+    db.expire_all()
+    runs = db.execute(select(AnalysisRun).where(AnalysisRun.source_id == UUID(src["id"]))).scalars().all()
+    assert runs
+    assert all(run.status != "COMPLETED" for run in runs)
+    assert any(run.status == "FAILED" for run in runs)
+
+
+def test_rule_analyze_skips_embedding_helpers(client: TestClient, monkeypatch):
+    def boom(*_a, **_k):
+        raise RuntimeError("embedding prework must not run on rule path")
+
+    monkeypatch.setattr("app.services.retrieval.try_embed_query", boom)
+    monkeypatch.setattr("app.services.embeddings.load_node_embeddings", boom)
+    monkeypatch.setattr("app.services.embeddings.retrieve_ids_pgvector", boom)
+    src = add_text(client, "A technical paper about motor intelligence latency.", title="rule-no-emb")
+    result = analyze(client, src["id"])
+    assert result["analysis_run"]["status"] == "COMPLETED"
+
+
+@pytest.mark.parametrize("kind", ["model", "fallback"])
+def test_model_fallback_embedding_path_still_runs(client: TestClient, monkeypatch, kind):
+    _install_modelish_provider(monkeypatch, kind)
+    called = {"embed": 0}
+
+    def fake_embed(_text):
+        called["embed"] += 1
+        return [0.1, 0.2, 0.3], "test-emb"
+
+    monkeypatch.setattr("app.services.retrieval.try_embed_query", fake_embed)
+    monkeypatch.setattr("app.services.embeddings.load_node_embeddings", lambda *_a, **_k: {})
+    monkeypatch.setattr("app.services.embeddings.retrieve_ids_pgvector", lambda *_a, **_k: None)
+    src = add_text(client, "A technical paper about motor intelligence latency.", title=f"emb-ok-{kind}")
+    result = analyze(client, src["id"])
+    assert called["embed"] >= 1
+    assert result["analysis_run"]["status"] == "COMPLETED"
