@@ -597,19 +597,17 @@ def test_primary_update_rejects_untargeted_reinforce_and_challenge():
     assert primary_update(open_new) == {"operation": CognitiveEffectKind.OPEN_NEW, "target_node_id": None}
 
 
-def test_projection_never_emits_untargeted_reinforce_or_challenge():
+def test_projection_never_infers_cognitive_transition():
     from app.services.cognitive_impact import primary_update
     from app.services.scheduler import _projection_assessment
 
-    conflicted = _projection_assessment(_features(disagreement=0.8, sources_conflict=True))
-    assert all(e.operation == CognitiveEffectKind.OPEN_NEW for e in conflicted.effects)
-    assert all(e.target_kernel_node_id is None for e in conflicted.effects)
-    assert primary_update(conflicted)["operation"] == CognitiveEffectKind.OPEN_NEW
-    assert primary_update(conflicted)["target_node_id"] is None
+    conflicted = _projection_assessment(_features(disagreement=0.8, sources_conflict=True, exploration_candidate=True))
+    assert conflicted.effects == []
+    assert primary_update(conflicted) == {"operation": None, "target_node_id": None}
 
-    material = _projection_assessment(_features(change_magnitude=0.7, disagreement=0.1))
-    assert material.effects == []
-    assert primary_update(material) == {"operation": None, "target_node_id": None}
+    explored = _projection_assessment(_features(exploration_candidate=True, kernel_delta=0.9, change_magnitude=0.2))
+    assert explored.effects == []
+    assert primary_update(explored) == {"operation": None, "target_node_id": None}
 
 
 def test_primary_effect_is_order_independent_and_not_list_head():

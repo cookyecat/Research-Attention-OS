@@ -34,7 +34,7 @@ from app.services.scheduler import (
     route,
     validate_plan,
 )
-from app.services.source_graph import independence_report
+from app.services.source_graph import analysis_relational_context_digest, independence_report
 
 
 def _active_kernel(db: Session) -> list[KernelNode]:
@@ -191,6 +191,7 @@ def extract_source(
     primary = _extract_one(source)
     parts = [primary]
     extras = extra_sources or []
+    extras = sorted(extras, key=lambda s: str(s.id))
     for extra in extras:
         parts.append(_extract_one(extra))
     merged = merge_extractions(*parts) if len(parts) > 1 else primary
@@ -252,6 +253,7 @@ def run_pipeline(
         complete_run,
         fail_run,
         hydrate_run,
+        canonical_extra_sources,
         compute_identity,
         input_hash,
         kernel_snapshot_hash,
@@ -266,11 +268,13 @@ def run_pipeline(
     if source is None:
         raise ValueError("Source not found")
     extras = [db.get(Source, sid) for sid in extra_source_ids or []]
-    extras = [s for s in extras if s is not None]
+    extras = canonical_extra_sources([s for s in extras if s is not None])
     provider = provider or get_provider()
     nodes = _active_kernel(db)
     in_hash = input_hash(source, extras)
     k_hash = kernel_snapshot_hash(nodes)
+    event_source_ids = [source.id] + [e.id for e in extras]
+    rel_digest = analysis_relational_context_digest(db, event_source_ids)
     provider_type = getattr(provider, "provider_type", "rule")
     model_name = settings.llm_model if str(provider_type).startswith("model") else None
     emb_version = embedding_model_label()
@@ -280,6 +284,7 @@ def run_pipeline(
         provider_type=provider_type,
         model_name=model_name,
         embedding_model_version=emb_version,
+        relational_digest=rel_digest,
     )
     kind, run = acquire_run(
         db,
@@ -371,7 +376,6 @@ def run_pipeline(
             emb_model if emb_model and emb_model != "none" else settings.embedding_model
         )
         retrieval.setdefault("query_instruct_applied", query_instruct_enabled())
-        event_source_ids = [source.id] + [e.id for e in extras]
         independence = independence_report(db, event_source_ids)
         is_duplicate = independence["secondary_reports"] >= 1 and str(source.id) in independence.get(
             "secondary_source_ids", []
@@ -430,9 +434,9 @@ def run_pipeline(
         db.flush()
         if draft.disposition.value == "DROP":
             delta = ModelDelta(
-                summary="No material cognitive value relative to cost; synthesis skipped.",
+                summary="Downstream synthesis skipped because current AttentionPlan is DROP.",
                 admission_allowed=False,
-                rationale="Attention Policy routed DROP before ModelDelta.",
+                rationale="Attention Policy routed DROP. Canonical Δ_t is unchanged.",
                 evidence_maturity=features.evidence_maturity,
             )
             patch_drafts = []

@@ -805,6 +805,11 @@ The current LLM is an implementation of $F_\theta$, not the Cognitive Kernel its
 
 `AnalysisRun` should preserve cognitive judgment provenance. `AttentionPlan` should preserve runtime-conditioned attention allocation. These remain distinct because cognition changes relatively slowly while attention allocation may change immediately with runtime context.
 
+Runtime-only change → reschedule the existing AnalysisRun (new AttentionPlan).  
+Analysis-relevant change → new AnalysisRun / re-analysis.
+
+AnalysisRun cache identity must cover every effective input that can change the frozen cognitive judgment: source content and consumed metadata (title, type), extra sources, Kernel snapshot, independence-relevant SourceGraph edges, provider/model, and extractor/matcher/evidence/prompt/embedding/pipeline versions. RuntimeContext is not part of AnalysisRun identity.
+
 ---
 
 ## 21. Non-goals of v2.1

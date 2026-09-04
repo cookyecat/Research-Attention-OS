@@ -45,15 +45,26 @@ def kernel_snapshot_hash(nodes: list[KernelNode]) -> str:
     return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
 
 
-def input_hash(source: Source, extras: list[Source]) -> str:
-    parts = [
+def canonical_extra_sources(extras: list[Source] | None) -> list[Source]:
+    """Extras are a set for analysis. Order must not change E_t / identity."""
+    return sorted(extras or [], key=lambda s: str(s.id))
+
+
+def _source_effective_input(source: Source) -> list[str]:
+    """Source fields actually consumed by Extract / Locate / Impact blob construction."""
+    return [
         str(source.id),
         source.content_hash or "",
         source.content_text or "",
-        source.source_type,
+        source.source_type or "",
+        source.title or "",
     ]
-    for extra in sorted(extras, key=lambda s: str(s.id)):
-        parts.extend([str(extra.id), extra.content_hash or "", extra.content_text or ""])
+
+
+def input_hash(source: Source, extras: list[Source]) -> str:
+    parts = _source_effective_input(source)
+    for extra in canonical_extra_sources(extras):
+        parts.extend(_source_effective_input(extra))
     return hashlib.sha256("\n".join(parts).encode("utf-8")).hexdigest()
 
 
@@ -71,12 +82,14 @@ def identity_key(
     prompt_version: str,
     embedding_model_version: str,
     pipeline_version: str,
+    relational_digest: str = "",
 ) -> str:
-    """Cognitive Analysis identity. Scheduler version is intentionally excluded."""
+    """Cognitive Analysis identity. Scheduler version and runtime context are excluded."""
     raw = "|".join(
         [
             input_digest,
             kernel_digest,
+            relational_digest or "",
             provider_type,
             provider_version,
             model_name or "none",
@@ -99,6 +112,7 @@ def compute_identity(
     provider_type: str,
     model_name: str | None,
     embedding_model_version: str = EMBEDDING_MODEL_VERSION_NONE,
+    relational_digest: str = "",
 ) -> str:
     return identity_key(
         input_digest=input_digest,
@@ -113,6 +127,7 @@ def compute_identity(
         prompt_version=PROMPT_VERSION,
         embedding_model_version=embedding_model_version,
         pipeline_version=PIPELINE_VERSION,
+        relational_digest=relational_digest,
     )
 
 

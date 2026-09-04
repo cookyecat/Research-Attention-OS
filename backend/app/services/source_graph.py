@@ -151,15 +151,20 @@ def resolve_references(db: Session, source_id: UUID, *, max_depth: int = 1) -> l
     return results
 
 
+INDEPENDENCE_RELATIONSHIPS = (
+    SourceEdgeRelationship.REPOSTS,
+    SourceEdgeRelationship.DERIVED_FROM,
+    SourceEdgeRelationship.REPORTS_ON,
+)
+
+
 def independence_report(db: Session, source_ids: list[UUID]) -> dict:
     if not source_ids:
         return {"independent_sources": 0, "secondary_reports": 0}
     edges = db.execute(
         select(SourceEdge).where(
             SourceEdge.source_id.in_(source_ids),
-            SourceEdge.relationship.in_(
-                [SourceEdgeRelationship.REPOSTS, SourceEdgeRelationship.DERIVED_FROM, SourceEdgeRelationship.REPORTS_ON]
-            ),
+            SourceEdge.relationship.in_(list(INDEPENDENCE_RELATIONSHIPS)),
         )
     ).scalars().all()
     secondary = {e.source_id for e in edges}
@@ -173,6 +178,30 @@ def independence_report(db: Session, source_ids: list[UUID]) -> dict:
         "independent_source_ids": [str(x) for x in independent],
         "secondary_source_ids": [str(x) for x in secondary],
     }
+
+
+def analysis_relational_context_digest(db: Session, source_ids: list[UUID]) -> str:
+    """Hash of SourceGraph facts that can change independence_report() for these sources.
+
+    Only outgoing REPOSTS / DERIVED_FROM / REPORTS_ON edges from the event sources.
+    Order-independent. Unrelated relationships (CITES, DISCUSSES, …) are excluded.
+    """
+    import hashlib
+    import json
+
+    if not source_ids:
+        return hashlib.sha256(b"").hexdigest()
+    edges = db.execute(
+        select(SourceEdge).where(
+            SourceEdge.source_id.in_(source_ids),
+            SourceEdge.relationship.in_(list(INDEPENDENCE_RELATIONSHIPS)),
+        )
+    ).scalars().all()
+    facts = sorted(
+        (str(e.source_id), str(e.relationship), str(e.target_id))
+        for e in edges
+    )
+    return hashlib.sha256(json.dumps(facts, separators=(",", ":")).encode("utf-8")).hexdigest()
 
 
 def link_near_duplicates(db: Session, source: Source) -> list[Source]:

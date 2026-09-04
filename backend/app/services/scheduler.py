@@ -246,60 +246,21 @@ def _budget(disposition: Disposition) -> int:
 
 
 def _projection_assessment(features: SchedulerFeatures):
-    """Last-resort view when no CognitiveImpactAssessment is available.
+    """Compatibility placeholder when a frozen CognitiveImpactAssessment is missing.
 
-    Uses impact projection fields on SchedulerFeatures (change_magnitude / kernel_delta),
-    never topic_relevance or decision_relevance. Isolated compatibility for reschedule
-    of older runs and legacy tests.
-
-    Projection has no Kernel node ids. REINFORCE/CHALLENGE require an existing node,
-    so this path may only emit OPEN_NEW or an empty effects list.
+    Legacy SchedulerFeatures are not a Cognitive Transition source of truth.
+    Missing frozen judgment → empty assessment (NONE), never inferred OPEN_NEW /
+    REINFORCE / CHALLENGE from exploration, disagreement, conflict, or kernel_delta.
     """
-    from app.enums import CognitiveEffectKind
-    from app.services.cognitive_impact import CognitiveEffect, CognitiveImpactAssessment
+    from app.services.cognitive_impact import CognitiveImpactAssessment
 
-    change = features.change_magnitude if features.change_magnitude else features.kernel_delta
-    epi = features.epistemic_strength if features.epistemic_strength else min(features.credibility, 0.45)
-    importance = features.target_importance
     cost = features.attention_cost or features.cognitive_cost
-
-    def _open_new(magnitude: float, reason: str) -> CognitiveImpactAssessment:
-        return CognitiveImpactAssessment(
-            effects=[
-                CognitiveEffect(
-                    target_kernel_node_id=None,
-                    operation=CognitiveEffectKind.OPEN_NEW,
-                    change_magnitude=magnitude,
-                    epistemic_strength=epi,
-                    target_importance=importance,
-                    reason=reason,
-                    exploration_candidate=True,
-                )
-            ],
-            attention_cost=cost,
-            exploration_candidate=True,
-            features=features,
-        )
-
-    def _empty() -> CognitiveImpactAssessment:
-        return CognitiveImpactAssessment(
-            effects=[],
-            attention_cost=cost,
-            exploration_candidate=features.exploration_candidate,
-            features=features,
-        )
-
-    if features.exploration_candidate and change < 0.35:
-        return _open_new(
-            max(change, 0.55),
-            "Projected from stored SchedulerFeatures; no Kernel target invented.",
-        )
-    if features.disagreement >= 0.55 or features.sources_conflict:
-        return _open_new(
-            max(change, 0.55),
-            "Projected conflict without a Kernel target; OPEN_NEW rather than untargeted CHALLENGE.",
-        )
-    return _empty()
+    return CognitiveImpactAssessment(
+        effects=[],
+        attention_cost=cost,
+        exploration_candidate=False,
+        features=features,
+    )
 
 
 def matches_from_debug(raw) -> list[KernelMatch]:
@@ -338,7 +299,8 @@ def route(
     """Attention Policy. CognitiveImpactAssessment is the semantic input.
 
     SchedulerFeatures supply source/runtime context (duplicate, threat, marketing,
-    foundational papers) and a fallback projection when assessment is missing.
+    foundational papers). Missing frozen CognitiveImpactAssessment is fail-closed
+    to NONE; legacy scores are not a Cognitive Transition source of truth.
     """
     from app.enums import CognitiveEffectKind
     from app.services.cognitive_impact import (
