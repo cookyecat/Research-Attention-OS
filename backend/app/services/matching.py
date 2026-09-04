@@ -46,21 +46,17 @@ def _overlap(a: set[str], b: set[str]) -> float:
     return len(inter) / max(1, min(len(a), len(b)))
 
 
-EQUITY_STRUCTURE = {
-    "equity", "minority", "ownership", "shareholder", "employment", "employee",
-    "contract", "investment", "investor", "shares", "role",
-}
-EMBODIED_MOTOR = {
-    "embodied", "motor", "latency", "energy", "control", "humanoid", "robot",
-    "folding", "high-frequency", "temporal", "end-to-end", "hierarchical",
-}
-COLLECTIVE = {
-    "swarm", "multi-agent", "world-model", "world", "collective", "shared",
-    "orbit", "bodies", "decentralized", "communication",
-}
+def _relevance_type(node_type: str) -> str:
+    kind = str(node_type or "").upper()
+    if kind == "BOTTLENECK":
+        return "BOTTLENECK"
+    if kind == "DECISION":
+        return "DECISION"
+    return "TOPIC"
 
 
 def match_kernel(extraction: ExtractionResult, nodes: list[KernelNode], extra_text: str = "") -> list[KernelMatch]:
+    """Lexical Locate. Prefer recall; do not interpret cognitive update here."""
     blob = " ".join(
         [extra_text]
         + [c.text for c in extraction.claims]
@@ -73,60 +69,19 @@ def match_kernel(extraction: ExtractionResult, nodes: list[KernelNode], extra_te
         if node.deleted_at is not None:
             continue
         ntext = node_text(node)
-        ntokens = tokenize(ntext)
-        score = _overlap(cand_tokens, ntokens)
-        # Phrase bonuses
-        reason_bits = []
-        low = blob.lower()
-        nlow = ntext.lower()
-        if node.node_type == "DECISION" and (EQUITY_STRUCTURE & cand_tokens) and (EQUITY_STRUCTURE & ntokens):
-            score = max(score, 0.82)
-            reason_bits.append("structural analogy: equity ownership vs employment/role")
-            matches.append(
-                KernelMatch(
-                    node_id=node.id,
-                    node_type=node.node_type,
-                    title=node.title,
-                    score=score,
-                    reason="; ".join(reason_bits) or "lexical overlap",
-                    structural=True,
-                    relevance_type="STRUCTURAL",
-                )
-            )
+        score = _overlap(cand_tokens, tokenize(ntext))
+        if score < 0.28:
             continue
-        robotish = any(
-            k in low
-            for k in ("folding", "agent brain", "humanoid", "embodied", "motor", "high-frequency", "control loop")
-        )
-        if robotish and any(k in nlow for k in ("motor", "embodied", "latency", "end-to-end", "humanoid", "intelligence")):
-            score = max(score, 0.7)
-            reason_bits.append("embodied/motor control overlap")
-        if any(k in low for k in ("swarm", "collective", "world model", "multi-agent", "shared world", "one world", "many bodies", "orbit")) and any(
-            k in nlow for k in ("swarm", "collective", "world", "multi-agent", "shared", "communication", "decentralized")
-        ):
-            score = max(score, 0.72)
-            reason_bits.append("collective/world-model overlap")
-        if "bottleneck" in nlow or node.node_type == "BOTTLENECK":
-            if any(k in low for k in ("latency", "energy", "evaluation", "high-frequency", "motor")):
-                score = max(score, 0.68)
-                reason_bits.append("bottleneck alignment")
-        if score >= 0.28:
-            matches.append(
-                KernelMatch(
-                    node_id=node.id,
-                    node_type=node.node_type,
-                    title=node.title,
-                    score=round(min(score, 1.0), 4),
-                    reason="; ".join(reason_bits) or "lexical overlap with kernel node",
-                    structural=False,
-                    relevance_type=(
-                        "BOTTLENECK"
-                        if node.node_type == "BOTTLENECK"
-                        else "DECISION"
-                        if node.node_type == "DECISION"
-                        else "TOPIC"
-                    ),
-                )
+        matches.append(
+            KernelMatch(
+                node_id=node.id,
+                node_type=node.node_type,
+                title=node.title,
+                score=round(min(score, 1.0), 4),
+                reason="lexical overlap with kernel node",
+                structural=False,
+                relevance_type=_relevance_type(node.node_type),
             )
+        )
     matches.sort(key=lambda m: m.score, reverse=True)
     return matches

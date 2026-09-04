@@ -9,10 +9,14 @@ from fastapi import HTTPException
 from fastapi.testclient import TestClient
 from sqlalchemy.orm.attributes import flag_modified
 
+from app.cognitive.factory import FallbackProvider
+from app.cognitive.model_provider import ModelBackedCognitiveProvider
+from app.cognitive.rule_provider import RuleBasedCognitiveProvider
 from app.models.analysis import AnalysisRun
 from app.services.attention_feedback import merge_correction, public_update, system_prediction_from_plan
 from tests.acceptance.test_cases import CASE_J
 from tests.conftest import add_text, analyze, kernel_index
+from tests.fakes import SemanticFakeChat
 
 
 def _plan_id_from_analysis(result: dict) -> str:
@@ -536,7 +540,14 @@ def test_http_unknown_operation_and_illegal_open_new_target_rejected(client: Tes
     assert illegal_open.status_code == 422
 
 
-def test_reschedule_system_prediction_uses_latest_plan_disposition(client: TestClient):
+def test_reschedule_system_prediction_uses_latest_plan_disposition(client: TestClient, monkeypatch):
+    def _provider(**_kwargs):
+        return FallbackProvider(
+            ModelBackedCognitiveProvider(chat_fn=SemanticFakeChat()),
+            RuleBasedCognitiveProvider(),
+        )
+
+    monkeypatch.setattr("app.cognitive.factory.get_provider", _provider)
     src = add_text(client, CASE_J, title="fb-reschedule-disp")
     first = client.post(
         "/scheduler/plan",

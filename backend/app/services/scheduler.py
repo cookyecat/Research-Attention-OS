@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from app.enums import CandidateType, Disposition, ExpectedOutput, Urgency
 from app.services.evidence_gate import evidence_conflict_flags
 from app.services.extraction import ExtractionResult
-from app.services.matching import EQUITY_STRUCTURE, KernelMatch, tokenize
+from app.services.matching import KernelMatch
 
 SCHEDULER_VERSION = "raos-scheduler-0.5.0"
 # Compatibility projection cap for debug/Live Eval. Routing no longer branches on these scores.
@@ -118,7 +118,6 @@ def _compatibility_features(
     secondary_report_count: int = 0,
     threatens_active_work: bool | None = None,
 ) -> SchedulerFeatures:
-    tokens = tokenize(text)
     match_score = max((m.score for m in matches), default=0.0)
     structural = max((m.score for m in matches if m.structural), default=0.0)
     decision = max((m.score for m in matches if m.node_type == "DECISION"), default=0.0)
@@ -156,13 +155,6 @@ def _compatibility_features(
         topic = min(topic, 0.22)
     if structural >= 0.65 and match_score < 0.4:
         topic = min(topic, 0.25)
-
-    # Celebrity consumer brand vs robotics kernel: low topic if no AI/robot terms
-    if (EQUITY_STRUCTURE & tokens) and not ({"robot", "embodied", "motor", "agent"} & tokens):
-        topic = min(topic, 0.2)
-        if decision >= 0.5:
-            structural = max(structural, 0.85)
-            decision = max(decision, 0.85)
 
     novelty = 0.6 if not is_duplicate else 0.15
     if "minor" in low and "version" in low:

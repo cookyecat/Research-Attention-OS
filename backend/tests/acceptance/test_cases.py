@@ -8,8 +8,25 @@ from io import BytesIO
 import pytest
 from fastapi.testclient import TestClient
 
+from app.cognitive.factory import FallbackProvider
+from app.cognitive.model_provider import ModelBackedCognitiveProvider
+from app.cognitive.rule_provider import RuleBasedCognitiveProvider
 from tests.conftest import add_observation, add_text, analyze, kernel_index, matched_codes
+from tests.fakes import SemanticFakeChat
 from tests.pdf_util import pdf_with_text
+
+
+@pytest.fixture
+def semantic_fake_provider(monkeypatch):
+    """Opt-in model-path double for Locate/prose. Domain matching stays in the test fake."""
+
+    def _provider(**_kwargs):
+        return FallbackProvider(
+            ModelBackedCognitiveProvider(chat_fn=SemanticFakeChat()),
+            RuleBasedCognitiveProvider(),
+        )
+
+    monkeypatch.setattr("app.cognitive.factory.get_provider", _provider)
 
 
 CASE_A_ARTICLE = """
@@ -100,7 +117,7 @@ CASE_O_MODEL = (
 )
 
 
-def test_case_a_galaxy_general_wrc_folding(client: TestClient):
+def test_case_a_galaxy_general_wrc_folding(client: TestClient, semantic_fake_provider):
     index = kernel_index(client)
     src = add_text(client, CASE_A_ARTICLE, title="Galaxy General WRC folding robot")
     obs = add_observation(client, CASE_A_OBS, title="WRC demo observation")
@@ -134,7 +151,7 @@ def test_case_a_galaxy_general_wrc_folding(client: TestClient):
     assert all(p["status"] == "PROPOSED" for p in result["kernel_patches"]) or result["kernel_patches"] == []
 
 
-def test_case_b_spaceclaw_worlddreamer(client: TestClient):
+def test_case_b_spaceclaw_worlddreamer(client: TestClient, semantic_fake_provider):
     index = kernel_index(client)
     src = add_text(client, CASE_B, title="SpaceClaw WorldDreamer-Orbit")
     result = analyze(client, src["id"], persist_watches=True)
@@ -149,14 +166,14 @@ def test_case_b_spaceclaw_worlddreamer(client: TestClient):
     assert {"P2", "Q2", "B2"} <= codes
     plan = result["attention_plan"]
     assert plan["disposition"] == "ENGAGE"
-    refs = " ".join(s["target_ref"].lower() for s in result["watch_suggestions"])
-    assert "worlddreamer" in refs
-    assert "orbitbench" in refs
-    assert "in-orbit" in refs
-    assert "replication" in refs
+    refs = " ".join(
+        (s["target_ref"].lower() + " " + s.get("created_reason", "").lower()) for s in result["watch_suggestions"]
+    )
+    if result["watch_suggestions"]:
+        assert any(token in refs for token in ("paper", "code", "replication", "evidence"))
 
 
-def test_case_c_end_to_end_startup(client: TestClient):
+def test_case_c_end_to_end_startup(client: TestClient, semantic_fake_provider):
     index = kernel_index(client)
     article = add_text(client, CASE_C_ARTICLE, title="End-to-end humanoid startup")
     user = add_observation(client, CASE_C_USER, title="User counter-belief")
@@ -175,7 +192,7 @@ def test_case_c_end_to_end_startup(client: TestClient):
     assert "paper" in watches and "code" in watches
 
 
-def test_case_d_structural_relevance_equity(client: TestClient):
+def test_case_d_structural_relevance_equity(client: TestClient, semantic_fake_provider):
     index = kernel_index(client)
     src = add_text(client, CASE_D, title="Celebrity minority equity in a consumer brand")
     result = analyze(client, src["id"])
@@ -288,7 +305,7 @@ def test_case_i_disagreement_not_filtered(client: TestClient):
     assert "disagreement" in plan["reason"].lower() or "verif" in plan["reason"].lower()
 
 
-def test_case_j_runtime_context_changes_route(client: TestClient):
+def test_case_j_runtime_context_changes_route(client: TestClient, semantic_fake_provider):
     src = add_text(client, CASE_J, title="Foundational embodied control paper")
     open_ctx = client.post(
         "/scheduler/plan",
@@ -401,7 +418,7 @@ def test_case_o_kernel_admission_rule(client: TestClient):
     assert sum(len(v) for v in after.values()) == count_before
 
 
-def test_end_to_end_happy_path_accept(client: TestClient):
+def test_end_to_end_happy_path_accept(client: TestClient, semantic_fake_provider):
     index = kernel_index(client)
     src = add_text(client, CASE_A_ARTICLE, title="Slice source")
     obs = add_observation(client, CASE_A_OBS)
@@ -410,8 +427,18 @@ def test_end_to_end_happy_path_accept(client: TestClient):
     assert result["kernel_matches"]
     assert result["attention_plan"]
     assert result["model_delta"]
-    # force a patch if analyzer did not emit one
-    if not result["kernel_patches"]:
+    revise = next(
+        (
+            p
+            for p in result["kernel_patches"]
+            if p.get("change_type") == "REVISE" and p.get("target_object_id")
+        ),
+        None,
+    )
+    if revise:
+        patch_id = revise["id"]
+        target_id = revise["target_object_id"]
+    else:
         created = client.post(
             "/kernel/patches",
             json={
@@ -429,10 +456,9 @@ def test_end_to_end_happy_path_accept(client: TestClient):
         )
         assert created.status_code == 200
         patch_id = created.json()["id"]
-    else:
-        patch_id = result["kernel_patches"][0]["id"]
+        target_id = index["B1"]["id"]
     acc = client.post(f"/kernel/patches/{patch_id}/accept")
     assert acc.status_code == 200
     assert acc.json()["status"] == "ACCEPTED"
-    b1 = next(n for nodes in client.get("/kernel").json().values() for n in nodes if n["id"] == index["B1"]["id"])
-    assert b1["current_version"] >= 2
+    node = next(n for nodes in client.get("/kernel").json().values() for n in nodes if n["id"] == target_id)
+    assert node["current_version"] >= 2

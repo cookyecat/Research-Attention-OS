@@ -33,12 +33,11 @@ from app.services.cognitive_impact import (
     CognitiveImpactAssessment,
     features_from_impact,
     ground_effects,
-    is_location_node,
     is_update_eligible_node,
     node_proposition,
     resolve_target_importance,
 )
-from app.services.deltas import ModelDelta, PatchDraft, propose_patches
+from app.services.deltas import ModelDelta, PatchDraft, model_delta_from_transition, propose_patches
 from app.services.evidence_gate import should_run_heavy_evidence
 from app.services.extraction import (
     ExtractedClaim,
@@ -374,7 +373,6 @@ class ModelBackedCognitiveProvider:
             payload = getattr(node, "payload", None) or {}
             if isinstance(payload, dict):
                 scope = payload.get("scope")
-            kind = "location" if is_location_node(match.node_type) else "epistemic_object"
             return {
                 "id": str(match.node_id),
                 "type": match.node_type,
@@ -383,16 +381,12 @@ class ModelBackedCognitiveProvider:
                 "scope": scope,
                 "score": match.score,
                 "rel": match.relevance_type,
-                "kind": kind,
-                "role": "optional_target" if is_location_node(match.node_type) else "cognitive_target",
+                "kind": "epistemic_object",
+                "role": "cognitive_target",
             }
 
         locations = [_location_row(m) for m in matches]
-        eligible = [
-            _target_row(m)
-            for m in matches
-            if is_update_eligible_node(m.node_type) or is_location_node(m.node_type)
-        ]
+        eligible = [_target_row(m) for m in matches if is_update_eligible_node(m.node_type)]
         parsed: CognitiveImpactResponse = self._complete(
             IMPACT_SYSTEM,
             impact_user_prompt(
@@ -520,6 +514,8 @@ class ModelBackedCognitiveProvider:
         matches: list[KernelMatch],
         features: SchedulerFeatures,
         nodes: list[KernelNode],
+        *,
+        assessment: CognitiveImpactAssessment | None = None,
     ) -> ModelDelta:
         kernel_snap = [
             {"id": str(n.id), "type": n.node_type, "title": n.title, "payload": n.payload}
@@ -536,20 +532,23 @@ class ModelBackedCognitiveProvider:
             ModelDeltaResponse,
             stage="delta",
         )
-        affected = [{"id": item.id, "impact": item.impact} for item in parsed.affected_kernel_nodes]
-        return ModelDelta(
+        prose = ModelDelta(
             summary=parsed.summary,
             what_could_change=list(parsed.what_could_change),
             distinctions=list(parsed.distinctions),
             questions=list(parsed.new_questions),
             admission_allowed=parsed.admission_allowed,
-            affected_kernel_nodes=affected,
+            affected_kernel_nodes=[{"id": item.id, "impact": item.impact} for item in parsed.affected_kernel_nodes],
             possible_hypotheses=list(parsed.possible_hypotheses),
             decision_implications=list(parsed.decision_implications),
             epistemic_risk=parsed.epistemic_risk,
             evidence_maturity=parsed.evidence_maturity,
             rationale=parsed.rationale,
         )
+        if assessment is None:
+            # Compatibility for isolated stage probes. Production always binds to Δ_t.
+            return prose
+        return model_delta_from_transition(assessment, extraction, prose=prose)
 
     def propose_patches(
         self,
@@ -559,6 +558,18 @@ class ModelBackedCognitiveProvider:
         features: SchedulerFeatures,
         nodes: list[KernelNode],
         evidence_link_ids: list[str],
+        *,
+        assessment: CognitiveImpactAssessment | None = None,
+        extraction: ExtractionResult | None = None,
     ) -> list[PatchDraft]:
         self._set_stage_runtime("patches", llm_called=False)
-        return propose_patches(text, delta, matches, features, nodes, evidence_link_ids)
+        return propose_patches(
+            text,
+            delta,
+            matches,
+            features,
+            nodes,
+            evidence_link_ids,
+            assessment=assessment,
+            extraction=extraction,
+        )

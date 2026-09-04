@@ -436,9 +436,20 @@ def run_pipeline(
             )
             patch_drafts = []
         else:
-            delta = provider.propose_model_delta(blob, extraction, matches, features, nodes)
+            delta = provider.propose_model_delta(
+                blob, extraction, matches, features, nodes, assessment=assessment
+            )
             evidence_ids = [str(link.id) for link in links]
-            patch_drafts = provider.propose_patches(blob, delta, matches, features, nodes, evidence_ids)
+            patch_drafts = provider.propose_patches(
+                blob,
+                delta,
+                matches,
+                features,
+                nodes,
+                evidence_ids,
+                assessment=assessment,
+                extraction=extraction,
+            )
         patches: list[KernelPatch] = []
         if draft.disposition.value != "DROP":
             for pd in patch_drafts:

@@ -132,7 +132,14 @@ def test_disagreement_is_not_low_relevance(client: TestClient):
     assert plan["disposition"] != "DROP"
 
 
-def test_structural_relevance_can_be_high_with_low_topic(client: TestClient):
+def test_structural_relevance_can_be_high_with_low_topic(client: TestClient, monkeypatch):
+    def _provider(**_kwargs):
+        return FallbackProvider(
+            ModelBackedCognitiveProvider(chat_fn=SemanticFakeChat()),
+            RuleBasedCognitiveProvider(),
+        )
+
+    monkeypatch.setattr("app.cognitive.factory.get_provider", _provider)
     index = kernel_index(client)
     src = add_text(
         client,

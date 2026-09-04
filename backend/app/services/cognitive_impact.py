@@ -81,6 +81,7 @@ class CognitiveEffect:
     target_importance: float
     reason: str
     exploration_candidate: bool = False
+    target_node_type: str | None = None
 
     def as_dict(self) -> dict:
         kind = self.operation.value if hasattr(self.operation, "value") else str(self.operation)
@@ -92,6 +93,7 @@ class CognitiveEffect:
             "target_importance": round(float(self.target_importance), 3),
             "reason": self.reason,
             "exploration_candidate": bool(self.exploration_candidate),
+            "target_node_type": self.target_node_type,
         }
 
 
@@ -368,12 +370,17 @@ def material_effects(assessment: CognitiveImpactAssessment | None, *, min_change
 
 
 def _legal_public_effect(effect: CognitiveEffect) -> bool:
-    """REINFORCE/CHALLENGE require an existing node. OPEN_NEW requires none."""
+    """REINFORCE/CHALLENGE require an existing update-eligible node. OPEN_NEW requires none."""
     op = _kind(effect.operation)
     if op == CognitiveEffectKind.OPEN_NEW:
         return True
     if op in {CognitiveEffectKind.REINFORCE, CognitiveEffectKind.CHALLENGE}:
-        return effect.target_kernel_node_id is not None
+        if effect.target_kernel_node_id is None:
+            return False
+        ntype = effect.target_node_type
+        if ntype and not is_update_eligible_node(ntype):
+            return False
+        return True
     return False
 
 
@@ -520,6 +527,7 @@ def assessment_from_dict(data: dict | None) -> CognitiveImpactAssessment | None:
                 target_importance=float(item.get("target_importance") or 0.0),
                 reason=str(item.get("reason") or ""),
                 exploration_candidate=bool(item.get("exploration_candidate")),
+                target_node_type=str(item["target_node_type"]) if item.get("target_node_type") else None,
             )
         )
     return CognitiveImpactAssessment(
@@ -549,8 +557,11 @@ def _targeted_effect_is_valid(
     match: KernelMatch,
     extraction: ExtractionResult,
 ) -> bool:
-    """REINFORCE/CHALLENGE must pass scope, location, and epistemic grounding."""
-    if is_location_node(match.node_type) and not claim_scope_aligned(extraction, match):
+    """REINFORCE/CHALLENGE must land on update-eligible cognition, plus epistemic checks.
+
+    GOAL / PROJECT may appear in Locate (L_t) but are never legal Update Targets.
+    """
+    if is_location_node(match.node_type) or not is_update_eligible_node(match.node_type):
         return False
     if operation == CognitiveEffectKind.CHALLENGE:
         if (epistemic_text(extraction) or "").strip() and not direct_challenge_evidence(extraction, match):
@@ -597,6 +608,9 @@ def ground_effects(
         change = max(0.0, min(1.0, float(effect.change_magnitude)))
         importance = max(0.0, min(1.0, float(effect.target_importance)))
         explore = bool(effect.exploration_candidate) or operation == CognitiveEffectKind.OPEN_NEW
+        ntype = None
+        if operation != CognitiveEffectKind.OPEN_NEW:
+            ntype = str(getattr(match, "node_type", None) or "") or None
         grounded.append(
             CognitiveEffect(
                 target_kernel_node_id=target,
@@ -606,6 +620,7 @@ def ground_effects(
                 target_importance=importance,
                 reason=effect.reason,
                 exploration_candidate=explore,
+                target_node_type=ntype,
             )
         )
     return grounded
@@ -740,7 +755,6 @@ def assess_impact_from_rules(
     nodes=None,
 ) -> CognitiveImpactAssessment:
     """Deterministic impact assessment used by the rule provider and as fallback."""
-    from app.services.matching import EQUITY_STRUCTURE, tokenize
     from app.services.scheduler import _compatibility_features
 
     nodes_by_id = {n.id: n for n in (nodes or [])}
@@ -756,7 +770,6 @@ def assess_impact_from_rules(
     )
     cap = epistemic_cap(extraction, independent_source_count=independent_source_count)
     low = text.lower()
-    tokens = tokenize(text)
     effects: list[CognitiveEffect] = []
 
     for match in matches:
@@ -802,7 +815,6 @@ def assess_impact_from_rules(
     if not effects:
         from app.services.extraction import PROMOTIONAL_CUES, _contains_any
 
-        equity_only = bool(EQUITY_STRUCTURE & tokens) and not ({"robot", "embodied", "motor", "agent"} & tokens)
         promo = probe.marketing_heavy or bool(extraction.promotional_framing) or _contains_any(text, PROMOTIONAL_CUES)
         paperish = _unnegated(low, "paper") or _unnegated(low, "arxiv") or "foundational" in low
         technical = bool(extraction.technical_claims) or paperish
@@ -834,7 +846,7 @@ def assess_impact_from_rules(
                     exploration_candidate=True,
                 )
             )
-        elif technical and not equity_only and not shallow_news:
+        elif technical and not shallow_news:
             material_branch = (
                 paperish
                 or _unnegated(low, "architecture")

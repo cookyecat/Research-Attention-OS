@@ -3,14 +3,14 @@ from __future__ import annotations
 from app.cognitive.base import CognitiveAnalysisProvider
 from app.models.kernel import KernelNode
 from app.services.cognitive_impact import CognitiveImpactAssessment, assess_impact_from_rules
-from app.services.deltas import ModelDelta, PatchDraft, build_model_delta, propose_patches
+from app.services.deltas import ModelDelta, PatchDraft, build_model_delta, propose_patches as synthesize_patches
 from app.services.extraction import ExtractionResult, extract_from_text
 from app.services.matching import KernelMatch, match_kernel
 from app.services.scheduler import SchedulerFeatures
 
 
 class RuleBasedCognitiveProvider:
-    """Regression baseline / fallback / guardrail. Preserves A–O semantics."""
+    """Lexical Locate + rule Impact fallback. Not a Pilot-fitted cognitive engine."""
 
     provider_type = "rule"
 
@@ -84,8 +84,10 @@ class RuleBasedCognitiveProvider:
         matches: list[KernelMatch],
         features: SchedulerFeatures,
         nodes: list[KernelNode],
+        *,
+        assessment: CognitiveImpactAssessment | None = None,
     ) -> ModelDelta:
-        return build_model_delta(text, extraction, matches, features, nodes)
+        return build_model_delta(text, extraction, matches, features, nodes, assessment=assessment)
 
     def propose_patches(
         self,
@@ -95,5 +97,17 @@ class RuleBasedCognitiveProvider:
         features: SchedulerFeatures,
         nodes: list[KernelNode],
         evidence_link_ids: list[str],
+        *,
+        assessment: CognitiveImpactAssessment | None = None,
+        extraction: ExtractionResult | None = None,
     ) -> list[PatchDraft]:
-        return propose_patches(text, delta, matches, features, nodes, evidence_link_ids)
+        return synthesize_patches(
+            text,
+            delta,
+            matches,
+            features,
+            nodes,
+            evidence_link_ids,
+            assessment=assessment,
+            extraction=extraction,
+        )

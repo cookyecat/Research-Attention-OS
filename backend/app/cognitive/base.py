@@ -82,6 +82,8 @@ class CognitiveAnalysisProvider(Protocol):
         matches: list[KernelMatch],
         features: SchedulerFeatures,
         nodes: list[KernelNode],
+        *,
+        assessment: CognitiveImpactAssessment | None = None,
     ) -> ModelDelta: ...
 
     def propose_patches(
@@ -92,4 +94,7 @@ class CognitiveAnalysisProvider(Protocol):
         features: SchedulerFeatures,
         nodes: list[KernelNode],
         evidence_link_ids: list[str],
+        *,
+        assessment: CognitiveImpactAssessment | None = None,
+        extraction: ExtractionResult | None = None,
     ) -> list[PatchDraft]: ...
