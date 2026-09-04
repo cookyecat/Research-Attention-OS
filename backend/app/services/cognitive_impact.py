@@ -369,47 +369,153 @@ def material_effects(assessment: CognitiveImpactAssessment | None, *, min_change
     ]
 
 
-def bind_legacy_target_types(
+def _match_node_id(match) -> object:
+    if match is None:
+        return None
+    if isinstance(match, dict):
+        return match.get("node_id")
+    return getattr(match, "node_id", None)
+
+
+def _match_node_type(match) -> str:
+    if match is None:
+        return ""
+    if isinstance(match, dict):
+        return str(match.get("node_type") or "")
+    return str(getattr(match, "node_type", "") or "")
+
+
+def _copy_effect(effect: CognitiveEffect, *, target_node_type: str | None) -> CognitiveEffect:
+    return CognitiveEffect(
+        target_kernel_node_id=effect.target_kernel_node_id,
+        operation=effect.operation,
+        change_magnitude=effect.change_magnitude,
+        epistemic_strength=effect.epistemic_strength,
+        target_importance=effect.target_importance,
+        reason=effect.reason,
+        exploration_candidate=effect.exploration_candidate,
+        target_node_type=target_node_type,
+    )
+
+
+def interpret_targeted_types(
     assessment: CognitiveImpactAssessment | None,
     matches,
 ) -> CognitiveImpactAssessment | None:
-    """Restore/verify target_node_type from frozen Locate matches. Never reads live Kernel.
+    """Non-mutating current-v2.1 type interpretation from frozen Locate provenance.
 
-    Legacy AnalysisRuns may omit target_node_type. Frozen score_debug matches are
-    the provenance for replay/reschedule. Missing type stays missing (fail-closed).
+    Frozen match.node_type is the only authority for REINFORCE/CHALLENGE targets.
+    Missing match → unverifiable → strip persisted type (fail-closed by legality).
+    OPEN_NEW does not require an existing target type.
+    Never reads live Kernel. Never mutates the input assessment.
     """
     if assessment is None:
         return None
     by_id: dict = {}
     for match in matches or []:
-        nid = getattr(match, "node_id", None)
+        nid = _match_node_id(match)
         if nid is None:
             continue
         by_id[nid] = match
         by_id[str(nid)] = match
     bound: list[CognitiveEffect] = []
     for effect in assessment.effects:
+        op = _kind(effect.operation)
         ntype = effect.target_node_type
         tid = effect.target_kernel_node_id
-        if tid is not None:
+        if op in {CognitiveEffectKind.REINFORCE, CognitiveEffectKind.CHALLENGE} and tid is not None:
             match = by_id.get(tid) or by_id.get(str(tid))
-            frozen = str(getattr(match, "node_type", "") or "") if match is not None else ""
-            if frozen:
-                ntype = frozen
-        bound.append(
-            CognitiveEffect(
-                target_kernel_node_id=effect.target_kernel_node_id,
-                operation=effect.operation,
-                change_magnitude=effect.change_magnitude,
-                epistemic_strength=effect.epistemic_strength,
-                target_importance=effect.target_importance,
-                reason=effect.reason,
-                exploration_candidate=effect.exploration_candidate,
-                target_node_type=ntype,
-            )
-        )
-    assessment.effects = bound
-    return assessment
+            if match is None:
+                ntype = None
+            else:
+                frozen = _match_node_type(match)
+                ntype = frozen or None
+        bound.append(_copy_effect(effect, target_node_type=ntype))
+    return CognitiveImpactAssessment(
+        effects=bound,
+        attention_cost=assessment.attention_cost,
+        exploration_candidate=assessment.exploration_candidate,
+        features=assessment.features,
+        raw_effects=list(assessment.raw_effects),
+    )
+
+
+def bind_legacy_target_types(
+    assessment: CognitiveImpactAssessment | None,
+    matches,
+) -> CognitiveImpactAssessment | None:
+    """Alias for interpret_targeted_types. Non-mutating; returns a new assessment."""
+    return interpret_targeted_types(assessment, matches)
+
+
+def contract_update(assessment: CognitiveImpactAssessment | None) -> dict:
+    """JSON-stable public Update: operation × target_node_id."""
+    raw = primary_update(assessment)
+    op = raw.get("operation")
+    if hasattr(op, "value"):
+        op = op.value
+    if not op:
+        return {"operation": None, "target_node_id": None}
+    return {"operation": str(op), "target_node_id": raw.get("target_node_id")}
+
+
+def visible_delta_content(disposition, canonical: str) -> str:
+    """User-visible delta_content follows the AttentionPlan, not Δ_t alone.
+
+    DROP means skip absorption, so the skip rationale is not shown as a cognitive delta.
+    Normalized NONE on a non-DROP plan still uses the canonical NONE rendering.
+    """
+    value = disposition.value if hasattr(disposition, "value") else disposition
+    if str(value or "").upper() == "DROP":
+        return ""
+    return canonical or ""
+
+
+@dataclass(frozen=True)
+class NormalizedFrozenTransition:
+    """Current v2.1 public interpretation of a frozen cognitive judgment.
+
+    Historical raw output remains immutable. This object is derived, never written back.
+    """
+
+    assessment: CognitiveImpactAssessment | None
+    update: dict
+    delta_content: str
+
+
+def normalize_frozen_transition(
+    frozen_impact: CognitiveImpactAssessment | dict | None,
+    frozen_matches,
+) -> NormalizedFrozenTransition:
+    """NormalizeFrozenTransition(frozen cognitive impact, frozen Locate provenance) → Δ_t.
+
+    Pure interpretation. Does not read live Kernel, mutate AnalysisRun, or rewrite history.
+    """
+    if isinstance(frozen_impact, CognitiveImpactAssessment):
+        assessment = frozen_impact
+    else:
+        assessment = assessment_from_dict(frozen_impact)
+    interpreted = interpret_targeted_types(assessment, frozen_matches)
+    return NormalizedFrozenTransition(
+        assessment=interpreted,
+        update=contract_update(interpreted),
+        delta_content=canonical_delta_content(interpreted),
+    )
+
+
+def visible_prediction_from_frozen(
+    *,
+    frozen_impact: CognitiveImpactAssessment | dict | None,
+    frozen_matches,
+    disposition,
+) -> dict:
+    """Disposition(plan) × Update(normalized Δ_t) × DeltaContent(visible)."""
+    norm = normalize_frozen_transition(frozen_impact, frozen_matches)
+    return {
+        "disposition": disposition,
+        "update": norm.update,
+        "delta_content": visible_delta_content(disposition, norm.delta_content),
+    }
 
 
 def _legal_public_effect(effect: CognitiveEffect) -> bool:

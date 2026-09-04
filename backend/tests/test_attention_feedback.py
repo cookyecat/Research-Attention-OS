@@ -36,14 +36,60 @@ def _freeze_run_prediction(db, run_id: str, **fields) -> dict:
     return payload
 
 
+def _freeze_plan_judgment(
+    db,
+    plan_id: str,
+    *,
+    operation: str,
+    target_node_id: str | None = None,
+    node_type: str | None = None,
+    reason: str = "frozen test judgment",
+) -> None:
+    from app.models.scheduler import AttentionPlan
+
+    plan = db.get(AttentionPlan, UUID(str(plan_id)))
+    debug = dict(plan.score_debug or {})
+    matches = []
+    if target_node_id and node_type:
+        matches = [
+            {
+                "node_id": target_node_id,
+                "node_type": node_type,
+                "title": node_type,
+                "score": 0.9,
+                "reason": "frozen locate",
+                "structural": False,
+                "relevance_type": "TOPIC",
+            }
+        ]
+    debug["matches"] = matches
+    debug["cognitive_impact"] = {
+        "effects": [
+            {
+                "operation": operation,
+                "target_kernel_node_id": target_node_id,
+                "change_magnitude": 0.9,
+                "epistemic_strength": 0.8,
+                "target_importance": 0.7,
+                "reason": reason,
+                "target_node_type": node_type,
+            }
+        ]
+    }
+    plan.score_debug = debug
+    flag_modified(plan, "score_debug")
+    db.commit()
+
+
 class _Run:
     def __init__(self, payload: dict):
         self.result_payload = payload
 
 
 class _Plan:
-    def __init__(self, disposition: str):
+    def __init__(self, disposition: str, score_debug=None):
         self.disposition = disposition
+        self.score_debug = score_debug or {}
 
 
 def test_public_update_null_means_no_cognitive_update():
@@ -55,8 +101,25 @@ def test_public_update_null_means_no_cognitive_update():
     }
 
 
-def test_system_prediction_reads_frozen_payload_not_score_debug():
+def test_system_prediction_uses_plan_frozen_judgment_not_raw_payload():
     target = str(uuid4())
+    plan = _Plan(
+        "ENGAGE",
+        score_debug={
+            "cognitive_impact": {
+                "effects": [
+                    {
+                        "operation": "OPEN_NEW",
+                        "target_kernel_node_id": None,
+                        "change_magnitude": 0.9,
+                        "epistemic_strength": 0.8,
+                        "target_importance": 0.7,
+                        "reason": "new branch",
+                    }
+                ]
+            }
+        },
+    )
     run = _Run(
         {
             "disposition": "WATCH",
@@ -64,33 +127,19 @@ def test_system_prediction_reads_frozen_payload_not_score_debug():
             "delta_content": "frozen-delta",
             "attention_plan": {
                 "disposition": "ENGAGE",
-                "update": {"operation": "OPEN_NEW", "target_node_id": None},
-                "score_debug": {
-                    "cognitive_impact": {
-                        "effects": [
-                            {
-                                "operation": "OPEN_NEW",
-                                "target_kernel_node_id": None,
-                                "change_magnitude": 0.9,
-                                "epistemic_strength": 0.8,
-                                "target_importance": 0.7,
-                                "reason": "would be re-derived",
-                            }
-                        ]
-                    }
-                },
+                "update": {"operation": "CHALLENGE", "target_node_id": target},
             },
         }
     )
-    pred = system_prediction_from_plan(_Plan("ENGAGE"), run)
+    pred = system_prediction_from_plan(plan, run)
     assert pred == {
         "disposition": "ENGAGE",
-        "update": {"operation": "CHALLENGE", "target_node_id": target},
-        "delta_content": "frozen-delta",
+        "update": {"operation": "OPEN_NEW", "target_node_id": None},
+        "delta_content": "new branch",
     }
 
 
-def test_system_prediction_does_not_rederive_when_update_absent():
+def test_system_prediction_interprets_frozen_impact_when_payload_update_absent():
     run = _Run(
         {
             "disposition": "AWARE",
@@ -105,7 +154,7 @@ def test_system_prediction_does_not_rederive_when_update_absent():
                                 "change_magnitude": 0.9,
                                 "epistemic_strength": 0.8,
                                 "target_importance": 0.7,
-                                "reason": "must not become system_prediction",
+                                "reason": "current interpretation",
                             }
                         ]
                     }
@@ -115,7 +164,8 @@ def test_system_prediction_does_not_rederive_when_update_absent():
     )
     pred = system_prediction_from_plan(_Plan("AWARE"), run)
     assert pred["disposition"] == "AWARE"
-    assert pred["update"] is None
+    assert pred["update"] == {"operation": "OPEN_NEW", "target_node_id": None}
+    assert pred["delta_content"] == "current interpretation"
 
 
 def test_merge_omitted_update_keeps_system_update():
@@ -250,6 +300,12 @@ def test_correct_to_no_cognitive_update(client: TestClient, db):
     result = analyze(client, src["id"])
     plan_id = _plan_id_from_analysis(result)
     run_id = result["analysis_run"]["id"]
+    _freeze_plan_judgment(
+        db,
+        plan_id,
+        operation="OPEN_NEW",
+        reason="system thought this opened a branch",
+    )
     _freeze_run_prediction(
         db,
         run_id,
@@ -284,6 +340,14 @@ def test_omitted_update_differs_from_explicit_null(client: TestClient, db):
         "/kernel/nodes",
         json={"node_type": "BELIEF", "title": "Held belief for omit/null", "payload": {"proposition": "x"}},
     ).json()
+    _freeze_plan_judgment(
+        db,
+        plan_id,
+        operation="REINFORCE",
+        target_node_id=belief["id"],
+        node_type="BELIEF",
+        reason="frozen",
+    )
     _freeze_run_prediction(
         db,
         result["analysis_run"]["id"],
@@ -368,18 +432,20 @@ def test_feedback_does_not_mutate_analysis_run_payload(client: TestClient):
     assert after["delta_content"] == before["delta_content"]
 
 
-def test_system_prediction_api_uses_frozen_run_not_current_derivation(client: TestClient, db):
+def test_system_prediction_ignores_mutated_payload_update(client: TestClient, db):
     src = add_text(client, "Motor intelligence latency evaluation paper.", title="fb-frozen")
     result = analyze(client, src["id"])
     plan_id = _plan_id_from_analysis(result)
-    target = kernel_index(client)["B1"]["id"]
     plan_disp = result["attention_plan"]["disposition"]
+    visible_update = public_update(result["update"])
+    visible_delta = result.get("delta_content") or ""
     other = "WATCH" if plan_disp != "WATCH" else "AWARE"
+    bogus = str(uuid4())
     _freeze_run_prediction(
         db,
         result["analysis_run"]["id"],
         disposition=other,
-        update={"operation": "CHALLENGE", "target_node_id": target},
+        update={"operation": "CHALLENGE", "target_node_id": bogus},
         delta_content="immutable-run-output",
     )
 
@@ -388,8 +454,9 @@ def test_system_prediction_api_uses_frozen_run_not_current_derivation(client: Te
     pred = resp.json()["system_prediction"]
     assert pred["disposition"] == plan_disp
     assert pred["disposition"] != other
-    assert pred["update"] == {"operation": "CHALLENGE", "target_node_id": target}
-    assert pred["delta_content"] == "immutable-run-output"
+    assert public_update(pred["update"]) == visible_update
+    assert pred["delta_content"] == visible_delta
+    assert public_update(pred["update"]) != {"operation": "CHALLENGE", "target_node_id": bogus}
 
 
 def test_correct_target_need_not_be_matcher_hit(client: TestClient):
@@ -484,6 +551,14 @@ def test_http_omitted_target_keeps_system_target(client: TestClient, db):
         "/kernel/nodes",
         json={"node_type": "BELIEF", "title": "Held target", "payload": {"proposition": "y"}},
     ).json()
+    _freeze_plan_judgment(
+        db,
+        plan_id,
+        operation="REINFORCE",
+        target_node_id=belief["id"],
+        node_type="BELIEF",
+        reason="frozen",
+    )
     _freeze_run_prediction(
         db,
         result["analysis_run"]["id"],

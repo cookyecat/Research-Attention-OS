@@ -249,7 +249,7 @@ def test_promotional_reinforce_keeps_epistemic_strength_low():
     assert any(e.operation == CognitiveEffectKind.REINFORCE for e in assessment.effects)
     assert all(e.epistemic_strength <= 0.35 for e in assessment.effects)
     assert assessment.features.epistemic_strength <= 0.35
-    plan = route(assessment.features, assessment=assessment)
+    plan = route(assessment.features, assessment=assessment, matches=[belief])
     assert plan.disposition != Disposition.DROP
 
 

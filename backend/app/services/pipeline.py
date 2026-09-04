@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from datetime import datetime, timezone
 from uuid import UUID
 
@@ -16,7 +17,7 @@ from app.models.observation import Observation
 from app.models.scheduler import AttentionPlan, RuntimeContext
 from app.models.source import Source
 from app.models.watch import Watch, WatchTrigger
-from app.services.cognitive_impact import CognitiveImpactAssessment, canonical_delta_content, primary_update
+from app.services.cognitive_impact import CognitiveImpactAssessment, visible_prediction_from_frozen
 from app.services.deltas import ModelDelta, suggest_watches
 from app.services.extraction import (
     ExtractionResult,
@@ -563,21 +564,22 @@ def _reschedule(
     runtime_context_id: UUID | None = None,
 ) -> dict:
     from app.services.analysis_runs import hydrate_run, plan_public
-    from app.services.cognitive_impact import assessment_from_dict
     from app.services.scheduler import SchedulerFeatures, matches_from_debug
 
     stored_payload = dict(run.result_payload or {})
     original_plan = stored_payload.get("attention_plan")
+    original_payload = deepcopy(run.result_payload) if isinstance(run.result_payload, dict) else run.result_payload
     payload = hydrate_run(db, run)
     feat = payload.get("features") or {}
     features = SchedulerFeatures(**{k: v for k, v in feat.items() if k in SchedulerFeatures.__dataclass_fields__})
-    impact = payload.get("cognitive_impact") or (original_plan or {}).get("score_debug", {}).get("cognitive_impact")
-    assessment = assessment_from_dict(impact)
-    debug_matches = ((payload.get("attention_plan") or {}).get("score_debug") or {}).get("matches")
+    orig_debug = (original_plan or {}).get("score_debug") if isinstance(original_plan, dict) else {}
+    orig_debug = orig_debug if isinstance(orig_debug, dict) else {}
+    impact = orig_debug.get("cognitive_impact") or stored_payload.get("cognitive_impact")
+    debug_matches = orig_debug.get("matches")
     if not debug_matches:
-        debug_matches = ((original_plan or {}).get("score_debug") or {}).get("matches")
+        debug_matches = ((payload.get("attention_plan") or {}).get("score_debug") or {}).get("matches")
     matches = matches_from_debug(debug_matches)
-    draft = validate_plan(route(features, runtime, assessment=assessment, matches=matches))
+    draft = validate_plan(route(features, runtime, assessment=impact, matches=matches))
     plan = AttentionPlan(
         candidate_type=CandidateType.SOURCE,
         candidate_id=source.id,
@@ -595,15 +597,20 @@ def _reschedule(
         runtime_snapshot=_snapshot_runtime(runtime),
         analysis_run_id=run.id,
         created_at=datetime.now(timezone.utc),
-        score_debug=(payload.get("attention_plan") or {}).get("score_debug") or {},
+        score_debug=orig_debug or (payload.get("attention_plan") or {}).get("score_debug") or {},
     )
     db.add(plan)
     db.flush()
     # Overlay latest plan on the HTTP response only. Never mutate completed AnalysisRun.
     response = dict(payload)
-    response["attention_plan"] = plan_public(plan)
-    response["latest_attention_plan"] = response["attention_plan"]
+    public_plan = plan_public(plan)
+    response["attention_plan"] = public_plan
+    response["latest_attention_plan"] = public_plan
     response["original_attention_plan"] = original_plan
+    response["update"] = public_plan["update"]
+    response["delta_content"] = public_plan["delta_content"]
+    response["disposition"] = public_plan["disposition"]
+    assert run.result_payload == original_payload
     assert run.result_payload.get("attention_plan") == original_plan
     return response
 
@@ -625,12 +632,13 @@ def serialize_analysis(
     retrieval: dict | None = None,
     assessment: CognitiveImpactAssessment | None = None,
 ) -> dict:
-    update = primary_update(assessment)
-    # DROP skips absorption; do not surface the skip rationale as a cognitive delta.
-    if str(plan.disposition) == "DROP":
-        delta_content = ""
-    else:
-        delta_content = canonical_delta_content(assessment)
+    visible = visible_prediction_from_frozen(
+        frozen_impact=assessment,
+        frozen_matches=matches,
+        disposition=plan.disposition,
+    )
+    update = visible["update"]
+    delta_content = visible["delta_content"]
     return {
         "source_id": str(source.id),
         "disposition": plan.disposition,

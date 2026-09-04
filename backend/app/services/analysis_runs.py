@@ -27,11 +27,7 @@ from app.models.kernel import KernelNode, KernelPatch
 from app.models.analysis import AnalysisRun
 from app.models.scheduler import AttentionFeedback, AttentionPlan
 from app.models.source import Source
-from app.services.cognitive_impact import (
-    assessment_from_dict,
-    bind_legacy_target_types,
-    primary_update,
-)
+from app.services.cognitive_impact import visible_prediction_from_frozen
 from app.services.attention_feedback import feedback_for_plan, feedback_public
 
 
@@ -304,39 +300,59 @@ def attention_plans_for_run(db: Session, run_id: UUID) -> list[AttentionPlan]:
 def _normalize_public_contract(payload: dict) -> dict:
     """Fill disposition / update / delta_content on read for older stored payloads.
 
-    Does not map retired operations. Old attention_state values are the same four
-    dispositions; they are renamed, not reinterpreted.
+    Historical raw attention_plan / result_payload remain as stored. Current
+    top-level public contract uses the same v2.1 interpretation as the latest plan.
     """
     stored = payload.get("attention_plan")
     if isinstance(stored, dict) and not stored.get("disposition"):
         stored = dict(stored)
         if stored.get("attention_state"):
             stored["disposition"] = stored["attention_state"]
-        if "update" not in stored:
-            latest = payload.get("latest_attention_plan") or {}
-            stored["update"] = latest.get("update") or {"operation": None, "target_node_id": None}
         payload["attention_plan"] = stored
-    latest = payload.get("latest_attention_plan") or payload.get("attention_plan") or {}
-    if not payload.get("disposition"):
-        payload["disposition"] = latest.get("disposition")
-    if payload.get("update") is None:
-        payload["update"] = latest.get("update") or {"operation": None, "target_node_id": None}
-    if "delta_content" not in payload:
-        payload["delta_content"] = (payload.get("model_delta") or {}).get("summary") or ""
+    return _apply_current_public_contract(payload)
+
+
+def _apply_current_public_contract(payload: dict) -> dict:
+    """Overlay current v2.1 Δ_t on the HTTP response. Never writes back to AnalysisRun."""
+    latest = payload.get("latest_attention_plan")
+    if isinstance(latest, dict) and "update" in latest and "delta_content" in latest:
+        payload["update"] = latest.get("update")
+        payload["delta_content"] = latest.get("delta_content")
+        if latest.get("disposition"):
+            payload["disposition"] = latest["disposition"]
+        return payload
+
+    from app.services.scheduler import matches_from_debug
+
+    stored = payload.get("attention_plan") if isinstance(payload.get("attention_plan"), dict) else {}
+    debug = stored.get("score_debug") if isinstance(stored.get("score_debug"), dict) else {}
+    impact = debug.get("cognitive_impact") or payload.get("cognitive_impact")
+    visible = visible_prediction_from_frozen(
+        frozen_impact=impact,
+        frozen_matches=matches_from_debug(debug.get("matches")),
+        disposition=stored.get("disposition") or payload.get("disposition"),
+    )
+    payload["update"] = visible["update"]
+    payload["delta_content"] = visible["delta_content"]
+    if visible.get("disposition"):
+        payload["disposition"] = visible["disposition"]
     return payload
 
 
 def plan_public(plan: AttentionPlan) -> dict:
     debug = plan.score_debug if isinstance(plan.score_debug, dict) else {}
-    impact = debug.get("cognitive_impact")
     from app.services.scheduler import matches_from_debug
 
-    assessment = bind_legacy_target_types(assessment_from_dict(impact), matches_from_debug(debug.get("matches")))
-    update = primary_update(assessment) if assessment is not None else {"operation": None, "target_node_id": None}
+    visible = visible_prediction_from_frozen(
+        frozen_impact=debug.get("cognitive_impact"),
+        frozen_matches=matches_from_debug(debug.get("matches")),
+        disposition=plan.disposition,
+    )
     return {
         "id": str(plan.id),
         "disposition": plan.disposition,
-        "update": update,
+        "update": visible["update"],
+        "delta_content": visible["delta_content"],
         "urgency": plan.urgency,
         "cognitive_budget_minutes": plan.cognitive_budget_minutes,
         "kernel_target_ids": plan.kernel_target_ids,

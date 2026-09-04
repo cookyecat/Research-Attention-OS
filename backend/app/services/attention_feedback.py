@@ -13,7 +13,7 @@ from app.enums import CognitiveEffectKind, Disposition, FeedbackKind
 from app.models.analysis import AnalysisRun
 from app.models.kernel import KernelNode
 from app.models.scheduler import AttentionFeedback, AttentionPlan
-from app.services.cognitive_impact import is_update_eligible_node
+from app.services.cognitive_impact import is_update_eligible_node, visible_prediction_from_frozen
 
 DISPOSITIONS = frozenset(d.value for d in Disposition)
 UPDATE_OPERATIONS = frozenset(o.value for o in CognitiveEffectKind)
@@ -51,36 +51,46 @@ def public_update(raw) -> dict | None:
     return {"operation": operation, "target_node_id": target_node_id}
 
 
-def frozen_update_and_delta_from_run(run: AnalysisRun | None) -> tuple[dict | None, str]:
-    """Read Update × DeltaContent from the frozen AnalysisRun public output. Never re-derive."""
+def frozen_judgment_inputs(plan: AttentionPlan, run: AnalysisRun | None) -> tuple[dict | None, list]:
+    """Frozen cognitive impact + Locate matches for THIS plan.
+
+    Plan score_debug first. If missing, the associated AnalysisRun's original
+    frozen provenance. Never the latest other plan's matches.
+    """
+    from app.services.scheduler import matches_from_debug
+
+    plan_debug = plan.score_debug if isinstance(getattr(plan, "score_debug", None), dict) else {}
+    impact = plan_debug.get("cognitive_impact")
+    matches_raw = plan_debug.get("matches")
+
     payload = run.result_payload if run is not None and isinstance(run.result_payload, dict) else {}
     stored_plan = payload.get("attention_plan") if isinstance(payload.get("attention_plan"), dict) else {}
+    stored_debug = stored_plan.get("score_debug") if isinstance(stored_plan.get("score_debug"), dict) else {}
 
-    if "update" in payload:
-        update = public_update(payload.get("update"))
-    elif "update" in stored_plan:
-        update = public_update(stored_plan.get("update"))
-    else:
-        update = None
-
-    if "delta_content" in payload:
-        delta_content = payload.get("delta_content") or ""
-    else:
-        delta_content = (payload.get("model_delta") or {}).get("summary") or ""
-    return update, delta_content if delta_content is not None else ""
+    if impact is None:
+        impact = stored_debug.get("cognitive_impact") or payload.get("cognitive_impact")
+    if not matches_raw:
+        matches_raw = stored_debug.get("matches")
+    return impact, matches_from_debug(matches_raw)
 
 
 def system_prediction_from_plan(plan: AttentionPlan, run: AnalysisRun | None) -> dict:
-    """What the user saw: Disposition(plan) × Update(run) × DeltaContent(run).
+    """What the user is currently asked to Confirm/Correct on THIS AttentionPlan.
 
-    Disposition is the persisted AttentionPlan value (no re-route). Update and
-    DeltaContent come from the associated AnalysisRun public output (no score_debug).
+    Disposition comes from the plan. Update × DeltaContent are the current v2.1
+    interpretation of that plan's frozen AnalysisRun judgment. Historical
+    AttentionFeedback rows are never rewritten.
     """
-    update, delta_content = frozen_update_and_delta_from_run(run)
+    impact, matches = frozen_judgment_inputs(plan, run)
+    visible = visible_prediction_from_frozen(
+        frozen_impact=impact,
+        frozen_matches=matches,
+        disposition=plan.disposition,
+    )
     return {
-        "disposition": plan.disposition,
-        "update": update,
-        "delta_content": delta_content,
+        "disposition": visible["disposition"],
+        "update": public_update(visible["update"]),
+        "delta_content": visible["delta_content"],
     }
 
 

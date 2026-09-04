@@ -344,9 +344,9 @@ def route(
     from app.services.cognitive_impact import (
         MATERIAL_CHANGE_MIN,
         MEANINGFUL_CHANGE,
-        bind_legacy_target_types,
         effect_target_match,
         has_exploration_effect,
+        normalize_frozen_transition,
         select_primary_effect,
     )
 
@@ -354,7 +354,7 @@ def route(
     if assessment is None:
         assessment = _projection_assessment(features)
     matches = matches or []
-    assessment = bind_legacy_target_types(assessment, matches)
+    assessment = normalize_frozen_transition(assessment, matches).assessment
     primary = select_primary_effect(assessment)
     explore = has_exploration_effect(assessment)
 
