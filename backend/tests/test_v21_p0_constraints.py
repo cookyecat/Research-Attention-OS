@@ -2,22 +2,37 @@
 
 from __future__ import annotations
 
-from uuid import uuid4
+from uuid import UUID, uuid4
+
+from fastapi.testclient import TestClient
+from sqlalchemy.orm.attributes import flag_modified
 
 from app.enums import ClaimType, CognitiveEffectKind, PatchChangeType
+from app.models.analysis import AnalysisRun
 from app.models.kernel import KernelNode
 from app.services.cognitive_impact import (
     LOCATION_NODE_TYPES,
     UPDATE_ELIGIBLE_NODE_TYPES,
     CognitiveEffect,
     CognitiveImpactAssessment,
+    assessment_from_dict,
+    bind_legacy_target_types,
+    canonical_delta_content,
     ground_effects,
     is_location_node,
     is_update_eligible_node,
     primary_update,
     select_primary_effect,
 )
-from app.services.deltas import ModelDelta, PatchDraft, patch_consistent_with_update, propose_patches
+from app.services.deltas import (
+    ModelDelta,
+    PatchDraft,
+    LEGAL_NODE_STATUSES,
+    model_delta_from_transition,
+    patch_consistent_with_update,
+    proposed_state_is_legal,
+    propose_patches,
+)
 from app.services.extraction import ExtractedClaim, ExtractionResult
 from app.services.matching import KernelMatch, match_kernel
 from app.services.scheduler import SchedulerFeatures
@@ -43,6 +58,7 @@ def _effect(match: KernelMatch | None, kind: CognitiveEffectKind, **overrides) -
         target_importance=0.75,
         reason="test effect",
         exploration_candidate=kind == CognitiveEffectKind.OPEN_NEW,
+        target_node_type=match.node_type if match is not None else None,
     )
     base.update(overrides)
     return CognitiveEffect(**base)
@@ -274,3 +290,219 @@ def test_select_primary_rejects_typed_location_effect_without_grounding():
     assessment = CognitiveImpactAssessment(effects=[leaked])
     assert select_primary_effect(assessment) is None
     assert primary_update(assessment)["operation"] is None
+
+
+def test_legacy_project_match_without_type_is_not_public_primary():
+    project = _match("PROJECT")
+    leaked = _effect(project, CognitiveEffectKind.REINFORCE, target_node_type=None, change_magnitude=0.95, target_importance=0.95)
+    assessment = CognitiveImpactAssessment(effects=[leaked])
+    assert leaked.target_node_type is None
+    bind_legacy_target_types(assessment, [project])
+    update = primary_update(assessment)
+    assert update["operation"] is None
+    assert update["target_node_id"] is None
+
+
+def test_legacy_model_match_without_type_restores_legal_target():
+    model = _match("MODEL")
+    leaked = _effect(model, CognitiveEffectKind.CHALLENGE, target_node_type=None, change_magnitude=0.8)
+    assessment = CognitiveImpactAssessment(effects=[leaked])
+    bind_legacy_target_types(assessment, [model])
+    update = primary_update(assessment)
+    assert update["operation"] == CognitiveEffectKind.CHALLENGE
+    assert update["target_node_id"] == str(model.node_id)
+    assert assessment.effects[0].target_node_type == "MODEL"
+
+
+def test_unverified_legacy_target_type_fail_closed():
+    model = _match("MODEL")
+    leaked = _effect(model, CognitiveEffectKind.REINFORCE, target_node_type=None, change_magnitude=0.9)
+    assessment = CognitiveImpactAssessment(effects=[leaked])
+    bind_legacy_target_types(assessment, [])
+    assert assessment.effects[0].target_node_type is None
+    assert select_primary_effect(assessment) is None
+    reconstructed = assessment_from_dict(
+        {
+            "effects": [
+                {
+                    "target_kernel_node_id": str(model.node_id),
+                    "operation": "REINFORCE",
+                    "change_magnitude": 0.9,
+                    "epistemic_strength": 0.4,
+                    "target_importance": 0.8,
+                    "reason": "legacy untyped",
+                }
+            ]
+        }
+    )
+    assert select_primary_effect(reconstructed) is None
+
+
+def test_none_delta_prose_cannot_claim_a_cognitive_change():
+    stray = ModelDelta(
+        summary="This information challenges M1 and opens a new question.",
+        distinctions=["a new cognitive split"],
+        questions=["Should we create a model?"],
+        what_could_change=["Kernel should change"],
+    )
+    bound = model_delta_from_transition(CognitiveImpactAssessment(effects=[]), prose=stray)
+    assert bound.summary == canonical_delta_content(CognitiveImpactAssessment(effects=[]))
+    assert "challenge" not in bound.summary.lower()
+    assert bound.distinctions == []
+    assert bound.questions == []
+    assert bound.what_could_change == []
+    assert bound.admission_allowed is False
+
+
+def test_challenge_question_does_not_emit_contested_status():
+    question = _match("QUESTION", "Open research question")
+    node = _node(question, payload={"text": question.title})
+    node.status = "OPEN"
+    assessment = CognitiveImpactAssessment(
+        effects=[_effect(question, CognitiveEffectKind.CHALLENGE, target_node_type="QUESTION")]
+    )
+    drafts = propose_patches(
+        "source",
+        ModelDelta(summary="ignore"),
+        [question],
+        _features(),
+        [node],
+        [],
+        assessment=assessment,
+        extraction=_extraction("The question should be reframed."),
+    )
+    assert drafts == []
+    assert "CONTESTED" not in LEGAL_NODE_STATUSES["QUESTION"]
+
+
+def test_challenge_decision_does_not_emit_contested_status():
+    decision = _match("DECISION", "Pending decision")
+    node = _node(decision, payload={"rationale": "pending"})
+    node.status = "PENDING"
+    assessment = CognitiveImpactAssessment(
+        effects=[_effect(decision, CognitiveEffectKind.CHALLENGE, target_node_type="DECISION")]
+    )
+    drafts = propose_patches(
+        "source",
+        ModelDelta(summary="ignore"),
+        [decision],
+        _features(),
+        [node],
+        [],
+        assessment=assessment,
+        extraction=_extraction("The decision may need revisiting."),
+    )
+    assert drafts == []
+    for draft in drafts:
+        assert draft.proposed_state.get("status") != "CONTESTED"
+        assert proposed_state_is_legal("DECISION", draft.proposed_state)
+
+
+def test_reinforce_without_legal_proposed_state_emits_zero_patch():
+    belief = _match("BELIEF")
+    node = _node(belief, payload={"proposition": belief.title, "confidence": 0.68})
+    assessment = CognitiveImpactAssessment(
+        effects=[_effect(belief, CognitiveEffectKind.REINFORCE, target_node_type="BELIEF")]
+    )
+    drafts = propose_patches(
+        "source",
+        ModelDelta(summary="would have bumped confidence"),
+        [belief],
+        _features(),
+        [node],
+        [],
+        assessment=assessment,
+        extraction=_extraction("Supporting evidence at matching scope."),
+    )
+    assert drafts == []
+
+
+def test_challenge_belief_revise_is_contested_without_confidence_heuristic():
+    belief = _match("BELIEF")
+    node = _node(belief, payload={"proposition": belief.title, "confidence": 0.68})
+    assessment = CognitiveImpactAssessment(
+        effects=[_effect(belief, CognitiveEffectKind.CHALLENGE, target_node_type="BELIEF")]
+    )
+    drafts = propose_patches(
+        "source",
+        ModelDelta(summary="ignore"),
+        [belief],
+        _features(),
+        [node],
+        [],
+        assessment=assessment,
+        extraction=_extraction("Direct counterevidence at matching scope."),
+    )
+    assert len(drafts) == 1
+    draft = drafts[0]
+    assert draft.change_type == PatchChangeType.REVISE
+    assert draft.proposed_state["status"] == "CONTESTED"
+    assert draft.proposed_state["payload"].get("confidence") == 0.68
+    assert draft.suggested_confidence_change is None
+    assert proposed_state_is_legal("BELIEF", draft.proposed_state)
+    assert patch_consistent_with_update(draft, primary_update(assessment))
+
+
+def test_match_prompt_has_no_pilot_exemplars():
+    from app.cognitive.prompts import DELTA_SYSTEM, EVIDENCE_SYSTEM, MATCH_SYSTEM
+
+    blob = f"{MATCH_SYSTEM}\n{DELTA_SYSTEM}\n{EVIDENCE_SYSTEM}".lower()
+    for token in ("equity", "motor intelligence", "humanoid", "folding", "swarm", "orbitbench", "move-pause-move"):
+        assert token not in blob
+    assert "structural" in MATCH_SYSTEM.lower()
+
+
+def test_reschedule_legacy_project_target_is_not_public_update(client: TestClient, db):
+    from tests.conftest import add_text, analyze, kernel_index
+
+    index = kernel_index(client)
+    src = add_text(client, "A technical paper about motor intelligence latency.", title="legacy-loc")
+    first = analyze(client, src["id"])
+    run_id = first["analysis_run"]["id"]
+    project_id = index["P1"]["id"]
+    run = db.get(AnalysisRun, UUID(str(run_id)))
+    payload = dict(run.result_payload or {})
+    plan = dict(payload.get("attention_plan") or {})
+    debug = dict(plan.get("score_debug") or {})
+    debug["matches"] = [
+        {
+            "node_id": project_id,
+            "node_type": "PROJECT",
+            "title": "Motor Intelligence",
+            "score": 0.9,
+            "reason": "legacy locate",
+            "structural": False,
+            "relevance_type": "TOPIC",
+        }
+    ]
+    debug["cognitive_impact"] = {
+        "effects": [
+            {
+                "target_kernel_node_id": project_id,
+                "operation": "REINFORCE",
+                "change_magnitude": 0.9,
+                "epistemic_strength": 0.5,
+                "target_importance": 0.8,
+                "reason": "legacy location treated as update",
+                "exploration_candidate": False,
+            }
+        ],
+        "attention_cost": 8.0,
+        "exploration_candidate": False,
+    }
+    plan["score_debug"] = debug
+    payload["attention_plan"] = plan
+    payload["cognitive_impact"] = debug["cognitive_impact"]
+    run.result_payload = payload
+    flag_modified(run, "result_payload")
+    db.commit()
+
+    planned = client.post("/scheduler/plan", json={"source_id": src["id"]})
+    assert planned.status_code == 200, planned.text
+    latest = planned.json()["attention_plan"]
+    update = latest.get("update") or {}
+    assert update.get("target_node_id") != project_id
+    assert not (update.get("operation") == "REINFORCE" and update.get("target_node_id") == project_id)
+    stored = client.get(f"/analysis/by-source/{src['id']}").json()
+    assert stored["analysis_run"]["id"] == run_id
+    assert stored["attention_plan"]["id"] == first["attention_plan"]["id"]

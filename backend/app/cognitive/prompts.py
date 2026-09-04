@@ -41,8 +41,9 @@ Prefer recall over precision at this stage:
 - Empty list only when no candidate is even locationally related.
 
 Two first-class relevance types:
-- TOPIC: same subject matter (robotics article ↔ Motor Intelligence project)
-- STRUCTURAL: analogical structure even if topic differs (consumer-brand minority equity ↔ robotics startup equity vs employment)
+- TOPIC: same subject matter as a Kernel node
+- STRUCTURAL: analogical structure even if the surface topic differs
+  (same relational pattern, different domain)
 
 Also mark DECISION, BOTTLENECK, EVIDENCE when applicable.
 Popularity is not importance. Disagreement is not low relevance.
@@ -71,8 +72,8 @@ Only include matches that might matter for location. Empty list only when none o
 EVIDENCE_SYSTEM = """Relate Claims, Observations, and Inferences.
 Stances: SUPPORTS, WEAKENS, REFUTES, NEUTRAL.
 Insufficient evidence must not become a strong conclusion.
-A demo with move-pause-move can WEAKEN a claim of continuous motion.
-It must NOT REFUTE an entire architecture or infer "the system is scripted" without independent evidence.
+A single interrupted demonstration can WEAKEN a claim of continuous or stable performance.
+It must NOT REFUTE an entire architecture or infer hidden scripting without independent evidence.
 Return JSON only."""
 
 EVIDENCE_USER = """Claims: {claims}
@@ -82,27 +83,83 @@ Inferences: {inferences}
 Return JSON:
 {{"links": [{{"source_role": "OBSERVATION|CLAIM|INFERENCE", "source_index": 0, "target_role": "CLAIM", "target_index": 0, "stance": "WEAKENS", "strength": "WEAK|MODERATE|STRONG", "confidence": 0.0, "scope": ""}}]}}"""
 
-DELTA_SYSTEM = """You produce a Model Delta: what this information could change in the researcher's Kernel.
-Output is a Proposal, never a commit.
-Do not reduce debates to binary agree/disagree.
-Prefer reframing into a more precise research question
-(e.g. end-to-end vs hierarchical → at which temporal/control layers should end-to-end apply?).
-Raw news facts almost never enter the Kernel.
+DELTA_SYSTEM = """You synthesize ModelDelta prose for a frozen cognitive transition Δ_t.
+Δ_t is already decided. You do not judge what the cognitive change is.
+
+Constitution:
+- Cognitive transition is unique: NONE | REINFORCE(existing) | CHALLENGE(existing) | OPEN_NEW.
+- Do not invent a different operation, target, or cognitive direction.
+- Do not output SUPPORT, WEAKEN, CONTEST, REFINE, REFRAME, OPEN_NEW_QUESTION, or DECISION_REVIEW as cognitive operations.
+- Write explanation around the given Δ_t using epistemic objects and current Kernel state.
+- If Δ_t is NONE, state that there is no material cognitive change. Do not imply one.
+- Output is a Proposal, never a Kernel commit.
 Return JSON only."""
 
-DELTA_USER = """Source text:
-{text}
 
-Kernel matches:
-{matches}
+def delta_user_prompt(
+    *,
+    update: dict,
+    primary_reason: str,
+    target_type: str | None,
+    claims: list,
+    observations: list,
+    inferences: list,
+    kernel: list,
+) -> str:
+    op = update.get("operation")
+    if hasattr(op, "value"):
+        op = op.value
+    payload = {
+        "operation": op,
+        "target_node_id": update.get("target_node_id"),
+        "target_node_type": target_type,
+        "reason": primary_reason,
+    }
+    return f"""Canonical cognitive transition (Δ_t) — frozen, do not reinterpret:
+{json.dumps(payload, ensure_ascii=False)}
 
-Kernel snapshot:
-{kernel}
+Epistemic objects (E_t):
+Claims: {json.dumps(claims, ensure_ascii=False)}
+Observations: {json.dumps(observations, ensure_ascii=False)}
+Inferences: {json.dumps(inferences, ensure_ascii=False)}
+
+Kernel snapshot of current state (K_t):
+{json.dumps(kernel, ensure_ascii=False)}
+
+Synthesize prose for this given Δ_t. Do not change operation or target.
 
 Return JSON:
 {{
   "summary": "",
-  "affected_kernel_nodes": [{{"id": "uuid", "impact": "SUPPORT|WEAKEN|CONTEST|REFINE|REFRAME|OPEN_NEW_QUESTION|DECISION_REVIEW"}}],
+  "affected_kernel_nodes": [],
+  "distinctions": [],
+  "new_questions": [],
+  "possible_hypotheses": [],
+  "decision_implications": [],
+  "epistemic_risk": "",
+  "evidence_maturity": 0.0,
+  "admission_allowed": false,
+  "rationale": "",
+  "what_could_change": []
+}}"""
+
+
+# Compatibility alias for older format() callers. Production uses delta_user_prompt().
+DELTA_USER = """Canonical cognitive transition (Δ_t) — frozen, do not reinterpret:
+{update}
+
+Epistemic objects (E_t):
+{text}
+
+Kernel snapshot of current state (K_t):
+{kernel}
+
+Synthesize prose for this given Δ_t. Do not change operation or target.
+
+Return JSON:
+{{
+  "summary": "",
+  "affected_kernel_nodes": [],
   "distinctions": [],
   "new_questions": [],
   "possible_hypotheses": [],
@@ -124,7 +181,7 @@ Two different questions — never collapse them:
 2. Cognitive Update Target: which existing cognition would actually change, be strengthened, or be challenged.
 
 REINFORCE / CHALLENGE require an existing epistemic Kernel node (Belief, Model, Question, Hypothesis, Decision, Bottleneck) whose proposition is actually affected at matching scope.
-A Goal or Project match is only Location. Do not REINFORCE or CHALLENGE a broad Goal/Project merely because the source is about the same topic (robotics, motor, embodied, AI).
+A Goal or Project match is only Location. Do not REINFORCE or CHALLENGE a broad Goal/Project merely because the source is about the same broad topic.
 If the information is near an existing Project but does not modify any existing cognition, emit OPEN_NEW (target_kernel_node_id = null) only when the source opens a genuine new cognitive branch — not as a fallback for a failed REINFORCE/CHALLENGE.
 
 You estimate:

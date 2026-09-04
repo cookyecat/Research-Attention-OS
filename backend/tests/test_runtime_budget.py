@@ -11,7 +11,9 @@ from app.cognitive.model_provider import ModelBackedCognitiveProvider
 from app.cognitive.rule_provider import RuleBasedCognitiveProvider
 from app.cognitive.runtime import STAGE_RUNTIME
 from app.config import settings
+from app.enums import CognitiveEffectKind
 from app.models.kernel import KernelNode
+from app.services.cognitive_impact import CognitiveEffect, CognitiveImpactAssessment
 from tests.fakes import SemanticFakeChat
 
 
@@ -40,7 +42,11 @@ class RecordingChat(SemanticFakeChat):
         ):
             self.by_stage["impact"] = dict(kwargs)
             self.by_stage["judgment"] = dict(kwargs)
-        elif "model delta" in system or "what this information could change" in system:
+        elif (
+            "modeldelta" in system.replace(" ", "")
+            or "frozen cognitive transition" in system
+            or "what this information could change" in system
+        ):
             self.by_stage["delta"] = dict(kwargs)
         return super().__call__(messages, **kwargs)
 
@@ -139,7 +145,21 @@ def test_evidence_and_delta_enable_reasoning():
     assert chat.by_stage["judgment"]["thinking"] == "disabled"
     assert chat.by_stage["judgment"]["timeout"] == 60.0
 
-    provider.propose_model_delta(EXTRACT_TEXT, extraction, matches, features, [node])
+    assessment = CognitiveImpactAssessment(
+        effects=[
+            CognitiveEffect(
+                target_kernel_node_id=node.id,
+                operation=CognitiveEffectKind.CHALLENGE,
+                change_magnitude=0.8,
+                epistemic_strength=0.4,
+                target_importance=0.75,
+                reason="Frozen CHALLENGE for delta-stage runtime.",
+                target_node_type="BELIEF",
+            )
+        ],
+        features=features,
+    )
+    provider.propose_model_delta(EXTRACT_TEXT, extraction, matches, features, [node], assessment=assessment)
     assert chat.by_stage["delta"]["thinking"] == "enabled"
     assert chat.by_stage["delta"]["reasoning_effort"] == "low"
     assert chat.by_stage["delta"]["timeout"] == 120.0
@@ -178,7 +198,11 @@ def test_delta_fallback_does_not_skip_or_overwrite_earlier_model_stages():
     class FailDeltaChat(SemanticFakeChat):
         def __call__(self, messages, **kwargs):
             system = (messages[0].get("content") or "").lower()
-            if "model delta" in system or "what this information could change" in system:
+            if (
+                "frozen cognitive transition" in system
+                or "modeldelta" in system.replace(" ", "")
+                or "what this information could change" in system
+            ):
                 raise LLMError("delta json failed")
             return super().__call__(messages, **kwargs)
 
@@ -199,7 +223,27 @@ def test_delta_fallback_does_not_skip_or_overwrite_earlier_model_stages():
     node.id = match.node_id
     matches = provider.match_kernel(extraction, [node])
     assessment = provider.assess_cognitive_impact(EXTRACT_TEXT, extraction, matches or [match], nodes=[node])
-    provider.propose_model_delta(EXTRACT_TEXT, extraction, matches or [match], assessment.features, [node])
+    from app.enums import CognitiveEffectKind
+    from app.services.cognitive_impact import CognitiveEffect, CognitiveImpactAssessment, primary_update
+
+    if primary_update(assessment).get("operation") is None:
+        assessment = CognitiveImpactAssessment(
+            effects=[
+                CognitiveEffect(
+                    target_kernel_node_id=node.id,
+                    operation=CognitiveEffectKind.CHALLENGE,
+                    change_magnitude=0.8,
+                    epistemic_strength=0.4,
+                    target_importance=0.75,
+                    reason="Frozen CHALLENGE so delta synthesis still runs.",
+                    target_node_type="MODEL",
+                )
+            ],
+            features=assessment.features,
+        )
+    provider.propose_model_delta(
+        EXTRACT_TEXT, extraction, matches or [match], assessment.features, [node], assessment=assessment
+    )
     prov = provider.stage_provenance
     assert prov["extraction"]["status"] == "success"
     assert prov["extraction"]["provider"] == "model"

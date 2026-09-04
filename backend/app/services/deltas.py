@@ -7,6 +7,7 @@ from app.enums import CognitiveEffectKind, KernelNodeType, PatchChangeType
 from app.models.kernel import KernelNode
 from app.services.cognitive_impact import (
     CognitiveImpactAssessment,
+    canonical_delta_content,
     is_update_eligible_node,
     primary_update,
     select_primary_effect,
@@ -83,7 +84,7 @@ def model_delta_from_transition(
     *,
     prose: ModelDelta | None = None,
 ) -> ModelDelta:
-    """Bind ModelDelta persistence fields to Δ_t. Optional LLM prose is kept as text only."""
+    """Bind ModelDelta to Δ_t. Optional LLM prose is synthesis around Δ_t, not a second update."""
     update = primary_update(assessment)
     primary = select_primary_effect(assessment)
     op = _kind(update.get("operation"))
@@ -93,35 +94,25 @@ def model_delta_from_transition(
     if prose is not None:
         maturity = float(prose.evidence_maturity or maturity)
 
+    summary = canonical_delta_content(assessment)
     if primary is None or not op:
-        summary = "No material cognitive change relative to the current Kernel."
-        rationale = "Δ_t is NONE."
-        if prose and prose.summary:
-            summary = prose.summary
         return ModelDelta(
             summary=summary,
             what_could_change=[],
-            distinctions=list(prose.distinctions) if prose else [],
-            questions=list(prose.questions) if prose else [],
+            distinctions=[],
+            questions=[],
             admission_allowed=False,
             affected_kernel_nodes=[],
-            possible_hypotheses=list(prose.possible_hypotheses) if prose else [],
-            decision_implications=list(prose.decision_implications) if prose else [],
+            possible_hypotheses=[],
+            decision_implications=[],
             epistemic_risk=prose.epistemic_risk if prose else "",
             evidence_maturity=maturity,
-            rationale=rationale,
+            rationale="Δ_t is NONE. Synthesis must not invent a cognitive change.",
         )
 
-    reason = primary.reason or f"{op} on current Kernel cognition."
-    summary = reason
-    if prose and prose.summary:
-        summary = prose.summary
-    what = [reason]
-    if prose:
-        what = list(prose.what_could_change) or what
     return ModelDelta(
         summary=summary,
-        what_could_change=what,
+        what_could_change=list(prose.what_could_change) if prose and prose.what_could_change else [primary.reason or summary],
         distinctions=list(prose.distinctions) if prose else [],
         questions=list(prose.questions) if prose else [],
         admission_allowed=True,
@@ -178,50 +169,68 @@ def _open_new_title(extraction: ExtractionResult | None, delta: ModelDelta | Non
     return clipped[:200] if clipped else "New cognitive branch"
 
 
+# Domain-model statuses per Kernel object. Not a new mutation algebra.
+LEGAL_NODE_STATUSES: dict[str, frozenset[str]] = {
+    "BELIEF": frozenset({"TENTATIVE", "ACTIVE", "CONTESTED", "REVISED", "DEPRECATED"}),
+    "MODEL": frozenset({"PROPOSED", "ACTIVE", "CONTESTED", "REVISED", "DEPRECATED"}),
+    "QUESTION": frozenset({"OPEN", "WATCHING", "ACTIVE", "ANSWERED", "ABANDONED"}),
+    "HYPOTHESIS": frozenset({"PROPOSED", "TESTING", "SUPPORTED", "REFUTED", "INCONCLUSIVE"}),
+    "DECISION": frozenset({"PENDING", "DECIDED", "REVISIT_REQUIRED", "SUPERSEDED"}),
+    "BOTTLENECK": frozenset({"IDENTIFIED", "ACTIVE", "RESOLVING", "RESOLVED", "OBSOLETE"}),
+}
+
+
+def proposed_state_is_legal(node_type: str | KernelNodeType | None, proposed: dict | None) -> bool:
+    """Proposed KernelPatch state must match the target object's own status schema."""
+    kind = str(getattr(node_type, "value", node_type) or "").upper()
+    if not kind or not isinstance(proposed, dict):
+        return False
+    allowed = LEGAL_NODE_STATUSES.get(kind)
+    if not allowed:
+        return False
+    status = proposed.get("status")
+    if status is None:
+        return False
+    return str(status).upper() in allowed
+
+
 def _revise_draft(
     node: KernelNode,
     operation: str,
     reason: str,
     evidence_link_ids: list[str],
-) -> PatchDraft:
+) -> PatchDraft | None:
+    """Type-specific REVISE. No cross-type status/confidence heuristic.
+
+    Δ_t names the direction. If this node type has no legal, interpretable
+    proposed state for that direction, return None (zero patch).
+    """
+    kind = str(node.node_type or "").upper()
+    if kind not in {"BELIEF", "MODEL"}:
+        return None
+    if operation != CognitiveEffectKind.CHALLENGE:
+        return None
+    if str(node.status or "").upper() == "CONTESTED":
+        return None
     payload = dict(node.payload or {})
-    old_conf = payload.get("confidence")
-    suggested = None
-    if operation == CognitiveEffectKind.CHALLENGE:
-        payload["status"] = "CONTESTED"
-        status = "CONTESTED"
-        if old_conf is not None:
-            try:
-                prev = float(old_conf)
-                nxt = round(max(0.05, prev - 0.08), 3)
-                payload["confidence"] = nxt
-                suggested = {"from": prev, "to": nxt}
-            except (TypeError, ValueError):
-                pass
-        change_note = "CHALLENGE: existing cognition should be modified, weakened, restricted, or overturned."
-    else:
-        status = node.status
-        if old_conf is not None:
-            try:
-                prev = float(old_conf)
-                nxt = round(min(1.0, prev + 0.05), 3)
-                payload["confidence"] = nxt
-                suggested = {"from": prev, "to": nxt}
-            except (TypeError, ValueError):
-                pass
-        change_note = "REINFORCE: existing cognition remains valid and may be better supported."
+    proposed = {
+        "title": node.title,
+        "status": "CONTESTED",
+        "payload": payload,
+    }
+    if not proposed_state_is_legal(kind, proposed):
+        return None
     return PatchDraft(
-        target_object_type=KernelNodeType(str(node.node_type)),
+        target_object_type=KernelNodeType(kind),
         target_object_id=node.id,
         change_type=PatchChangeType.REVISE,
         current_state=_node_state(node),
-        proposed_state={
-            "title": node.title,
-            "status": status,
-            "payload": payload,
-        },
-        reasoning=f"{change_note} {reason} Patch stays PROPOSED until human Accept/Modify.",
-        suggested_confidence_change=suggested,
+        proposed_state=proposed,
+        reasoning=(
+            "CHALLENGE: existing Belief/Model should be marked CONTESTED. "
+            f"{reason} Patch stays PROPOSED until human Accept/Modify."
+        ),
+        suggested_confidence_change=None,
         evidence_link_ids=evidence_link_ids,
     )
 
@@ -314,8 +323,16 @@ def propose_patches(
                         break
         if node is None or not is_update_eligible_node(node.node_type):
             return []
-        drafts.append(_revise_draft(node, op, primary.reason, evidence_ids))
-    return [d for d in drafts if patch_consistent_with_update(d, update)]
+        draft = _revise_draft(node, op, primary.reason, evidence_ids)
+        if draft is None:
+            return []
+        drafts.append(draft)
+    return [
+        d
+        for d in drafts
+        if patch_consistent_with_update(d, update)
+        and proposed_state_is_legal(d.target_object_type, d.proposed_state)
+    ]
 
 
 def suggest_watches(text: str, features: SchedulerFeatures, delta: ModelDelta) -> list[dict]:

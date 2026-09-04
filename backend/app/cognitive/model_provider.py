@@ -7,7 +7,7 @@ from app.cognitive.client import SchemaValidationError, chat_json, chat_json_sch
 from app.cognitive.runtime import STAGE_RUNTIME, StageRuntime
 from app.cognitive.prompts import (
     DELTA_SYSTEM,
-    DELTA_USER,
+    delta_user_prompt,
     EVIDENCE_SYSTEM,
     EVIDENCE_USER,
     EXTRACT_SYSTEM,
@@ -35,7 +35,9 @@ from app.services.cognitive_impact import (
     ground_effects,
     is_update_eligible_node,
     node_proposition,
+    primary_update,
     resolve_target_importance,
+    select_primary_effect,
 )
 from app.services.deltas import ModelDelta, PatchDraft, model_delta_from_transition, propose_patches
 from app.services.evidence_gate import should_run_heavy_evidence
@@ -517,17 +519,45 @@ class ModelBackedCognitiveProvider:
         *,
         assessment: CognitiveImpactAssessment | None = None,
     ) -> ModelDelta:
-        kernel_snap = [
-            {"id": str(n.id), "type": n.node_type, "title": n.title, "payload": n.payload}
-            for n in nodes
-            if any(m.node_id == n.id for m in matches)
-        ]
+        del text, features
+        update = primary_update(assessment)
+        op = update.get("operation")
+        if op is not None and hasattr(op, "value"):
+            op = op.value
+        if assessment is None or not op:
+            self._set_stage_runtime("delta", llm_called=False)
+            return model_delta_from_transition(assessment, extraction)
+
+        primary = select_primary_effect(assessment)
+        target_id = update.get("target_node_id")
+        target_type = getattr(primary, "target_node_type", None) if primary is not None else None
+        kernel_snap = []
+        for n in nodes:
+            if target_id and str(n.id) == str(target_id):
+                kernel_snap.append(
+                    {"id": str(n.id), "type": n.node_type, "title": n.title, "payload": n.payload}
+                )
+                target_type = target_type or n.node_type
+                break
+        if not kernel_snap:
+            kernel_snap = [
+                {"id": str(n.id), "type": n.node_type, "title": n.title, "payload": n.payload}
+                for n in nodes
+                if any(m.node_id == n.id for m in matches)
+            ][:8]
         parsed: ModelDeltaResponse = self._complete(
             DELTA_SYSTEM,
-            DELTA_USER.format(
-                text=text[:8000],
-                matches=json.dumps([{"id": str(m.node_id), "title": m.title, "reason": m.reason} for m in matches]),
-                kernel=json.dumps(kernel_snap),
+            delta_user_prompt(
+                update={"operation": op, "target_node_id": target_id},
+                primary_reason=getattr(primary, "reason", "") or "",
+                target_type=str(target_type) if target_type else None,
+                claims=[
+                    {"text": c.text, "claim_type": str(c.claim_type)}
+                    for c in extraction.claims
+                ],
+                observations=[{"text": o.text} for o in extraction.observations],
+                inferences=[{"text": i.text} for i in extraction.inferences],
+                kernel=kernel_snap,
             ),
             ModelDeltaResponse,
             stage="delta",
@@ -538,16 +568,13 @@ class ModelBackedCognitiveProvider:
             distinctions=list(parsed.distinctions),
             questions=list(parsed.new_questions),
             admission_allowed=parsed.admission_allowed,
-            affected_kernel_nodes=[{"id": item.id, "impact": item.impact} for item in parsed.affected_kernel_nodes],
+            affected_kernel_nodes=[],
             possible_hypotheses=list(parsed.possible_hypotheses),
             decision_implications=list(parsed.decision_implications),
             epistemic_risk=parsed.epistemic_risk,
             evidence_maturity=parsed.evidence_maturity,
             rationale=parsed.rationale,
         )
-        if assessment is None:
-            # Compatibility for isolated stage probes. Production always binds to Δ_t.
-            return prose
         return model_delta_from_transition(assessment, extraction, prose=prose)
 
     def propose_patches(

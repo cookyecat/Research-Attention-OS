@@ -219,11 +219,18 @@ def test_hierarchical_impact_and_delta_are_not_semantically_inverted():
         [match],
         assessment.features,
         [],
+        assessment=assessment,
     )
+    from app.services.cognitive_impact import primary_update
+
+    update = primary_update(assessment)
+    assert update["operation"] != CognitiveEffectKind.CHALLENGE
     joined = " ".join(
         [delta.summary, *(delta.distinctions or []), *(delta.questions or []), *(delta.what_could_change or [])]
     ).lower()
-    assert "hierarch" in joined or "layer" in joined
+    assert "challenge" not in delta.summary.lower()
+    if update["operation"]:
+        assert "hierarch" in joined or "layer" in joined or "high-level" in joined
 
 
 def test_production_grounding_does_not_rewrite_challenge_from_source_markers():

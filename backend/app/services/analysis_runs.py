@@ -27,7 +27,11 @@ from app.models.kernel import KernelNode, KernelPatch
 from app.models.analysis import AnalysisRun
 from app.models.scheduler import AttentionFeedback, AttentionPlan
 from app.models.source import Source
-from app.services.cognitive_impact import assessment_from_dict, primary_update
+from app.services.cognitive_impact import (
+    assessment_from_dict,
+    bind_legacy_target_types,
+    primary_update,
+)
 from app.services.attention_feedback import feedback_for_plan, feedback_public
 
 
@@ -323,8 +327,12 @@ def _normalize_public_contract(payload: dict) -> dict:
 
 
 def plan_public(plan: AttentionPlan) -> dict:
-    impact = (plan.score_debug or {}).get("cognitive_impact") if isinstance(plan.score_debug, dict) else None
-    update = primary_update(assessment_from_dict(impact)) if impact else {"operation": None, "target_node_id": None}
+    debug = plan.score_debug if isinstance(plan.score_debug, dict) else {}
+    impact = debug.get("cognitive_impact")
+    from app.services.scheduler import matches_from_debug
+
+    assessment = bind_legacy_target_types(assessment_from_dict(impact), matches_from_debug(debug.get("matches")))
+    update = primary_update(assessment) if assessment is not None else {"operation": None, "target_node_id": None}
     return {
         "id": str(plan.id),
         "disposition": plan.disposition,

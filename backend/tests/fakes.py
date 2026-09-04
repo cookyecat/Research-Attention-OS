@@ -84,7 +84,11 @@ class SemanticFakeChat:
             or "you do not choose drop" in system
         ):
             return self._impact(user), META
-        if "model delta" in system or "what this information could change" in system:
+        if (
+            "modeldelta" in system.replace(" ", "")
+            or "frozen cognitive transition" in system
+            or "what this information could change" in system
+        ):
             return self._delta(user), META
         if "initial cognitive kernel" in system:
             return {
@@ -381,7 +385,9 @@ class SemanticFakeChat:
         return {"links": links}
 
     def _delta(self, user: str) -> dict:
-        source, _rest = _split_marker(user, "Kernel matches:")
+        source, _rest = _split_marker(user, "Kernel snapshot of current state")
+        if not source.strip():
+            source, _rest = _split_marker(user, "Kernel matches:")
         low = source.lower()
         distinctions = []
         questions = []

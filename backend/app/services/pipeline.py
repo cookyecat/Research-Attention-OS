@@ -16,7 +16,7 @@ from app.models.observation import Observation
 from app.models.scheduler import AttentionPlan, RuntimeContext
 from app.models.source import Source
 from app.models.watch import Watch, WatchTrigger
-from app.services.cognitive_impact import CognitiveImpactAssessment, primary_update
+from app.services.cognitive_impact import CognitiveImpactAssessment, canonical_delta_content, primary_update
 from app.services.deltas import ModelDelta, suggest_watches
 from app.services.extraction import (
     ExtractionResult,
@@ -627,7 +627,10 @@ def serialize_analysis(
 ) -> dict:
     update = primary_update(assessment)
     # DROP skips absorption; do not surface the skip rationale as a cognitive delta.
-    delta_content = "" if str(plan.disposition) == "DROP" else (getattr(delta, "summary", None) or "")
+    if str(plan.disposition) == "DROP":
+        delta_content = ""
+    else:
+        delta_content = canonical_delta_content(assessment)
     return {
         "source_id": str(source.id),
         "disposition": plan.disposition,

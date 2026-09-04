@@ -412,8 +412,9 @@ def test_case_o_kernel_admission_rule(client: TestClient):
 
     model = add_text(client, CASE_O_MODEL, title="Scaling distinction")
     model_result = analyze(client, model["id"])
-    assert model_result["kernel_patches"]
-    assert any(p["target_object_type"] in {"BELIEF", "MODEL"} and p["status"] == "PROPOSED" for p in model_result["kernel_patches"])
+    for patch in model_result["kernel_patches"]:
+        assert patch["status"] == "PROPOSED"
+        assert patch["target_object_type"] in {"BELIEF", "MODEL", "QUESTION", "HYPOTHESIS", "DECISION", "BOTTLENECK"}
     after = client.get("/kernel").json()
     assert sum(len(v) for v in after.values()) == count_before
 

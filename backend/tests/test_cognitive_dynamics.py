@@ -69,6 +69,7 @@ def _effect(match: KernelMatch | None, kind: CognitiveEffectKind, **overrides) -
         target_importance=0.75,
         reason="test effect",
         exploration_candidate=kind == CognitiveEffectKind.OPEN_NEW,
+        target_node_type=match.node_type if match is not None else None,
     )
     base.update(overrides)
     return CognitiveEffect(**base)

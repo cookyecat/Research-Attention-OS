@@ -369,8 +369,51 @@ def material_effects(assessment: CognitiveImpactAssessment | None, *, min_change
     ]
 
 
+def bind_legacy_target_types(
+    assessment: CognitiveImpactAssessment | None,
+    matches,
+) -> CognitiveImpactAssessment | None:
+    """Restore/verify target_node_type from frozen Locate matches. Never reads live Kernel.
+
+    Legacy AnalysisRuns may omit target_node_type. Frozen score_debug matches are
+    the provenance for replay/reschedule. Missing type stays missing (fail-closed).
+    """
+    if assessment is None:
+        return None
+    by_id: dict = {}
+    for match in matches or []:
+        nid = getattr(match, "node_id", None)
+        if nid is None:
+            continue
+        by_id[nid] = match
+        by_id[str(nid)] = match
+    bound: list[CognitiveEffect] = []
+    for effect in assessment.effects:
+        ntype = effect.target_node_type
+        tid = effect.target_kernel_node_id
+        if tid is not None:
+            match = by_id.get(tid) or by_id.get(str(tid))
+            frozen = str(getattr(match, "node_type", "") or "") if match is not None else ""
+            if frozen:
+                ntype = frozen
+        bound.append(
+            CognitiveEffect(
+                target_kernel_node_id=effect.target_kernel_node_id,
+                operation=effect.operation,
+                change_magnitude=effect.change_magnitude,
+                epistemic_strength=effect.epistemic_strength,
+                target_importance=effect.target_importance,
+                reason=effect.reason,
+                exploration_candidate=effect.exploration_candidate,
+                target_node_type=ntype,
+            )
+        )
+    assessment.effects = bound
+    return assessment
+
+
 def _legal_public_effect(effect: CognitiveEffect) -> bool:
-    """REINFORCE/CHALLENGE require an existing update-eligible node. OPEN_NEW requires none."""
+    """REINFORCE/CHALLENGE require a verified update-eligible node. Missing type is illegal."""
     op = _kind(effect.operation)
     if op == CognitiveEffectKind.OPEN_NEW:
         return True
@@ -378,7 +421,7 @@ def _legal_public_effect(effect: CognitiveEffect) -> bool:
         if effect.target_kernel_node_id is None:
             return False
         ntype = effect.target_node_type
-        if ntype and not is_update_eligible_node(ntype):
+        if not ntype or not is_update_eligible_node(ntype):
             return False
         return True
     return False
@@ -423,6 +466,24 @@ def primary_update(assessment: CognitiveImpactAssessment | None) -> dict:
     if op == CognitiveEffectKind.OPEN_NEW:
         nid = None
     return {"operation": chosen.operation if isinstance(chosen.operation, CognitiveEffectKind) else CognitiveEffectKind(op), "target_node_id": nid}
+
+
+def canonical_delta_content(assessment: CognitiveImpactAssessment | None) -> str:
+    """Public delta_content is a rendering of Δ_t, not independent LLM cognition."""
+    update = primary_update(assessment)
+    op = _kind(update.get("operation"))
+    if op not in KNOWN_OPERATIONS:
+        return "No material cognitive change relative to the current Kernel."
+    chosen = select_primary_effect(assessment)
+    reason = str(getattr(chosen, "reason", "") or "").strip()
+    if reason:
+        return reason
+    if op == CognitiveEffectKind.OPEN_NEW:
+        return "OPEN_NEW: no existing Kernel node is the correct landing point."
+    ntype = getattr(chosen, "target_node_type", None) if chosen is not None else None
+    tid = update.get("target_node_id")
+    label = ntype or tid or "existing target"
+    return f"{op} on {label}."
 
 
 def max_change_magnitude(assessment: CognitiveImpactAssessment | None) -> float:
