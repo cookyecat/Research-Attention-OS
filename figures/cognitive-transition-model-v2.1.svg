@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">RAOS Cognitive Transition Model v2.1</title>
+  <desc id="desc">External information is extracted, localized against the current cognitive kernel, evaluated by a universal cognitive transition engine, mapped to cognitive change and attention disposition, and only human-approved kernel patches enter the next kernel state.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#111827"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrowPurple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c3aed"/>
+    </marker>
+    <style>
+      .title{font:700 34px Arial,Helvetica,sans-serif;fill:#0f2d5c}
+      .phase{font:700 19px Arial,Helvetica,sans-serif;fill:#0f2d5c}
+      .box{fill:#fff;stroke:#1f2937;stroke-width:2;rx:12}
+      .boxBlue{fill:#fff;stroke:#173a73;stroke-width:3;rx:14}
+      .label{font:600 19px Arial,Helvetica,sans-serif;fill:#111827;text-anchor:middle}
+      .small{font:15px Arial,Helvetica,sans-serif;fill:#374151;text-anchor:middle}
+      .tiny{font:13px Arial,Helvetica,sans-serif;fill:#4b5563;text-anchor:middle}
+      .math{font:italic 19px Georgia,serif;fill:#0f2d5c;text-anchor:middle}
+      .kernel{fill:#fbfdff;stroke:#0f2d5c;stroke-width:3}
+      .node{fill:#dbeafe;stroke:#0f2d5c;stroke-width:2}
+      .edge{stroke:#475569;stroke-width:2}
+      .arrow{stroke:#111827;stroke-width:3;fill:none;marker-end:url(#arrow)}
+      .dashed{stroke:#64748b;stroke-width:2;stroke-dasharray:8 7;fill:none;marker-end:url(#arrow)}
+      .sep{stroke:#94a3b8;stroke-width:2;stroke-dasharray:5 8}
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1600" height="900" fill="#ffffff"/>
+  <text x="800" y="52" class="title" text-anchor="middle">RAOS Cognitive Transition Model v2.1</text>
+
+  <!-- Phase headers -->
+  <circle cx="70" cy="102" r="22" fill="#0f2d5c"/><text x="70" y="109" fill="#fff" font-family="Arial" font-size="20" font-weight="700" text-anchor="middle">1</text>
+  <text x="108" y="109" class="phase">PHASE 1 · INPUT &amp; LOCALIZATION</text>
+  <circle cx="610" cy="102" r="22" fill="#0f2d5c"/><text x="610" y="109" fill="#fff" font-family="Arial" font-size="20" font-weight="700" text-anchor="middle">2</text>
+  <text x="648" y="109" class="phase">PHASE 2 · COGNITIVE TRANSITION</text>
+  <circle cx="1180" cy="102" r="22" fill="#0f2d5c"/><text x="1180" y="109" fill="#fff" font-family="Arial" font-size="20" font-weight="700" text-anchor="middle">3</text>
+  <text x="1218" y="109" class="phase">PHASE 3 · ATTENTION &amp; INTEGRATION</text>
+  <line x1="520" y1="84" x2="520" y2="700" class="sep"/>
+  <line x1="1110" y1="84" x2="1110" y2="700" class="sep"/>
+
+  <!-- Phase 1 -->
+  <rect x="54" y="150" width="176" height="72" class="box"/>
+  <text x="142" y="178" class="label" fill="#166534">External Information</text>
+  <text x="142" y="205" class="math" fill="#166534">Iₜ</text>
+  <path d="M142 222 L142 260" class="arrow"/>
+
+  <rect x="54" y="260" width="176" height="82" class="box"/>
+  <text x="142" y="290" class="label" fill="#6d28d9">Epistemic Extraction</text>
+  <text x="142" y="320" class="math" fill="#6d28d9">Eₜ = Extract(Iₜ)</text>
+
+  <circle cx="270" cy="500" r="145" class="kernel"/>
+  <text x="270" y="686" class="label" fill="#0f2d5c">Current Cognitive Kernel Kₜ</text>
+  <line x1="220" y1="445" x2="310" y2="425" class="edge"/><line x1="220" y1="445" x2="195" y2="540" class="edge"/>
+  <line x1="310" y1="425" x2="350" y2="535" class="edge"/><line x1="195" y1="540" x2="350" y2="535" class="edge"/>
+  <line x1="220" y1="445" x2="350" y2="535" class="edge"/>
+  <circle cx="220" cy="445" r="14" class="node"/><circle cx="310" cy="425" r="14" class="node"/>
+  <circle cx="195" cy="540" r="14" class="node"/><circle cx="350" cy="535" r="14" class="node"/>
+
+  <rect x="290" y="266" width="196" height="88" fill="#fff" stroke="#475569" stroke-width="2" stroke-dasharray="8 6" rx="12"/>
+  <text x="388" y="296" class="label" fill="#0f2d5c">Locate</text>
+  <text x="388" y="326" class="math">Lₜ = Locate(Eₜ, Kₜ)</text>
+  <path d="M290 330 C250 350 240 370 235 393" class="dashed"/>
+  <path d="M230 301 C250 305 270 309 290 310" class="arrow"/>
+
+  <!-- Phase 2 inputs and engine -->
+  <rect x="548" y="170" width="126" height="62" class="box"/>
+  <text x="611" y="195" class="math" fill="#6d28d9">Eₜ</text><text x="611" y="218" class="tiny">epistemic representation</text>
+  <rect x="548" y="264" width="126" height="62" class="box"/>
+  <text x="611" y="290" class="math">Kₜ</text><text x="611" y="313" class="tiny">current kernel</text>
+  <rect x="548" y="358" width="126" height="62" class="box"/>
+  <text x="611" y="384" class="math">Lₜ</text><text x="611" y="407" class="tiny">location candidates</text>
+
+  <rect x="720" y="206" width="210" height="224" class="boxBlue"/>
+  <text x="825" y="250" class="label" fill="#0f2d5c">Universal Cognitive</text>
+  <text x="825" y="278" class="label" fill="#0f2d5c">Transition Engine</text>
+  <text x="825" y="311" class="math" font-size="25">Fθ</text>
+  <text x="825" y="345" class="small">general reasoning over</text>
+  <text x="825" y="367" class="small">information × user state</text>
+  <text x="825" y="398" class="tiny">current implementation: LLM + deterministic contracts</text>
+  <path d="M674 201 L720 252" class="arrow"/><path d="M674 295 L720 295" class="arrow"/><path d="M674 389 L720 346" class="arrow"/>
+
+  <rect x="970" y="270" width="120" height="92" class="box"/>
+  <text x="1030" y="300" class="label" fill="#b91c1c">Cognitive Change</text>
+  <text x="1030" y="336" class="math" fill="#b91c1c">Δₜ</text>
+  <path d="M930 316 L970 316" class="arrow"/>
+
+  <!-- Effect branches -->
+  <path d="M1090 316 L1130 316 L1130 178 L1170 178" class="arrow"/>
+  <text x="1265" y="168" font-family="Arial" font-size="18" font-weight="700" fill="#15803d" text-anchor="middle">REINFORCE(k)</text>
+  <text x="1265" y="192" class="small">strengthen an existing kernel node</text>
+  <circle cx="1170" cy="178" r="12" class="node"/>
+
+  <path d="M1090 316 L1130 316 L1130 248 L1170 248" class="arrow"/>
+  <text x="1265" y="238" font-family="Arial" font-size="18" font-weight="700" fill="#dc2626" text-anchor="middle">CHALLENGE(k)</text>
+  <text x="1265" y="262" class="small">revise / weaken an existing kernel node</text>
+  <circle cx="1170" cy="248" r="12" class="node"/>
+
+  <path d="M1090 316 L1130 316 L1130 392 L1170 392" class="arrow"/>
+  <text x="1265" y="382" font-family="Arial" font-size="18" font-weight="700" fill="#7c3aed" text-anchor="middle">OPEN_NEW</text>
+  <text x="1265" y="406" class="small">propose a new cognitive branch</text>
+  <circle cx="1170" cy="392" r="14" fill="#f3e8ff" stroke="#7c3aed" stroke-width="2" stroke-dasharray="5 4"/>
+
+  <path d="M1090 316 L1130 316 L1130 472 L1170 472" class="arrow"/>
+  <text x="1265" y="463" font-family="Arial" font-size="18" font-weight="700" fill="#111827" text-anchor="middle">∅ / NONE</text>
+  <text x="1265" y="487" class="small">no material cognitive change</text>
+
+  <!-- Phase 3 attention path -->
+  <rect x="1150" y="560" width="210" height="98" class="boxBlue"/>
+  <text x="1255" y="590" class="label" fill="#0f2d5c">Attention Policy</text>
+  <text x="1255" y="622" class="math">Aₜ = π(Δₜ, Kₜ, Rₜ)</text>
+  <text x="1255" y="646" class="tiny">runtime-conditioned attention allocation</text>
+
+  <rect x="1392" y="548" width="174" height="124" class="box"/>
+  <text x="1479" y="576" class="label" fill="#166534">Disposition Aₜ</text>
+  <text x="1479" y="605" class="small" fill="#166534">DROP · AWARE</text>
+  <text x="1479" y="630" class="small" fill="#166534">WATCH · ENGAGE</text>
+  <path d="M1360 609 L1392 609" class="arrow"/>
+
+  <!-- Phase 3 human feedback and next kernel -->
+  <path d="M1030 362 L1030 615 L1150 615" class="arrow"/>
+  <rect x="930" y="710" width="180" height="78" class="boxBlue"/>
+  <text x="1020" y="740" class="label" fill="#0f2d5c">Human Feedback Hₜ</text>
+  <text x="1020" y="765" class="tiny">confirm / correct; no silent mutation</text>
+  <path d="M1030 362 L1030 710" class="arrow"/>
+
+  <rect x="1148" y="710" width="180" height="78" class="box"/>
+  <text x="1238" y="738" class="label">KernelPatch / Review</text>
+  <text x="1238" y="764" class="tiny">apply only if accepted or modified</text>
+  <path d="M1110 749 L1148 749" class="arrow"/>
+
+  <circle cx="1465" cy="760" r="102" class="kernel"/>
+  <line x1="1425" y1="720" x2="1480" y2="700" class="edge"/><line x1="1425" y1="720" x2="1418" y2="785" class="edge"/>
+  <line x1="1480" y1="700" x2="1515" y2="765" class="edge"/><line x1="1418" y1="785" x2="1515" y2="765" class="edge"/>
+  <line x1="1515" y1="765" x2="1536" y2="808" stroke="#7c3aed" stroke-width="2" stroke-dasharray="6 4"/>
+  <circle cx="1425" cy="720" r="11" class="node"/><circle cx="1480" cy="700" r="11" class="node"/>
+  <circle cx="1418" cy="785" r="11" class="node"/><circle cx="1515" cy="765" r="11" class="node"/>
+  <circle cx="1536" cy="808" r="12" fill="#f3e8ff" stroke="#7c3aed" stroke-width="2"/>
+  <text x="1465" y="883" class="label" fill="#0f2d5c">Next Cognitive Kernel Kₜ₊₁</text>
+  <path d="M1328 749 L1360 749 C1370 749 1375 760 1380 760" class="arrow"/>
+  <text x="1368" y="812" font-family="Arial" font-size="14" fill="#15803d" text-anchor="middle">human-approved changes only</text>
+
+  <!-- bottom principle -->
+  <rect x="78" y="738" width="762" height="118" fill="#f8fafc" stroke="#173a73" stroke-width="2" rx="12"/>
+  <text x="459" y="770" font-family="Arial" font-size="18" font-weight="700" fill="#0f2d5c" text-anchor="middle">Core separation</text>
+  <text x="459" y="802" class="small">Cognitive change and attention disposition are orthogonal.</text>
+  <text x="459" y="828" class="small">REINFORCE / CHALLENGE target existing cognition; OPEN_NEW proposes a new branch.</text>
+  <text x="459" y="850" class="small">Personalization lives primarily in the evolving user state Kₜ, not in per-user model weights.</text>
+</svg>
