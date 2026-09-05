@@ -9,6 +9,7 @@ Ordinary CI remains Rule + Fake Model (Eval v0.1). Live Eval is explicit:
 python eval/live/run_live_eval.py --dry-run
 python eval/live/run_live_eval.py --manifest eval/live/manifest.example.yaml
 python eval/live/run_live_eval.py --oracle-only --manifest eval/live/manifest.policy_counterfactual.template.yaml
+python eval/live/run_live_eval.py --oracle-only --manifest eval/live/manifest.policy_awareness_counterfactual.v1.yaml
 ```
 
 Requires `RAOS_COGNITIVE_PROVIDER=model` and `RAOS_LLM_API_KEY` for a real run.
@@ -135,3 +136,14 @@ Oracle-Δ aggregate scores a case only when Δ is complete:
 `critical_under_attention` is `gold_rank - pred_rank >= 2` with DROP=0, AWARE=1, WATCH=2, ENGAGE=3. `disposition_distance` remains `|pred_rank - gold_rank|`.
 
 Counterfactual slots (24–36 frozen Δ cases, unlabeled template, no invented articles): `eval/live/manifest.policy_counterfactual.template.yaml`. Fill later; vary operation, target type, change_magnitude, epistemic_strength, target_importance, and RuntimeContext.
+
+## Oracle-Awareness Attention Policy
+
+A separate experiment injects frozen non-cognitive situational-awareness signals (`domain_fit`, `event_significance`, `attention_momentum`) into production `route()` with Δ=NONE. Reports keep this distinct from Oracle-Δ:
+
+- **Oracle-Δ Attention Policy** — gold/frozen Δ → production route() (awareness absent)
+- **Oracle-Awareness Attention Policy** — frozen D/S/M + Δ=NONE → production route()
+
+These signals are not CognitiveEffect / Δ. They may only distinguish DROP from AWARE when primary Δ is NONE. They must never create REINFORCE / CHALLENGE / OPEN_NEW or WATCH / ENGAGE. Production does not estimate D/S/M from source text, Kernel matches, or heuristics; this experiment uses Oracle-provided values only.
+
+Frozen 8-cell cube: `eval/live/manifest.policy_awareness_counterfactual.v1.yaml`. Do not modify `manifest.policy_counterfactual.v1.yaml` for this experiment.

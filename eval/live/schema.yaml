@@ -73,4 +73,12 @@ human_gold:
 # Human Gold update:null (explicit) is Δ=NONE. Omitting update is oracle-unscorable.
 # runtime_context:
 #   current_task / interruptibility / cognitive_capacity / deadline_minutes
+#
+# Optional Oracle-Awareness (eval/live/manifest.policy_awareness_counterfactual.v1.yaml)
+# Frozen D/S/M is eval-only and not Δ. Oracle-Awareness injects these into production
+# route() with Δ=NONE. Production does not estimate them from source text.
+# frozen_awareness:
+#   domain_fit: bool
+#   event_significance: bool
+#   attention_momentum: bool
 

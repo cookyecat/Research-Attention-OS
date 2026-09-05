@@ -1,9 +1,12 @@
-"""Oracle-Δ Attention Policy eval: Human Gold / frozen Δ → production route().
+"""Oracle Attention Policy eval: Human Gold / frozen Δ or frozen awareness → production route().
 
 Does not call Extract, Locate, or Impact. Does not copy Scheduler thresholds.
 Positive Δ is scored only from a complete FrozenDelta. Human Gold public Update
 without FrozenDelta is diagnostic and oracle-unscorable. Δ=NONE requires an
 explicit Human Gold `update: null`; omitting `update` is unscorable.
+
+Oracle-Awareness is a separate path: frozen D/S/M + Δ=NONE. It must not be
+labeled as Oracle-Δ.
 """
 
 from __future__ import annotations
@@ -12,6 +15,7 @@ from typing import Any, Literal
 from uuid import UUID, uuid5, NAMESPACE_URL
 
 from eval.live.schema import (
+    FrozenAwareness,
     FrozenDelta,
     HumanGold,
     PolicyRuntime,
@@ -199,6 +203,66 @@ def run_oracle_policy(
         "used_production_route": True,
         "scorable": True,
         "unscorable_reason": None,
+    }
+
+
+def run_oracle_awareness(
+    gold: HumanGold | None = None,
+    *,
+    frozen_awareness: FrozenAwareness,
+    runtime_context: PolicyRuntime | None = None,
+) -> dict[str, Any]:
+    """Call production route() with Δ=NONE plus Oracle-injected awareness signals.
+
+    Does not estimate D/S/M. Does not copy the Awareness rule into eval code.
+    """
+    from app.services.cognitive_impact import CognitiveImpactAssessment
+    from app.services.scheduler import AwarenessSignals, route, validate_plan
+
+    base = {
+        "skipped_stages": ["extract", "locate", "impact"],
+        "oracle_kind": "awareness",
+    }
+    if gold is None or not gold.disposition or not gold_has_explicit_none_update(gold):
+        return {
+            **base,
+            "disposition": None,
+            "scorable": False,
+            "unscorable_reason": "Oracle-Awareness requires explicit Human Gold update:null and a gold disposition",
+            "used_production_route": False,
+        }
+    assessment = CognitiveImpactAssessment(effects=[])
+    features = _neutral_features()
+    assessment.features = features
+    draft = validate_plan(
+        route(
+            features,
+            _runtime_view(runtime_context),
+            assessment=assessment,
+            matches=[],
+            awareness=AwarenessSignals(
+                domain_fit=frozen_awareness.domain_fit,
+                event_significance=frozen_awareness.event_significance,
+                attention_momentum=frozen_awareness.attention_momentum,
+            ),
+        )
+    )
+    disposition = draft.disposition.value if hasattr(draft.disposition, "value") else str(draft.disposition)
+    expected = draft.expected_output.value if hasattr(draft.expected_output, "value") else str(draft.expected_output)
+    return {
+        **base,
+        "disposition": disposition,
+        "expected_output": expected,
+        "reason": draft.reason,
+        "watch_after_processing": bool(draft.watch_after_processing),
+        "used_production_route": True,
+        "scorable": True,
+        "unscorable_reason": None,
+        "awareness": {
+            "domain_fit": frozen_awareness.domain_fit,
+            "event_significance": frozen_awareness.event_significance,
+            "attention_momentum": frozen_awareness.attention_momentum,
+        },
     }
 
 

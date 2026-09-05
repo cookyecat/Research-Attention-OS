@@ -15,7 +15,7 @@ from app.services.cognitive_impact import (
     select_primary_effect,
 )
 from app.services.matching import KernelMatch
-from app.services.scheduler import PlanDraft, RuntimeView, SchedulerFeatures, route, validate_plan
+from app.services.scheduler import AwarenessSignals, PlanDraft, RuntimeView, SchedulerFeatures, route, validate_plan
 from tests.conftest import add_text, analyze
 
 
@@ -431,3 +431,94 @@ def test_reschedule_frozen_reinforce_is_not_duplicate_hard_drop(client: TestClie
     stored = db.get(AnalysisRun, UUID(first["analysis_run"]["id"]))
     assert stored.result_payload == payload
     assert stored.result_payload.get("cognitive_impact") == debug["cognitive_impact"]
+
+
+def _awareness(*, domain_fit: bool, event_significance: bool, attention_momentum: bool) -> AwarenessSignals:
+    return AwarenessSignals(
+        domain_fit=domain_fit,
+        event_significance=event_significance,
+        attention_momentum=attention_momentum,
+    )
+
+
+def _route_none(*, awareness: AwarenessSignals | None = None) -> PlanDraft:
+    return validate_plan(
+        route(_features(threatens_active_work=False), assessment=_assessment(), awareness=awareness)
+    )
+
+
+def test_none_delta_significant_in_domain_is_aware():
+    plan = _route_none(awareness=_awareness(domain_fit=True, event_significance=True, attention_momentum=False))
+    assert plan.disposition == Disposition.AWARE
+    assert plan.expected_output == ExpectedOutput.SUMMARY
+    assert plan.watch_after_processing is False
+    assert plan.watch_triggers == []
+
+
+def test_none_delta_significant_high_momentum_is_aware():
+    plan = _route_none(awareness=_awareness(domain_fit=False, event_significance=True, attention_momentum=True))
+    assert plan.disposition == Disposition.AWARE
+    assert plan.expected_output == ExpectedOutput.SUMMARY
+    assert plan.watch_after_processing is False
+    assert plan.watch_triggers == []
+
+
+def test_none_delta_insignificant_domain_and_momentum_is_drop():
+    plan = _route_none(awareness=_awareness(domain_fit=True, event_significance=False, attention_momentum=True))
+    assert plan.disposition == Disposition.DROP
+    assert plan.expected_output == ExpectedOutput.NONE
+
+
+def test_none_delta_significant_without_domain_or_momentum_is_drop():
+    plan = _route_none(awareness=_awareness(domain_fit=False, event_significance=True, attention_momentum=False))
+    assert plan.disposition == Disposition.DROP
+    assert plan.expected_output == ExpectedOutput.NONE
+
+
+def test_awareness_cannot_change_positive_delta_disposition():
+    match = _match("MODEL")
+    assessment = _assessment(_effect(match, CognitiveEffectKind.REINFORCE))
+    baseline = validate_plan(
+        route(
+            _features(threatens_active_work=False, high_quality_technical=False, foundational_paper=False),
+            assessment=assessment,
+            matches=[match],
+        )
+    )
+    assert baseline.disposition != Disposition.DROP
+    for signals in (
+        _awareness(domain_fit=True, event_significance=True, attention_momentum=True),
+        _awareness(domain_fit=False, event_significance=False, attention_momentum=False),
+    ):
+        plan = validate_plan(
+            route(
+                _features(threatens_active_work=False, high_quality_technical=False, foundational_paper=False),
+                assessment=assessment,
+                matches=[match],
+                awareness=signals,
+            )
+        )
+        assert plan.disposition == baseline.disposition
+        assert plan.expected_output == baseline.expected_output
+
+
+def test_awareness_cannot_create_watch_or_engage():
+    for domain_fit in (False, True):
+        for event_significance in (False, True):
+            for attention_momentum in (False, True):
+                plan = _route_none(
+                    awareness=_awareness(
+                        domain_fit=domain_fit,
+                        event_significance=event_significance,
+                        attention_momentum=attention_momentum,
+                    )
+                )
+                assert plan.disposition in {Disposition.DROP, Disposition.AWARE}
+                assert plan.disposition not in {Disposition.WATCH, Disposition.ENGAGE}
+                assert plan.expected_output in {ExpectedOutput.NONE, ExpectedOutput.SUMMARY}
+
+
+def test_absent_awareness_preserves_none_delta_drop():
+    plan = _route_none(awareness=None)
+    assert plan.disposition == Disposition.DROP
+    assert plan.expected_output == ExpectedOutput.NONE

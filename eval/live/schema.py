@@ -417,6 +417,16 @@ class PolicyRuntime(BaseModel):
     deadline_minutes: float | None = None
 
 
+class FrozenAwareness(BaseModel):
+    """Eval-only Oracle-Awareness signals. Not Δ. Not SchedulerFeatures."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    domain_fit: bool
+    event_significance: bool
+    attention_momentum: bool
+
+
 class LiveCase(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
@@ -429,6 +439,7 @@ class LiveCase(BaseModel):
     gold_status: GoldStatus = "UNLABELED"
     notes: str | None = None
     frozen_delta: FrozenDelta | None = None
+    frozen_awareness: FrozenAwareness | None = None
     runtime_context: PolicyRuntime | None = None
 
     @model_validator(mode="after")

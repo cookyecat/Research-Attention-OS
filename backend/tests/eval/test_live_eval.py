@@ -1041,6 +1041,7 @@ def test_oracle_policy_metrics_and_report_sections():
     )
     assert "## Production End-to-End" in md
     assert "## Oracle-Δ Attention Policy" in md
+    assert "## Oracle-Awareness Attention Policy" in md
 
 
 def test_positive_gold_update_without_frozen_delta_is_oracle_unscorable():
@@ -1278,3 +1279,177 @@ def test_oracle_only_skips_pipeline_on_template(tmp_path):
     rows = [json.loads(line) for line in (tmp_path / "oracle" / "cases.jsonl").read_text().splitlines() if line]
     assert len(rows) == summary["n_cases"]
     assert all(r.get("skipped") is True for r in rows)
+
+
+def test_policy_awareness_counterfactual_v1_is_frozen_eight_cell_cube():
+    from eval.live.schema import gold_has_explicit_none_update
+
+    path = ROOT / "eval" / "live" / "manifest.policy_awareness_counterfactual.v1.yaml"
+    manifest = load_manifest(path)
+    assert len(manifest.cases) == 8
+    expected = [
+        (False, False, False, "DROP"),
+        (False, False, True, "DROP"),
+        (False, True, False, "DROP"),
+        (False, True, True, "AWARE"),
+        (True, False, False, "DROP"),
+        (True, False, True, "DROP"),
+        (True, True, False, "AWARE"),
+        (True, True, True, "AWARE"),
+    ]
+    seen = set()
+    for case, (domain_fit, significance, momentum, gold_disp) in zip(manifest.cases, expected, strict=True):
+        gold = case.human_gold
+        assert gold is not None
+        assert gold.disposition == gold_disp
+        assert gold_has_explicit_none_update(gold)
+        assert gold.update is None
+        assert case.runtime_context is None
+        aw = case.frozen_awareness
+        assert aw is not None
+        assert (aw.domain_fit, aw.event_significance, aw.attention_momentum) == (
+            domain_fit,
+            significance,
+            momentum,
+        )
+        seen.add((aw.domain_fit, aw.event_significance, aw.attention_momentum))
+        assert case.notes
+    assert seen == {(d, s, m) for d in (False, True) for s in (False, True) for m in (False, True)}
+
+
+def test_oracle_awareness_skips_extract_locate_impact_and_uses_production_route(monkeypatch):
+    import app.services.pipeline as pipeline_mod
+    import app.services.scheduler as scheduler_mod
+    from eval.live.oracle_policy import run_oracle_awareness
+    from eval.live.schema import FrozenAwareness
+
+    def boom(*_a, **_k):
+        raise AssertionError("Oracle-Awareness must not call Extract / Locate / Impact")
+
+    monkeypatch.setattr(pipeline_mod, "extract_source", boom)
+    monkeypatch.setattr(pipeline_mod, "run_pipeline", boom)
+
+    calls = {"n": 0}
+    real_route = scheduler_mod.route
+
+    def counting_route(*args, **kwargs):
+        calls["n"] += 1
+        assert kwargs.get("awareness") is not None
+        return real_route(*args, **kwargs)
+
+    monkeypatch.setattr(scheduler_mod, "route", counting_route)
+    gold = HumanGold.model_validate({"disposition": "AWARE", "update": None})
+    frozen = FrozenAwareness(domain_fit=True, event_significance=True, attention_momentum=False)
+    out = run_oracle_awareness(gold, frozen_awareness=frozen)
+    assert out["scorable"] is True
+    assert out["used_production_route"] is True
+    assert out["oracle_kind"] == "awareness"
+    assert out["skipped_stages"] == ["extract", "locate", "impact"]
+    assert out["disposition"] == "AWARE"
+    assert out["expected_output"] == "SUMMARY"
+    assert out["watch_after_processing"] is False
+    assert calls["n"] == 1
+
+
+def test_oracle_awareness_does_not_copy_scheduler_rule(monkeypatch):
+    from eval.live.oracle_policy import run_oracle_awareness
+    from eval.live.schema import FrozenAwareness
+
+    gold = HumanGold.model_validate({"disposition": "DROP", "update": None})
+    frozen = FrozenAwareness(domain_fit=True, event_significance=True, attention_momentum=True)
+
+    def _forced_drop(*_a, **_k):
+        from app.enums import Disposition, ExpectedOutput
+        from app.services.scheduler import PlanDraft
+
+        return PlanDraft(disposition=Disposition.DROP, expected_output=ExpectedOutput.NONE, reason="forced")
+
+    monkeypatch.setattr("app.services.scheduler.route", _forced_drop)
+    out = run_oracle_awareness(gold, frozen_awareness=frozen)
+    assert out["disposition"] == "DROP"
+    assert out["used_production_route"] is True
+
+
+def test_frozen_awareness_unknown_field_fails_loud():
+    from eval.live.schema import FrozenAwareness
+
+    with pytest.raises(ValidationError):
+        FrozenAwareness.model_validate(
+            {"domain_fit": True, "event_significance": True, "attention_momentum": True, "publisher": "arxiv"}
+        )
+
+
+def test_oracle_only_awareness_manifest_reports_oracle_awareness_not_oracle_delta(tmp_path):
+    code = main(
+        [
+            "--oracle-only",
+            "--manifest",
+            str(ROOT / "eval" / "live" / "manifest.policy_awareness_counterfactual.v1.yaml"),
+            "--out-dir",
+            str(tmp_path / "aw"),
+            "--timestamp",
+            "20000101T000002Z",
+        ]
+    )
+    assert code == 0
+    summary = json.loads((tmp_path / "aw" / "summary.json").read_text())
+    md = (tmp_path / "aw" / "summary.md").read_text()
+    assert "oracle_awareness_attention_policy" in summary
+    assert summary["oracle_awareness_attention_policy"]["n_scored"] == 8
+    assert summary["oracle_awareness_attention_policy"]["disposition_accuracy"] == 1.0
+    assert "## Oracle-Awareness Attention Policy" in md
+    assert "Not Oracle-Δ" in md
+    rows = [json.loads(line) for line in (tmp_path / "aw" / "cases.jsonl").read_text().splitlines() if line]
+    assert len(rows) == 8
+    for row in rows:
+        awareness = row.get("oracle_awareness") or {}
+        assert awareness.get("oracle_kind") == "awareness"
+        assert awareness.get("scorable") is True
+        gold_disp = (row.get("human_gold") or {}).get("disposition")
+        assert awareness.get("disposition") == gold_disp
+        assert row.get("awareness_policy_eval", {}).get("oracle_awareness_disposition") == gold_disp
+        oracle_delta = row.get("oracle_policy") or {}
+        assert oracle_delta.get("oracle_kind") != "awareness"
+
+
+def test_policy_counterfactual_v1_absent_awareness_keeps_oracle_delta_drop_for_aware_null():
+    from eval.live.oracle_policy import run_oracle_policy
+    from eval.live.schema import gold_has_explicit_none_update
+
+    v1 = load_manifest(ROOT / "eval" / "live" / "manifest.policy_counterfactual.v1.yaml")
+    assert all(case.frozen_awareness is None for case in v1.cases)
+    aware_none = [
+        c
+        for c in v1.cases
+        if c.human_gold is not None
+        and c.human_gold.disposition == "AWARE"
+        and gold_has_explicit_none_update(c.human_gold)
+        and (c.frozen_delta is None or c.frozen_delta.operation is None)
+    ]
+    assert aware_none
+    for case in aware_none:
+        out = run_oracle_policy(case.human_gold, frozen_delta=case.frozen_delta, kernel_fixture=case.kernel_fixture)
+        assert out["scorable"] is True
+        assert out["disposition"] == "DROP"
+        assert out["oracle_kind"] == "none"
+
+
+def test_oracle_only_v1_counterfactual_unchanged_without_awareness(tmp_path):
+    code = main(
+        [
+            "--oracle-only",
+            "--manifest",
+            str(ROOT / "eval" / "live" / "manifest.policy_counterfactual.v1.yaml"),
+            "--out-dir",
+            str(tmp_path / "v1"),
+            "--timestamp",
+            "20000101T000003Z",
+        ]
+    )
+    assert code == 0
+    summary = json.loads((tmp_path / "v1" / "summary.json").read_text())
+    assert summary["oracle_delta_attention_policy"]["n_scored"] == 30
+    assert summary["oracle_awareness_attention_policy"]["n_scored"] == 0
+    rows = [json.loads(line) for line in (tmp_path / "v1" / "cases.jsonl").read_text().splitlines() if line]
+    assert all(not (r.get("oracle_awareness") or {}).get("scorable") for r in rows)
+    assert all(r.get("awareness_policy_eval") is None for r in rows)

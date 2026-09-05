@@ -53,6 +53,19 @@ class SchedulerFeatures:
         return self.__dict__.copy()
 
 
+@dataclass(frozen=True)
+class AwarenessSignals:
+    """Non-cognitive situational awareness for DROP ↔ AWARE when Δ=NONE.
+
+    Not a CognitiveEffect. Not SchedulerFeatures. Oracle-provided in this experiment;
+    production does not estimate these from source text or Kernel matches.
+    """
+
+    domain_fit: bool
+    event_significance: bool
+    attention_momentum: bool
+
+
 @dataclass
 class RuntimeView:
     current_task: str | None = None
@@ -295,6 +308,8 @@ def route(
     runtime: RuntimeView | None = None,
     assessment=None,
     matches: list[KernelMatch] | None = None,
+    *,
+    awareness: AwarenessSignals | None = None,
 ) -> PlanDraft:
     """Attention Policy. Canonical Δ is the cognitive authority.
 
@@ -302,6 +317,8 @@ def route(
     AWARE/WATCH/ENGAGE from Δ=NONE. exploration_candidate is not an authority.
     Missing frozen CognitiveImpactAssessment is fail-closed to NONE.
     is_duplicate is a frozen provenance fact; it cannot erase canonical Δ.
+    Optional AwarenessSignals may distinguish DROP from AWARE only when Δ=NONE.
+    Absent awareness preserves current production behavior.
     """
     from app.services.cognitive_impact import (
         normalize_frozen_transition,
@@ -315,12 +332,18 @@ def route(
     assessment = normalize_frozen_transition(assessment, matches).assessment
     primary = select_primary_effect(assessment)
 
-    draft = _cognitive_disposition(features, primary, matches)
+    draft = _cognitive_disposition(features, primary, matches, awareness=awareness)
     return _apply_runtime_overlays(draft, features, runtime, primary=primary, matches=matches)
 
 
-def _cognitive_disposition(features: SchedulerFeatures, primary, matches: list[KernelMatch]) -> PlanDraft:
-    """Disposition from canonical Δ only. Runtime and source-quality flags cannot invent value."""
+def _cognitive_disposition(
+    features: SchedulerFeatures,
+    primary,
+    matches: list[KernelMatch],
+    *,
+    awareness: AwarenessSignals | None = None,
+) -> PlanDraft:
+    """Disposition from canonical Δ. Awareness may only lift Δ=NONE from DROP to AWARE."""
     from app.enums import CognitiveEffectKind
     from app.services.cognitive_impact import (
         MATERIAL_CHANGE_MIN,
@@ -329,6 +352,15 @@ def _cognitive_disposition(features: SchedulerFeatures, primary, matches: list[K
     )
 
     if primary is None:
+        if awareness is not None and awareness.event_significance and (
+            awareness.domain_fit or awareness.attention_momentum
+        ):
+            return PlanDraft(
+                disposition=Disposition.AWARE,
+                expected_output=ExpectedOutput.SUMMARY,
+                reason="Δ=NONE with situational awareness: worth knowing, no cognitive write or watch obligation.",
+                cognitive_budget_minutes=_budget(Disposition.AWARE),
+            )
         return PlanDraft(
             disposition=Disposition.DROP,
             expected_output=ExpectedOutput.NONE,

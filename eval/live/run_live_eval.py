@@ -16,8 +16,8 @@ BACKEND = ROOT / "backend"
 if str(BACKEND) not in sys.path:
     sys.path.insert(0, str(BACKEND))
 
-from eval.live.oracle_policy import attention_policy_eval_row, run_oracle_policy
-from eval.live.report import compute_metrics, compute_oracle_policy_metrics, render_markdown
+from eval.live.oracle_policy import attention_policy_eval_row, compare_disposition, run_oracle_awareness, run_oracle_policy
+from eval.live.report import compute_metrics, compute_oracle_awareness_metrics, compute_oracle_policy_metrics, render_markdown
 from eval.live.schema import LiveCase, LiveManifest, gold_status_of, dump_human_gold
 
 FALLBACK_STAGE_STATUSES = {"fallback", "rule-after-fallback"}
@@ -282,6 +282,8 @@ def run_case(case: LiveCase, *, dry_run: bool, db=None, oracle_only: bool = Fals
         "error": None,
         "oracle_policy": None,
         "attention_policy_eval": None,
+        "oracle_awareness": None,
+        "awareness_policy_eval": None,
         **_empty_eval_fields(),
     }
     has_source = bool(case.source.text or case.source.local_file or case.source.url)
@@ -347,28 +349,45 @@ def run_case(case: LiveCase, *, dry_run: bool, db=None, oracle_only: bool = Fals
 def _attach_oracle_policy(row: dict[str, Any], case: LiveCase) -> None:
     gold = case.human_gold
     frozen = case.frozen_delta
-    if gold is None and frozen is None:
-        return
-    try:
-        oracle = run_oracle_policy(
-            gold,
-            frozen_delta=frozen,
-            runtime_context=case.runtime_context,
-            kernel_fixture=case.kernel_fixture,
-        )
-    except Exception as exc:
-        row["oracle_policy"] = {"error": str(exc)[:1000], "used_production_route": False}
-        return
-    row["oracle_policy"] = oracle
     prod_update = row.get("update")
     if not isinstance(prod_update, dict):
         prod_update = None
-    row["attention_policy_eval"] = attention_policy_eval_row(
-        gold=gold,
-        production_disposition=row.get("disposition"),
-        production_update=prod_update,
-        oracle=oracle,
-    )
+    if gold is not None or frozen is not None:
+        try:
+            oracle = run_oracle_policy(
+                gold,
+                frozen_delta=frozen,
+                runtime_context=case.runtime_context,
+                kernel_fixture=case.kernel_fixture,
+            )
+        except Exception as exc:
+            row["oracle_policy"] = {"error": str(exc)[:1000], "used_production_route": False}
+        else:
+            row["oracle_policy"] = oracle
+            row["attention_policy_eval"] = attention_policy_eval_row(
+                gold=gold,
+                production_disposition=row.get("disposition"),
+                production_update=prod_update,
+                oracle=oracle,
+            )
+    if case.frozen_awareness is None:
+        return
+    try:
+        awareness = run_oracle_awareness(
+            gold,
+            frozen_awareness=case.frozen_awareness,
+            runtime_context=case.runtime_context,
+        )
+    except Exception as exc:
+        row["oracle_awareness"] = {"error": str(exc)[:1000], "used_production_route": False}
+        return
+    row["oracle_awareness"] = awareness
+    awareness_disp = awareness.get("disposition") if awareness.get("scorable") else None
+    row["awareness_policy_eval"] = {
+        "gold_disposition": gold.disposition if gold is not None else None,
+        "oracle_awareness_disposition": awareness_disp,
+        "oracle": compare_disposition(gold.disposition if gold is not None else None, awareness_disp),
+    }
 
 
 def write_report(out_dir: Path, summary: dict, rows: list[dict]) -> None:
@@ -414,6 +433,7 @@ def main(argv: list[str] | None = None) -> int:
         "stage_scoped_scoring": summary.get("stage_scoped_scoring"),
     }
     summary["oracle_delta_attention_policy"] = compute_oracle_policy_metrics(rows)
+    summary["oracle_awareness_attention_policy"] = compute_oracle_awareness_metrics(rows)
     summary["timestamp"] = stamp
     summary["manifest"] = str(args.manifest)
     summary["dry_run"] = args.dry_run

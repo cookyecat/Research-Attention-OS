@@ -471,6 +471,64 @@ def compute_oracle_policy_metrics(case_rows: list[dict[str, Any]]) -> dict[str, 
     }
 
 
+def compute_oracle_awareness_metrics(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Score production route() on Oracle-injected Δ=NONE + frozen awareness. Not Oracle-Δ."""
+    labeled = [r for r in case_rows if r.get("gold_status") == "LABELED"]
+    scored = []
+    for row in labeled:
+        gold = _gold_model(row).disposition
+        awareness = row.get("oracle_awareness") or {}
+        if not gold or not awareness.get("scorable") or not awareness.get("disposition"):
+            continue
+        scored.append(row)
+    note = (
+        "Oracle-Awareness scores production route() on Δ=NONE plus frozen "
+        "domain_fit / event_significance / attention_momentum. It is not Oracle-Δ. "
+        "Extract / Locate / Impact are not run."
+    )
+    if not scored:
+        return {
+            "n_scored": 0,
+            "disposition_accuracy": None,
+            "mean_disposition_distance": None,
+            "false_drop_rate": None,
+            "over_attention_rate": None,
+            "under_attention_rate": None,
+            "critical_under_attention_rate": None,
+            "exact_disposition_hit_rate": None,
+            "note": note,
+        }
+    hits = false_drop = over = under = critical = 0
+    distances: list[int] = []
+    for row in scored:
+        cmp_ = (row.get("awareness_policy_eval") or {}).get("oracle") or {}
+        if cmp_.get("exact_disposition_hit"):
+            hits += 1
+        if cmp_.get("false_drop"):
+            false_drop += 1
+        if cmp_.get("over_attention"):
+            over += 1
+        if cmp_.get("under_attention"):
+            under += 1
+        if cmp_.get("critical_under_attention"):
+            critical += 1
+        dist = cmp_.get("disposition_distance")
+        if dist is not None:
+            distances.append(int(dist))
+    n = len(scored)
+    return {
+        "n_scored": n,
+        "disposition_accuracy": _div(hits, n),
+        "mean_disposition_distance": (sum(distances) / len(distances)) if distances else None,
+        "false_drop_rate": _div(false_drop, n),
+        "over_attention_rate": _div(over, n),
+        "under_attention_rate": _div(under, n),
+        "critical_under_attention_rate": _div(critical, n),
+        "exact_disposition_hit_rate": _div(hits, n),
+        "note": note,
+    }
+
+
 def render_markdown(summary: dict) -> str:
     disp = summary.get("disposition") or {}
     op = summary.get("update_operation") or {}
@@ -479,6 +537,7 @@ def render_markdown(summary: dict) -> str:
     ep = summary.get("epistemic_separation") or {}
     e2e = summary.get("production_end_to_end") or {}
     oracle = summary.get("oracle_delta_attention_policy") or {}
+    awareness = summary.get("oracle_awareness_attention_policy") or {}
     e2e_disp = (e2e.get("disposition") or disp)
     lines = [
         "# RAOS Live Eval",
@@ -516,6 +575,20 @@ def render_markdown(summary: dict) -> str:
         f"- Under-attention Rate: {oracle.get('under_attention_rate')}",
         f"- Critical Under-attention Rate (gold_rank - pred_rank >= 2): {oracle.get('critical_under_attention_rate')}",
         f"- {oracle.get('note')}",
+        "",
+        "## Oracle-Awareness Attention Policy",
+        "",
+        "Frozen D/S/M + Δ=NONE → production route() / validate_plan(). Not Oracle-Δ. No Extract / Locate / Impact.",
+        "",
+        f"- scored: {awareness.get('n_scored')}",
+        f"- Disposition Accuracy: {awareness.get('disposition_accuracy')}",
+        f"- Exact Disposition Hit Rate: {awareness.get('exact_disposition_hit_rate')}",
+        f"- Mean Disposition Distance: {awareness.get('mean_disposition_distance')}",
+        f"- False DROP Rate: {awareness.get('false_drop_rate')}",
+        f"- Over-attention Rate: {awareness.get('over_attention_rate')}",
+        f"- Under-attention Rate: {awareness.get('under_attention_rate')}",
+        f"- Critical Under-attention Rate (gold_rank - pred_rank >= 2): {awareness.get('critical_under_attention_rate')}",
+        f"- {awareness.get('note')}",
         "",
         "## Disposition (production, stage-scoped)",
         f"- Disposition Accuracy: {disp.get('disposition_accuracy')}",

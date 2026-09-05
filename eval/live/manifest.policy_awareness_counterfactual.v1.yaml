@@ -1,0 +1,200 @@
+# RAOS Oracle-Awareness Attention Policy — Counterfactual Gold v1
+#
+# Tests whether three frozen non-cognitive situational-awareness signals are
+# sufficient for DROP ↔ AWARE when canonical Δ=NONE.
+#
+# Candidate policy (elicited from Human Gold; implemented in production route()):
+#   if Δ is NONE:
+#       AWARE iff event_significance and (domain_fit or attention_momentum)
+#       otherwise DROP
+#
+# These signals are not CognitiveEffect / Δ. They must never create
+# REINFORCE / CHALLENGE / OPEN_NEW, and must never create WATCH or ENGAGE.
+#
+# The 8 cases are the Boolean cube of (domain_fit, event_significance,
+# attention_momentum). Notes keep the Group 1 elicitation language so Human
+# Gold provenance stays clear. Case 1 is the all-false cell (the elicitation
+# list duplicated the in-domain / insignificant / no-momentum cell as 1 and 5).
+#
+# Do not estimate D/S/M from source text. This experiment uses Oracle values only.
+#
+#   python eval/live/run_live_eval.py --oracle-only \
+#     --manifest eval/live/manifest.policy_awareness_counterfactual.v1.yaml
+
+name: raos-oracle-awareness-policy-counterfactual-v1
+cases:
+  - id: policy-aw-none-01
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: DROP
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    frozen_awareness:
+      domain_fit: false
+      event_significance: false
+      attention_momentum: false
+    runtime_context: null
+    notes: "Q1. Unrelated small AI-company CEO change; no research or decision impact."
+
+  - id: policy-aw-none-02
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: DROP
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    frozen_awareness:
+      domain_fit: false
+      event_significance: false
+      attention_momentum: true
+    runtime_context: null
+    notes: "Circulating attention without a significant event or domain fit; momentum alone is not awareness value."
+
+  - id: policy-aw-none-03
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: DROP
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    frozen_awareness:
+      domain_fit: false
+      event_significance: true
+      attention_momentum: false
+    runtime_context: null
+    notes: "A significant event outside the followed domain and without circulating attention; not worth knowing."
+
+  - id: policy-aw-none-04
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: AWARE
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    frozen_awareness:
+      domain_fit: false
+      event_significance: true
+      attention_momentum: true
+    runtime_context: null
+    notes: "Q4. Viral robotics marketing release with no new evidence; awareness only."
+
+  - id: policy-aw-none-05
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: DROP
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    frozen_awareness:
+      domain_fit: true
+      event_significance: false
+      attention_momentum: false
+    runtime_context: null
+    notes: "Q5. Benchmark maintenance-team change with no current technical or rule change."
+
+  - id: policy-aw-none-06
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: DROP
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    frozen_awareness:
+      domain_fit: true
+      event_significance: false
+      attention_momentum: true
+    runtime_context: null
+    notes: "Q6. Fifth media retelling of an already-read original robotics release; circulating in-domain attention without a significant new event."
+
+  - id: policy-aw-none-07
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: AWARE
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    frozen_awareness:
+      domain_fit: true
+      event_significance: true
+      attention_momentum: false
+    runtime_context: null
+    notes: "Q2. Important organization change at a long-followed frontier lab; worth knowing, no current cognitive change."
+
+  - id: policy-aw-none-08
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: AWARE
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    frozen_awareness:
+      domain_fit: true
+      event_significance: true
+      attention_momentum: true
+    runtime_context: null
+    notes: "Q3. Popular model minor upgrade; useful to know, no current model change."
