@@ -8,6 +8,7 @@ Ordinary CI remains Rule + Fake Model (Eval v0.1). Live Eval is explicit:
 # from repo root
 python eval/live/run_live_eval.py --dry-run
 python eval/live/run_live_eval.py --manifest eval/live/manifest.example.yaml
+python eval/live/run_live_eval.py --oracle-only --manifest eval/live/manifest.policy_counterfactual.template.yaml
 ```
 
 Requires `RAOS_COGNITIVE_PROVIDER=model` and `RAOS_LLM_API_KEY` for a real run.
@@ -113,3 +114,14 @@ Live Eval v0.1.1+ runs the **production pipeline** (chunking → extraction → 
 Legacy gold keys (`attention_state`, `processing_modes`, `kernel_targets`, `cognitive_effects`, `expected_delta`, …) still parse on ingest if present. Retired operations (`REFINE`, `NO_MATERIAL_CHANGE`) are not mapped onto the live contract. They are not part of the default template and are not used to label new cases.
 
 A model-stage fallback is recorded per stage in `stage_provenance`. Live Eval scores Disposition / Update / Target only when the **impact** stage is a model success. A later Delta fallback does not exclude those fields. `prediction_source_by_stage` and `scorable` are written on every cases.jsonl row.
+
+## Oracle-Δ Attention Policy
+
+The same case can also be scored with Human Gold / frozen Δ fed directly to production `route()` / `validate_plan()` (no Extract / Locate / Impact). Reports split:
+
+- **Production End-to-End** — Source → Extract → Locate → Impact Δ → Attention Policy
+- **Oracle-Δ Attention Policy** — gold/frozen Δ → production route()
+
+This separates Impact error from Attention Policy error. Human Gold may use `update: null`, including AWARE + null (Δ=NONE).
+
+Counterfactual slots (24–36 frozen Δ cases, unlabeled template, no invented articles): `eval/live/manifest.policy_counterfactual.template.yaml`. Fill later; vary operation, target type, change_magnitude, epistemic_strength, target_importance, and RuntimeContext.

@@ -1,0 +1,504 @@
+# RAOS Oracle-Δ Attention Policy — counterfactual template
+#
+# Fill 24–36 frozen Δ cases later. Do NOT invent real-world articles here.
+# Production Attention Policy is not modified. Oracle path calls production
+# route() / validate_plan() only.
+#
+# Vary, one axis at a time where possible:
+#   operation, target type, change_magnitude, epistemic_strength,
+#   target_importance, RuntimeContext
+#
+# Human Gold is never produced by a model. Empty gold => UNLABELED
+# (stored, excluded from accuracy). update may be null, including AWARE + null.
+#
+# Run:
+#   python eval/live/run_live_eval.py --oracle-only \
+#     --manifest eval/live/manifest.policy_counterfactual.template.yaml
+
+name: raos-oracle-delta-policy-counterfactual
+cases:
+  # --- Δ=NONE (null update) ---
+  - id: policy-cf-none-01
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: null
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context:
+      current_task: null
+      interruptibility: null
+      cognitive_capacity: null
+      deadline_minutes: null
+    notes: "Fill: Δ=NONE. Gold may be DROP or AWARE + null update."
+
+  - id: policy-cf-none-02
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: Δ=NONE. Optional AWARE + null."
+
+  - id: policy-cf-none-03
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: Δ=NONE."
+
+  - id: policy-cf-none-04
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: Δ=NONE."
+
+  - id: policy-cf-none-05
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: Δ=NONE."
+
+  - id: policy-cf-none-06
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: Δ=NONE."
+
+  # --- REINFORCE: vary target type / magnitudes ---
+  - id: policy-cf-reinforce-01
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: BELIEF
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: REINFORCE BELIEF. Vary change_magnitude."
+
+  - id: policy-cf-reinforce-02
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: MODEL
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: REINFORCE MODEL. Vary epistemic_strength."
+
+  - id: policy-cf-reinforce-03
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: QUESTION
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: REINFORCE QUESTION. Vary target_importance."
+
+  - id: policy-cf-reinforce-04
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: BOTTLENECK
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: REINFORCE BOTTLENECK."
+
+  - id: policy-cf-reinforce-05
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: DECISION
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: REINFORCE DECISION."
+
+  - id: policy-cf-reinforce-06
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: PROJECT
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: REINFORCE PROJECT (location type; production may fail-closed)."
+
+  # --- CHALLENGE ---
+  - id: policy-cf-challenge-01
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: BELIEF
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: CHALLENGE BELIEF. Vary change_magnitude."
+
+  - id: policy-cf-challenge-02
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: MODEL
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: CHALLENGE MODEL. Vary epistemic_strength."
+
+  - id: policy-cf-challenge-03
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: QUESTION
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: CHALLENGE QUESTION. Vary target_importance."
+
+  - id: policy-cf-challenge-04
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: BOTTLENECK
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: CHALLENGE BOTTLENECK."
+
+  - id: policy-cf-challenge-05
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: DECISION
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: CHALLENGE DECISION."
+
+  - id: policy-cf-challenge-06
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: BELIEF
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: CHALLENGE BELIEF. Weak vs material magnitude pair."
+
+  # --- OPEN_NEW ---
+  - id: policy-cf-open-new-01
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: OPEN_NEW. Vary change_magnitude."
+
+  - id: policy-cf-open-new-02
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: OPEN_NEW. Vary epistemic_strength."
+
+  - id: policy-cf-open-new-03
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: OPEN_NEW. Vary target_importance."
+
+  - id: policy-cf-open-new-04
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: OPEN_NEW. Low vs high change pair."
+
+  - id: policy-cf-open-new-05
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: OPEN_NEW."
+
+  - id: policy-cf-open-new-06
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Fill: OPEN_NEW."
+
+  # --- RuntimeContext overlays ---
+  - id: policy-cf-runtime-01
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: BELIEF
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context:
+      current_task: null
+      interruptibility: LOW
+      cognitive_capacity: null
+      deadline_minutes: null
+    notes: "Fill: same frozen Δ, interruptibility=LOW."
+
+  - id: policy-cf-runtime-02
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: BELIEF
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context:
+      current_task: null
+      interruptibility: LOW
+      cognitive_capacity: null
+      deadline_minutes: 60
+    notes: "Fill: same frozen Δ, tight deadline + LOW interruptibility."
+
+  - id: policy-cf-runtime-03
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: BELIEF
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context:
+      current_task: null
+      interruptibility: HIGH
+      cognitive_capacity: null
+      deadline_minutes: 60
+    notes: "Fill: same frozen Δ, deadline with HIGH interruptibility."
+
+  - id: policy-cf-runtime-04
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: BELIEF
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context:
+      current_task: null
+      interruptibility: null
+      cognitive_capacity: LOW
+      deadline_minutes: null
+    notes: "Fill: same frozen Δ, cognitive_capacity=LOW."
+
+  - id: policy-cf-runtime-05
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: MODEL
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context:
+      current_task: camera-ready
+      interruptibility: LOW
+      cognitive_capacity: LOW
+      deadline_minutes: 30
+    notes: "Fill: same frozen Δ, camera-ready runtime bundle."
+
+  - id: policy-cf-runtime-06
+    gold_status: UNLABELED
+    kernel_fixture: mvp
+    human_gold: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: MODEL
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context:
+      current_task: null
+      interruptibility: MEDIUM
+      cognitive_capacity: NORMAL
+      deadline_minutes: null
+    notes: "Fill: same frozen Δ, default-ish runtime control."

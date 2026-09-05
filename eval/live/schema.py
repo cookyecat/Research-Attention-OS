@@ -274,6 +274,36 @@ class HumanGold(BaseModel):
         )
 
 
+class FrozenDelta(BaseModel):
+    """Frozen canonical Δ for Oracle-Δ Attention Policy eval. Not a source article."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    operation: UpdateOperation | None = None
+    target_node_id: str | None = None
+    target_type: str | None = Field(
+        default=None,
+        description="BELIEF | MODEL | QUESTION | DECISION | BOTTLENECK | PROJECT | …",
+    )
+    change_magnitude: float | None = None
+    epistemic_strength: float | None = None
+    target_importance: float | None = None
+    reason: str | None = None
+
+
+class PolicyRuntime(BaseModel):
+    """RuntimeContext fields that Attention Policy may overlay. Not Δ."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    current_task: str | None = None
+    session_topic: str | None = None
+    available_attention_minutes: int | None = None
+    interruptibility: str | None = None
+    cognitive_capacity: str | None = None
+    deadline_minutes: float | None = None
+
+
 class LiveCase(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
@@ -285,6 +315,8 @@ class LiveCase(BaseModel):
     human_gold: HumanGold | None = None
     gold_status: GoldStatus = "UNLABELED"
     notes: str | None = None
+    frozen_delta: FrozenDelta | None = None
+    runtime_context: PolicyRuntime | None = None
 
 
 class LiveManifest(BaseModel):

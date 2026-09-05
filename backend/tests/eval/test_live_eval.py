@@ -728,3 +728,158 @@ def test_live_eval_run_case_full_pipeline(client, engine):
         assert "extraction" in (row.get("stage_provenance") or {})
     finally:
         session.close()
+
+
+def test_aware_null_update_is_allowed_gold():
+    gold = HumanGold.model_validate({"disposition": "AWARE", "update": None, "delta_content": None})
+    assert gold.disposition == "AWARE"
+    assert gold.update is None
+    dumped = dump_human_gold(gold)
+    assert dumped["disposition"] == "AWARE"
+    assert dumped["update"]["operation"] is None
+    assert dumped["update"]["target_node_id"] is None
+    case = LiveCase(id="aware-null", human_gold=gold)
+    assert gold_status_of(case) == "LABELED"
+
+
+def test_oracle_none_delta_is_drop():
+    from eval.live.oracle_policy import run_oracle_policy
+
+    gold = HumanGold.model_validate({"disposition": "AWARE", "update": None})
+    out = run_oracle_policy(gold)
+    assert out["used_production_route"] is True
+    assert out["skipped_stages"] == ["extract", "locate", "impact"]
+    assert out["disposition"] == "DROP"
+
+
+def test_oracle_material_reinforce_is_not_drop():
+    from eval.live.oracle_policy import run_oracle_policy
+    from eval.live.schema import FrozenDelta
+
+    gold = HumanGold.model_validate(
+        {
+            "disposition": "ENGAGE",
+            "update": {"operation": "REINFORCE", "target_node_id": "B1"},
+            "delta_content": "The existing belief is strengthened.",
+        }
+    )
+    frozen = FrozenDelta(
+        operation="REINFORCE",
+        target_node_id="B1",
+        target_type="BELIEF",
+        change_magnitude=0.75,
+        epistemic_strength=0.5,
+        target_importance=0.75,
+    )
+    out = run_oracle_policy(gold, frozen_delta=frozen)
+    assert out["disposition"] != "DROP"
+    assert out["used_production_route"] is True
+
+
+def test_oracle_policy_does_not_call_extract_locate_impact(monkeypatch):
+    import app.services.pipeline as pipeline_mod
+    from eval.live.oracle_policy import run_oracle_policy
+
+    def boom(*_a, **_k):
+        raise AssertionError("oracle path must not call the production pipeline")
+
+    monkeypatch.setattr(pipeline_mod, "extract_source", boom)
+    monkeypatch.setattr(pipeline_mod, "run_pipeline", boom)
+    gold = HumanGold.model_validate({"disposition": "AWARE", "update": None})
+    assert run_oracle_policy(gold)["disposition"] == "DROP"
+
+
+def test_oracle_policy_calls_production_route(monkeypatch):
+    import app.services.scheduler as scheduler_mod
+    from eval.live.oracle_policy import run_oracle_policy
+
+    calls = {"n": 0}
+    real_route = scheduler_mod.route
+    real_validate = scheduler_mod.validate_plan
+
+    def counting_route(*args, **kwargs):
+        calls["n"] += 1
+        return real_route(*args, **kwargs)
+
+    monkeypatch.setattr(scheduler_mod, "route", counting_route)
+    gold = HumanGold.model_validate({"disposition": "AWARE", "update": None})
+    run_oracle_policy(gold)
+    assert calls["n"] == 1
+    assert real_validate is scheduler_mod.validate_plan
+
+
+def test_oracle_policy_metrics_and_report_sections():
+    from eval.live.oracle_policy import attention_policy_eval_row, compare_disposition
+    from eval.live.report import compute_oracle_policy_metrics
+
+    gold = HumanGold.model_validate({"disposition": "WATCH", "update": None})
+    row = {
+        "id": "p1",
+        "gold_status": "LABELED",
+        "human_gold": dump_human_gold(gold),
+        "disposition": "DROP",
+        "update": {"operation": None, "target_node_id": None},
+        "oracle_policy": {"disposition": "DROP"},
+        "attention_policy_eval": attention_policy_eval_row(
+            gold=gold,
+            production_disposition="DROP",
+            production_update={"operation": None, "target_node_id": None},
+            oracle={"disposition": "DROP"},
+        ),
+    }
+    cmp_ = compare_disposition("WATCH", "DROP")
+    assert cmp_["false_drop"] is True
+    assert cmp_["under_attention"] is True
+    assert cmp_["critical_under_attention"] is True
+    assert cmp_["exact_disposition_hit"] is False
+    assert cmp_["disposition_distance"] == 2
+    metrics = compute_oracle_policy_metrics([row])
+    assert metrics["n_scored"] == 1
+    assert metrics["false_drop_rate"] == 1.0
+    assert metrics["critical_under_attention_rate"] == 1.0
+    md = render_markdown(
+        {
+            **compute_metrics([row]),
+            "production_end_to_end": {"disposition": {"disposition_accuracy": 0.0}},
+            "oracle_delta_attention_policy": metrics,
+        }
+    )
+    assert "## Production End-to-End" in md
+    assert "## Oracle-Δ Attention Policy" in md
+
+
+def test_policy_counterfactual_template_is_unlabeled_slots():
+    path = ROOT / "eval" / "live" / "manifest.policy_counterfactual.template.yaml"
+    manifest = load_manifest(path)
+    assert 24 <= len(manifest.cases) <= 36
+    assert all(gold_status_of(c) == "UNLABELED" for c in manifest.cases)
+    assert all(not (c.source.text or c.source.url or c.source.local_file) for c in manifest.cases)
+    text = path.read_text()
+    assert "change_magnitude" in text
+    assert "epistemic_strength" in text
+    assert "target_importance" in text
+    assert "runtime_context" in text
+    assert "Do NOT invent" in text or "do not invent" in text.lower()
+
+
+def test_oracle_only_skips_pipeline_on_template(tmp_path):
+    code = main(
+        [
+            "--oracle-only",
+            "--manifest",
+            str(ROOT / "eval" / "live" / "manifest.policy_counterfactual.template.yaml"),
+            "--out-dir",
+            str(tmp_path / "oracle"),
+            "--timestamp",
+            "20000101T000001Z",
+        ]
+    )
+    assert code == 0
+    summary = json.loads((tmp_path / "oracle" / "summary.json").read_text())
+    assert "production_end_to_end" in summary
+    assert "oracle_delta_attention_policy" in summary
+    assert summary["oracle_only"] is True
+    assert summary["oracle_delta_attention_policy"]["n_scored"] == 0
+    rows = [json.loads(line) for line in (tmp_path / "oracle" / "cases.jsonl").read_text().splitlines() if line]
+    assert len(rows) == summary["n_cases"]
+    assert all(r.get("skipped") is True for r in rows)

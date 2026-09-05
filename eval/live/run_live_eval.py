@@ -16,7 +16,8 @@ BACKEND = ROOT / "backend"
 if str(BACKEND) not in sys.path:
     sys.path.insert(0, str(BACKEND))
 
-from eval.live.report import compute_metrics, render_markdown
+from eval.live.oracle_policy import attention_policy_eval_row, run_oracle_policy
+from eval.live.report import compute_metrics, compute_oracle_policy_metrics, render_markdown
 from eval.live.schema import LiveCase, LiveManifest, gold_status_of, dump_human_gold
 
 FALLBACK_STAGE_STATUSES = {"fallback", "rule-after-fallback"}
@@ -244,7 +245,7 @@ def load_manifest(path: Path) -> LiveManifest:
     return LiveManifest.model_validate(data)
 
 
-def run_case(case: LiveCase, *, dry_run: bool, db=None) -> dict[str, Any]:
+def run_case(case: LiveCase, *, dry_run: bool, db=None, oracle_only: bool = False) -> dict[str, Any]:
     status = gold_status_of(case)
     row: dict[str, Any] = {
         "id": case.id,
@@ -279,11 +280,19 @@ def run_case(case: LiveCase, *, dry_run: bool, db=None) -> dict[str, Any]:
         "inference_texts": [],
         "delta_rubric": (case.human_gold.delta_rubric if case.human_gold else None),
         "error": None,
+        "oracle_policy": None,
+        "attention_policy_eval": None,
         **_empty_eval_fields(),
     }
-    if dry_run or not (case.source.text or case.source.local_file or case.source.url):
+    has_source = bool(case.source.text or case.source.local_file or case.source.url)
+    skip_pipeline = dry_run or oracle_only or not has_source
+    if skip_pipeline:
         row["skipped"] = True
-        row["skip_reason"] = "dry-run or empty source (UNLABELED slot)"
+        if oracle_only:
+            row["skip_reason"] = "oracle-only: production pipeline not run"
+        elif dry_run or not has_source:
+            row["skip_reason"] = "dry-run or empty source (UNLABELED slot)"
+        _attach_oracle_policy(row, case)
         return row
     from app.config import settings
     from app.cognitive.versions import (
@@ -321,16 +330,42 @@ def run_case(case: LiveCase, *, dry_run: bool, db=None) -> dict[str, Any]:
         )
         if row.get("embedding_model") is None:
             row["embedding_model"] = settings.embedding_model
+        _attach_oracle_policy(row, case)
         return row
     except Exception as exc:
         if close:
             db.rollback()
         row["error"] = str(exc)[:4000]
         row["skipped"] = False
+        _attach_oracle_policy(row, case)
         return row
     finally:
         if close:
             db.close()
+
+
+def _attach_oracle_policy(row: dict[str, Any], case: LiveCase) -> None:
+    gold = case.human_gold
+    frozen = case.frozen_delta
+    if gold is None and frozen is None:
+        return
+    if gold is None and frozen is not None and not frozen.operation:
+        return
+    try:
+        oracle = run_oracle_policy(gold, frozen_delta=frozen, runtime_context=case.runtime_context)
+    except Exception as exc:
+        row["oracle_policy"] = {"error": str(exc)[:1000], "used_production_route": False}
+        return
+    row["oracle_policy"] = oracle
+    prod_update = row.get("update")
+    if not isinstance(prod_update, dict):
+        prod_update = None
+    row["attention_policy_eval"] = attention_policy_eval_row(
+        gold=gold,
+        production_disposition=row.get("disposition"),
+        production_update=prod_update,
+        oracle=oracle,
+    )
 
 
 def write_report(out_dir: Path, summary: dict, rows: list[dict]) -> None:
@@ -348,8 +383,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out-dir", type=Path, default=None)
     parser.add_argument("--timestamp", default=None, help="Stable stamp for reproducible reports")
     parser.add_argument("--dry-run", action="store_true", help="Validate manifest and write a report without calling a model")
+    parser.add_argument(
+        "--oracle-only",
+        action="store_true",
+        help="Skip Extract/Locate/Impact; run production route() on Human Gold / frozen Δ only",
+    )
     args = parser.parse_args(argv)
-    if not args.dry_run:
+    if not args.dry_run and not args.oracle_only:
         from app.config import settings
         from app.db import Base, engine
         import app.models  # noqa: F401
@@ -359,11 +399,22 @@ def main(argv: list[str] | None = None) -> int:
     manifest = load_manifest(args.manifest)
     stamp = args.timestamp or datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out_dir = args.out_dir or (ROOT / "eval" / "live" / "results" / stamp)
-    rows = [run_case(case, dry_run=args.dry_run) for case in manifest.cases]
+    rows = [run_case(case, dry_run=args.dry_run, oracle_only=args.oracle_only) for case in manifest.cases]
     summary = compute_metrics(rows)
+    summary["production_end_to_end"] = {
+        "disposition": summary.get("disposition"),
+        "update_operation": summary.get("update_operation"),
+        "target": summary.get("target"),
+        "exact_update": summary.get("exact_update"),
+        "n_labeled": summary.get("n_labeled"),
+        "n_unlabeled": summary.get("n_unlabeled"),
+        "stage_scoped_scoring": summary.get("stage_scoped_scoring"),
+    }
+    summary["oracle_delta_attention_policy"] = compute_oracle_policy_metrics(rows)
     summary["timestamp"] = stamp
     summary["manifest"] = str(args.manifest)
     summary["dry_run"] = args.dry_run
+    summary["oracle_only"] = args.oracle_only
     summary["name"] = manifest.name
     write_report(out_dir, summary, rows)
     print(f"wrote {out_dir}")

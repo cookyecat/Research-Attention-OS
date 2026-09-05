@@ -408,12 +408,68 @@ def _div(num: int, den: int) -> float | None:
     return num / den
 
 
+def compute_oracle_policy_metrics(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Score production route() on Human Gold / frozen Δ. Independent of Extract/Locate/Impact."""
+    labeled = [r for r in case_rows if r.get("gold_status") == "LABELED"]
+    scored = []
+    for row in labeled:
+        gold = _gold_model(row).disposition
+        oracle = (row.get("oracle_policy") or {}).get("disposition")
+        if not gold or not oracle:
+            continue
+        scored.append(row)
+    if not scored:
+        return {
+            "n_scored": 0,
+            "disposition_accuracy": None,
+            "mean_disposition_distance": None,
+            "false_drop_rate": None,
+            "over_attention_rate": None,
+            "under_attention_rate": None,
+            "critical_under_attention_rate": None,
+            "exact_disposition_hit_rate": None,
+            "note": "Oracle-Δ calls production route() on gold/frozen Δ. Unlabeled and missing gold disposition are excluded.",
+        }
+    hits = false_drop = over = under = critical = 0
+    distances: list[int] = []
+    for row in scored:
+        cmp_ = (row.get("attention_policy_eval") or {}).get("oracle") or {}
+        if cmp_.get("exact_disposition_hit"):
+            hits += 1
+        if cmp_.get("false_drop"):
+            false_drop += 1
+        if cmp_.get("over_attention"):
+            over += 1
+        if cmp_.get("under_attention"):
+            under += 1
+        if cmp_.get("critical_under_attention"):
+            critical += 1
+        dist = cmp_.get("disposition_distance")
+        if dist is not None:
+            distances.append(int(dist))
+    n = len(scored)
+    return {
+        "n_scored": n,
+        "disposition_accuracy": _div(hits, n),
+        "mean_disposition_distance": (sum(distances) / len(distances)) if distances else None,
+        "false_drop_rate": _div(false_drop, n),
+        "over_attention_rate": _div(over, n),
+        "under_attention_rate": _div(under, n),
+        "critical_under_attention_rate": _div(critical, n),
+        "exact_disposition_hit_rate": _div(hits, n),
+        "note": "Oracle-Δ calls production route() / validate_plan() on Human Gold or frozen Δ. Extract / Locate / Impact are not run.",
+    }
+
+
 def render_markdown(summary: dict) -> str:
     disp = summary.get("disposition") or {}
     op = summary.get("update_operation") or {}
     target = summary.get("target") or {}
     dc = summary.get("delta_content") or {}
     ep = summary.get("epistemic_separation") or {}
+    e2e = summary.get("production_end_to_end") or {}
+    oracle = summary.get("oracle_delta_attention_policy") or {}
+    e2e_disp = (e2e.get("disposition") or disp)
     lines = [
         "# RAOS Live Eval",
         "",
@@ -423,7 +479,35 @@ def render_markdown(summary: dict) -> str:
         f"- model impact predictions scored: {summary.get('n_model_predictions')}",
         f"- stage-scoped scoring: {summary.get('stage_scoped_scoring')}",
         "",
-        "## Disposition",
+        "## Production End-to-End",
+        "",
+        "Source → Extract → Locate → Impact Δ → Attention Policy.",
+        "",
+        f"- Disposition Accuracy: {e2e_disp.get('disposition_accuracy')}",
+        f"- ENGAGE Precision: {e2e_disp.get('engage_precision')}",
+        f"- ENGAGE Recall: {e2e_disp.get('engage_recall')}",
+        f"- DROP Precision: {e2e_disp.get('drop_precision')}",
+        f"- DROP False Negative Rate (important → DROP): {e2e_disp.get('drop_false_negative_rate')}",
+        f"- Update Operation Accuracy: {op.get('update_operation_accuracy')}",
+        f"- Target Accuracy: {target.get('target_accuracy')}",
+        f"- Exact Update Accuracy: {(summary.get('exact_update') or {}).get('exact_update_accuracy')}",
+        f"- cases with Delta Content text: {dc.get('n_with_delta_content')}",
+        "",
+        "## Oracle-Δ Attention Policy",
+        "",
+        "Human Gold / frozen Δ → production route() / validate_plan(). No Extract / Locate / Impact.",
+        "",
+        f"- scored: {oracle.get('n_scored')}",
+        f"- Disposition Accuracy: {oracle.get('disposition_accuracy')}",
+        f"- Exact Disposition Hit Rate: {oracle.get('exact_disposition_hit_rate')}",
+        f"- Mean Disposition Distance: {oracle.get('mean_disposition_distance')}",
+        f"- False DROP Rate: {oracle.get('false_drop_rate')}",
+        f"- Over-attention Rate: {oracle.get('over_attention_rate')}",
+        f"- Under-attention Rate: {oracle.get('under_attention_rate')}",
+        f"- Critical Under-attention Rate (ENGAGE/WATCH → DROP): {oracle.get('critical_under_attention_rate')}",
+        f"- {oracle.get('note')}",
+        "",
+        "## Disposition (production, stage-scoped)",
         f"- Disposition Accuracy: {disp.get('disposition_accuracy')}",
         f"- ENGAGE Precision: {disp.get('engage_precision')}",
         f"- ENGAGE Recall: {disp.get('engage_recall')}",
