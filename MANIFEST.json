@@ -1,6 +1,6 @@
 {
   "pack": "Research Attention OS Codex Development Pack",
-  "version": "v1.1",
+  "version": "v1.2",
   "documents": [
     "01_PRODUCT.md",
     "02_DOMAIN_MODEL.md",
@@ -9,12 +9,16 @@
     "05_INGESTION_SPEC.md",
     "06_SOURCE_GRAPH_SPEC.md",
     "07_MVP_ACCEPTANCE_TESTS.md",
-    "08_COGNITIVE_TRANSITION_MODEL_V2.1.md"
+    "08_COGNITIVE_TRANSITION_MODEL_V2.1.md",
+    "09_ATTENTION_POLICY_INPUT_CLARIFICATION.md",
+    "10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md"
   ],
   "recommended_read_order": [
     "01_PRODUCT.md",
     "02_DOMAIN_MODEL.md",
     "08_COGNITIVE_TRANSITION_MODEL_V2.1.md",
+    "09_ATTENTION_POLICY_INPUT_CLARIFICATION.md",
+    "10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md",
     "04_SCHEDULER_SPEC.md",
     "05_INGESTION_SPEC.md",
     "06_SOURCE_GRAPH_SPEC.md",
