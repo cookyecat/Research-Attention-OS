@@ -414,8 +414,8 @@ def compute_oracle_policy_metrics(case_rows: list[dict[str, Any]]) -> dict[str, 
     scored = []
     for row in labeled:
         gold = _gold_model(row).disposition
-        oracle = (row.get("oracle_policy") or {}).get("disposition")
-        if not gold or not oracle:
+        oracle = row.get("oracle_policy") or {}
+        if not gold or not oracle.get("scorable") or not oracle.get("disposition"):
             continue
         scored.append(row)
     if not scored:
@@ -428,7 +428,12 @@ def compute_oracle_policy_metrics(case_rows: list[dict[str, Any]]) -> dict[str, 
             "under_attention_rate": None,
             "critical_under_attention_rate": None,
             "exact_disposition_hit_rate": None,
-            "note": "Oracle-Δ calls production route() on gold/frozen Δ. Unlabeled and missing gold disposition are excluded.",
+            "note": (
+                "Oracle-Δ scores production route() on complete FrozenDelta or Δ=NONE "
+                "(update null). Positive public Update without FrozenDelta is diagnostic only "
+                "and excluded. critical_under_attention = gold_rank - pred_rank >= 2 "
+                "(DROP=0 AWARE=1 WATCH=2 ENGAGE=3)."
+            ),
         }
     hits = false_drop = over = under = critical = 0
     distances: list[int] = []
@@ -457,7 +462,12 @@ def compute_oracle_policy_metrics(case_rows: list[dict[str, Any]]) -> dict[str, 
         "under_attention_rate": _div(under, n),
         "critical_under_attention_rate": _div(critical, n),
         "exact_disposition_hit_rate": _div(hits, n),
-        "note": "Oracle-Δ calls production route() / validate_plan() on Human Gold or frozen Δ. Extract / Locate / Impact are not run.",
+        "note": (
+            "Oracle-Δ scores production route() / validate_plan() on complete FrozenDelta or "
+            "Δ=NONE (update null). Extract / Locate / Impact are not run. Positive Human Gold "
+            "update without FrozenDelta is oracle-unscorable. "
+            "critical_under_attention = gold_rank - pred_rank >= 2."
+        ),
     }
 
 
@@ -504,7 +514,7 @@ def render_markdown(summary: dict) -> str:
         f"- False DROP Rate: {oracle.get('false_drop_rate')}",
         f"- Over-attention Rate: {oracle.get('over_attention_rate')}",
         f"- Under-attention Rate: {oracle.get('under_attention_rate')}",
-        f"- Critical Under-attention Rate (ENGAGE/WATCH → DROP): {oracle.get('critical_under_attention_rate')}",
+        f"- Critical Under-attention Rate (gold_rank - pred_rank >= 2): {oracle.get('critical_under_attention_rate')}",
         f"- {oracle.get('note')}",
         "",
         "## Disposition (production, stage-scoped)",

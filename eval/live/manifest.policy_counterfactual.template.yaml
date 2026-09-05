@@ -11,6 +11,10 @@
 # Human Gold is never produced by a model. Empty gold => UNLABELED
 # (stored, excluded from accuracy). update may be null, including AWARE + null.
 #
+# Unlabeled FrozenDelta must stay operation=null with no target/magnitude fields.
+# Intended axes (REINFORCE BELIEF, …) live in notes until a complete FrozenDelta
+# is filled. Unknown FrozenDelta fields and illegal shapes fail loud.
+#
 # Run:
 #   python eval/live/run_live_eval.py --oracle-only \
 #     --manifest eval/live/manifest.policy_counterfactual.template.yaml
@@ -123,7 +127,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: BELIEF
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -138,7 +142,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: MODEL
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -153,7 +157,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: QUESTION
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -168,7 +172,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: BOTTLENECK
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -183,7 +187,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: DECISION
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -198,7 +202,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: PROJECT
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -214,7 +218,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: BELIEF
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -229,7 +233,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: MODEL
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -244,7 +248,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: QUESTION
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -259,7 +263,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: BOTTLENECK
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -274,7 +278,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: DECISION
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -289,7 +293,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: BELIEF
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -396,7 +400,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: BELIEF
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -415,7 +419,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: BELIEF
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -434,7 +438,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: BELIEF
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -453,7 +457,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: BELIEF
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -472,7 +476,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: MODEL
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null
@@ -491,7 +495,7 @@ cases:
     frozen_delta:
       operation: null
       target_node_id: null
-      target_type: MODEL
+      target_type: null
       change_magnitude: null
       epistemic_strength: null
       target_importance: null

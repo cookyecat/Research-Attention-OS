@@ -748,6 +748,7 @@ def test_oracle_none_delta_is_drop():
     gold = HumanGold.model_validate({"disposition": "AWARE", "update": None})
     out = run_oracle_policy(gold)
     assert out["used_production_route"] is True
+    assert out["scorable"] is True
     assert out["skipped_stages"] == ["extract", "locate", "impact"]
     assert out["disposition"] == "DROP"
 
@@ -774,6 +775,7 @@ def test_oracle_material_reinforce_is_not_drop():
     out = run_oracle_policy(gold, frozen_delta=frozen)
     assert out["disposition"] != "DROP"
     assert out["used_production_route"] is True
+    assert out["scorable"] is True
 
 
 def test_oracle_policy_does_not_call_extract_locate_impact(monkeypatch):
@@ -819,12 +821,12 @@ def test_oracle_policy_metrics_and_report_sections():
         "human_gold": dump_human_gold(gold),
         "disposition": "DROP",
         "update": {"operation": None, "target_node_id": None},
-        "oracle_policy": {"disposition": "DROP"},
+        "oracle_policy": {"disposition": "DROP", "scorable": True},
         "attention_policy_eval": attention_policy_eval_row(
             gold=gold,
             production_disposition="DROP",
             production_update={"operation": None, "target_node_id": None},
-            oracle={"disposition": "DROP"},
+            oracle={"disposition": "DROP", "scorable": True},
         ),
     }
     cmp_ = compare_disposition("WATCH", "DROP")
@@ -846,6 +848,206 @@ def test_oracle_policy_metrics_and_report_sections():
     )
     assert "## Production End-to-End" in md
     assert "## Oracle-Δ Attention Policy" in md
+
+
+def test_positive_gold_update_without_frozen_delta_is_oracle_unscorable():
+    from eval.live.oracle_policy import attention_policy_eval_row, run_oracle_policy
+    from eval.live.report import compute_oracle_policy_metrics
+
+    gold = HumanGold.model_validate(
+        {
+            "disposition": "ENGAGE",
+            "update": {"operation": "REINFORCE", "target_node_id": "B1"},
+            "delta_content": "The existing belief is strengthened.",
+        }
+    )
+    out = run_oracle_policy(gold)
+    assert out["scorable"] is False
+    assert out["used_production_route"] is False
+    assert out["disposition"] is None
+    assert "complete FrozenDelta" in (out["unscorable_reason"] or "")
+    row = {
+        "id": "unscorable-gold-update",
+        "gold_status": "LABELED",
+        "human_gold": dump_human_gold(gold),
+        "oracle_policy": out,
+        "attention_policy_eval": attention_policy_eval_row(
+            gold=gold,
+            production_disposition=None,
+            production_update=None,
+            oracle=out,
+        ),
+    }
+    metrics = compute_oracle_policy_metrics([row])
+    assert metrics["n_scored"] == 0
+    assert metrics["disposition_accuracy"] is None
+    assert metrics["false_drop_rate"] is None
+    assert metrics["critical_under_attention_rate"] is None
+
+
+def test_aware_null_update_is_oracle_scored_and_counts_drop():
+    from eval.live.oracle_policy import attention_policy_eval_row, run_oracle_policy
+    from eval.live.report import compute_oracle_policy_metrics
+
+    gold = HumanGold.model_validate({"disposition": "AWARE", "update": None})
+    out = run_oracle_policy(gold)
+    assert out["scorable"] is True
+    assert out["used_production_route"] is True
+    assert out["disposition"] == "DROP"
+    row = {
+        "id": "aware-null",
+        "gold_status": "LABELED",
+        "human_gold": dump_human_gold(gold),
+        "oracle_policy": out,
+        "attention_policy_eval": attention_policy_eval_row(
+            gold=gold,
+            production_disposition=None,
+            production_update=None,
+            oracle=out,
+        ),
+    }
+    metrics = compute_oracle_policy_metrics([row])
+    assert metrics["n_scored"] == 1
+    assert metrics["false_drop_rate"] == 1.0
+    assert metrics["under_attention_rate"] == 1.0
+    assert metrics["critical_under_attention_rate"] == 0.0
+
+
+def test_complete_frozen_delta_is_oracle_scored():
+    from eval.live.oracle_policy import run_oracle_policy
+    from eval.live.schema import FrozenDelta
+
+    gold = HumanGold.model_validate(
+        {
+            "disposition": "ENGAGE",
+            "update": {"operation": "REINFORCE", "target_node_id": "B1"},
+        }
+    )
+    frozen = FrozenDelta(
+        operation="REINFORCE",
+        target_node_id="B1",
+        target_type="BELIEF",
+        change_magnitude=0.75,
+        epistemic_strength=0.5,
+        target_importance=0.75,
+    )
+    out = run_oracle_policy(gold, frozen_delta=frozen)
+    assert out["scorable"] is True
+    assert out["used_production_route"] is True
+    assert out["disposition"] not in {None, "DROP"}
+
+
+def test_frozen_delta_unknown_field_fails_loud():
+    from eval.live.schema import FrozenDelta
+
+    with pytest.raises(ValidationError):
+        FrozenDelta.model_validate({"operation": None, "typo_field": 1})
+
+
+def test_frozen_delta_magnitude_outside_unit_interval_fails():
+    from eval.live.schema import FrozenDelta
+
+    with pytest.raises(ValidationError):
+        FrozenDelta.model_validate(
+            {
+                "operation": "OPEN_NEW",
+                "change_magnitude": 1.5,
+                "epistemic_strength": 0.5,
+                "target_importance": 0.5,
+            }
+        )
+
+
+@pytest.mark.parametrize("operation", ["REINFORCE", "CHALLENGE"])
+def test_frozen_delta_reinforce_challenge_missing_target_fails(operation):
+    from eval.live.schema import FrozenDelta
+
+    with pytest.raises(ValidationError):
+        FrozenDelta.model_validate(
+            {
+                "operation": operation,
+                "target_node_id": None,
+                "target_type": "BELIEF",
+                "change_magnitude": 0.5,
+                "epistemic_strength": 0.5,
+                "target_importance": 0.5,
+            }
+        )
+    with pytest.raises(ValidationError):
+        FrozenDelta.model_validate(
+            {
+                "operation": operation,
+                "target_node_id": "B1",
+                "target_type": None,
+                "change_magnitude": 0.5,
+                "epistemic_strength": 0.5,
+                "target_importance": 0.5,
+            }
+        )
+
+
+def test_frozen_delta_open_new_with_target_fails():
+    from eval.live.schema import FrozenDelta
+
+    with pytest.raises(ValidationError):
+        FrozenDelta.model_validate(
+            {
+                "operation": "OPEN_NEW",
+                "target_node_id": "B1",
+                "change_magnitude": 0.5,
+                "epistemic_strength": 0.5,
+                "target_importance": 0.5,
+            }
+        )
+
+
+def test_human_gold_frozen_delta_mismatch_fails_loud():
+    complete = {
+        "target_type": "BELIEF",
+        "change_magnitude": 0.5,
+        "epistemic_strength": 0.5,
+        "target_importance": 0.5,
+    }
+    with pytest.raises(ValidationError):
+        LiveCase.model_validate(
+            {
+                "id": "mismatch-op",
+                "human_gold": {
+                    "disposition": "ENGAGE",
+                    "update": {"operation": "REINFORCE", "target_node_id": "B1"},
+                },
+                "frozen_delta": {"operation": "CHALLENGE", "target_node_id": "B1", **complete},
+            }
+        )
+    with pytest.raises(ValidationError):
+        LiveCase.model_validate(
+            {
+                "id": "mismatch-target",
+                "human_gold": {
+                    "disposition": "ENGAGE",
+                    "update": {"operation": "REINFORCE", "target_node_id": "B1"},
+                },
+                "frozen_delta": {"operation": "REINFORCE", "target_node_id": "B2", **complete},
+            }
+        )
+
+
+def test_engage_to_aware_is_critical_under_attention():
+    from eval.live.oracle_policy import compare_disposition
+
+    cmp_ = compare_disposition("ENGAGE", "AWARE")
+    assert cmp_["under_attention"] is True
+    assert cmp_["critical_under_attention"] is True
+    assert cmp_["disposition_distance"] == 2
+
+
+def test_watch_to_aware_is_ordinary_under_attention():
+    from eval.live.oracle_policy import compare_disposition
+
+    cmp_ = compare_disposition("WATCH", "AWARE")
+    assert cmp_["under_attention"] is True
+    assert cmp_["critical_under_attention"] is False
+    assert cmp_["disposition_distance"] == 1
 
 
 def test_policy_counterfactual_template_is_unlabeled_slots():

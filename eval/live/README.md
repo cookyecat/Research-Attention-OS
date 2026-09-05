@@ -124,4 +124,14 @@ The same case can also be scored with Human Gold / frozen Δ fed directly to pro
 
 This separates Impact error from Attention Policy error. Human Gold may use `update: null`, including AWARE + null (Δ=NONE).
 
+Oracle-Δ aggregate scores a case only when Δ is complete:
+
+- **Δ=NONE** — `update: null` is a complete definition and is scored (e.g. gold AWARE + null vs current `route()` DROP).
+- **Positive Δ** (`REINFORCE` / `CHALLENGE` / `OPEN_NEW`) — only a complete `FrozenDelta` is scored: `operation`, legal `target_node_id` / `target_type`, and `change_magnitude` / `epistemic_strength` / `target_importance` in `[0, 1]`.
+- Human Gold with a public update and no complete FrozenDelta is **oracle-unscorable**: diagnostic output is kept, but it is excluded from Oracle accuracy / distance / false-drop / over-under aggregates. There are no synthetic magnitude defaults.
+
+`FrozenDelta` is a strict eval schema (`extra=forbid`). Unknown fields, magnitudes outside `[0, 1]`, illegal targets, and HumanGold.update vs FrozenDelta operation/target mismatch fail validation.
+
+`critical_under_attention` is `gold_rank - pred_rank >= 2` with DROP=0, AWARE=1, WATCH=2, ENGAGE=3. `disposition_distance` remains `|pred_rank - gold_rank|`.
+
 Counterfactual slots (24–36 frozen Δ cases, unlabeled template, no invented articles): `eval/live/manifest.policy_counterfactual.template.yaml`. Fill later; vary operation, target type, change_magnitude, epistemic_strength, target_importance, and RuntimeContext.

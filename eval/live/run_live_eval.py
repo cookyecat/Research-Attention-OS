@@ -349,8 +349,6 @@ def _attach_oracle_policy(row: dict[str, Any], case: LiveCase) -> None:
     frozen = case.frozen_delta
     if gold is None and frozen is None:
         return
-    if gold is None and frozen is not None and not frozen.operation:
-        return
     try:
         oracle = run_oracle_policy(gold, frozen_delta=frozen, runtime_context=case.runtime_context)
     except Exception as exc:

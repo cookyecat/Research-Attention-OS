@@ -275,9 +275,9 @@ class HumanGold(BaseModel):
 
 
 class FrozenDelta(BaseModel):
-    """Frozen canonical Δ for Oracle-Δ Attention Policy eval. Not a source article."""
+    """Frozen canonical Δ for Oracle-Δ Attention Policy eval. Fail loud; no coercion."""
 
-    model_config = ConfigDict(extra="ignore")
+    model_config = ConfigDict(extra="forbid")
 
     operation: UpdateOperation | None = None
     target_node_id: str | None = None
@@ -285,10 +285,93 @@ class FrozenDelta(BaseModel):
         default=None,
         description="BELIEF | MODEL | QUESTION | DECISION | BOTTLENECK | PROJECT | …",
     )
-    change_magnitude: float | None = None
-    epistemic_strength: float | None = None
-    target_importance: float | None = None
+    change_magnitude: float | None = Field(default=None, ge=0, le=1)
+    epistemic_strength: float | None = Field(default=None, ge=0, le=1)
+    target_importance: float | None = Field(default=None, ge=0, le=1)
     reason: str | None = None
+
+    @model_validator(mode="after")
+    def _fail_loud(self) -> FrozenDelta:
+        op = self.operation
+        has_target = self.target_node_id is not None
+        has_type = self.target_type is not None
+        has_mags = any(
+            v is not None
+            for v in (self.change_magnitude, self.epistemic_strength, self.target_importance)
+        )
+        has_reason = self.reason is not None and str(self.reason).strip() != ""
+        if op is None:
+            if has_target or has_type or has_mags or has_reason:
+                raise ValueError("operation=null FrozenDelta cannot carry target or magnitude fields")
+            return self
+        missing = [
+            name
+            for name, value in (
+                ("change_magnitude", self.change_magnitude),
+                ("epistemic_strength", self.epistemic_strength),
+                ("target_importance", self.target_importance),
+            )
+            if value is None
+        ]
+        if missing:
+            raise ValueError(f"{op} FrozenDelta requires {', '.join(missing)}")
+        if op in ("REINFORCE", "CHALLENGE"):
+            if not self.target_node_id:
+                raise ValueError(f"{op} requires target_node_id")
+            if not self.target_type:
+                raise ValueError(f"{op} requires target_type")
+        if op == "OPEN_NEW" and self.target_node_id is not None:
+            raise ValueError("OPEN_NEW requires target_node_id to be null")
+        return self
+
+
+def is_complete_positive_frozen_delta(frozen: FrozenDelta | None) -> bool:
+    """True only when FrozenDelta fully specifies a positive Δ for Oracle-Δ scoring."""
+    if frozen is None or frozen.operation is None:
+        return False
+    if any(
+        value is None
+        for value in (frozen.change_magnitude, frozen.epistemic_strength, frozen.target_importance)
+    ):
+        return False
+    if frozen.operation in ("REINFORCE", "CHALLENGE"):
+        return bool(frozen.target_node_id and frozen.target_type)
+    if frozen.operation == "OPEN_NEW":
+        return frozen.target_node_id is None
+    return False
+
+
+def gold_update_operation(gold: HumanGold | None) -> str | None:
+    if gold is None or gold.update is None:
+        return None
+    return gold.update.operation
+
+
+def gold_update_target(gold: HumanGold | None) -> str | None:
+    if gold is None or gold.update is None:
+        return None
+    return resolve_snapshot_node_id(gold.update.target_node_id)
+
+
+def assert_gold_frozen_consistent(gold: HumanGold | None, frozen: FrozenDelta | None) -> None:
+    """Fail loud when HumanGold.update and FrozenDelta disagree on operation/target."""
+    if gold is None or frozen is None:
+        return
+    gold_op = gold_update_operation(gold)
+    gold_tgt = gold_update_target(gold)
+    frozen_tgt = resolve_snapshot_node_id(frozen.target_node_id)
+    if gold_op is None and frozen.operation is None:
+        return
+    if gold_op != frozen.operation:
+        raise ValueError(
+            f"HumanGold.update.operation {gold_op!r} does not match FrozenDelta.operation {frozen.operation!r}"
+        )
+    if gold_op in ("REINFORCE", "CHALLENGE") and gold_tgt != frozen_tgt:
+        raise ValueError(
+            f"HumanGold.update.target_node_id {gold_tgt!r} does not match FrozenDelta.target_node_id {frozen_tgt!r}"
+        )
+    if gold_op == "OPEN_NEW" and (gold_tgt is not None or frozen_tgt is not None):
+        raise ValueError("OPEN_NEW gold/frozen target_node_id must both be null")
 
 
 class PolicyRuntime(BaseModel):
@@ -317,6 +400,11 @@ class LiveCase(BaseModel):
     notes: str | None = None
     frozen_delta: FrozenDelta | None = None
     runtime_context: PolicyRuntime | None = None
+
+    @model_validator(mode="after")
+    def _gold_frozen_consistent(self) -> LiveCase:
+        assert_gold_frozen_consistent(self.human_gold, self.frozen_delta)
+        return self
 
 
 class LiveManifest(BaseModel):
