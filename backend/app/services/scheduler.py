@@ -301,6 +301,7 @@ def route(
     Runtime may raise urgency or defer existing ENGAGE. It cannot invent
     AWARE/WATCH/ENGAGE from Δ=NONE. exploration_candidate is not an authority.
     Missing frozen CognitiveImpactAssessment is fail-closed to NONE.
+    is_duplicate is a frozen provenance fact; it cannot erase canonical Δ.
     """
     from app.services.cognitive_impact import (
         normalize_frozen_transition,
@@ -313,16 +314,6 @@ def route(
     matches = matches or []
     assessment = normalize_frozen_transition(assessment, matches).assessment
     primary = select_primary_effect(assessment)
-
-    # --- Source identity (not cognitive value). Duplicate policy is unchanged. ---
-    if features.is_duplicate:
-        return PlanDraft(
-            disposition=Disposition.DROP,
-            urgency=Urgency.BACKGROUND,
-            expected_output=ExpectedOutput.NONE,
-            reason="Duplicate or secondary reprint of an already covered event; independent confirmation count does not increase.",
-            cognitive_budget_minutes=_budget(Disposition.DROP),
-        )
 
     draft = _cognitive_disposition(features, primary, matches)
     return _apply_runtime_overlays(draft, features, runtime, primary=primary, matches=matches)

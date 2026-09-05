@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from fastapi.testclient import TestClient
 
@@ -205,3 +205,132 @@ def test_experiment_proposal_fail_closed_is_not_generic_patch(client: TestClient
     rationale = (result["model_delta"].get("rationale") or "").lower()
     assert "fail closed" in rationale
     assert "experiment_proposal" in rationale
+
+
+def test_duplicate_none_delta_still_drops():
+    plan = route(_features(is_duplicate=True), assessment=_assessment())
+    assert plan.disposition == Disposition.DROP
+    assert plan.expected_output == ExpectedOutput.NONE
+
+
+def test_duplicate_cannot_drop_material_reinforce():
+    match = _match("MODEL")
+    assessment = _assessment(_effect(match, CognitiveEffectKind.REINFORCE))
+    plan = route(
+        _features(is_duplicate=True, threatens_active_work=False),
+        assessment=assessment,
+        matches=[match],
+    )
+    assert plan.disposition != Disposition.DROP
+    assert plan.expected_output != ExpectedOutput.NONE
+
+
+def test_duplicate_cannot_drop_material_challenge():
+    match = _match("BELIEF")
+    assessment = _assessment(_effect(match, CognitiveEffectKind.CHALLENGE))
+    plan = route(
+        _features(is_duplicate=True, threatens_active_work=False),
+        assessment=assessment,
+        matches=[match],
+    )
+    assert plan.disposition != Disposition.DROP
+    assert plan.expected_output != ExpectedOutput.NONE
+
+
+def test_duplicate_open_new_follows_normal_open_new_policy():
+    effect = _effect(None, CognitiveEffectKind.OPEN_NEW, change_magnitude=0.6, target_importance=0.6)
+    assessment = _assessment(effect)
+    baseline = route(_features(is_duplicate=False), assessment=assessment)
+    duplicate = route(_features(is_duplicate=True), assessment=assessment)
+    assert baseline.disposition != Disposition.DROP
+    assert duplicate.disposition == baseline.disposition
+    assert duplicate.expected_output == baseline.expected_output
+
+
+def test_duplicate_relation_stays_in_impact_provenance(client: TestClient, db):
+    from uuid import UUID
+
+    from app.enums import SourceEdgeRelationship
+    from app.services.source_graph import persist_source_edge
+
+    original = add_text(client, "A technical paper about motor intelligence latency.", title="dup-prov-orig")
+    copy = add_text(client, "A technical paper about motor intelligence latency.", title="dup-prov-copy")
+    persist_source_edge(db, UUID(copy["id"]), UUID(original["id"]), SourceEdgeRelationship.REPOSTS)
+    db.commit()
+    result = analyze(client, copy["id"], extra_ids=[original["id"]])
+    independence = ((result.get("relational_context") or {}).get("independence") or {})
+    impact_ind = ((result.get("impact_input") or {}).get("independence") or {})
+    debug_ind = ((result.get("attention_plan") or {}).get("score_debug") or {}).get("independence") or {}
+    assert result["features"]["is_duplicate"] is True
+    assert independence.get("is_duplicate") is True
+    assert impact_ind.get("is_duplicate") is True
+    assert result["features"]["independent_source_count"] == 1
+    assert int(result["features"]["secondary_report_count"] or 0) >= 1
+    assert int(independence.get("independent_sources") or debug_ind.get("independent_sources") or 0) == 1
+    assert int(independence.get("secondary_reports") or debug_ind.get("secondary_reports") or 0) >= 1
+
+
+def test_reschedule_frozen_reinforce_is_not_duplicate_hard_drop(client: TestClient, db):
+    from sqlalchemy.orm.attributes import flag_modified
+
+    from app.models.analysis import AnalysisRun
+    from app.models.scheduler import AttentionPlan
+    from tests.conftest import kernel_index
+
+    index = kernel_index(client)
+    m1 = index["M1"]["id"]
+    src = add_text(client, "A technical paper about motor intelligence latency.", title="dup-reschedule")
+    first = analyze(client, src["id"])
+    run = db.get(AnalysisRun, UUID(first["analysis_run"]["id"]))
+    payload = dict(run.result_payload or {})
+    debug = dict((payload.get("attention_plan") or {}).get("score_debug") or {})
+    debug["matches"] = [
+        {
+            "node_id": m1,
+            "node_type": "MODEL",
+            "title": "Motor Intelligence",
+            "score": 0.9,
+            "reason": "locate M1",
+            "structural": False,
+            "relevance_type": "TOPIC",
+        }
+    ]
+    debug["cognitive_impact"] = {
+        "effects": [
+            {
+                "target_kernel_node_id": m1,
+                "operation": "REINFORCE",
+                "target_node_type": "MODEL",
+                "change_magnitude": 0.9,
+                "epistemic_strength": 0.6,
+                "target_importance": 0.8,
+                "reason": "strengthens M1",
+                "exploration_candidate": False,
+            }
+        ]
+    }
+    plan_blob = dict(payload.get("attention_plan") or {})
+    plan_blob["score_debug"] = debug
+    payload["attention_plan"] = plan_blob
+    payload["cognitive_impact"] = debug["cognitive_impact"]
+    feat = dict(payload.get("features") or {})
+    feat["is_duplicate"] = True
+    payload["features"] = feat
+    run.result_payload = payload
+    flag_modified(run, "result_payload")
+    plan_row = db.get(AttentionPlan, UUID(str(first["attention_plan"]["id"])))
+    plan_row.score_debug = debug
+    flag_modified(plan_row, "score_debug")
+    db.commit()
+
+    planned = client.post(
+        "/scheduler/plan",
+        json={"source_id": src["id"], "runtime_context": {"current_task": "later"}},
+    )
+    assert planned.status_code == 200, planned.text
+    body = planned.json()
+    assert body["attention_plan"]["disposition"] != "DROP"
+    db.expire_all()
+    stored = db.get(AnalysisRun, UUID(first["analysis_run"]["id"]))
+    assert stored.result_payload == payload
+    assert stored.result_payload.get("cognitive_impact") == debug["cognitive_impact"]

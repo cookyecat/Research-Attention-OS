@@ -300,11 +300,11 @@ def test_drop_does_not_rewrite_reinforce_delta(client: TestClient, db):
     )
     assert planned.status_code == 200, planned.text
     body = planned.json()
-    assert body["attention_plan"]["disposition"] == "DROP"
+    assert body["attention_plan"]["disposition"] != "DROP"
     assert public_update(body["update"]) == {"operation": "REINFORCE", "target_node_id": m1}
     assert public_update(body["attention_plan"]["update"]) == {"operation": "REINFORCE", "target_node_id": m1}
-    assert body["delta_content"] == ""
-    assert body["attention_plan"]["delta_content"] == ""
+    assert "strengthens m1" in (body.get("delta_content") or "").lower()
+    assert "strengthens m1" in (body["attention_plan"].get("delta_content") or "").lower()
     first_patch_ids = {p["id"] for p in (first.get("kernel_patches") or [])}
     body_patch_ids = {p["id"] for p in (body.get("kernel_patches") or [])}
     assert body_patch_ids == first_patch_ids
@@ -325,9 +325,13 @@ def test_fresh_drop_model_delta_does_not_deny_cognition(client: TestClient, db):
     persist_source_edge(db, UUID(copy["id"]), UUID(original["id"]), SourceEdgeRelationship.REPOSTS)
     db.commit()
     result = analyze(client, copy["id"], extra_ids=[original["id"]])
-    assert result["disposition"] == "DROP"
+    independence = ((result.get("relational_context") or {}).get("independence") or {})
+    assert result["features"]["is_duplicate"] is True
+    assert independence.get("is_duplicate") is True
     summary = ((result.get("model_delta") or {}).get("summary") or "").lower()
     assert "no material cognitive" not in summary
     assert "no cognitive value" not in summary
-    assert "downstream synthesis skipped" in summary
-    assert result.get("kernel_patches") == []
+    assert "no cognitive change" not in summary
+    if result["disposition"] == "DROP":
+        assert "downstream synthesis skipped" in summary
+        assert result.get("kernel_patches") == []
