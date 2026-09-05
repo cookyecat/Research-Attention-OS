@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from uuid import UUID, uuid4
 
+import pytest
 from fastapi.testclient import TestClient
 
 from app.enums import CognitiveEffectKind, Disposition, ExpectedOutput, Urgency
@@ -190,6 +191,33 @@ def test_zero_magnitude_open_new_is_not_a_positive_delta():
     plan = route(_features(), assessment=assessment, matches=[])
     assert plan.disposition == Disposition.DROP
     assert plan.expected_output == ExpectedOutput.NONE
+
+
+@pytest.mark.parametrize(
+    "importance,expected",
+    [
+        (0.20, Disposition.WATCH),
+        (0.50, Disposition.WATCH),
+        (0.90, Disposition.ENGAGE),
+    ],
+)
+def test_reinforce_target_importance_controls_engage_vs_watch(importance, expected):
+    match = _match("BELIEF")
+    assessment = _assessment(
+        _effect(
+            match,
+            CognitiveEffectKind.REINFORCE,
+            change_magnitude=0.7,
+            epistemic_strength=0.6,
+            target_importance=importance,
+        )
+    )
+    plan = route(
+        _features(threatens_active_work=False, foundational_paper=False, high_quality_technical=False),
+        assessment=assessment,
+        matches=[match],
+    )
+    assert plan.disposition == expected
 
 
 def test_exploration_candidate_without_open_new_is_not_attention_authority():

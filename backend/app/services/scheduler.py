@@ -364,7 +364,7 @@ def _cognitive_disposition(features: SchedulerFeatures, primary, matches: list[K
         )
 
     meaningful = change >= MEANINGFUL_CHANGE
-    important = importance >= 0.55 or synth or challenge
+    important = importance >= 0.55 or challenge
     if targeted and meaningful and important:
         reason_parts: list[str] = [
             "Material cognitive effect with meaningful change magnitude on an important Kernel target."
