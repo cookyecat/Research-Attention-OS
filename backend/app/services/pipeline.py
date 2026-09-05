@@ -283,7 +283,7 @@ def _execute_authorized_artifacts(
     features,
     nodes,
     assessment,
-    links,
+    evidence_link_ids: list[str],
 ) -> tuple[ModelDelta, list]:
     if authorized == ExpectedOutput.SUMMARY:
         return (
@@ -296,7 +296,6 @@ def _execute_authorized_artifacts(
         delta = provider.propose_model_delta(
             blob, extraction, matches, features, nodes, assessment=assessment
         )
-        evidence_ids = [str(link.id) for link in links]
         return (
             delta,
             provider.propose_patches(
@@ -305,12 +304,129 @@ def _execute_authorized_artifacts(
                 matches,
                 features,
                 nodes,
-                evidence_ids,
+                evidence_link_ids,
                 assessment=assessment,
                 extraction=extraction,
             ),
         )
     return _placeholder_delta(authorized, features), []
+
+
+def _fulfill_watch_obligation(
+    db: Session,
+    *,
+    draft,
+    source: Source,
+    matches: list[KernelMatch],
+    plan: AttentionPlan,
+    analysis_run_id,
+) -> list[Watch]:
+    """Create at least one Watch from the Plan's own watch semantics."""
+    triggers = list(draft.watch_triggers or ["NEW_EVIDENCE"])
+    title = next((m.title for m in matches if m.title), None)
+    target_ref = title or source.title or str(source.id)
+    watch = Watch(
+        target_type="KERNEL" if matches else "SOURCE",
+        target_ref=str(target_ref),
+        status="ACTIVE",
+        created_reason=draft.reason or "AttentionPlan authorized WATCH.",
+        kernel_target_ids=[str(m.node_id) for m in matches],
+        analysis_run_id=analysis_run_id,
+        attention_plan_id=plan.id,
+    )
+    db.add(watch)
+    db.flush()
+    for trig in triggers:
+        db.add(WatchTrigger(watch_id=watch.id, trigger_type=str(trig), trigger_config={}))
+    return [watch]
+
+
+def _persist_explicit_watch_override(
+    db: Session,
+    *,
+    suggestions: list[dict],
+    matches: list[KernelMatch],
+    plan: AttentionPlan,
+    analysis_run_id,
+) -> list[Watch]:
+    """Caller override. Not Attention Policy authorization."""
+    created: list[Watch] = []
+    kernel_ids = [str(m.node_id) for m in matches]
+    for sug in suggestions:
+        watch = Watch(
+            target_type=sug["target_type"],
+            target_ref=sug["target_ref"],
+            status="ACTIVE",
+            created_reason=sug["created_reason"],
+            kernel_target_ids=kernel_ids,
+            analysis_run_id=analysis_run_id,
+            attention_plan_id=plan.id,
+        )
+        db.add(watch)
+        db.flush()
+        for trig in sug.get("triggers") or ["NEW_EVIDENCE"]:
+            db.add(WatchTrigger(watch_id=watch.id, trigger_type=str(trig), trigger_config={}))
+        created.append(watch)
+    return created
+
+
+def _persist_authorized_artifacts(
+    db: Session,
+    *,
+    authorized: ExpectedOutput,
+    patch_drafts: list,
+    draft,
+    source: Source,
+    matches: list[KernelMatch],
+    plan: AttentionPlan,
+    analysis_run_id,
+    persist_suggested_watches: bool,
+    watch_suggestions: list[dict],
+) -> tuple[list[KernelPatch], list[Watch]]:
+    patches: list[KernelPatch] = []
+    if authorized == ExpectedOutput.KERNEL_PATCH:
+        for pd in patch_drafts:
+            patches.append(
+                create_patch(
+                    db,
+                    target_object_type=pd.target_object_type,
+                    target_object_id=pd.target_object_id,
+                    change_type=pd.change_type,
+                    current_state=pd.current_state,
+                    proposed_state=pd.proposed_state,
+                    reasoning=pd.reasoning,
+                    evidence_link_ids=pd.evidence_link_ids,
+                    suggested_confidence_change=pd.suggested_confidence_change,
+                    analysis_run_id=analysis_run_id,
+                    attention_plan_id=plan.id,
+                )
+            )
+    created_watches: list[Watch] = []
+    if authorized == ExpectedOutput.WATCH:
+        created_watches = _fulfill_watch_obligation(
+            db, draft=draft, source=source, matches=matches, plan=plan, analysis_run_id=analysis_run_id
+        )
+    elif persist_suggested_watches:
+        created_watches = _persist_explicit_watch_override(
+            db,
+            suggestions=watch_suggestions,
+            matches=matches,
+            plan=plan,
+            analysis_run_id=analysis_run_id,
+        )
+    debug = dict(plan.score_debug or {})
+    debug["authorized_artifacts"] = {
+        "expected_output": authorized.value if isinstance(authorized, ExpectedOutput) else str(authorized),
+        "kernel_patch_ids": [str(p.id) for p in patches],
+        "watch_ids": [str(w.id) for w in created_watches],
+        "explicit_watch_override": bool(persist_suggested_watches and authorized != ExpectedOutput.WATCH),
+        "policy_authorized_watch": authorized == ExpectedOutput.WATCH,
+    }
+    plan.score_debug = debug
+    from sqlalchemy.orm.attributes import flag_modified
+
+    flag_modified(plan, "score_debug")
+    return patches, created_watches
 
 
 def run_pipeline(
@@ -534,41 +650,21 @@ def run_pipeline(
             features=features,
             nodes=nodes,
             assessment=assessment,
-            links=links,
+            evidence_link_ids=[str(link.id) for link in links],
         )
-        patches: list[KernelPatch] = []
-        if authorized == ExpectedOutput.KERNEL_PATCH:
-            for pd in patch_drafts:
-                patches.append(
-                    create_patch(
-                        db,
-                        target_object_type=pd.target_object_type,
-                        target_object_id=pd.target_object_id,
-                        change_type=pd.change_type,
-                        current_state=pd.current_state,
-                        proposed_state=pd.proposed_state,
-                        reasoning=pd.reasoning,
-                        evidence_link_ids=pd.evidence_link_ids,
-                        suggested_confidence_change=pd.suggested_confidence_change,
-                        analysis_run_id=run.id,
-                    )
-                )
         watch_suggestions = suggest_watches(blob, features, delta)
-        created_watches: list[Watch] = []
-        if persist_suggested_watches or authorized == ExpectedOutput.WATCH:
-            for sug in watch_suggestions:
-                watch = Watch(
-                    target_type=sug["target_type"],
-                    target_ref=sug["target_ref"],
-                    status="ACTIVE",
-                    created_reason=sug["created_reason"],
-                    kernel_target_ids=[str(m.node_id) for m in matches],
-                )
-                db.add(watch)
-                db.flush()
-                for trig in sug["triggers"]:
-                    db.add(WatchTrigger(watch_id=watch.id, trigger_type=trig, trigger_config={}))
-                created_watches.append(watch)
+        patches, created_watches = _persist_authorized_artifacts(
+            db,
+            authorized=authorized,
+            patch_drafts=patch_drafts,
+            draft=draft,
+            source=source,
+            matches=matches,
+            plan=plan,
+            analysis_run_id=run.id,
+            persist_suggested_watches=persist_suggested_watches,
+            watch_suggestions=watch_suggestions,
+        )
         db.flush()
         fallback_used = bool(getattr(provider, "fallback_used", False))
         stage_provenance = getattr(provider, "stage_provenance", None)
@@ -651,7 +747,14 @@ def _reschedule(
     persist_suggested_watches: bool = False,
     runtime_context_id: UUID | None = None,
 ) -> dict:
+    from app.cognitive.factory import get_provider
     from app.services.analysis_runs import hydrate_run, plan_public
+    from app.services.cognitive_impact import assessment_from_dict
+    from app.services.impact_input import (
+        extraction_from_snapshot,
+        kernel_nodes_from_snapshot,
+        matches_from_snapshot,
+    )
     from app.services.scheduler import SchedulerFeatures, matches_from_debug
 
     stored_payload = dict(run.result_payload or {})
@@ -666,8 +769,25 @@ def _reschedule(
     debug_matches = orig_debug.get("matches")
     if not debug_matches:
         debug_matches = ((payload.get("attention_plan") or {}).get("score_debug") or {}).get("matches")
-    matches = matches_from_debug(debug_matches)
-    draft = validate_plan(route(features, runtime, assessment=impact, matches=matches))
+    snapshot = stored_payload.get("impact_input") if isinstance(stored_payload.get("impact_input"), dict) else {}
+    matches = matches_from_snapshot(snapshot) if snapshot.get("matches") else matches_from_debug(debug_matches)
+    assessment = assessment_from_dict(impact) if not hasattr(impact, "effects") else impact
+    extraction = extraction_from_snapshot(snapshot) if snapshot else extraction_from_snapshot({"extraction": {}})
+    blob = str(snapshot.get("source_text") or source.content_text or "")
+    live = {n.id: n for n in _active_kernel(db)}
+    nodes = []
+    for match in matches:
+        if match.node_id in live:
+            nodes.append(live[match.node_id])
+    for standin in kernel_nodes_from_snapshot(snapshot):
+        if standin.id not in {n.id for n in nodes}:
+            nodes.append(live.get(standin.id, standin))
+    if not nodes:
+        nodes = list(live.values())
+    evidence_link_ids = [
+        str(item["id"]) for item in (stored_payload.get("evidence_links") or []) if isinstance(item, dict) and item.get("id")
+    ]
+    draft = validate_plan(route(features, runtime, assessment=assessment or impact, matches=matches))
     plan = AttentionPlan(
         candidate_type=CandidateType.SOURCE,
         candidate_id=source.id,
@@ -675,7 +795,7 @@ def _reschedule(
         processing_modes=[],
         urgency=draft.urgency,
         cognitive_budget_minutes=draft.cognitive_budget_minutes,
-        kernel_target_ids=(payload.get("attention_plan") or {}).get("kernel_target_ids") or [],
+        kernel_target_ids=[str(m.node_id) for m in matches] or (payload.get("attention_plan") or {}).get("kernel_target_ids") or [],
         expected_output=draft.expected_output,
         reason=draft.reason,
         watch_after_processing=draft.watch_after_processing,
@@ -685,9 +805,36 @@ def _reschedule(
         runtime_snapshot=_snapshot_runtime(runtime),
         analysis_run_id=run.id,
         created_at=datetime.now(timezone.utc),
-        score_debug=orig_debug or (payload.get("attention_plan") or {}).get("score_debug") or {},
+        score_debug=dict(orig_debug or (payload.get("attention_plan") or {}).get("score_debug") or {}),
     )
     db.add(plan)
+    db.flush()
+    authorized = _expected_output(draft.expected_output)
+    provider = get_provider()
+    delta, patch_drafts = _execute_authorized_artifacts(
+        authorized,
+        provider=provider,
+        blob=blob,
+        extraction=extraction,
+        matches=matches,
+        features=features,
+        nodes=nodes,
+        assessment=assessment or impact,
+        evidence_link_ids=evidence_link_ids,
+    )
+    watch_suggestions = suggest_watches(blob, features, delta)
+    new_patches, new_watches = _persist_authorized_artifacts(
+        db,
+        authorized=authorized,
+        patch_drafts=patch_drafts,
+        draft=draft,
+        source=source,
+        matches=matches,
+        plan=plan,
+        analysis_run_id=run.id,
+        persist_suggested_watches=persist_suggested_watches,
+        watch_suggestions=watch_suggestions,
+    )
     db.flush()
     # Overlay latest plan on the HTTP response only. Never mutate completed AnalysisRun.
     response = dict(payload)
@@ -698,6 +845,13 @@ def _reschedule(
     response["update"] = public_plan["update"]
     response["delta_content"] = public_plan["delta_content"]
     response["disposition"] = public_plan["disposition"]
+    response["authorized_kernel_patches"] = [_patch_dict(p) for p in new_patches]
+    response["authorized_watches"] = [_watch_dict(w) for w in new_watches]
+    if authorized == ExpectedOutput.SUMMARY:
+        response["latest_model_delta"] = {
+            "summary": delta.summary,
+            "rationale": getattr(delta, "rationale", ""),
+        }
     assert run.result_payload == original_payload
     assert run.result_payload.get("attention_plan") == original_plan
     return response
@@ -785,10 +939,7 @@ def serialize_analysis(
         },
         "kernel_patches": [_patch_dict(p) for p in patches],
         "watch_suggestions": watch_suggestions,
-        "watches": [
-            {"id": str(w.id), "target_ref": w.target_ref, "status": w.status, "created_reason": w.created_reason}
-            for w in created_watches
-        ],
+        "watches": [_watch_dict(w) for w in created_watches],
         "features": features.as_dict(),
         "cognitive_impact": assessment.as_dict() if assessment is not None else None,
         "evidence_stage_skipped": bool(extraction.evidence_stage_skipped),
@@ -857,4 +1008,17 @@ def _patch_dict(p: KernelPatch) -> dict:
         "proposed_state": p.proposed_state,
         "current_state": p.current_state,
         "suggested_confidence_change": p.suggested_confidence_change,
+        "analysis_run_id": str(p.analysis_run_id) if p.analysis_run_id else None,
+        "attention_plan_id": str(p.attention_plan_id) if p.attention_plan_id else None,
+    }
+
+
+def _watch_dict(w: Watch) -> dict:
+    return {
+        "id": str(w.id),
+        "target_ref": w.target_ref,
+        "status": w.status,
+        "created_reason": w.created_reason,
+        "analysis_run_id": str(w.analysis_run_id) if w.analysis_run_id else None,
+        "attention_plan_id": str(w.attention_plan_id) if w.attention_plan_id else None,
     }

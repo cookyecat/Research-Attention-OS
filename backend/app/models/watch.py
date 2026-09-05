@@ -17,6 +17,8 @@ class Watch(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     status: Mapped[str] = mapped_column(String, nullable=False, default="ACTIVE")
     created_reason: Mapped[str] = mapped_column(Text, nullable=False)
     kernel_target_ids: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    analysis_run_id: Mapped[UUID | None] = mapped_column(Uuid, ForeignKey("analysis_runs.id"), nullable=True, index=True)
+    attention_plan_id: Mapped[UUID | None] = mapped_column(Uuid, ForeignKey("attention_plans.id"), nullable=True, index=True)
 
     triggers: Mapped[list["WatchTrigger"]] = relationship(back_populates="watch", cascade="all, delete-orphan")
 

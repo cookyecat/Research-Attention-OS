@@ -40,7 +40,7 @@ export default function InboxPage() {
       }
       const analysis = await api<{ source_id: string }>("/analysis/run", {
         method: "POST",
-        body: JSON.stringify({ source_id: source.id, persist_suggested_watches: true }),
+        body: JSON.stringify({ source_id: source.id }),
       });
       router.push(`/attention?source=${analysis.source_id}`);
     } catch (e) {
