@@ -1,0 +1,655 @@
+# RAOS Oracle-Δ Attention Policy — Counterfactual Gold v1
+#
+# Human disposition labels were elicited before running the production policy.
+# FrozenDelta numeric values are controlled experimental translations of the
+# qualitative questionnaire scenarios; they are not model predictions.
+#
+# Questionnaire mapping:
+#   A=DROP, B=AWARE, C=WATCH, D=ENGAGE
+#
+# Production Attention Policy remains unchanged. Run only after this Gold file
+# is committed:
+#   python eval/live/run_live_eval.py --oracle-only \
+#     --manifest eval/live/manifest.policy_counterfactual.v1.yaml
+
+name: raos-oracle-delta-policy-counterfactual-v1
+cases:
+  # ---------------------------------------------------------------------------
+  # Group 1 — Δ=NONE. Test whether awareness value exists without a Kernel delta.
+  # ---------------------------------------------------------------------------
+  - id: policy-cf-none-01
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: DROP
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Q1. Unrelated small AI-company CEO change; no research or decision impact."
+
+  - id: policy-cf-none-02
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: AWARE
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Q2. Important organization change at a long-followed frontier lab; worth knowing, no current cognitive change."
+
+  - id: policy-cf-none-03
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: AWARE
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Q3. Popular model minor upgrade; useful to know, no current model change."
+
+  - id: policy-cf-none-04
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: AWARE
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Q4. Viral robotics marketing release with no new evidence; awareness only."
+
+  - id: policy-cf-none-05
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: DROP
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Q5. Benchmark maintenance-team change with no current technical or rule change."
+
+  - id: policy-cf-none-06
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: AWARE
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    runtime_context: null
+    notes: "Q6. Fifth media retelling of an already-read original robotics release; no new cognitive change."
+
+  # ---------------------------------------------------------------------------
+  # Group 2 — REINFORCE. Q7-Q9 isolate target importance; Q10-Q12 isolate change.
+  # ---------------------------------------------------------------------------
+  - id: policy-cf-reinforce-01
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: WATCH
+      update:
+        operation: REINFORCE
+        target_node_id: B1
+      delta_content: null
+    frozen_delta:
+      operation: REINFORCE
+      target_node_id: B1
+      target_type: BELIEF
+      change_magnitude: 0.70
+      epistemic_strength: 0.85
+      target_importance: 0.20
+      reason: null
+    runtime_context: null
+    notes: "Q7. Strong reliable support for a peripheral research judgment."
+
+  - id: policy-cf-reinforce-02
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: WATCH
+      update:
+        operation: REINFORCE
+        target_node_id: B1
+      delta_content: null
+    frozen_delta:
+      operation: REINFORCE
+      target_node_id: B1
+      target_type: BELIEF
+      change_magnitude: 0.70
+      epistemic_strength: 0.85
+      target_importance: 0.50
+      reason: null
+    runtime_context: null
+    notes: "Q8. Same strong support, related but non-core judgment. User rationale: no deep attention now, but preserve future research potential."
+
+  - id: policy-cf-reinforce-03
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: ENGAGE
+      update:
+        operation: REINFORCE
+        target_node_id: B1
+      delta_content: null
+    frozen_delta:
+      operation: REINFORCE
+      target_node_id: B1
+      target_type: BELIEF
+      change_magnitude: 0.70
+      epistemic_strength: 0.85
+      target_importance: 0.90
+      reason: null
+    runtime_context: null
+    notes: "Q9. Same strong support, now for a core research judgment."
+
+  - id: policy-cf-reinforce-04
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: AWARE
+      update:
+        operation: REINFORCE
+        target_node_id: M1
+      delta_content: null
+    frozen_delta:
+      operation: REINFORCE
+      target_node_id: M1
+      target_type: MODEL
+      change_magnitude: 0.20
+      epistemic_strength: 0.85
+      target_importance: 0.90
+      reason: null
+    runtime_context: null
+    notes: "Q10. Small reinforcement of an important/core model; little change to prior view."
+
+  - id: policy-cf-reinforce-05
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: WATCH
+      update:
+        operation: REINFORCE
+        target_node_id: M1
+      delta_content: null
+    frozen_delta:
+      operation: REINFORCE
+      target_node_id: M1
+      target_type: MODEL
+      change_magnitude: 0.55
+      epistemic_strength: 0.85
+      target_importance: 0.90
+      reason: null
+    runtime_context: null
+    notes: "Q11. Material reinforcement of the same important/core model."
+
+  - id: policy-cf-reinforce-06
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: ENGAGE
+      update:
+        operation: REINFORCE
+        target_node_id: M1
+      delta_content: null
+    frozen_delta:
+      operation: REINFORCE
+      target_node_id: M1
+      target_type: MODEL
+      change_magnitude: 0.85
+      epistemic_strength: 0.85
+      target_importance: 0.90
+      reason: null
+    runtime_context: null
+    notes: "Q12. Strong new result moves a core model toward high confidence. User rationale: immediate instrumental and positive confirmation value."
+
+  # ---------------------------------------------------------------------------
+  # Group 3 — CHALLENGE. Q13-Q15 isolate importance; Q16-Q18 vary challenge size.
+  # ---------------------------------------------------------------------------
+  - id: policy-cf-challenge-01
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: WATCH
+      update:
+        operation: CHALLENGE
+        target_node_id: B1
+      delta_content: null
+    frozen_delta:
+      operation: CHALLENGE
+      target_node_id: B1
+      target_type: BELIEF
+      change_magnitude: 0.65
+      epistemic_strength: 0.75
+      target_importance: 0.20
+      reason: null
+    runtime_context: null
+    notes: "Q13. Credible conflict with a peripheral judgment."
+
+  - id: policy-cf-challenge-02
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: ENGAGE
+      update:
+        operation: CHALLENGE
+        target_node_id: B1
+      delta_content: null
+    frozen_delta:
+      operation: CHALLENGE
+      target_node_id: B1
+      target_type: BELIEF
+      change_magnitude: 0.65
+      epistemic_strength: 0.75
+      target_importance: 0.50
+      reason: null
+    runtime_context: null
+    notes: "Q14. Same conflict with a moderately important judgment."
+
+  - id: policy-cf-challenge-03
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: ENGAGE
+      update:
+        operation: CHALLENGE
+        target_node_id: B1
+      delta_content: null
+    frozen_delta:
+      operation: CHALLENGE
+      target_node_id: B1
+      target_type: BELIEF
+      change_magnitude: 0.65
+      epistemic_strength: 0.75
+      target_importance: 0.90
+      reason: null
+    runtime_context: null
+    notes: "Q15. Same conflict with a core hypothesis."
+
+  - id: policy-cf-challenge-04
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: WATCH
+      update:
+        operation: CHALLENGE
+        target_node_id: M1
+      delta_content: null
+    frozen_delta:
+      operation: CHALLENGE
+      target_node_id: M1
+      target_type: MODEL
+      change_magnitude: 0.20
+      epistemic_strength: 0.45
+      target_importance: 0.90
+      reason: null
+    runtime_context: null
+    notes: "Q16. Small anomaly against a core model. User rationale: low present processing value but high tail option value; watch follow-up evidence."
+
+  - id: policy-cf-challenge-05
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: ENGAGE
+      update:
+        operation: CHALLENGE
+        target_node_id: M1
+      delta_content: null
+    frozen_delta:
+      operation: CHALLENGE
+      target_node_id: M1
+      target_type: MODEL
+      change_magnitude: 0.60
+      epistemic_strength: 0.75
+      target_importance: 0.90
+      reason: null
+    runtime_context: null
+    notes: "Q17. Good experiment suggests the core model needs qualification."
+
+  - id: policy-cf-challenge-06
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: ENGAGE
+      update:
+        operation: CHALLENGE
+        target_node_id: M1
+      delta_content: null
+    frozen_delta:
+      operation: CHALLENGE
+      target_node_id: M1
+      target_type: MODEL
+      change_magnitude: 0.90
+      epistemic_strength: 0.95
+      target_importance: 0.90
+      reason: null
+    runtime_context: null
+    notes: "Q18. Multiple independent high-quality experiments conflict with a core assumption."
+
+  # ---------------------------------------------------------------------------
+  # Group 4 — OPEN_NEW. New branches with different coupling/evidence/option value.
+  # ---------------------------------------------------------------------------
+  - id: policy-cf-open-new-01
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: AWARE
+      update:
+        operation: OPEN_NEW
+        target_node_id: null
+      delta_content: null
+    frozen_delta:
+      operation: OPEN_NEW
+      target_node_id: null
+      target_type: null
+      change_magnitude: 0.25
+      epistemic_strength: 0.40
+      target_importance: 0.15
+      reason: null
+    runtime_context: null
+    notes: "Q19. Interesting new concept far from current field with little action value. User rationale: awareness is enough; no ongoing attention investment."
+
+  - id: policy-cf-open-new-02
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: WATCH
+      update:
+        operation: OPEN_NEW
+        target_node_id: null
+      delta_content: null
+    frozen_delta:
+      operation: OPEN_NEW
+      target_node_id: null
+      target_type: null
+      change_magnitude: 0.45
+      epistemic_strength: 0.30
+      target_importance: 0.50
+      reason: null
+    runtime_context: null
+    notes: "Q20. New idea somewhat related to current work, weak initial evidence; preserve optionality."
+
+  - id: policy-cf-open-new-03
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: ENGAGE
+      update:
+        operation: OPEN_NEW
+        target_node_id: null
+      delta_content: null
+    frozen_delta:
+      operation: OPEN_NEW
+      target_node_id: null
+      target_type: null
+      change_magnitude: 0.75
+      epistemic_strength: 0.35
+      target_importance: 0.90
+      reason: null
+    runtime_context: null
+    notes: "Q21. Highly relevant new direction; one strong demo only, no paper/code/independent validation."
+
+  - id: policy-cf-open-new-04
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: ENGAGE
+      update:
+        operation: OPEN_NEW
+        target_node_id: null
+      delta_content: null
+    frozen_delta:
+      operation: OPEN_NEW
+      target_node_id: null
+      target_type: null
+      change_magnitude: 0.75
+      epistemic_strength: 0.75
+      target_importance: 0.90
+      reason: null
+    runtime_context: null
+    notes: "Q22. Same highly relevant direction with formal paper and substantial data, no independent replication."
+
+  - id: policy-cf-open-new-05
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: ENGAGE
+      update:
+        operation: OPEN_NEW
+        target_node_id: null
+      delta_content: null
+    frozen_delta:
+      operation: OPEN_NEW
+      target_node_id: null
+      target_type: null
+      change_magnitude: 0.90
+      epistemic_strength: 0.95
+      target_importance: 0.95
+      reason: null
+    runtime_context: null
+    notes: "Q23. Highly relevant new direction with multiple independent evidence sources; may change experiments."
+
+  - id: policy-cf-open-new-06
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: ENGAGE
+      update:
+        operation: OPEN_NEW
+        target_node_id: null
+      delta_content: null
+    frozen_delta:
+      operation: OPEN_NEW
+      target_node_id: null
+      target_type: null
+      change_magnitude: 0.70
+      epistemic_strength: 0.35
+      target_importance: 0.85
+      reason: null
+    runtime_context: null
+    notes: "Q24. Cross-domain framework offers a genuinely new way to understand the current problem; high generative potential despite limited direct evidence."
+
+  # ---------------------------------------------------------------------------
+  # Group 5 — Runtime. Hold Δ fixed and change only runtime/capacity/task overlap.
+  # Frozen Δ for Q25-Q30: strong reinforcement of core MODEL M1.
+  # ---------------------------------------------------------------------------
+  - id: policy-cf-runtime-01
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: ENGAGE
+      update:
+        operation: REINFORCE
+        target_node_id: M1
+      delta_content: null
+    frozen_delta:
+      operation: REINFORCE
+      target_node_id: M1
+      target_type: MODEL
+      change_magnitude: 0.80
+      epistemic_strength: 0.85
+      target_importance: 0.90
+      reason: null
+    runtime_context:
+      current_task: null
+      session_topic: null
+      available_attention_minutes: 60
+      interruptibility: MEDIUM
+      cognitive_capacity: NORMAL
+      deadline_minutes: null
+    notes: "Q25. Normal capacity, no urgent task."
+
+  - id: policy-cf-runtime-02
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: WATCH
+      update:
+        operation: REINFORCE
+        target_node_id: M1
+      delta_content: null
+    frozen_delta:
+      operation: REINFORCE
+      target_node_id: M1
+      target_type: MODEL
+      change_magnitude: 0.80
+      epistemic_strength: 0.85
+      target_importance: 0.90
+      reason: null
+    runtime_context:
+      current_task: "ordinary material due tomorrow evening"
+      session_topic: null
+      available_attention_minutes: 30
+      interruptibility: LOW
+      cognitive_capacity: NORMAL
+      deadline_minutes: 1440
+    notes: "Q26. Ordinary material due tomorrow; low willingness to be interrupted, not a crisis."
+
+  - id: policy-cf-runtime-03
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: WATCH
+      update:
+        operation: REINFORCE
+        target_node_id: M1
+      delta_content: null
+    frozen_delta:
+      operation: REINFORCE
+      target_node_id: M1
+      target_type: MODEL
+      change_magnitude: 0.80
+      epistemic_strength: 0.85
+      target_importance: 0.90
+      reason: null
+    runtime_context:
+      current_task: camera-ready
+      session_topic: null
+      available_attention_minutes: 60
+      interruptibility: LOW
+      cognitive_capacity: NORMAL
+      deadline_minutes: 60
+    notes: "Q27. Camera-ready due in one hour; low interruptibility; new information does not directly affect submission."
+
+  - id: policy-cf-runtime-04
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: ENGAGE
+      update:
+        operation: REINFORCE
+        target_node_id: M1
+      delta_content: null
+    frozen_delta:
+      operation: REINFORCE
+      target_node_id: M1
+      target_type: MODEL
+      change_magnitude: 0.80
+      epistemic_strength: 0.85
+      target_importance: 0.90
+      reason: null
+    runtime_context:
+      current_task: "camera-ready; new evidence directly affects submission core technical judgment"
+      session_topic: "submission core technical judgment"
+      available_attention_minutes: 60
+      interruptibility: LOW
+      cognitive_capacity: NORMAL
+      deadline_minutes: 60
+    notes: "Q28. Same one-hour deadline, but the new information directly affects the submission's core technical judgment."
+
+  - id: policy-cf-runtime-05
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: AWARE
+      update:
+        operation: REINFORCE
+        target_node_id: M1
+      delta_content: null
+    frozen_delta:
+      operation: REINFORCE
+      target_node_id: M1
+      target_type: MODEL
+      change_magnitude: 0.80
+      epistemic_strength: 0.85
+      target_importance: 0.90
+      reason: null
+    runtime_context:
+      current_task: null
+      session_topic: null
+      available_attention_minutes: 60
+      interruptibility: MEDIUM
+      cognitive_capacity: LOW
+      deadline_minutes: null
+    notes: "Q29. No deadline, but severe fatigue / very low cognitive capacity."
+
+  - id: policy-cf-runtime-06
+    gold_status: LABELED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: WATCH
+      update:
+        operation: REINFORCE
+        target_node_id: M1
+      delta_content: null
+    frozen_delta:
+      operation: REINFORCE
+      target_node_id: M1
+      target_type: MODEL
+      change_magnitude: 0.80
+      epistemic_strength: 0.85
+      target_importance: 0.90
+      reason: null
+    runtime_context:
+      current_task: null
+      session_topic: null
+      available_attention_minutes: 5
+      interruptibility: MEDIUM
+      cognitive_capacity: NORMAL
+      deadline_minutes: null
+    notes: "Q30. No urgent deadline, but only about five minutes of research attention remain."
