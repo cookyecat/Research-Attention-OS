@@ -122,12 +122,12 @@ The same case can also be scored with Human Gold / frozen Δ fed directly to pro
 - **Production End-to-End** — Source → Extract → Locate → Impact Δ → Attention Policy
 - **Oracle-Δ Attention Policy** — gold/frozen Δ → production route()
 
-This separates Impact error from Attention Policy error. Human Gold may use `update: null`, including AWARE + null (Δ=NONE).
+This separates Impact error from Attention Policy error. Human Gold may use explicit `update: null`, including AWARE + null (Δ=NONE). Omitting `update` is not Δ=NONE.
 
 Oracle-Δ aggregate scores a case only when Δ is complete:
 
-- **Δ=NONE** — `update: null` is a complete definition and is scored (e.g. gold AWARE + null vs current `route()` DROP).
-- **Positive Δ** (`REINFORCE` / `CHALLENGE` / `OPEN_NEW`) — only a complete `FrozenDelta` is scored: `operation`, legal `target_node_id` / `target_type`, and `change_magnitude` / `epistemic_strength` / `target_importance` in `[0, 1]`.
+- **Δ=NONE** — only an explicit Human Gold `update: null` is a complete definition and is scored (e.g. gold AWARE + null vs current `route()` DROP). Omitting the `update` field is oracle-unscorable.
+- **Positive Δ** (`REINFORCE` / `CHALLENGE` / `OPEN_NEW`) — only a complete `FrozenDelta` is scored: `operation`, legal `target_node_id` / `target_type` that match the case `kernel_fixture` snapshot, and `change_magnitude` / `epistemic_strength` / `target_importance` in `[0, 1]`. `OPEN_NEW` requires both target fields to be null.
 - Human Gold with a public update and no complete FrozenDelta is **oracle-unscorable**: diagnostic output is kept, but it is excluded from Oracle accuracy / distance / false-drop / over-under aggregates. There are no synthetic magnitude defaults.
 
 `FrozenDelta` is a strict eval schema (`extra=forbid`). Unknown fields, magnitudes outside `[0, 1]`, illegal targets, and HumanGold.update vs FrozenDelta operation/target mismatch fail validation.

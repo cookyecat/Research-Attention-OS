@@ -2,8 +2,8 @@
 
 Does not call Extract, Locate, or Impact. Does not copy Scheduler thresholds.
 Positive Δ is scored only from a complete FrozenDelta. Human Gold public Update
-without FrozenDelta is diagnostic and oracle-unscorable. Δ=NONE (update null)
-is a complete definition and is scored.
+without FrozenDelta is diagnostic and oracle-unscorable. Δ=NONE requires an
+explicit Human Gold `update: null`; omitting `update` is unscorable.
 """
 
 from __future__ import annotations
@@ -15,7 +15,9 @@ from eval.live.schema import (
     FrozenDelta,
     HumanGold,
     PolicyRuntime,
+    assert_frozen_delta_matches_snapshot,
     assert_gold_frozen_consistent,
+    gold_has_explicit_none_update,
     gold_update_operation,
     is_complete_positive_frozen_delta,
 )
@@ -52,14 +54,16 @@ def compare_disposition(gold: str | None, pred: str | None) -> dict[str, Any]:
 
 
 def oracle_kind(gold: HumanGold | None, frozen: FrozenDelta | None) -> OracleKind:
-    """none = Δ=NONE scored; positive = complete FrozenDelta; unscorable = gold update only."""
+    """none = explicit update:null; positive = complete FrozenDelta; unscorable otherwise."""
     gold_op = gold_update_operation(gold)
     if is_complete_positive_frozen_delta(frozen):
         return "positive"
     if gold_op or (frozen is not None and frozen.operation is not None):
         return "unscorable"
-    if gold is not None and gold.disposition:
+    if gold is not None and gold.disposition and gold_has_explicit_none_update(gold):
         return "none"
+    if gold is not None and gold.disposition:
+        return "unscorable"
     return "skip"
 
 
@@ -143,11 +147,13 @@ def run_oracle_policy(
     *,
     frozen_delta: FrozenDelta | None = None,
     runtime_context: PolicyRuntime | None = None,
+    kernel_fixture: str | None = None,
 ) -> dict[str, Any]:
     """Call production route() + validate_plan() only when the Δ is complete."""
     from app.services.scheduler import route, validate_plan
 
     assert_gold_frozen_consistent(gold, frozen_delta)
+    assert_frozen_delta_matches_snapshot(frozen_delta, kernel_fixture)
     kind = oracle_kind(gold, frozen_delta)
     base = {
         "skipped_stages": ["extract", "locate", "impact"],
@@ -162,11 +168,12 @@ def run_oracle_policy(
             "used_production_route": False,
         }
     if kind == "unscorable":
-        reason = (
-            "positive Human Gold update requires a complete FrozenDelta"
-            if gold_update_operation(gold)
-            else "FrozenDelta is incomplete for Oracle-Δ scoring"
-        )
+        if gold_update_operation(gold):
+            reason = "positive Human Gold update requires a complete FrozenDelta"
+        elif gold is not None and gold.disposition and not gold_has_explicit_none_update(gold):
+            reason = "Human Gold omitted update; explicit update:null is required to score Δ=NONE"
+        else:
+            reason = "FrozenDelta is incomplete for Oracle-Δ scoring"
         return {
             **base,
             "disposition": None,

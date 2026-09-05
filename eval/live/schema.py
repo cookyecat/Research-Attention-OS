@@ -17,6 +17,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 from eval.live.kernel_snapshot import (
     kernel_snapshot_picker,
     resolve_snapshot_node_id,
+    snapshot_for_fixture,
     snapshot_node_by_id,
 )
 
@@ -229,7 +230,7 @@ class HumanGold(BaseModel):
                     data["disposition"] = "WATCH"
                 elif "SCAN" in modes:
                     data["disposition"] = "AWARE"
-        if not data.get("update"):
+        if "update" not in data:
             effects = [str(e) for e in (data.get("cognitive_effects") or []) if e]
             operation = _legacy_operation(effects)
             targets = [t for t in (data.get("kernel_targets") or []) if t]
@@ -320,8 +321,11 @@ class FrozenDelta(BaseModel):
                 raise ValueError(f"{op} requires target_node_id")
             if not self.target_type:
                 raise ValueError(f"{op} requires target_type")
-        if op == "OPEN_NEW" and self.target_node_id is not None:
-            raise ValueError("OPEN_NEW requires target_node_id to be null")
+        if op == "OPEN_NEW":
+            if self.target_node_id is not None:
+                raise ValueError("OPEN_NEW requires target_node_id to be null")
+            if self.target_type is not None:
+                raise ValueError("OPEN_NEW requires target_type to be null")
         return self
 
 
@@ -337,7 +341,7 @@ def is_complete_positive_frozen_delta(frozen: FrozenDelta | None) -> bool:
     if frozen.operation in ("REINFORCE", "CHALLENGE"):
         return bool(frozen.target_node_id and frozen.target_type)
     if frozen.operation == "OPEN_NEW":
-        return frozen.target_node_id is None
+        return frozen.target_node_id is None and frozen.target_type is None
     return False
 
 
@@ -345,6 +349,13 @@ def gold_update_operation(gold: HumanGold | None) -> str | None:
     if gold is None or gold.update is None:
         return None
     return gold.update.operation
+
+
+def gold_has_explicit_none_update(gold: HumanGold | None) -> bool:
+    """True only when Human Gold explicitly set update: null (not omitted)."""
+    if gold is None:
+        return False
+    return "update" in gold.model_fields_set and gold.update is None
 
 
 def gold_update_target(gold: HumanGold | None) -> str | None:
@@ -372,6 +383,25 @@ def assert_gold_frozen_consistent(gold: HumanGold | None, frozen: FrozenDelta | 
         )
     if gold_op == "OPEN_NEW" and (gold_tgt is not None or frozen_tgt is not None):
         raise ValueError("OPEN_NEW gold/frozen target_node_id must both be null")
+
+
+def assert_frozen_delta_matches_snapshot(frozen: FrozenDelta | None, fixture: str | None) -> None:
+    """Fail loud when FrozenDelta target id/type disagrees with the case snapshot."""
+    if frozen is None or frozen.operation is None:
+        return
+    snapshot_for_fixture(fixture)
+    if frozen.operation == "OPEN_NEW":
+        return
+    node = snapshot_node_by_id(frozen.target_node_id, fixture=fixture)
+    if node is None:
+        raise ValueError(
+            f"FrozenDelta target_node_id {frozen.target_node_id!r} is not in kernel_fixture {fixture or 'mvp'!r}"
+        )
+    if frozen.target_type != node.node_type:
+        raise ValueError(
+            f"FrozenDelta target_type {frozen.target_type!r} does not match snapshot "
+            f"{node.id} type {node.node_type!r} in kernel_fixture {fixture or 'mvp'!r}"
+        )
 
 
 class PolicyRuntime(BaseModel):
@@ -404,6 +434,7 @@ class LiveCase(BaseModel):
     @model_validator(mode="after")
     def _gold_frozen_consistent(self) -> LiveCase:
         assert_gold_frozen_consistent(self.human_gold, self.frozen_delta)
+        assert_frozen_delta_matches_snapshot(self.frozen_delta, self.kernel_fixture)
         return self
 
 

@@ -350,7 +350,12 @@ def _attach_oracle_policy(row: dict[str, Any], case: LiveCase) -> None:
     if gold is None and frozen is None:
         return
     try:
-        oracle = run_oracle_policy(gold, frozen_delta=frozen, runtime_context=case.runtime_context)
+        oracle = run_oracle_policy(
+            gold,
+            frozen_delta=frozen,
+            runtime_context=case.runtime_context,
+            kernel_fixture=case.kernel_fixture,
+        )
     except Exception as exc:
         row["oracle_policy"] = {"error": str(exc)[:1000], "used_production_route": False}
         return

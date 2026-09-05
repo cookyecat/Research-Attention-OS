@@ -63,12 +63,14 @@ human_gold:
 # when FrozenDelta is complete; public Update without FrozenDelta is oracle-unscorable.
 # frozen_delta:
 #   operation: REINFORCE|CHALLENGE|OPEN_NEW|null
-#   target_node_id: snapshot picker id | null (required for REINFORCE/CHALLENGE; null for OPEN_NEW)
-#   target_type: BELIEF|MODEL|QUESTION|DECISION|BOTTLENECK|PROJECT|… (required for REINFORCE/CHALLENGE)
+#   target_node_id: snapshot picker id | null (required for REINFORCE/CHALLENGE; must exist in kernel_fixture)
+#   target_type: must match that snapshot node's type (BELIEF|MODEL|QUESTION|DECISION|BOTTLENECK|PROJECT|GOAL|…)
+#                required for REINFORCE/CHALLENGE; must be null for OPEN_NEW
 #   change_magnitude: float in [0,1] | null
 #   epistemic_strength: float in [0,1] | null
 #   target_importance: float in [0,1] | null
 #   reason: string|null
+# Human Gold update:null (explicit) is Δ=NONE. Omitting update is oracle-unscorable.
 # runtime_context:
 #   current_task / interruptibility / cognitive_capacity / deadline_minutes
 

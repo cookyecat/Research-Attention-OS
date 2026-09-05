@@ -742,6 +742,199 @@ def test_aware_null_update_is_allowed_gold():
     assert gold_status_of(case) == "LABELED"
 
 
+def test_omitted_update_is_oracle_unscorable():
+    from eval.live.oracle_policy import attention_policy_eval_row, run_oracle_policy
+    from eval.live.report import compute_oracle_policy_metrics
+
+    gold = HumanGold.model_validate({"disposition": "ENGAGE"})
+    assert "update" not in gold.model_fields_set
+    assert gold.update is None
+    out = run_oracle_policy(gold)
+    assert out["scorable"] is False
+    assert out["used_production_route"] is False
+    assert out["disposition"] is None
+    assert "omitted update" in (out["unscorable_reason"] or "")
+    row = {
+        "id": "omitted-update",
+        "gold_status": "LABELED",
+        "human_gold": dump_human_gold(gold),
+        "oracle_policy": out,
+        "attention_policy_eval": attention_policy_eval_row(
+            gold=gold,
+            production_disposition=None,
+            production_update=None,
+            oracle=out,
+        ),
+    }
+    metrics = compute_oracle_policy_metrics([row])
+    assert metrics["n_scored"] == 0
+
+
+def test_explicit_null_update_is_oracle_scored_as_none_delta():
+    from eval.live.oracle_policy import attention_policy_eval_row, run_oracle_policy
+    from eval.live.report import compute_oracle_policy_metrics
+
+    gold = HumanGold.model_validate({"disposition": "ENGAGE", "update": None})
+    assert "update" in gold.model_fields_set
+    assert gold.update is None
+    out = run_oracle_policy(gold)
+    assert out["scorable"] is True
+    assert out["used_production_route"] is True
+    assert out["oracle_kind"] == "none"
+    assert out["disposition"] == "DROP"
+    row = {
+        "id": "explicit-null",
+        "gold_status": "LABELED",
+        "human_gold": dump_human_gold(gold),
+        "oracle_policy": out,
+        "attention_policy_eval": attention_policy_eval_row(
+            gold=gold,
+            production_disposition=None,
+            production_update=None,
+            oracle=out,
+        ),
+    }
+    metrics = compute_oracle_policy_metrics([row])
+    assert metrics["n_scored"] == 1
+    assert metrics["false_drop_rate"] == 1.0
+
+
+def test_frozen_delta_b1_belief_is_valid():
+    from eval.live.schema import FrozenDelta
+
+    case = LiveCase.model_validate(
+        {
+            "id": "b1-belief",
+            "kernel_fixture": "mvp",
+            "frozen_delta": {
+                "operation": "REINFORCE",
+                "target_node_id": "B1",
+                "target_type": "BELIEF",
+                "change_magnitude": 0.5,
+                "epistemic_strength": 0.5,
+                "target_importance": 0.5,
+            },
+        }
+    )
+    assert case.frozen_delta is not None
+    assert case.frozen_delta.target_type == "BELIEF"
+    FrozenDelta.model_validate(
+        {
+            "operation": "REINFORCE",
+            "target_node_id": "B1",
+            "target_type": "BELIEF",
+            "change_magnitude": 0.5,
+            "epistemic_strength": 0.5,
+            "target_importance": 0.5,
+        }
+    )
+
+
+def test_frozen_delta_b1_decision_fails_loud():
+    with pytest.raises(ValidationError):
+        LiveCase.model_validate(
+            {
+                "id": "b1-decision",
+                "kernel_fixture": "mvp",
+                "frozen_delta": {
+                    "operation": "REINFORCE",
+                    "target_node_id": "B1",
+                    "target_type": "DECISION",
+                    "change_magnitude": 0.5,
+                    "epistemic_strength": 0.5,
+                    "target_importance": 0.5,
+                },
+            }
+        )
+
+
+def test_frozen_delta_unknown_target_node_id_fails_loud():
+    with pytest.raises(ValidationError):
+        LiveCase.model_validate(
+            {
+                "id": "unknown-target",
+                "kernel_fixture": "mvp",
+                "frozen_delta": {
+                    "operation": "CHALLENGE",
+                    "target_node_id": "not-a-kernel-node",
+                    "target_type": "BELIEF",
+                    "change_magnitude": 0.5,
+                    "epistemic_strength": 0.5,
+                    "target_importance": 0.5,
+                },
+            }
+        )
+
+
+def test_frozen_delta_open_new_target_type_must_be_null():
+    from eval.live.schema import FrozenDelta
+
+    with pytest.raises(ValidationError):
+        FrozenDelta.model_validate(
+            {
+                "operation": "OPEN_NEW",
+                "target_node_id": None,
+                "target_type": "BELIEF",
+                "change_magnitude": 0.5,
+                "epistemic_strength": 0.5,
+                "target_importance": 0.5,
+            }
+        )
+
+
+def test_frozen_delta_target_type_follows_case_kernel_fixture(monkeypatch):
+    from eval.live import kernel_snapshot as ks
+
+    monkeypatch.setitem(
+        ks.KERNEL_SNAPSHOTS,
+        "other",
+        (ks.KernelSnapshotRef("B1", "Fixture-local node", "DECISION"),),
+    )
+    LiveCase.model_validate(
+        {
+            "id": "other-ok",
+            "kernel_fixture": "other",
+            "frozen_delta": {
+                "operation": "REINFORCE",
+                "target_node_id": "B1",
+                "target_type": "DECISION",
+                "change_magnitude": 0.5,
+                "epistemic_strength": 0.5,
+                "target_importance": 0.5,
+            },
+        }
+    )
+    with pytest.raises(ValidationError):
+        LiveCase.model_validate(
+            {
+                "id": "other-mvp-type",
+                "kernel_fixture": "other",
+                "frozen_delta": {
+                    "operation": "REINFORCE",
+                    "target_node_id": "B1",
+                    "target_type": "BELIEF",
+                    "change_magnitude": 0.5,
+                    "epistemic_strength": 0.5,
+                    "target_importance": 0.5,
+                },
+            }
+        )
+
+
+def test_omitted_update_does_not_call_production_route(monkeypatch):
+    import app.services.scheduler as scheduler_mod
+    from eval.live.oracle_policy import run_oracle_policy
+
+    def boom(*_a, **_k):
+        raise AssertionError("omitted update must not call production route()")
+
+    monkeypatch.setattr(scheduler_mod, "route", boom)
+    gold = HumanGold.model_validate({"disposition": "ENGAGE"})
+    out = run_oracle_policy(gold)
+    assert out["scorable"] is False
+    assert out["used_production_route"] is False
+
+
 def test_oracle_none_delta_is_drop():
     from eval.live.oracle_policy import run_oracle_policy
 
