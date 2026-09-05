@@ -22,14 +22,22 @@ unified models may be unsuitable for the fastest embodied-control loop.
 It argues that large unified models are necessary for high-frequency embodied motor control."""
 
 
-def _force_route(disposition: Disposition, expected: ExpectedOutput):
+def _force_route(
+    disposition: Disposition,
+    expected: ExpectedOutput,
+    *,
+    watch_after_processing: bool = False,
+):
     def _forced(*_a, **_k):
         return validate_plan(
             PlanDraft(
                 disposition=disposition,
                 expected_output=expected,
                 reason="forced attention plan execution test",
-                watch_triggers=["NEW_EVIDENCE", "PAPER_RELEASE"] if expected == ExpectedOutput.WATCH else [],
+                watch_after_processing=watch_after_processing,
+                watch_triggers=["NEW_EVIDENCE", "PAPER_RELEASE"]
+                if watch_after_processing or expected == ExpectedOutput.WATCH
+                else [],
                 cognitive_budget_minutes=1,
             )
         )
@@ -224,3 +232,93 @@ def test_persist_suggested_watches_is_explicit_override(client: TestClient, db, 
     artifacts = (result["attention_plan"].get("score_debug") or {}).get("authorized_artifacts") or {}
     assert artifacts.get("explicit_watch_override") is True
     assert artifacts.get("policy_authorized_watch") is False
+
+
+def _watches_for_plan(db, plan_id: UUID) -> list[Watch]:
+    return db.execute(select(Watch).where(Watch.attention_plan_id == plan_id)).scalars().all()
+
+
+def test_kernel_patch_with_watch_after_processing_creates_patch_and_watch(client: TestClient, db, monkeypatch):
+    import app.services.pipeline as pipeline_mod
+
+    monkeypatch.setattr(
+        pipeline_mod,
+        "route",
+        _force_route(Disposition.ENGAGE, ExpectedOutput.KERNEL_PATCH, watch_after_processing=True),
+    )
+    src = add_text(client, PATCH_SOURCE, title="patch-then-watch")
+    result = analyze(client, src["id"])
+    assert result["attention_plan"]["expected_output"] == "KERNEL_PATCH"
+    assert result["attention_plan"]["watch_after_processing"] is True
+    assert result["kernel_patches"]
+    assert all(p["status"] == "PROPOSED" for p in result["kernel_patches"])
+    watches = _watches_for_plan(db, UUID(result["attention_plan"]["id"]))
+    assert len(watches) >= 1
+    artifacts = (result["attention_plan"].get("score_debug") or {}).get("authorized_artifacts") or {}
+    assert artifacts.get("policy_authorized_watch") is True
+    assert artifacts.get("explicit_watch_override") is False
+    planted = deepcopy(db.get(AnalysisRun, UUID(result["analysis_run"]["id"])).result_payload)
+    db.expire_all()
+    run = db.get(AnalysisRun, UUID(result["analysis_run"]["id"]))
+    assert run.result_payload == planted
+
+
+def test_kernel_patch_without_watch_after_processing_creates_no_watch(client: TestClient, db, monkeypatch):
+    import app.services.pipeline as pipeline_mod
+
+    monkeypatch.setattr(
+        pipeline_mod,
+        "suggest_watches",
+        lambda *_a, **_k: [
+            {
+                "target_type": "METHOD",
+                "target_ref": "should-not-persist",
+                "created_reason": "heuristic",
+                "triggers": ["PAPER_RELEASE"],
+            }
+        ],
+    )
+    monkeypatch.setattr(
+        pipeline_mod,
+        "route",
+        _force_route(Disposition.ENGAGE, ExpectedOutput.KERNEL_PATCH, watch_after_processing=False),
+    )
+    src = add_text(client, PATCH_SOURCE, title="patch-no-watch")
+    result = analyze(client, src["id"])
+    assert result["attention_plan"]["expected_output"] == "KERNEL_PATCH"
+    assert result["attention_plan"]["watch_after_processing"] is False
+    assert result["kernel_patches"]
+    assert _watches_for_plan(db, UUID(result["attention_plan"]["id"])) == []
+
+
+def test_summary_with_watch_after_processing_creates_watch(client: TestClient, db, monkeypatch):
+    import app.services.pipeline as pipeline_mod
+
+    monkeypatch.setattr(pipeline_mod, "suggest_watches", lambda *_a, **_k: [])
+    monkeypatch.setattr(
+        pipeline_mod,
+        "route",
+        _force_route(Disposition.AWARE, ExpectedOutput.SUMMARY, watch_after_processing=True),
+    )
+    src = add_text(client, "A technical paper about motor intelligence latency.", title="summary-then-watch")
+    result = analyze(client, src["id"])
+    assert result["attention_plan"]["expected_output"] == "SUMMARY"
+    assert result["attention_plan"]["watch_after_processing"] is True
+    assert result["kernel_patches"] == []
+    assert result.get("model_delta")
+    watches = _watches_for_plan(db, UUID(result["attention_plan"]["id"]))
+    assert len(watches) >= 1
+
+
+def test_watch_expected_output_implies_watch_after_processing(client: TestClient, db, monkeypatch):
+    import app.services.pipeline as pipeline_mod
+
+    monkeypatch.setattr(pipeline_mod, "suggest_watches", lambda *_a, **_k: [])
+    monkeypatch.setattr(pipeline_mod, "route", _force_route(Disposition.WATCH, ExpectedOutput.WATCH))
+    src = add_text(client, "A technical paper about motor intelligence latency.", title="watch-primary")
+    result = analyze(client, src["id"])
+    assert result["attention_plan"]["expected_output"] == "WATCH"
+    assert result["attention_plan"]["watch_after_processing"] is True
+    assert result["kernel_patches"] == []
+    watches = _watches_for_plan(db, UUID(result["attention_plan"]["id"]))
+    assert len(watches) >= 1

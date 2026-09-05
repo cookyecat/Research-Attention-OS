@@ -526,7 +526,9 @@ def _default_watch_triggers(features: SchedulerFeatures, assessment=None, matche
 def validate_plan(draft: PlanDraft) -> PlanDraft:
     if draft.cognitive_budget_minutes is not None and draft.cognitive_budget_minutes < 0:
         raise ValueError("budget must be >= 0")
-    if draft.disposition == Disposition.WATCH and not draft.watch_triggers:
+    if draft.expected_output == ExpectedOutput.WATCH:
+        draft.watch_after_processing = True
+    if (draft.disposition == Disposition.WATCH or draft.watch_after_processing) and not draft.watch_triggers:
         draft.watch_triggers = ["NEW_EVIDENCE"]
     if draft.urgency == Urgency.PREEMPT and "interrupt" not in draft.reason.lower() and "preempt" not in draft.reason.lower():
         raise ValueError("PREEMPT requires explicit interruption justification")

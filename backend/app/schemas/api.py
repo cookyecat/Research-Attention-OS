@@ -41,7 +41,7 @@ class ExtractIn(BaseModel):
     source_id: UUID
     extra_source_ids: list[UUID] = Field(default_factory=list)
     # Explicit caller override. Ordinary analyze/plan paths must not use this to
-    # bypass ExpectedOutput.WATCH authorization.
+    # bypass watch_after_processing / ExpectedOutput.WATCH authorization.
     persist_suggested_watches: bool = False
 
 

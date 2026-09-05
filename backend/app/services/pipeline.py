@@ -329,7 +329,7 @@ def _fulfill_watch_obligation(
         target_type="KERNEL" if matches else "SOURCE",
         target_ref=str(target_ref),
         status="ACTIVE",
-        created_reason=draft.reason or "AttentionPlan authorized WATCH.",
+        created_reason=draft.reason or "AttentionPlan assumed future attention responsibility.",
         kernel_target_ids=[str(m.node_id) for m in matches],
         analysis_run_id=analysis_run_id,
         attention_plan_id=plan.id,
@@ -402,7 +402,8 @@ def _persist_authorized_artifacts(
                 )
             )
     created_watches: list[Watch] = []
-    if authorized == ExpectedOutput.WATCH:
+    assume_future = bool(getattr(draft, "watch_after_processing", False))
+    if assume_future:
         created_watches = _fulfill_watch_obligation(
             db, draft=draft, source=source, matches=matches, plan=plan, analysis_run_id=analysis_run_id
         )
@@ -419,8 +420,9 @@ def _persist_authorized_artifacts(
         "expected_output": authorized.value if isinstance(authorized, ExpectedOutput) else str(authorized),
         "kernel_patch_ids": [str(p.id) for p in patches],
         "watch_ids": [str(w.id) for w in created_watches],
-        "explicit_watch_override": bool(persist_suggested_watches and authorized != ExpectedOutput.WATCH),
-        "policy_authorized_watch": authorized == ExpectedOutput.WATCH,
+        "explicit_watch_override": bool(persist_suggested_watches and not assume_future),
+        "policy_authorized_watch": assume_future,
+        "watch_after_processing": assume_future,
     }
     plan.score_debug = debug
     from sqlalchemy.orm.attributes import flag_modified
