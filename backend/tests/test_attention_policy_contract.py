@@ -166,6 +166,32 @@ def test_weak_legal_open_new_reaches_attention_policy():
     assert plan.expected_output != ExpectedOutput.NONE
 
 
+def test_zero_magnitude_reinforce_is_not_a_positive_delta():
+    match = _match("BELIEF")
+    assessment = _assessment(_effect(match, CognitiveEffectKind.REINFORCE, change_magnitude=0.0))
+    assert select_primary_effect(assessment) is None
+    plan = route(_features(), assessment=assessment, matches=[match])
+    assert plan.disposition == Disposition.DROP
+    assert plan.expected_output == ExpectedOutput.NONE
+
+
+def test_zero_magnitude_challenge_is_not_a_positive_delta():
+    match = _match("MODEL")
+    assessment = _assessment(_effect(match, CognitiveEffectKind.CHALLENGE, change_magnitude=0.0))
+    assert select_primary_effect(assessment) is None
+    plan = route(_features(), assessment=assessment, matches=[match])
+    assert plan.disposition == Disposition.DROP
+    assert plan.expected_output == ExpectedOutput.NONE
+
+
+def test_zero_magnitude_open_new_is_not_a_positive_delta():
+    assessment = _assessment(_effect(None, CognitiveEffectKind.OPEN_NEW, change_magnitude=0.0))
+    assert select_primary_effect(assessment) is None
+    plan = route(_features(), assessment=assessment, matches=[])
+    assert plan.disposition == Disposition.DROP
+    assert plan.expected_output == ExpectedOutput.NONE
+
+
 def test_exploration_candidate_without_open_new_is_not_attention_authority():
     match = _match("PROJECT")
     assessment = _assessment(

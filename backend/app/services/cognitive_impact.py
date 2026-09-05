@@ -555,11 +555,16 @@ def select_primary_effect(assessment: CognitiveImpactAssessment | None) -> Cogni
 
     Primary = the coherent effect that best represents the largest useful
     cognitive change after absorbing the information. Magnitude ranks
-    legal positive effects; it does not erase Δ existence.
+    legal positive effects; it does not erase Δ existence. Zero magnitude
+    is not a positive Δ. MATERIAL_CHANGE_MIN is not applied here.
     """
     if assessment is None:
         return None
-    legal = [e for e in assessment.effects if _legal_public_effect(e)]
+    legal = [
+        e
+        for e in assessment.effects
+        if _legal_public_effect(e) and float(e.change_magnitude) > 0
+    ]
     if not legal:
         return None
     return max(legal, key=_primary_sort_key)
