@@ -7,7 +7,12 @@ from uuid import UUID, uuid4
 from fastapi.testclient import TestClient
 
 from app.enums import CognitiveEffectKind, Disposition, ExpectedOutput, Urgency
-from app.services.cognitive_impact import CognitiveEffect, CognitiveImpactAssessment
+from app.services.cognitive_impact import (
+    MATERIAL_CHANGE_MIN,
+    CognitiveEffect,
+    CognitiveImpactAssessment,
+    select_primary_effect,
+)
 from app.services.matching import KernelMatch
 from app.services.scheduler import PlanDraft, RuntimeView, SchedulerFeatures, route, validate_plan
 from tests.conftest import add_text, analyze
@@ -121,6 +126,44 @@ def test_deadline_cannot_invent_watch_from_none_delta():
     )
     assert plan.disposition == Disposition.DROP
     assert plan.expected_output == ExpectedOutput.NONE
+
+
+def test_weak_legal_reinforce_reaches_attention_policy():
+    match = _match("BELIEF")
+    effect = _effect(match, CognitiveEffectKind.REINFORCE, change_magnitude=0.12, epistemic_strength=0.3)
+    assert effect.change_magnitude < MATERIAL_CHANGE_MIN
+    assessment = _assessment(effect)
+    primary = select_primary_effect(assessment)
+    assert primary is not None
+    assert primary.operation == CognitiveEffectKind.REINFORCE
+    plan = route(_features(), assessment=assessment, matches=[match])
+    assert plan.disposition != Disposition.DROP
+    assert plan.expected_output != ExpectedOutput.NONE
+
+
+def test_weak_legal_challenge_reaches_attention_policy():
+    match = _match("MODEL")
+    effect = _effect(match, CognitiveEffectKind.CHALLENGE, change_magnitude=0.2, epistemic_strength=0.3)
+    assert effect.change_magnitude < MATERIAL_CHANGE_MIN
+    assessment = _assessment(effect)
+    primary = select_primary_effect(assessment)
+    assert primary is not None
+    assert primary.operation == CognitiveEffectKind.CHALLENGE
+    plan = route(_features(), assessment=assessment, matches=[match])
+    assert plan.disposition != Disposition.DROP
+    assert plan.expected_output != ExpectedOutput.NONE
+
+
+def test_weak_legal_open_new_reaches_attention_policy():
+    effect = _effect(None, CognitiveEffectKind.OPEN_NEW, change_magnitude=0.1, epistemic_strength=0.3)
+    assert effect.change_magnitude < MATERIAL_CHANGE_MIN
+    assessment = _assessment(effect)
+    primary = select_primary_effect(assessment)
+    assert primary is not None
+    assert primary.operation == CognitiveEffectKind.OPEN_NEW
+    plan = route(_features(), assessment=assessment, matches=[])
+    assert plan.disposition != Disposition.DROP
+    assert plan.expected_output != ExpectedOutput.NONE
 
 
 def test_exploration_candidate_without_open_new_is_not_attention_authority():

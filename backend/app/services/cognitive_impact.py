@@ -554,9 +554,12 @@ def select_primary_effect(assessment: CognitiveImpactAssessment | None) -> Cogni
     """The one CognitiveEffect that public Update and Attention Policy both use.
 
     Primary = the coherent effect that best represents the largest useful
-    cognitive change after absorbing the information.
+    cognitive change after absorbing the information. Magnitude ranks
+    legal positive effects; it does not erase Δ existence.
     """
-    legal = [e for e in material_effects(assessment) if _legal_public_effect(e)]
+    if assessment is None:
+        return None
+    legal = [e for e in assessment.effects if _legal_public_effect(e)]
     if not legal:
         return None
     return max(legal, key=_primary_sort_key)
