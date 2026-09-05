@@ -17,7 +17,7 @@ if str(BACKEND) not in sys.path:
     sys.path.insert(0, str(BACKEND))
 
 from eval.live.oracle_policy import attention_policy_eval_row, compare_disposition, run_oracle_awareness, run_oracle_policy
-from eval.live.report import compute_metrics, compute_oracle_awareness_metrics, compute_oracle_policy_metrics, render_markdown
+from eval.live.report import compute_metrics, compute_oracle_awareness_report, compute_oracle_policy_metrics, render_markdown
 from eval.live.schema import LiveCase, LiveManifest, gold_status_of, dump_human_gold
 
 FALLBACK_STAGE_STATUSES = {"fallback", "rule-after-fallback"}
@@ -253,6 +253,8 @@ def run_case(case: LiveCase, *, dry_run: bool, db=None, oracle_only: bool = Fals
         "source_kind": case.source_kind,
         "cognitive_tasks": case.cognitive_tasks,
         "human_gold": dump_human_gold(case.human_gold),
+        "label_provenance": case.label_provenance,
+        "notes": case.notes,
         "dry_run": dry_run,
         "model": None,
         "provider_versions": None,
@@ -386,6 +388,7 @@ def _attach_oracle_policy(row: dict[str, Any], case: LiveCase) -> None:
     row["awareness_policy_eval"] = {
         "gold_disposition": gold.disposition if gold is not None else None,
         "oracle_awareness_disposition": awareness_disp,
+        "label_provenance": case.label_provenance,
         "oracle": compare_disposition(gold.disposition if gold is not None else None, awareness_disp),
     }
 
@@ -408,7 +411,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--oracle-only",
         action="store_true",
-        help="Skip Extract/Locate/Impact; run production route() on Human Gold / frozen Δ only",
+        help="Skip Extract/Locate/Impact; run production route() on Human Gold / frozen Δ / frozen awareness",
     )
     args = parser.parse_args(argv)
     if not args.dry_run and not args.oracle_only:
@@ -433,7 +436,7 @@ def main(argv: list[str] | None = None) -> int:
         "stage_scoped_scoring": summary.get("stage_scoped_scoring"),
     }
     summary["oracle_delta_attention_policy"] = compute_oracle_policy_metrics(rows)
-    summary["oracle_awareness_attention_policy"] = compute_oracle_awareness_metrics(rows)
+    summary["oracle_awareness_attention_policy"] = compute_oracle_awareness_report(rows)
     summary["timestamp"] = stamp
     summary["manifest"] = str(args.manifest)
     summary["dry_run"] = args.dry_run

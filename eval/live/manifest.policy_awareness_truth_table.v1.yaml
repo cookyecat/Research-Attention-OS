@@ -1,30 +1,31 @@
-# RAOS Oracle-Awareness Attention Policy — Counterfactual Gold v1
+# SYNTHETIC POLICY TRUTH TABLE
+# NOT HUMAN-ELICITED GOLD
 #
-# Tests whether three frozen non-cognitive situational-awareness signals are
-# sufficient for DROP ↔ AWARE when canonical Δ=NONE.
+# Complete 2×2×2 Boolean cube for Oracle-Awareness wiring tests only.
+# Expected labels are the candidate rule at Δ=NONE, not user judgments:
 #
-# Candidate policy (elicited from Human Gold; implemented in production route()):
-#   if Δ is NONE:
-#       AWARE iff event_significance and (domain_fit or attention_momentum)
-#       otherwise DROP
+#   AWARE iff event_significance and (domain_fit or attention_momentum)
+#   else DROP
 #
-# These signals are not CognitiveEffect / Δ. They must never create
-# REINFORCE / CHALLENGE / OPEN_NEW, and must never create WATCH or ENGAGE.
+# 8/8 exact match is NOT Human-Gold accuracy and is NOT evidence of
+# generalization. Duplicate D/S/M cells are not used here; see
+# eval/live/manifest.policy_awareness_elicited.v1.yaml for actual elicited Gold.
 #
-# The 8 cases are the Boolean cube of (domain_fit, event_significance,
-# attention_momentum). Notes keep the Group 1 elicitation language so Human
-# Gold provenance stays clear. Case 1 is the all-false cell (the elicitation
-# list duplicated the in-domain / insignificant / no-momentum cell as 1 and 5).
+# Purpose:
+#   - verify the Boolean candidate rule
+#   - verify production route() wiring
+#   - verify awareness cannot create WATCH / ENGAGE / cognitive writes
 #
-# Do not estimate D/S/M from source text. This experiment uses Oracle values only.
+# Production does not estimate D/S/M. Oracle injects frozen values only.
 #
 #   python eval/live/run_live_eval.py --oracle-only \
-#     --manifest eval/live/manifest.policy_awareness_counterfactual.v1.yaml
+#     --manifest eval/live/manifest.policy_awareness_truth_table.v1.yaml
 
-name: raos-oracle-awareness-policy-counterfactual-v1
+name: raos-oracle-awareness-synthetic-truth-table-v1
 cases:
-  - id: policy-aw-none-01
+  - id: policy-aw-truth-000
     gold_status: LABELED
+    label_provenance: SYNTHETIC_POLICY_TRUTH
     kernel_fixture: mvp
     human_gold:
       disposition: DROP
@@ -43,10 +44,11 @@ cases:
       event_significance: false
       attention_momentum: false
     runtime_context: null
-    notes: "Q1. Unrelated small AI-company CEO change; no research or decision impact."
+    notes: "SYNTHETIC cell D=false S=false M=false. Expected DROP by AWARE iff S and (D or M). Not Human-elicited."
 
-  - id: policy-aw-none-02
+  - id: policy-aw-truth-001
     gold_status: LABELED
+    label_provenance: SYNTHETIC_POLICY_TRUTH
     kernel_fixture: mvp
     human_gold:
       disposition: DROP
@@ -65,10 +67,11 @@ cases:
       event_significance: false
       attention_momentum: true
     runtime_context: null
-    notes: "Circulating attention without a significant event or domain fit; momentum alone is not awareness value."
+    notes: "SYNTHETIC cell D=false S=false M=true. Expected DROP. AttentionMomentum is not EventSignificance. Not Human-elicited."
 
-  - id: policy-aw-none-03
+  - id: policy-aw-truth-010
     gold_status: LABELED
+    label_provenance: SYNTHETIC_POLICY_TRUTH
     kernel_fixture: mvp
     human_gold:
       disposition: DROP
@@ -87,10 +90,11 @@ cases:
       event_significance: true
       attention_momentum: false
     runtime_context: null
-    notes: "A significant event outside the followed domain and without circulating attention; not worth knowing."
+    notes: "SYNTHETIC cell D=false S=true M=false. Expected DROP. Not Human-elicited."
 
-  - id: policy-aw-none-04
+  - id: policy-aw-truth-011
     gold_status: LABELED
+    label_provenance: SYNTHETIC_POLICY_TRUTH
     kernel_fixture: mvp
     human_gold:
       disposition: AWARE
@@ -109,10 +113,11 @@ cases:
       event_significance: true
       attention_momentum: true
     runtime_context: null
-    notes: "Q4. Viral robotics marketing release with no new evidence; awareness only."
+    notes: "SYNTHETIC cell D=false S=true M=true. Expected AWARE. Not Human-elicited."
 
-  - id: policy-aw-none-05
+  - id: policy-aw-truth-100
     gold_status: LABELED
+    label_provenance: SYNTHETIC_POLICY_TRUTH
     kernel_fixture: mvp
     human_gold:
       disposition: DROP
@@ -131,10 +136,11 @@ cases:
       event_significance: false
       attention_momentum: false
     runtime_context: null
-    notes: "Q5. Benchmark maintenance-team change with no current technical or rule change."
+    notes: "SYNTHETIC cell D=true S=false M=false. Expected DROP. Not Human-elicited."
 
-  - id: policy-aw-none-06
+  - id: policy-aw-truth-101
     gold_status: LABELED
+    label_provenance: SYNTHETIC_POLICY_TRUTH
     kernel_fixture: mvp
     human_gold:
       disposition: DROP
@@ -153,10 +159,11 @@ cases:
       event_significance: false
       attention_momentum: true
     runtime_context: null
-    notes: "Q6. Fifth media retelling of an already-read original robotics release; circulating in-domain attention without a significant new event."
+    notes: "SYNTHETIC cell D=true S=false M=true. Expected DROP. High momentum on a trivial event is not EventSignificance. Not Human-elicited."
 
-  - id: policy-aw-none-07
+  - id: policy-aw-truth-110
     gold_status: LABELED
+    label_provenance: SYNTHETIC_POLICY_TRUTH
     kernel_fixture: mvp
     human_gold:
       disposition: AWARE
@@ -175,10 +182,11 @@ cases:
       event_significance: true
       attention_momentum: false
     runtime_context: null
-    notes: "Q2. Important organization change at a long-followed frontier lab; worth knowing, no current cognitive change."
+    notes: "SYNTHETIC cell D=true S=true M=false. Expected AWARE. A later duplicate report of the same event would not lower EventSignificance. Not Human-elicited."
 
-  - id: policy-aw-none-08
+  - id: policy-aw-truth-111
     gold_status: LABELED
+    label_provenance: SYNTHETIC_POLICY_TRUTH
     kernel_fixture: mvp
     human_gold:
       disposition: AWARE
@@ -197,4 +205,4 @@ cases:
       event_significance: true
       attention_momentum: true
     runtime_context: null
-    notes: "Q3. Popular model minor upgrade; useful to know, no current model change."
+    notes: "SYNTHETIC cell D=true S=true M=true. Expected AWARE. Not Human-elicited."

@@ -24,6 +24,7 @@ from eval.live.kernel_snapshot import (
 KERNEL_SNAPSHOT_PICKER = kernel_snapshot_picker("mvp")
 
 GoldStatus = Literal["LABELED", "UNLABELED"]
+LabelProvenance = Literal["HUMAN_ELICITED", "SYNTHETIC_POLICY_TRUTH"]
 SourceKind = Literal[
     "news",
     "paper",
@@ -418,7 +419,17 @@ class PolicyRuntime(BaseModel):
 
 
 class FrozenAwareness(BaseModel):
-    """Eval-only Oracle-Awareness signals. Not Δ. Not SchedulerFeatures."""
+    """Eval-only Oracle D/S/M. Not Δ. Not SchedulerFeatures. Not estimated.
+
+    DomainFit: user-relative. Is this event inside the user's professional / awareness radar?
+    EventSignificance: event-relative. How consequential is the underlying external event?
+        This is NOT novelty or significance of the current reporting artifact.
+        A fifth media report of an important breakthrough may have near-zero report
+        novelty while EventSignificance remains high. Duplicate reporting is not
+        low EventSignificance. AttentionMomentum is not EventSignificance.
+    AttentionMomentum: crowd + temporal. Is external attention to the underlying event
+        materially rising or concentrated?
+    """
 
     model_config = ConfigDict(extra="forbid")
 
@@ -441,11 +452,17 @@ class LiveCase(BaseModel):
     frozen_delta: FrozenDelta | None = None
     frozen_awareness: FrozenAwareness | None = None
     runtime_context: PolicyRuntime | None = None
+    label_provenance: LabelProvenance | None = None
 
     @model_validator(mode="after")
     def _gold_frozen_consistent(self) -> LiveCase:
         assert_gold_frozen_consistent(self.human_gold, self.frozen_delta)
         assert_frozen_delta_matches_snapshot(self.frozen_delta, self.kernel_fixture)
+        if self.frozen_awareness is not None and self.label_provenance is None:
+            raise ValueError(
+                "frozen_awareness requires label_provenance "
+                "HUMAN_ELICITED or SYNTHETIC_POLICY_TRUTH"
+            )
         return self
 
 

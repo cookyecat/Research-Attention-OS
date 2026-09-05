@@ -74,11 +74,24 @@ human_gold:
 # runtime_context:
 #   current_task / interruptibility / cognitive_capacity / deadline_minutes
 #
-# Optional Oracle-Awareness (eval/live/manifest.policy_awareness_counterfactual.v1.yaml)
-# Frozen D/S/M is eval-only and not Δ. Oracle-Awareness injects these into production
-# route() with Δ=NONE. Production does not estimate them from source text.
+# Optional Oracle-Awareness. Frozen D/S/M is eval-only and not Δ.
+# Production does not estimate them. Oracle injects frozen values into route() with Δ=NONE.
+# label_provenance is required when frozen_awareness is set:
+#   HUMAN_ELICITED | SYNTHETIC_POLICY_TRUTH
+# Synthetic 8-cell cube: eval/live/manifest.policy_awareness_truth_table.v1.yaml
+# Human-elicited Gold: eval/live/manifest.policy_awareness_elicited.v1.yaml
+# Do not present synthetic truth-table accuracy as Human-Gold accuracy.
+#
+# DomainFit: user-relative. Inside the user's professional / awareness radar?
+# EventSignificance: event-relative. Consequentiality of the underlying external event.
+#   NOT novelty/significance of the current reporting artifact.
+#   Fifth media report of an important breakthrough → report novelty may be ~0,
+#   EventSignificance may remain high. Duplicate reporting ≠ low EventSignificance.
+# AttentionMomentum: crowd + temporal. External attention rising / concentrated?
+#   AttentionMomentum ≠ EventSignificance.
 # frozen_awareness:
 #   domain_fit: bool
 #   event_significance: bool
 #   attention_momentum: bool
+# label_provenance: HUMAN_ELICITED | SYNTHETIC_POLICY_TRUTH
 

@@ -522,3 +522,10 @@ def test_absent_awareness_preserves_none_delta_drop():
     plan = _route_none(awareness=None)
     assert plan.disposition == Disposition.DROP
     assert plan.expected_output == ExpectedOutput.NONE
+
+
+def test_scheduler_features_does_not_carry_awareness_signals():
+    fields = set(SchedulerFeatures.__dataclass_fields__)
+    assert "domain_fit" not in fields
+    assert "event_significance" not in fields
+    assert "attention_momentum" not in fields

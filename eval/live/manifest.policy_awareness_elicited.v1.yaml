@@ -1,0 +1,200 @@
+# HUMAN-ELICITED AWARENESS COUNTERFACTUAL v1
+#
+# Authoritative Human Gold for Oracle-Awareness. These are the eight
+# counterfactual scenarios the user actually answered. Duplicate D/S/M
+# cells are valid empirical data. This is NOT a Boolean truth table.
+#
+# Frozen D/S/M are Oracle-provided with the question. Production does not
+# estimate them. Δ=NONE; explicit update: null; neutral runtime.
+#
+# EventSignificance is the underlying external event, not report novelty.
+# AttentionMomentum is not EventSignificance.
+#
+#   python eval/live/run_live_eval.py --oracle-only \
+#     --manifest eval/live/manifest.policy_awareness_elicited.v1.yaml
+
+name: raos-oracle-awareness-elicited-v1
+cases:
+  - id: policy-aw-elicited-q1
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: DROP
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    frozen_awareness:
+      domain_fit: true
+      event_significance: false
+      attention_momentum: false
+    runtime_context: null
+    notes: "Q1. A very small AI startup with unknown founders/team has an ordinary executive leave. Almost no media discussion and no product or technical change."
+
+  - id: policy-aw-elicited-q2
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: DROP
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    frozen_awareness:
+      domain_fit: false
+      event_significance: false
+      attention_momentum: true
+    runtime_context: null
+    notes: "Q2. A mature small company in a traditional industry unrelated to the user's professional domain has an ordinary executive leave. By accident it becomes a multi-media hot topic, but there is no deeper industry consequence."
+
+  - id: policy-aw-elicited-q3
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: DROP
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    frozen_awareness:
+      domain_fit: false
+      event_significance: true
+      attention_momentum: false
+    runtime_context: null
+    notes: "Q3. In an important industry unrelated to the user's professional domain, a true leading company suddenly replaces its highly influential CEO. The event is important, but only a few reliable media outlets report it and it has not become a public hot topic."
+
+  - id: policy-aw-elicited-q4
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: AWARE
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    frozen_awareness:
+      domain_fit: false
+      event_significance: true
+      attention_momentum: true
+    runtime_context: null
+    notes: "Q4. In an important industry unrelated to the user's professional domain, a leading company replaces a highly influential CEO, and the event becomes major domestic and international mainstream news. It does not affect the user's current research or project."
+
+  - id: policy-aw-elicited-q5
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: DROP
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    frozen_awareness:
+      domain_fit: true
+      event_significance: false
+      attention_momentum: false
+    runtime_context: null
+    notes: "Q5. In AI / robotics, a known but unimportant small team makes a minor organizational change. The people are not notable, there is no technical change, and almost nobody discusses it."
+
+  - id: policy-aw-elicited-q6
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: DROP
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    frozen_awareness:
+      domain_fit: true
+      event_significance: false
+      attention_momentum: true
+    runtime_context: null
+    notes: "Q6. In AI / robotics, an otherwise unimportant small team makes a minor organizational change. The event still has little technical or strategic significance, but several media outlets the user normally follows suddenly report and discuss it."
+
+  - id: policy-aw-elicited-q7
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: AWARE
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    frozen_awareness:
+      domain_fit: true
+      event_significance: true
+      attention_momentum: false
+    runtime_context: null
+    notes: "Q7. At an OpenAI / DeepMind-level organization, a core research leader who materially affects technical direction suddenly leaves. The report is reliable but has not yet become a large media hot topic. There is still no evidence requiring a current cognitive-model update."
+
+  - id: policy-aw-elicited-q8
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    kernel_fixture: mvp
+    human_gold:
+      disposition: AWARE
+      update: null
+      delta_content: null
+    frozen_delta:
+      operation: null
+      target_node_id: null
+      target_type: null
+      change_magnitude: null
+      epistemic_strength: null
+      target_importance: null
+      reason: null
+    frozen_awareness:
+      domain_fit: true
+      event_significance: true
+      attention_momentum: true
+    runtime_context: null
+    notes: "Q8. At an OpenAI / DeepMind-level organization, a core research leader who materially affects technical direction leaves, and the event rapidly becomes a global AI-industry hot topic. There is still no concrete evidence requiring a current cognitive-model update."

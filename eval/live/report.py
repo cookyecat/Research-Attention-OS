@@ -471,33 +471,52 @@ def compute_oracle_policy_metrics(case_rows: list[dict[str, Any]]) -> dict[str, 
     }
 
 
-def compute_oracle_awareness_metrics(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
-    """Score production route() on Oracle-injected Δ=NONE + frozen awareness. Not Oracle-Δ."""
+def compute_oracle_awareness_metrics(
+    case_rows: list[dict[str, Any]],
+    *,
+    provenance: str,
+) -> dict[str, Any]:
+    """Score Oracle-Awareness for one label provenance. Never mix slices."""
+    notes = {
+        "SYNTHETIC_POLICY_TRUTH": (
+            "Synthetic Awareness Truth Table scores production route() wiring of "
+            "AWARE iff S and (D or M) at Δ=NONE. 8/8 is not Human-Gold accuracy "
+            "and is not evidence of generalization."
+        ),
+        "HUMAN_ELICITED": (
+            "Human-Elicited Awareness Counterfactual scores user-labeled scenarios "
+            "with frozen Oracle D/S/M. Duplicate D/S/M cells are valid empirical data. "
+            "This is not the synthetic Boolean cube."
+        ),
+    }
+    note = notes.get(
+        provenance,
+        "Oracle-Awareness scores production route() on Δ=NONE plus frozen D/S/M. Not Oracle-Δ.",
+    )
     labeled = [r for r in case_rows if r.get("gold_status") == "LABELED"]
     scored = []
     for row in labeled:
+        if row.get("label_provenance") != provenance:
+            continue
         gold = _gold_model(row).disposition
         awareness = row.get("oracle_awareness") or {}
         if not gold or not awareness.get("scorable") or not awareness.get("disposition"):
             continue
         scored.append(row)
-    note = (
-        "Oracle-Awareness scores production route() on Δ=NONE plus frozen "
-        "domain_fit / event_significance / attention_momentum. It is not Oracle-Δ. "
-        "Extract / Locate / Impact are not run."
-    )
+    empty = {
+        "n_scored": 0,
+        "disposition_accuracy": None,
+        "mean_disposition_distance": None,
+        "false_drop_rate": None,
+        "over_attention_rate": None,
+        "under_attention_rate": None,
+        "critical_under_attention_rate": None,
+        "exact_disposition_hit_rate": None,
+        "label_provenance": provenance,
+        "note": note,
+    }
     if not scored:
-        return {
-            "n_scored": 0,
-            "disposition_accuracy": None,
-            "mean_disposition_distance": None,
-            "false_drop_rate": None,
-            "over_attention_rate": None,
-            "under_attention_rate": None,
-            "critical_under_attention_rate": None,
-            "exact_disposition_hit_rate": None,
-            "note": note,
-        }
+        return empty
     hits = false_drop = over = under = critical = 0
     distances: list[int] = []
     for row in scored:
@@ -525,8 +544,44 @@ def compute_oracle_awareness_metrics(case_rows: list[dict[str, Any]]) -> dict[st
         "under_attention_rate": _div(under, n),
         "critical_under_attention_rate": _div(critical, n),
         "exact_disposition_hit_rate": _div(hits, n),
+        "label_provenance": provenance,
         "note": note,
     }
+
+
+def compute_oracle_awareness_report(case_rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Keep synthetic wiring accuracy distinct from Human-elicited Gold."""
+    return {
+        "synthetic_policy_truth": compute_oracle_awareness_metrics(
+            case_rows, provenance="SYNTHETIC_POLICY_TRUTH"
+        ),
+        "human_elicited": compute_oracle_awareness_metrics(case_rows, provenance="HUMAN_ELICITED"),
+        "note": (
+            "Synthetic Awareness Truth Table accuracy is not Human-Gold accuracy. "
+            "EventSignificance is the underlying event, not report novelty; "
+            "AttentionMomentum is not EventSignificance."
+        ),
+    }
+
+
+def _awareness_section(title: str, body: dict[str, Any], intro: str) -> list[str]:
+    return [
+        f"## {title}",
+        "",
+        intro,
+        "",
+        f"- label_provenance: {body.get('label_provenance')}",
+        f"- scored: {body.get('n_scored')}",
+        f"- Disposition Accuracy: {body.get('disposition_accuracy')}",
+        f"- Exact Disposition Hit Rate: {body.get('exact_disposition_hit_rate')}",
+        f"- Mean Disposition Distance: {body.get('mean_disposition_distance')}",
+        f"- False DROP Rate: {body.get('false_drop_rate')}",
+        f"- Over-attention Rate: {body.get('over_attention_rate')}",
+        f"- Under-attention Rate: {body.get('under_attention_rate')}",
+        f"- Critical Under-attention Rate (gold_rank - pred_rank >= 2): {body.get('critical_under_attention_rate')}",
+        f"- {body.get('note')}",
+        "",
+    ]
 
 
 def render_markdown(summary: dict) -> str:
@@ -538,6 +593,8 @@ def render_markdown(summary: dict) -> str:
     e2e = summary.get("production_end_to_end") or {}
     oracle = summary.get("oracle_delta_attention_policy") or {}
     awareness = summary.get("oracle_awareness_attention_policy") or {}
+    synthetic = awareness.get("synthetic_policy_truth") or {}
+    elicited = awareness.get("human_elicited") or {}
     e2e_disp = (e2e.get("disposition") or disp)
     lines = [
         "# RAOS Live Eval",
@@ -576,18 +633,16 @@ def render_markdown(summary: dict) -> str:
         f"- Critical Under-attention Rate (gold_rank - pred_rank >= 2): {oracle.get('critical_under_attention_rate')}",
         f"- {oracle.get('note')}",
         "",
-        "## Oracle-Awareness Attention Policy",
-        "",
-        "Frozen D/S/M + Δ=NONE → production route() / validate_plan(). Not Oracle-Δ. No Extract / Locate / Impact.",
-        "",
-        f"- scored: {awareness.get('n_scored')}",
-        f"- Disposition Accuracy: {awareness.get('disposition_accuracy')}",
-        f"- Exact Disposition Hit Rate: {awareness.get('exact_disposition_hit_rate')}",
-        f"- Mean Disposition Distance: {awareness.get('mean_disposition_distance')}",
-        f"- False DROP Rate: {awareness.get('false_drop_rate')}",
-        f"- Over-attention Rate: {awareness.get('over_attention_rate')}",
-        f"- Under-attention Rate: {awareness.get('under_attention_rate')}",
-        f"- Critical Under-attention Rate (gold_rank - pred_rank >= 2): {awareness.get('critical_under_attention_rate')}",
+        *_awareness_section(
+            "Oracle-Awareness Synthetic Policy Truth Table",
+            synthetic,
+            "Boolean wiring test of AWARE iff S and (D or M) at Δ=NONE. Not Human Gold. Not Oracle-Δ. No Extract / Locate / Impact.",
+        ),
+        *_awareness_section(
+            "Oracle-Awareness Human-Elicited Counterfactual",
+            elicited,
+            "User-labeled awareness scenarios with frozen Oracle D/S/M. Duplicate cells allowed. Not the synthetic cube. Not Oracle-Δ.",
+        ),
         f"- {awareness.get('note')}",
         "",
         "## Disposition (production, stage-scoped)",

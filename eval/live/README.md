@@ -9,7 +9,8 @@ Ordinary CI remains Rule + Fake Model (Eval v0.1). Live Eval is explicit:
 python eval/live/run_live_eval.py --dry-run
 python eval/live/run_live_eval.py --manifest eval/live/manifest.example.yaml
 python eval/live/run_live_eval.py --oracle-only --manifest eval/live/manifest.policy_counterfactual.template.yaml
-python eval/live/run_live_eval.py --oracle-only --manifest eval/live/manifest.policy_awareness_counterfactual.v1.yaml
+python eval/live/run_live_eval.py --oracle-only --manifest eval/live/manifest.policy_awareness_truth_table.v1.yaml
+python eval/live/run_live_eval.py --oracle-only --manifest eval/live/manifest.policy_awareness_elicited.v1.yaml
 ```
 
 Requires `RAOS_COGNITIVE_PROVIDER=model` and `RAOS_LLM_API_KEY` for a real run.
@@ -139,11 +140,25 @@ Counterfactual slots (24–36 frozen Δ cases, unlabeled template, no invented a
 
 ## Oracle-Awareness Attention Policy
 
-A separate experiment injects frozen non-cognitive situational-awareness signals (`domain_fit`, `event_significance`, `attention_momentum`) into production `route()` with Δ=NONE. Reports keep this distinct from Oracle-Δ:
+A separate experiment injects frozen non-cognitive situational-awareness signals into production `route()` with Δ=NONE. Reports keep this distinct from Oracle-Δ, and keep synthetic wiring distinct from Human Gold:
 
 - **Oracle-Δ Attention Policy** — gold/frozen Δ → production route() (awareness absent)
-- **Oracle-Awareness Attention Policy** — frozen D/S/M + Δ=NONE → production route()
+- **Oracle-Awareness Synthetic Policy Truth Table** — Boolean 8-cell cube of `AWARE iff S and (D or M)`. Wiring test only. 8/8 is not Human-Gold accuracy.
+- **Oracle-Awareness Human-Elicited Counterfactual** — the eight scenarios the user actually answered. Duplicate D/S/M cells are valid empirical data.
 
-These signals are not CognitiveEffect / Δ. They may only distinguish DROP from AWARE when primary Δ is NONE. They must never create REINFORCE / CHALLENGE / OPEN_NEW or WATCH / ENGAGE. Production does not estimate D/S/M from source text, Kernel matches, or heuristics; this experiment uses Oracle-provided values only.
+Candidate semantics (Oracle-provided; production does not estimate them):
 
-Frozen 8-cell cube: `eval/live/manifest.policy_awareness_counterfactual.v1.yaml`. Do not modify `manifest.policy_counterfactual.v1.yaml` for this experiment.
+| Signal | Relativity | Meaning |
+|---|---|---|
+| `domain_fit` | user | Is this event inside the user's professional / awareness radar? |
+| `event_significance` | event | How consequential is the **underlying external event**? Not novelty of the current reporting artifact. A fifth media report of an important breakthrough can have near-zero report novelty while EventSignificance stays high. Duplicate reporting is not low EventSignificance. |
+| `attention_momentum` | crowd + time | Is external attention to the underlying event materially rising / concentrated? Not a substitute for EventSignificance. |
+
+These signals are not CognitiveEffect / Δ. They may only distinguish DROP from AWARE when primary Δ is NONE. They must never create REINFORCE / CHALLENGE / OPEN_NEW or WATCH / ENGAGE. Do not add Person / Company / Industry ontology or D/S/M onto `SchedulerFeatures`.
+
+Manifests:
+
+- Synthetic cube: `eval/live/manifest.policy_awareness_truth_table.v1.yaml` (`label_provenance: SYNTHETIC_POLICY_TRUTH`)
+- Human-elicited Gold: `eval/live/manifest.policy_awareness_elicited.v1.yaml` (`label_provenance: HUMAN_ELICITED`)
+
+Do not modify `manifest.policy_counterfactual.v1.yaml` for this experiment.

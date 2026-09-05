@@ -1041,7 +1041,8 @@ def test_oracle_policy_metrics_and_report_sections():
     )
     assert "## Production End-to-End" in md
     assert "## Oracle-Δ Attention Policy" in md
-    assert "## Oracle-Awareness Attention Policy" in md
+    assert "## Oracle-Awareness Synthetic Policy Truth Table" in md
+    assert "## Oracle-Awareness Human-Elicited Counterfactual" in md
 
 
 def test_positive_gold_update_without_frozen_delta_is_oracle_unscorable():
@@ -1281,10 +1282,23 @@ def test_oracle_only_skips_pipeline_on_template(tmp_path):
     assert all(r.get("skipped") is True for r in rows)
 
 
-def test_policy_awareness_counterfactual_v1_is_frozen_eight_cell_cube():
+def _awareness_legal(row: dict) -> None:
+    awareness = row.get("oracle_awareness") or {}
+    assert awareness.get("disposition") in {"DROP", "AWARE"}
+    assert awareness.get("disposition") not in {"WATCH", "ENGAGE"}
+    assert awareness.get("expected_output") in {"NONE", "SUMMARY"}
+    assert awareness.get("expected_output") != "KERNEL_PATCH"
+    assert awareness.get("watch_after_processing") is False
+
+
+def test_policy_awareness_truth_table_is_synthetic_boolean_cube():
     from eval.live.schema import gold_has_explicit_none_update
 
-    path = ROOT / "eval" / "live" / "manifest.policy_awareness_counterfactual.v1.yaml"
+    path = ROOT / "eval" / "live" / "manifest.policy_awareness_truth_table.v1.yaml"
+    text = path.read_text()
+    header = text.split("cases:", 1)[0]
+    assert "SYNTHETIC POLICY TRUTH TABLE" in header
+    assert "NOT HUMAN-ELICITED GOLD" in header
     manifest = load_manifest(path)
     assert len(manifest.cases) == 8
     expected = [
@@ -1298,7 +1312,47 @@ def test_policy_awareness_counterfactual_v1_is_frozen_eight_cell_cube():
         (True, True, True, "AWARE"),
     ]
     seen = set()
-    for case, (domain_fit, significance, momentum, gold_disp) in zip(manifest.cases, expected, strict=True):
+    for case, (domain_fit, significance, momentum, expected_disp) in zip(manifest.cases, expected, strict=True):
+        gold = case.human_gold
+        assert gold is not None
+        assert case.label_provenance == "SYNTHETIC_POLICY_TRUTH"
+        assert gold.disposition == expected_disp
+        assert gold_has_explicit_none_update(gold)
+        assert gold.update is None
+        assert case.runtime_context is None
+        aw = case.frozen_awareness
+        assert aw is not None
+        assert (aw.domain_fit, aw.event_significance, aw.attention_momentum) == (
+            domain_fit,
+            significance,
+            momentum,
+        )
+        seen.add((aw.domain_fit, aw.event_significance, aw.attention_momentum))
+        assert case.notes
+        assert "Not Human-elicited" in case.notes
+    assert seen == {(d, s, m) for d in (False, True) for s in (False, True) for m in (False, True)}
+
+
+def test_policy_awareness_elicited_is_authoritative_human_gold():
+    from eval.live.schema import gold_has_explicit_none_update
+
+    path = ROOT / "eval" / "live" / "manifest.policy_awareness_elicited.v1.yaml"
+    manifest = load_manifest(path)
+    assert len(manifest.cases) == 8
+    expected = [
+        ("policy-aw-elicited-q1", True, False, False, "DROP"),
+        ("policy-aw-elicited-q2", False, False, True, "DROP"),
+        ("policy-aw-elicited-q3", False, True, False, "DROP"),
+        ("policy-aw-elicited-q4", False, True, True, "AWARE"),
+        ("policy-aw-elicited-q5", True, False, False, "DROP"),
+        ("policy-aw-elicited-q6", True, False, True, "DROP"),
+        ("policy-aw-elicited-q7", True, True, False, "AWARE"),
+        ("policy-aw-elicited-q8", True, True, True, "AWARE"),
+    ]
+    cells = []
+    for case, (cid, domain_fit, significance, momentum, gold_disp) in zip(manifest.cases, expected, strict=True):
+        assert case.id == cid
+        assert case.label_provenance == "HUMAN_ELICITED"
         gold = case.human_gold
         assert gold is not None
         assert gold.disposition == gold_disp
@@ -1312,9 +1366,46 @@ def test_policy_awareness_counterfactual_v1_is_frozen_eight_cell_cube():
             significance,
             momentum,
         )
-        seen.add((aw.domain_fit, aw.event_significance, aw.attention_momentum))
-        assert case.notes
-    assert seen == {(d, s, m) for d in (False, True) for s in (False, True) for m in (False, True)}
+        cells.append((aw.domain_fit, aw.event_significance, aw.attention_momentum))
+        assert case.notes and case.notes.startswith("Q")
+    # Duplicate D/S/M cells are valid empirical data (Q1 and Q5 share TFF).
+    assert cells[0] == cells[4]
+    assert len(set(cells)) < 8
+
+
+def test_event_significance_is_underlying_event_not_report_artifact():
+    """EventSignificance ≠ report novelty; AttentionMomentum ≠ EventSignificance."""
+    elicited = load_manifest(ROOT / "eval" / "live" / "manifest.policy_awareness_elicited.v1.yaml")
+    by_id = {c.id: c for c in elicited.cases}
+    q6 = by_id["policy-aw-elicited-q6"]
+    assert q6.frozen_awareness.event_significance is False
+    assert q6.frozen_awareness.attention_momentum is True
+    assert q6.human_gold.disposition == "DROP"
+    q4 = by_id["policy-aw-elicited-q4"]
+    assert q4.frozen_awareness.event_significance is True
+    assert q4.frozen_awareness.attention_momentum is True
+    assert q4.human_gold.disposition == "AWARE"
+    truth = load_manifest(ROOT / "eval" / "live" / "manifest.policy_awareness_truth_table.v1.yaml")
+    high_s_low_report_analogue = next(
+        c for c in truth.cases if c.id == "policy-aw-truth-110"
+    )
+    assert high_s_low_report_analogue.frozen_awareness.event_significance is True
+    assert "duplicate report" in (high_s_low_report_analogue.notes or "").lower()
+
+
+def test_frozen_awareness_requires_label_provenance():
+    with pytest.raises(ValidationError, match="label_provenance"):
+        LiveCase.model_validate(
+            {
+                "id": "missing-provenance",
+                "human_gold": {"disposition": "DROP", "update": None},
+                "frozen_awareness": {
+                    "domain_fit": True,
+                    "event_significance": False,
+                    "attention_momentum": False,
+                },
+            }
+        )
 
 
 def test_oracle_awareness_skips_extract_locate_impact_and_uses_production_route(monkeypatch):
@@ -1379,37 +1470,76 @@ def test_frozen_awareness_unknown_field_fails_loud():
         )
 
 
-def test_oracle_only_awareness_manifest_reports_oracle_awareness_not_oracle_delta(tmp_path):
+def test_oracle_only_synthetic_truth_table_is_exact_and_not_human_gold(tmp_path):
     code = main(
         [
             "--oracle-only",
             "--manifest",
-            str(ROOT / "eval" / "live" / "manifest.policy_awareness_counterfactual.v1.yaml"),
+            str(ROOT / "eval" / "live" / "manifest.policy_awareness_truth_table.v1.yaml"),
             "--out-dir",
-            str(tmp_path / "aw"),
+            str(tmp_path / "truth"),
             "--timestamp",
             "20000101T000002Z",
         ]
     )
     assert code == 0
-    summary = json.loads((tmp_path / "aw" / "summary.json").read_text())
-    md = (tmp_path / "aw" / "summary.md").read_text()
-    assert "oracle_awareness_attention_policy" in summary
-    assert summary["oracle_awareness_attention_policy"]["n_scored"] == 8
-    assert summary["oracle_awareness_attention_policy"]["disposition_accuracy"] == 1.0
-    assert "## Oracle-Awareness Attention Policy" in md
-    assert "Not Oracle-Δ" in md
-    rows = [json.loads(line) for line in (tmp_path / "aw" / "cases.jsonl").read_text().splitlines() if line]
+    summary = json.loads((tmp_path / "truth" / "summary.json").read_text())
+    md = (tmp_path / "truth" / "summary.md").read_text()
+    awareness = summary["oracle_awareness_attention_policy"]
+    synthetic = awareness["synthetic_policy_truth"]
+    elicited = awareness["human_elicited"]
+    assert synthetic["n_scored"] == 8
+    assert synthetic["disposition_accuracy"] == 1.0
+    assert synthetic["exact_disposition_hit_rate"] == 1.0
+    assert synthetic["label_provenance"] == "SYNTHETIC_POLICY_TRUTH"
+    assert elicited["n_scored"] == 0
+    assert "## Oracle-Awareness Synthetic Policy Truth Table" in md
+    assert "## Oracle-Awareness Human-Elicited Counterfactual" in md
+    assert "not Human-Gold" in md or "not Human Gold" in md
+    rows = [json.loads(line) for line in (tmp_path / "truth" / "cases.jsonl").read_text().splitlines() if line]
     assert len(rows) == 8
     for row in rows:
-        awareness = row.get("oracle_awareness") or {}
-        assert awareness.get("oracle_kind") == "awareness"
-        assert awareness.get("scorable") is True
+        assert row.get("label_provenance") == "SYNTHETIC_POLICY_TRUTH"
+        awareness_row = row.get("oracle_awareness") or {}
+        assert awareness_row.get("oracle_kind") == "awareness"
+        assert (row.get("oracle_policy") or {}).get("oracle_kind") != "awareness"
+        _awareness_legal(row)
+
+
+def test_oracle_only_elicited_awareness_is_reported_separately(tmp_path):
+    code = main(
+        [
+            "--oracle-only",
+            "--manifest",
+            str(ROOT / "eval" / "live" / "manifest.policy_awareness_elicited.v1.yaml"),
+            "--out-dir",
+            str(tmp_path / "elicited"),
+            "--timestamp",
+            "20000101T000004Z",
+        ]
+    )
+    assert code == 0
+    summary = json.loads((tmp_path / "elicited" / "summary.json").read_text())
+    md = (tmp_path / "elicited" / "summary.md").read_text()
+    awareness = summary["oracle_awareness_attention_policy"]
+    synthetic = awareness["synthetic_policy_truth"]
+    elicited = awareness["human_elicited"]
+    assert elicited["n_scored"] == 8
+    assert elicited["disposition_accuracy"] == 1.0
+    assert elicited["exact_disposition_hit_rate"] == 1.0
+    assert elicited["label_provenance"] == "HUMAN_ELICITED"
+    assert synthetic["n_scored"] == 0
+    assert "## Oracle-Awareness Human-Elicited Counterfactual" in md
+    assert "not the synthetic cube" in md.lower() or "Not the synthetic cube" in md
+    rows = [json.loads(line) for line in (tmp_path / "elicited" / "cases.jsonl").read_text().splitlines() if line]
+    assert len(rows) == 8
+    for row in rows:
+        assert row.get("label_provenance") == "HUMAN_ELICITED"
+        awareness_row = row.get("oracle_awareness") or {}
+        assert awareness_row.get("oracle_kind") == "awareness"
         gold_disp = (row.get("human_gold") or {}).get("disposition")
-        assert awareness.get("disposition") == gold_disp
-        assert row.get("awareness_policy_eval", {}).get("oracle_awareness_disposition") == gold_disp
-        oracle_delta = row.get("oracle_policy") or {}
-        assert oracle_delta.get("oracle_kind") != "awareness"
+        assert awareness_row.get("disposition") == gold_disp
+        _awareness_legal(row)
 
 
 def test_policy_counterfactual_v1_absent_awareness_keeps_oracle_delta_drop_for_aware_null():
@@ -1448,8 +1578,17 @@ def test_oracle_only_v1_counterfactual_unchanged_without_awareness(tmp_path):
     )
     assert code == 0
     summary = json.loads((tmp_path / "v1" / "summary.json").read_text())
-    assert summary["oracle_delta_attention_policy"]["n_scored"] == 30
-    assert summary["oracle_awareness_attention_policy"]["n_scored"] == 0
+    oracle = summary["oracle_delta_attention_policy"]
+    assert oracle["n_scored"] == 30
+    assert oracle["disposition_accuracy"] == 0.5333333333333333
+    assert oracle["mean_disposition_distance"] == 0.5
+    assert oracle["false_drop_rate"] == 0.13333333333333333
+    assert oracle["over_attention_rate"] == 0.16666666666666666
+    assert oracle["under_attention_rate"] == 0.3
+    assert oracle["critical_under_attention_rate"] == 0.0
+    awareness = summary["oracle_awareness_attention_policy"]
+    assert awareness["synthetic_policy_truth"]["n_scored"] == 0
+    assert awareness["human_elicited"]["n_scored"] == 0
     rows = [json.loads(line) for line in (tmp_path / "v1" / "cases.jsonl").read_text().splitlines() if line]
     assert all(not (r.get("oracle_awareness") or {}).get("scorable") for r in rows)
     assert all(r.get("awareness_policy_eval") is None for r in rows)
