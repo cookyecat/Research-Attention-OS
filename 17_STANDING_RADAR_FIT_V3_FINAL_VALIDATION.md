@@ -1,6 +1,6 @@
 # Research Attention OS — Standing Radar Fit v3 Final Validation
 
-Status: **HUMAN GOLD FROZEN / FIRST SCORED MEASUREMENT NEXT**  
+Status: **MEASURED — PRE-REGISTERED FAIL / D SEMANTICS CLOSED / ESTIMATOR RESIDUALS ATTRIBUTED**  
 Date: 2026-09-06  
 Phase: II-B Attention Policy Calibration  
 Semantic baseline: `16_STANDING_ATTENTION_JURISDICTION.md`
@@ -80,7 +80,7 @@ v3 does not add a new D variable. It formalizes D as Standing Attention Jurisdic
 The estimator must:
 
 1. interpret the stated event semantically;
-2. identify all substantive radar anchors;
+2. identify substantive radar anchors;
 3. preserve multiple anchors instead of forcing one dominant domain;
 4. distinguish substantive involvement from incidental mention/tool use/context;
 5. evaluate the event against stable Standing Radar Clauses;
@@ -142,25 +142,11 @@ OUT  6
 N   10
 ```
 
-The user's explicit evaluation preference for this final engineering check is: broad logical consistency is sufficient; an isolated outlier should not trigger another D redesign. This does not change the pre-registered numeric criterion below, which already tolerates one error at N=10. A repeated semantic failure mode still matters.
+The user's explicit evaluation preference for this final engineering check is that broad logical consistency matters more than cosmetic perfection; an isolated outlier should not trigger another D redesign. This does not change the pre-registered numeric criterion below. A repeated semantic failure mode still matters.
 
 ---
 
-## 6. Final-validation scope
-
-Keep the validation small. It probes whether the same clause mechanism generalizes across multiple semantic forms, including:
-
-- substantive monitored topic versus incidental tool/context;
-- monitored organization as substantive actor versus incidental mention;
-- stable direct affiliation versus socially adjacent but non-standing relation;
-- standing place/governance scope versus unrelated place;
-- monitored work/content versus unmonitored production workflow.
-
-This is not a benchmark-expansion project. The purpose is to test the unified applicability model, not to enumerate ontology types.
-
----
-
-## 7. Pre-registered success criterion
+## 6. Pre-registered success criterion
 
 ```text
 Exact accuracy >= 0.90
@@ -170,22 +156,149 @@ Technical failures = 0 or clearly attributable without semantic fallback
 No clear repeated Standing-Radar-Clause failure mode
 ```
 
-At N=10, exact accuracy requires at least 9/10. With the observed 4-IN / 6-OUT Human Gold, the recall thresholds require all 4 IN cases correct and at least 5/6 OUT cases correct.
+At N=10, exact accuracy requires at least 9/10. With 4-IN / 6-OUT Human Gold, the recall thresholds require all 4 IN cases correct and at least 5/6 OUT cases correct.
 
 This is a personal engineering validation, not a population benchmark.
 
 ---
 
-## 8. Closure rule
+## 7. Official first-run measurement — RECORDED
 
-If v3 passes the fresh final validation without a new systematic residual:
+Artifact:
+
+`eval/live/results/standing_radar_fit_v3_final_fresh_first_run.json`
+
+Result commit:
+
+```text
+07ae4b3
+```
+
+Invocation:
+
+```text
+model             deepseek-v4-flash
+thinking          disabled
+temperature       0.1
+prompt_sha256     c7ce0ed089fdcdfee69c9f986e35a860e7d6c07468801e76ad1af771a3d2ece7
+technical failures 0
+```
+
+Observed:
+
+```text
+Exact accuracy       7/10 = 0.70
+IN recall            2/4  = 0.50
+OUT recall           5/6  = 0.8333333333
+Balanced accuracy    0.6666666667
+False-IN             1  (FJ2)
+False-OUT            2  (FJ4, FJ6)
+Technical failures   0
+```
+
+The final v3 estimator therefore **fails the pre-registered gate**. This result must not be relabeled as a pass.
+
+### Reporting-plumbing note
+
+The JSON artifact's embedded `success_criterion` block was inherited from the generic v1 metric helper and reports `exact>=0.8` / `balanced>=0.8`. That block is not the v3 pre-registration. The authoritative v3 criterion is the criterion frozen in this document and the final-validation manifest: `exact>=0.90`, `IN recall>=0.80`, `OUT recall>=0.80`, plus no repeated clause failure. The measurement fails under either rule, so this reporting mismatch does not affect the scientific conclusion. Preserve the first-run artifact unchanged.
+
+---
+
+## 8. Residual attribution
+
+### 8.1 FJ2 — likely label/policy boundary, not estimator-semantic evidence
+
+```text
+Gold OUT
+Pred IN
+```
+
+The event explicitly develops a multimodal maintenance Agent. The frozen v3 profile explicitly says to monitor events where AI Agents / multimodal AI are substantively developed, released, evaluated, deployed, or changed.
+
+The model's IN prediction is therefore internally consistent with the frozen clause. This case should be treated as a human-policy boundary / possible noisy-label residual rather than evidence that the estimator failed to apply the stated formal rule.
+
+Do not retune the AI clause to this single case without broader evidence.
+
+### 8.2 FJ4 — clause-application failure after correct anchor recognition
+
+```text
+Gold IN
+Pred OUT
+```
+
+The model explicitly recognized `OpenAI` as a substantive anchor, yet did not apply the standing clause:
+
+```text
+Monitor OpenAI and Google DeepMind when either organization is a substantive actor/object in the event, independent of the event's significance.
+```
+
+Its reason instead required a strategic/product/research/AI-system development consequence. That imports an extra condition not present in the clause and partially leaks significance/topic logic into D.
+
+This is a real estimator implementation error.
+
+### 8.3 FJ6 — affiliation-clause extraction/application failure
+
+```text
+Gold IN
+Pred OUT
+```
+
+The event explicitly states that the hospital is where the user's parent works. The frozen profile contains a direct-family-affiliation clause for a substantively involved institution.
+
+The model nevertheless said the hospital was not monitored and omitted the stable affiliation from its matched-clause reasoning.
+
+This is a real estimator implementation error.
+
+### 8.4 What the pattern means
+
+FJ8 and FJ10 show that non-domain clauses can work: the model correctly applied hometown/local-governance and film-work clauses. Therefore the failure is not simply "only topic clauses work."
+
+The narrower failure is that the current LLM procedure does not reliably apply every heterogeneous Standing Radar Clause even when the clause is explicit. In particular, the intermediate `substantive anchor -> clause match` framing can over-constrain the more general formal model.
+
+The formal definition is:
 
 $$
-\boxed{D\ study=CLOSED\ for\ Phase\ II\text{-}B}
+\boxed{
+D(E,u)=1
+\iff
+\exists\rho_i\in\mathcal R_u:\rho_i(Sem(E),u)=1
+}
 $$
 
-Then immediately move to S.
+A future implementation may evaluate clauses more directly over `Sem(E),u` rather than requiring every applicability condition itself to appear as a separately extracted substantive anchor.
 
-Do not continue polishing D for cosmetic 100% performance.
+This is an implementation observation, not a reason to add domain weights, a typed ontology, or new D sub-variables.
 
-If v3 has one isolated residual but otherwise meets the pre-registered gate, preserve it and close D. If v3 fails systematically, preserve the first-run result and attribute the smallest remaining failure. Do not introduce domain weights or a large ontology without evidence forcing that step.
+---
+
+## 9. Research decision
+
+Separate the semantic result from the current estimator score:
+
+```text
+D intuitive meaning                     SUPPORTED
+Standing Attention Jurisdiction model   FROZEN / CLOSED SEMANTIC BASELINE
+Standing Radar Clause representation    SUPPORTED
+Domain weights / giant ontology         NOT JUSTIFIED
+v3 first fresh estimator measurement    FAIL (0.70 exact)
+Residuals                               ATTRIBUTABLE
+```
+
+The 0.70 estimator result is not strong enough to certify `standing-radar-fit-estimator-v3` as a passed estimator. However, the residuals do not force a redesign of D itself. Two of the three errors are traceable implementation failures against explicit frozen clauses; the remaining error is a plausible human-policy boundary that should not be overfit.
+
+Given the project objective and the explicit preference not to keep expanding D for isolated/bounded residuals, **close D semantic research for Phase II-B and move to S**. Keep the estimator residuals as known implementation debt to revisit during integrated dogfooding or when a real-world repeated error pattern appears.
+
+Do not create another synthetic D benchmark now.
+
+---
+
+## 10. Current pointer
+
+```text
+D semantic definition                  CLOSED / FROZEN
+D historical measurements              PRESERVED
+D v3 estimator                         NOT CERTIFIED; KNOWN ATTRIBUTABLE RESIDUALS
+Further offline D benchmark expansion  STOP
+S = Material Consequence               NEXT
+P = Public Attention Salience           AFTER S
+```
