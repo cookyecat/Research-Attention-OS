@@ -1,11 +1,11 @@
 # Collective Attention Salience (P) — Observable Evidence Interface
 
-Status: **ACTIVE INTERFACE DESIGN — CANDIDATE v0.1**  
+Status: **ACTIVE INTERFACE DESIGN — CANDIDATE v0.2**  
 Date: 2026-09-07  
 Semantic baseline: `22_COLLECTIVE_ATTENTION_SALIENCE.md`  
 Estimator modeling baseline: `23_COLLECTIVE_ATTENTION_ESTIMATOR_MODELING.md`
 
-> Purpose: define the smallest reproducible evidence object that a P estimator may consume. This interface is a sensor/evidence boundary, not a second P classifier. It must preserve provenance, time, scope, and uncertainty without redefining the frozen P semantics.
+> Purpose: define the smallest reproducible evidence object that a P estimator may consume. This interface is a sensor/evidence boundary, not a second P classifier. It must preserve provenance, time, scope, coverage, and uncertainty without redefining the frozen P semantics.
 
 ---
 
@@ -51,7 +51,7 @@ A search spike, 1M views, 50 media articles, or 30% decline is evidence. None is
 
 ---
 
-## 2. Evidence Packet v0.1
+## 2. Evidence Packet v0.2
 
 Candidate top-level shape:
 
@@ -65,9 +65,15 @@ Candidate top-level shape:
   "constituency_prior": {
     "description": "...",
     "scope": "domain | geographic | product | organization | broad_public | other",
-    "reference_scale": "10^2 | 10^3 | 10^4 | 10^5 | 10^6 | 10^7+ | unknown",
+    "reference_scale": "10^1 | 10^2 | 10^3 | 10^4 | 10^5 | 10^6 | 10^7+ | unknown",
+    "reference_size_hint": "40 | 200-400 | unknown",
     "basis": "lookup | llm_prior | explicit_event_scope | external_source | unknown",
     "provenance": "..."
+  },
+  "collection_context": {
+    "channels_checked": ["..."],
+    "channels_unavailable": ["..."],
+    "notes": "..."
   },
   "current_attention_evidence": [
     {
@@ -185,6 +191,7 @@ This is not a constituency ontology and must not become one.
 Prefer order-of-magnitude over false precision:
 
 ```text
+10^1
 10^2
 10^3
 10^4
@@ -194,7 +201,24 @@ Prefer order-of-magnitude over false precision:
 unknown
 ```
 
-A range may be used later if evidence shows that single buckets are too coarse.
+The `10^1` bucket is required because a legitimately small semantic constituency can still be the correct denominator, as in an organization-internal event.
+
+### `reference_size_hint`
+
+Optional grounded hint when the event or an external source explicitly provides a useful population size or range.
+
+Examples:
+
+```text
+40
+200-400
+about 5,000
+unknown
+```
+
+This field must not contain invented precision. Use it only when the size is explicitly stated or independently grounded.
+
+The estimator should use the coarse reference scale when exact size is unavailable.
 
 ### `basis`
 
@@ -218,13 +242,70 @@ Important invariant:
 
 ---
 
-## 5. Current attention evidence
+## 5. Collection context
+
+The interface must distinguish:
+
+```text
+not observed
+```
+
+from:
+
+```text
+observed and approximately zero / no meaningful signal
+```
+
+Therefore the packet carries lightweight collection coverage.
+
+### `channels_checked`
+
+Evidence channels that were actually queried or supplied.
+
+Examples:
+
+```text
+search_trends
+news_clusters
+reddit
+field_media
+platform_engagement
+manual_structural_evidence
+```
+
+### `channels_unavailable`
+
+Relevant channels known to be unavailable to this measurement.
+
+Examples:
+
+```text
+x_internal_telemetry
+weibo_unique_viewers
+tiktok_dwell_time
+```
+
+### `notes`
+
+Optional collector limitations or coverage details.
+
+This block does **not** tell the estimator what P should be. It only makes evidence absence interpretable.
+
+Canonical invariant:
+
+$$
+\boxed{Unavailable\neq Zero}
+$$
+
+---
+
+## 6. Current attention evidence
 
 `current_attention_evidence` is the core numerator-side observation surface.
 
 The interface deliberately permits both quantitative and structural evidence.
 
-### 5.1 Candidate `kind` values
+### 6.1 Candidate `kind` values
 
 These are evidence forms, not required exhaustive enum values:
 
@@ -248,7 +329,7 @@ other
 
 Do not turn this list into a fixed ontology unless implementation requires it.
 
-### 5.2 `window`
+### 6.2 `window`
 
 Every dynamic observation must declare its time window.
 
@@ -263,7 +344,7 @@ past 7d
 
 Without a window, attention counts/trends are not reproducible.
 
-### 5.3 `observation`
+### 6.3 `observation`
 
 The observed fact or source-grounded summary.
 
@@ -286,7 +367,7 @@ Bad examples:
 
 The evidence interface should carry facts, not conclusions.
 
-### 5.4 `source`
+### 6.4 `source`
 
 The collector or external evidence source.
 
@@ -301,13 +382,13 @@ manual research annotation
 synthetic controlled-eval statement
 ```
 
-### 5.5 `observed_at`
+### 6.5 `observed_at`
 
 Timestamp at which the observation was obtained.
 
 This is distinct from the observation window.
 
-### 5.6 `independence_group`
+### 6.6 `independence_group`
 
 A lightweight way to prevent obvious double counting.
 
@@ -323,7 +404,7 @@ Many outlets copying one wire story should not automatically masquerade as many 
 
 This field is diagnostic; it is not a mandatory estimator gate.
 
-### 5.7 `quality`
+### 6.7 `quality`
 
 Coarse evidence quality:
 
@@ -336,7 +417,7 @@ contaminated evidence known to include manipulation or forced exposure
 
 The final estimator remains responsible for joint semantic judgment.
 
-### 5.8 `contamination`
+### 6.8 `contamination`
 
 Explicit flags:
 
@@ -352,7 +433,7 @@ Presence of contamination does not mechanically discard the observation; it tell
 
 ---
 
-## 6. Recent attention history
+## 7. Recent attention history
 
 P has temporal inertia, therefore recent history is a first-class input when available.
 
@@ -378,7 +459,7 @@ For v1 controlled evaluation, observation history is preferred.
 
 ---
 
-## 7. Information explicitly excluded from the P evidence interface
+## 8. Information explicitly excluded from the P evidence interface
 
 Do not include these as P evidence fields:
 
@@ -409,7 +490,7 @@ This exclusion is essential to preserve D/S/P orthogonality.
 
 ---
 
-## 8. Missing evidence and unknown values
+## 9. Missing evidence and unknown values
 
 The interface must represent absence of observation honestly.
 
@@ -419,7 +500,8 @@ Rules:
 2. no search-trend source available does not mean search volume is low;
 3. no social-platform collector does not mean social discussion is absent;
 4. unknown constituency size does not imply broad-public normalization;
-5. the estimator must be allowed to return `insufficient_evidence` as measurement status without inventing a third semantic P label.
+5. an explicit observation such as "search index showed no meaningful lift" is different from a missing search channel;
+6. the estimator must be allowed to return `insufficient_evidence` as measurement status without inventing a third semantic P label.
 
 Canonical distinction:
 
@@ -433,7 +515,7 @@ scorable / insufficient_evidence / technical_failure
 
 ---
 
-## 9. Reproducibility requirement
+## 10. Reproducibility requirement
 
 A scored P evaluation must be reproducible from a frozen Evidence Packet.
 
@@ -443,6 +525,7 @@ Therefore fresh controlled cases should freeze:
 event semantic summary
 as_of time
 constituency prior or explicit unknown
+collection coverage
 current evidence observations
 recent history observations
 human P label
@@ -454,7 +537,7 @@ Otherwise two runs at different times may receive different world evidence and c
 
 ---
 
-## 10. Minimal-v1 principle
+## 11. Minimal-v1 principle
 
 Do not require platform-scale telemetry for P estimator v1.
 
@@ -464,12 +547,13 @@ The smallest useful packet can be:
 {
   "event": {...},
   "constituency_prior": {...},
+  "collection_context": {...},
   "current_attention_evidence": [...],
   "recent_attention_history": [...]
 }
 ```
 
-All four blocks may contain coarse natural-language observations.
+All blocks may contain coarse natural-language observations.
 
 For controlled semantic validation this is preferable to introducing fake numeric precision.
 
@@ -483,9 +567,86 @@ not:
 
 ---
 
-## 11. Example packets
+## 12. Calibration coverage check — PC1–PC24
 
-### 11.1 Specialist-domain salience
+The interface was checked against all development cases after v0.1 was drafted.
+
+This is a representational check only. It does not re-score or reuse the Human labels as fresh validation evidence.
+
+### Stable / current salience
+
+```text
+PC1, PC10
+```
+
+Representable through current evidence plus recent history without requiring positive velocity.
+
+### Emerging attention
+
+```text
+PC2, PC4, PC6, PC12
+```
+
+Representable through search growth, independent uptake, cross-source/platform spread, and short current windows.
+
+### Single-source but genuine human attention
+
+```text
+PC3
+```
+
+Representable through meaningful-view / engagement observations without imposing a mandatory multi-source gate.
+
+### Paid / synthetic / passive exposure
+
+```text
+PC5, PC11, PC21
+```
+
+Representable through contamination flags plus explicit low genuine-attention observations.
+
+### Constituency-scale normalization
+
+```text
+PC7, PC8, PC13, PC14, PC15, PC16, PC23, PC24
+```
+
+Representable through constituency description, coarse reference scale, optional grounded size hint, and structural/current attention evidence.
+
+The v0.1 scale list was insufficient for PC15's legitimate ~40-person constituency. v0.2 adds `10^1` plus optional `reference_size_hint`.
+
+### Inertia / decay / failed reactivation
+
+```text
+PC9, PC17, PC18, PC19, PC20
+```
+
+Representable through recent observation history plus current evidence. No previous model label is required.
+
+### Lower-volume but stronger genuine attention
+
+```text
+PC22
+```
+
+Representable through meaningful engagement, active search, voluntary propagation, and ongoing discussion.
+
+Coverage result:
+
+```text
+PC1-PC24 representable: 24/24
+P-label leakage required: 0/24
+D/S fields required: 0/24
+Exact hidden platform telemetry required: 0/24
+```
+
+No remaining development case currently requires a new semantic P concept.
+
+---
+
+## 13. Example packets
+
+### 13.1 Specialist-domain salience
 
 ```json
 {
@@ -498,8 +659,14 @@ not:
     "description": "active AI-safety research and industry community",
     "scope": "domain",
     "reference_scale": "10^4",
+    "reference_size_hint": "unknown",
     "basis": "llm_prior",
     "provenance": "frozen controlled-eval prior"
+  },
+  "collection_context": {
+    "channels_checked": ["manual_structural_evidence"],
+    "channels_unavailable": [],
+    "notes": "controlled evaluation packet"
   },
   "current_attention_evidence": [
     {
@@ -527,7 +694,7 @@ not:
 }
 ```
 
-### 11.2 High exposure, weak genuine attention
+### 13.2 High exposure, weak genuine attention
 
 ```json
 {
@@ -540,8 +707,14 @@ not:
     "description": "broad platform video audience",
     "scope": "broad_public",
     "reference_scale": "10^7+",
+    "reference_size_hint": "unknown",
     "basis": "explicit_event_scope",
     "provenance": "frozen controlled-eval prior"
+  },
+  "collection_context": {
+    "channels_checked": ["platform_engagement", "search_trends"],
+    "channels_unavailable": [],
+    "notes": "controlled evaluation packet"
   },
   "current_attention_evidence": [
     {
@@ -569,7 +742,7 @@ not:
 }
 ```
 
-### 11.3 Established salience with short-term decline
+### 13.3 Established salience with short-term decline
 
 ```json
 {
@@ -582,8 +755,14 @@ not:
     "description": "relevant industry professional community",
     "scope": "domain",
     "reference_scale": "10^5",
+    "reference_size_hint": "unknown",
     "basis": "llm_prior",
     "provenance": "frozen controlled-eval prior"
+  },
+  "collection_context": {
+    "channels_checked": ["manual_structural_evidence"],
+    "channels_unavailable": [],
+    "notes": "controlled evaluation packet"
   },
   "current_attention_evidence": [
     {
@@ -609,30 +788,34 @@ not:
 
 ---
 
-## 12. Candidate freeze criteria for the interface
+## 14. Candidate freeze criteria for the interface
 
 Freeze Evidence Packet v1 when:
 
 1. it can represent all PC1–PC24 calibration evidence without adding P-specific conclusions;
 2. it preserves event time and evidence windows;
 3. it can express constituency scale without requiring exact population counts;
-4. it distinguishes genuine attention evidence from exposure/manipulation evidence;
-5. it can express enough history to support inertia judgments;
-6. missing sources remain unknown rather than being silently treated as zero;
-7. D, S, sentiment, and downstream AttentionAction remain absent;
-8. two researchers given the same frozen packet can reproduce the estimator input exactly.
+4. it can preserve a grounded small denominator when one is explicitly known;
+5. it distinguishes genuine attention evidence from exposure/manipulation evidence;
+6. it can express enough history to support inertia judgments;
+7. missing/unavailable sources remain unknown rather than being silently treated as zero;
+8. D, S, sentiment, and downstream AttentionAction remain absent;
+9. two researchers given the same frozen packet can reproduce the estimator input exactly.
+
+Current development coverage satisfies these representational criteria. The interface remains candidate until explicitly frozen for estimator v1.
 
 ---
 
-## 13. Current research decision
+## 15. Current research decision
 
 ```text
 P semantics                         FROZEN
 P estimator architecture           ACTIVE
-P Evidence Packet v0.1             CANDIDATE
+P Evidence Packet v0.2             CANDIDATE — 24/24 DEV COVERAGE
 Exact numeric penetration field    NOT REQUIRED
 Current evidence provenance        REQUIRED
 As-of time                         REQUIRED
+Collection coverage                REQUIRED FOR REAL-WORLD PACKETS
 History support                    REQUIRED WHEN AVAILABLE
 Unknown != zero                    REQUIRED
 D/S/policy fields                  EXCLUDED
@@ -641,14 +824,10 @@ Live browsing during controlled eval NOT ALLOWED unless pre-registered
 
 ---
 
-## 14. Next step
+## 16. Next step
 
-Before writing the estimator prompt, validate this interface against the already-discussed PC1–PC24 development cases.
+The evidence interface is now representationally sufficient for all PC1–PC24 development cases.
 
-The goal is not to re-label those cases. Their Human labels are already development evidence.
+The next research decision is whether to freeze this shape as Evidence Packet v1 and implement a minimal P estimator against it.
 
-The goal is to ask:
-
-> **Can every relevant fact that drove the Human P judgment be represented in this packet without smuggling the answer itself into the evidence?**
-
-If yes, freeze Evidence Packet v1 and only then implement P estimator v1 against that interface.
+Do not modify the frozen P semantic contract to make the estimator easier.
