@@ -1,6 +1,6 @@
 # Research Attention OS — Standing Radar Fit v3 Final Validation
 
-Status: **ESTIMATOR FROZEN / HUMAN GOLD NEXT**  
+Status: **HUMAN GOLD FROZEN / FIRST SCORED MEASUREMENT NEXT**  
 Date: 2026-09-06  
 Phase: II-B Attention Policy Calibration  
 Semantic baseline: `16_STANDING_ATTENTION_JURISDICTION.md`
@@ -61,6 +61,12 @@ prompt_version     standing-radar-fit-v3
 profile_id         standing-radar-profile-v3
 ```
 
+Estimator/profile freeze commit:
+
+```text
+4c857260a146bcb2ca66bd7c600cd62d9be2a8c6
+```
+
 Only `standing_radar_fit` is scored. `substantive_anchors`, `matched_clauses`, and `reason` are diagnostics only.
 
 Production scheduler / Attention Policy behavior remains unchanged.
@@ -99,7 +105,7 @@ BC1-BC6
 
 Do not report any of them as fresh v3 performance.
 
-The final fresh validation must be authored only after the v3 prompt/profile/estimator are frozen, then labeled by the human before the model is run.
+The final fresh validation was authored only after the v3 prompt/profile/estimator were frozen, then labeled by the human before the model was run.
 
 The first completed scored predictions on that frozen Human Gold are the official v3 measurement.
 
@@ -107,9 +113,42 @@ Do not modify the v3 prompt/profile after seeing the fresh predictions and then 
 
 ---
 
-## 5. Final-validation scope
+## 5. Final fresh Human Gold — FROZEN
 
-Keep the validation small. It should probe whether the same clause mechanism generalizes across multiple semantic forms, including:
+Artifact:
+
+`eval/live/manifest.standing_radar_fit_v3_final_fresh_human_gold.yaml`
+
+Human labels:
+
+```text
+FJ1  OUT
+FJ2  OUT
+FJ3  OUT
+FJ4  IN
+FJ5  OUT
+FJ6  IN
+FJ7  OUT
+FJ8  IN
+FJ9  OUT
+FJ10 IN
+```
+
+Class balance:
+
+```text
+IN   4
+OUT  6
+N   10
+```
+
+The user's explicit evaluation preference for this final engineering check is: broad logical consistency is sufficient; an isolated outlier should not trigger another D redesign. This does not change the pre-registered numeric criterion below, which already tolerates one error at N=10. A repeated semantic failure mode still matters.
+
+---
+
+## 6. Final-validation scope
+
+Keep the validation small. It probes whether the same clause mechanism generalizes across multiple semantic forms, including:
 
 - substantive monitored topic versus incidental tool/context;
 - monitored organization as substantive actor versus incidental mention;
@@ -121,9 +160,7 @@ This is not a benchmark-expansion project. The purpose is to test the unified ap
 
 ---
 
-## 6. Pre-registered success criterion
-
-For the final small balanced validation:
+## 7. Pre-registered success criterion
 
 ```text
 Exact accuracy >= 0.90
@@ -133,13 +170,13 @@ Technical failures = 0 or clearly attributable without semantic fallback
 No clear repeated Standing-Radar-Clause failure mode
 ```
 
-If N=10, this means at least 9/10 exact with at least 4/5 recall on both classes.
+At N=10, exact accuracy requires at least 9/10. With the observed 4-IN / 6-OUT Human Gold, the recall thresholds require all 4 IN cases correct and at least 5/6 OUT cases correct.
 
 This is a personal engineering validation, not a population benchmark.
 
 ---
 
-## 7. Closure rule
+## 8. Closure rule
 
 If v3 passes the fresh final validation without a new systematic residual:
 
@@ -151,4 +188,4 @@ Then immediately move to S.
 
 Do not continue polishing D for cosmetic 100% performance.
 
-If v3 fails systematically, preserve the first-run result and attribute the smallest remaining failure. Do not introduce domain weights or a large ontology without evidence forcing that step.
+If v3 has one isolated residual but otherwise meets the pre-registered gate, preserve it and close D. If v3 fails systematically, preserve the first-run result and attribute the smallest remaining failure. Do not introduce domain weights or a large ontology without evidence forcing that step.
