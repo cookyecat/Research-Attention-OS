@@ -1,6 +1,6 @@
 # Collective Attention Salience (P) — Estimator v1 Final Fresh Validation
 
-Status: **FRESH TEMPLATE FROZEN / HUMAN GOLD NEXT**  
+Status: **HUMAN GOLD FROZEN / FIRST SCORED RUN NEXT**  
 Date: 2026-09-07  
 Semantic baseline: `22_COLLECTIVE_ATTENTION_SALIENCE.md`  
 Evidence interface freeze: `25_COLLECTIVE_ATTENTION_EVIDENCE_INTERFACE_V1_FREEZE.md`  
@@ -93,28 +93,51 @@ No PF1-PF12 case text or label existed when these estimator artifacts were froze
 
 ---
 
-## 3. Human Gold protocol
+## 3. Human Gold — FROZEN
 
-The Human annotator must judge the frozen packet only.
+Human Gold manifest:
 
-Question:
+```text
+eval/live/manifest.collective_attention_final_fresh_human_gold.v1.yaml
+```
+
+Human Gold freeze commit:
+
+```text
+1b6bfb23a84411701cbee84caecf271e672e807b
+```
+
+Labels were elicited from the frozen PF1-PF12 packets before any scored estimator prediction on this set.
+
+Frozen Human Gold:
+
+```text
+PF1   SALIENT
+PF2   NOT_SALIENT
+PF3   NOT_SALIENT
+PF4   SALIENT
+PF5   SALIENT
+PF6   NOT_SALIENT
+PF7   SALIENT
+PF8   NOT_SALIENT
+PF9   SALIENT
+PF10  NOT_SALIENT
+PF11  NOT_SALIENT
+PF12  SALIENT
+```
+
+Observed class balance after elicitation:
+
+```text
+SALIENT       6
+NOT_SALIENT   6
+```
+
+Human annotation question:
 
 > **Ignoring whether the event is intrinsically important and ignoring whether the user personally cares, does the supplied evidence indicate that, at the stated time, the event has already formed or is clearly forming a salient state of genuine collective attention within its objective attention constituency?**
 
-Allowed semantic labels:
-
-```text
-SALIENT
-NOT_SALIENT
-```
-
-The Human should use the event's objective constituency as the reference scale, not total population by default.
-
-The Human should distinguish genuine attention from paid/forced exposure, bot/duplicate activity, and raw volume.
-
-The Human should preserve temporal inertia: a short-term decline is not automatically loss of salience, while sustained return to ordinary baseline can support NOT_SALIENT.
-
-The Human should treat unavailable channels as unknown rather than zero.
+The Human used the event's objective constituency as the reference scale, not total population by default; distinguished genuine attention from paid/forced exposure, bot/duplicate activity, and raw volume; preserved temporal inertia; and treated unavailable channels as unknown rather than zero.
 
 Do not consider:
 
@@ -124,8 +147,6 @@ S / event importance / material consequence
 sentiment / stance / approval
 AWARE / DROP / WATCH / ENGAGE
 ```
-
-Labels must be elicited before any scored estimator prediction on PF1-PF12.
 
 ---
 
@@ -150,9 +171,7 @@ technical failures              0
 clear repeated semantic failure none
 ```
 
-The class balance is **not assumed before Human elicitation**.
-
-If the Human Gold later happens to be balanced 6/6, each class recall threshold requires at least 5/6 correct in that class. Do not use this possibility to modify the case set after labels are seen.
+Because the elicited Human Gold is balanced 6/6, each class recall threshold requires at least 5/6 correct in that class. Therefore 10/12 exact passes only if no class has more than one error.
 
 ---
 
@@ -176,7 +195,7 @@ structural field penetration without platform telemetry
 bot/duplicate volume vs organic human uptake
 ```
 
-These are design dimensions, not Human labels and not expected predictions.
+These are design dimensions, not expected predictions.
 
 ---
 
@@ -213,11 +232,8 @@ P semantic contract              FROZEN
 Evidence Packet v1               FROZEN
 P estimator v1                   FROZEN
 Fresh PF1-PF12 template          FROZEN
+Fresh Human Gold                 FROZEN
 Scored P predictions             UNSEEN / NOT RUN
-        ↓
-HUMAN LABEL PF1-PF12             NEXT
-        ↓
-freeze Human Gold manifest
         ↓
 validate provenance / dry-run only
         ↓
