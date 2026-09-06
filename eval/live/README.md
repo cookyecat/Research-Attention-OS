@@ -11,6 +11,7 @@ python eval/live/run_live_eval.py --manifest eval/live/manifest.example.yaml
 python eval/live/run_live_eval.py --oracle-only --manifest eval/live/manifest.policy_counterfactual.template.yaml
 python eval/live/run_live_eval.py --oracle-only --manifest eval/live/manifest.policy_awareness_truth_table.v1.yaml
 python eval/live/run_live_eval.py --oracle-only --manifest eval/live/manifest.policy_awareness_elicited.v1.yaml
+python eval/live/run_standing_radar_fit_eval.py --dry-run --no-score
 ```
 
 Requires `RAOS_COGNITIVE_PROVIDER=model` and `RAOS_LLM_API_KEY` for a real run.
@@ -162,3 +163,15 @@ Manifests:
 - Human-elicited Gold: `eval/live/manifest.policy_awareness_elicited.v1.yaml` (`label_provenance: HUMAN_ELICITED`)
 
 Do not modify `manifest.policy_counterfactual.v1.yaml` for this experiment.
+
+## Standing Radar Fit (D) estimator
+
+Eval-only. Estimates D from event text + `eval/live/standing_radar_profile.v1.yaml`. It is not wired into production `scheduler.py` and does not estimate S or P.
+
+```bash
+python eval/live/run_standing_radar_fit_eval.py --dry-run --no-score
+python eval/live/run_standing_radar_fit_eval.py --manifest eval/live/manifest.standing_radar_fit_human_gold.v1.yaml
+```
+
+Prompt version: `standing-radar-fit-v1`. The model prompt includes only `semantic_contract`, `invariants`, `standing_interests`, and `standing_exclusions`. It must not include `boundary_examples_non_gold` or Human Gold labels.
+
