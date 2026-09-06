@@ -10,11 +10,14 @@
 # - preserve multiple substantive semantic facets instead of collapsing an event
 #   to one dominant domain;
 # - treat exclusions as scope guards against over-broad matching, not vetoes;
-# - broaden the cancer/tumor standing-interest wording to match the user's
-#   demonstrated preference over substantive cancer/tumor scientific, clinical,
-#   diagnostic, treatment, surgical, and technical events.
+# - preserve profile-specific scope: a monitored domain does not imply that every
+#   local organizational adoption/operation inside that domain is a standing-radar event.
 #
-# Frozen for fresh v2 validation: 2026-09-06
+# RV calibration on 2026-09-06 clarified the cancer/tumor boundary before any
+# scored v2 model measurement: the user monitors cancer/tumor research and field
+# development, not routine dynamics of an individual hospital as such.
+#
+# Status: CALIBRATED FOR FRESH v2 VALIDATION
 
 name: standing-radar-profile-v2
 semantic_contract: >-
@@ -29,6 +32,7 @@ invariants:
   - "Incidental mention or ordinary use of AI/GPU/Python/cloud/neural networks does not create radar membership."
   - "Standing exclusions are scope guards against over-broad matching. They do not veto a genuine substantive standing-interest facet."
   - "If at least one substantive semantic facet genuinely matches a standing interest, D is IN even when another substantive/contextual facet lies in an excluded area."
+  - "Standing-interest scope is semantic, not inherited from a broad parent domain; routine local organizational adoption/operation does not automatically count unless that kind of event is part of the stated standing interest."
   - "D granularity follows stable preference, not taxonomy depth."
   - "Do not infer facts not stated in the event."
   - "Do not answer AWARE/DROP, significance S, public salience P, or Kernel change."
@@ -48,10 +52,10 @@ standing_interests:
   - "Financial markets, monetary/macroeconomic policy, IPO/VC/corporate finance, major business/market structure"
   - "Basic science, including physics, mathematics, astronomy, and materials science"
   - "Films, film works, creators/actors, entertainment and entertainment-cultural phenomena"
-  - "Cancer and tumor topics, including substantive cancer/tumor science, diagnosis, treatment, clinical practice, surgical/medical technology, and other cancer/tumor-specific developments"
+  - "Cancer and tumor research and field development, including cancer/tumor science and development/release of diagnostic, treatment, clinical, surgical, or medical technologies; routine local hospital adoption/operation as such is not a standing interest"
 
 standing_exclusions:
-  - "General non-AI biomedicine outside substantive cancer/tumor topics"
+  - "General non-AI biomedicine outside the stated cancer/tumor research-and-field-development scope"
   - "New energy, batteries, grid, fusion, and energy industry as such"
   - "Commercial space, rockets, satellites, lunar exploration as such"
   - "Ordinary analog, power-management, motor-control, and industrial chips unrelated to compute/AI/advanced-process interests"
