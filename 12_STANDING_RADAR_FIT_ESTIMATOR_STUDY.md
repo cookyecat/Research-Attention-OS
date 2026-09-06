@@ -1,6 +1,6 @@
 # Research Attention OS — Standing Radar Fit Estimator Study
 
-Status: **FIRST D MEASUREMENT RECORDED**  
+Status: **D CORE SUPPORTED / SEMANTIC-COMPOSITION BOUNDARY OPEN**  
 Date: 2026-09-06  
 Phase: II-B Attention Policy Calibration  
 Related: `10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md`, `11_ROADMAP_AND_PROGRESS.md`
@@ -172,13 +172,13 @@ Do not connect this estimator to production `scheduler.py` during the measuremen
 
 ---
 
-## 8. Frozen first-run measurement
+## 8. Frozen first-run measurement — core D holdout
 
 Artifact:
 
 `eval/live/results/standing_radar_fit_v1_first_run.json`
 
-Estimator freeze commit (prompt/code frozen before Gold inspection):
+Estimator freeze commit:
 
 ```text
 be6db49af93d87e5cbb29bdf54806a5f2ae07859
@@ -211,38 +211,198 @@ False-IN            0
 False-OUT           2 (FD6, FD16)
 ```
 
-Pre-registered criterion:
+The numeric gate passed. Two false-OUT residuals shared a possible interest/exclusion boundary pattern:
 
-```text
-ExactAccuracy >= 0.80
-AND BalancedAccuracy >= 0.80
-AND no clear systematic failure
-```
+- FD6: commercial-space context + substantive on-orbit robotics;
+- FD16: general-biomed context + cancer-surgery assistance device.
 
-Decision: **A. SUFFICIENT FOR PHASE II-B**
-
-Residual attribution (not a prompt change):
-
-- FD6: on-orbit maintenance robot. Gold IN (robotics substantive). Pred OUT (commercial-space exclusion treated as the event subject).
-- FD16: cancer-surgery assistance device, non-AI. Gold IN (cancer/tumor research). Pred OUT (general non-AI biomedicine exclusion).
-- Weak shared pattern: when an exclusion domain co-occurs with a standing interest, the first-run model preferred the exclusion.
-- Incidental-tool-use (FD5 fusion + CNN) was correct OUT. Residuals are preserved. Do not add ontology or retune on this holdout.
-
-Next: study / estimate S. Do not polish D for cosmetic 100%.
+Because the shared pattern was based on only two cases, it was not sufficient to declare a systematic failure. A narrow causal diagnostic was therefore pre-registered rather than retuning the prompt.
 
 ---
 
-## 9. Current project pointer
+## 9. Intersection / Semantic Composition Diagnostic v1 — RECORDED
+
+Human Gold manifest:
+
+`eval/live/manifest.standing_radar_intersection_diag.v1.yaml`
+
+First-run artifact:
+
+`eval/live/results/standing_radar_intersection_diag_v1_first_run.json`
+
+Result commit:
 
 ```text
-D semantics                 FROZEN
-Standing Radar profile      CALIBRATED / FROZEN v1
-D answering instrument      CALIBRATED
-Fresh D Human Gold          FROZEN (FD1-FD20)
-D estimator                 MEASURED — first run sufficient for Phase II-B
-S estimator study           NEXT
-P estimator study           AFTER S
-Complete no-Delta AWARE     AFTER D/S/P estimation studies
+99a95841a5b7be00509aacf359bb43c81d009f64
 ```
 
-The next action is the S estimator study. Do not retune D on FD1-FD20.
+The frozen v1 estimator and prompt were reused unchanged:
+
+```text
+estimator_version  standing-radar-fit-estimator-v1
+prompt_version     standing-radar-fit-v1
+prompt_sha256      92179131d684d84e9b6f214389c0166cb9137a12e22f44826380d2fc063da749
+```
+
+Diagnostic structure: four controlled pairs. Each pair contains an excluded-context-only case and a matched case in which a substantive standing-interest facet is added.
+
+Human Gold was answered twice with identical labels:
+
+```text
+IX1 OUT   IX2 IN
+IX3 OUT   IX4 IN
+IX5 OUT   IX6 IN
+IX7 OUT   IX8 IN
+```
+
+Pre-registered diagnostic target:
+
+```text
+Exact >= 7/8
+Positive-intersection recall >= 3/4
+Complete pair flips >= 3/4
+No persistent exclusion-overrides-substantive-interest pattern
+```
+
+Observed:
+
+```text
+Exact accuracy                6/8 = 0.75
+Balanced accuracy             0.75
+Excluded-context-only recall  4/4 = 1.00
+Positive-intersection recall  2/4 = 0.50
+Complete pair flips           2/4 = 0.50
+Technical failures            0
+```
+
+Errors:
+
+```text
+IX2  commercial space + substantive on-orbit maintenance robot  Gold IN / Pred OUT
+IX4  general biomed + cancer-surgery assistance device          Gold IN / Pred OUT
+```
+
+Correct positive intersections:
+
+```text
+IX6  fusion + substantive reactor-inspection robot              Gold IN / Pred IN
+IX8  industrial-electronics context + server CPU                Gold IN / Pred IN
+```
+
+The diagnostic therefore **failed its pre-registered criterion**.
+
+---
+
+## 10. Attribution after the diagnostic
+
+The result does **not** support a simple global rule that “explicit exclusions always win.” The estimator successfully allowed a substantive standing interest to override excluded context in IX6 and IX8.
+
+The remaining failures are narrower.
+
+### 10.1 Space + robotics: dominant-domain arbitration
+
+For IX2, the model explicitly recognized that robotics is a standing interest but still concluded that the event's substantive topic was “space operations, not robotics development.”
+
+This indicates a tendency to collapse a multi-facet event into one dominant domain instead of representing multiple substantive facets.
+
+Candidate semantic model:
+
+$$
+\boxed{
+E\rightarrow F_s(E)=\{substantive\ semantic\ facets\}
+}
+$$
+
+and then:
+
+$$
+\boxed{
+D(E)=IN
+\iff
+\exists f\in F_s(E): Match(f,StandingRadar)
+}
+$$
+
+This is different from a weighted competition among domains.
+
+### 10.2 Cancer-surgery device: Standing Radar scope wording
+
+For IX4, the model classified a cancer-surgery assistance device as “general non-AI biomedicine outside cancer/tumor research,” despite the event being explicitly about tumor resection.
+
+The frozen profile currently says:
+
+```text
+Cancer and tumor research, including ordinary ongoing cancer/tumor science
+```
+
+Human Gold demonstrates that the user's actual standing radar is broader than research papers alone and includes substantive cancer/tumor clinical or technical events such as cancer-surgery assistance technology.
+
+This may therefore be partly a **profile scope representation mismatch**, not purely estimator arbitration.
+
+### 10.3 Current interpretation
+
+The evidence now supports:
+
+$$
+\boxed{Compact\ natural\ language\ StandingRadar\ representation:\ SUPPORTED}
+$$
+
+$$
+\boxed{D\ core\ estimator:\ STRONG\ but\ not\ semantically\ complete}
+$$
+
+$$
+\boxed{Multi\text{-}facet\ composition/scope\ boundary:\ OPEN}
+$$
+
+Do not add domain weights or a domain ontology from this result.
+
+---
+
+## 11. Candidate minimal repair — NOT YET MEASURED
+
+The smallest current hypothesis is semantic, not numeric:
+
+1. Extract the set of **substantive semantic facets** of the event.
+2. Distinguish substantive facets from incidental tools, methods, or context.
+3. Treat Standing Radar exclusions as guards against over-broad matching, not as independent negative votes with veto power.
+4. Set $D=IN$ if at least one substantive facet genuinely matches a standing interest.
+5. Represent user-interest scope accurately; do not make “cancer/tumor” narrower than the calibrated human preference.
+
+In shorthand:
+
+$$
+\boxed{
+Event
+\rightarrow
+SubstantiveFacets
+\rightarrow
+StandingRadarMembership
+}
+$$
+
+not:
+
+$$
+Event\rightarrow DomainWeights\rightarrow WeightedSum
+$$
+
+No v1 prompt/profile change should be reported as fresh performance on FD1-FD20 or IX1-IX8. Any revised estimator claim requires fresh evidence or later real-world integration evidence.
+
+---
+
+## 12. Current project pointer
+
+```text
+D semantics                         FROZEN
+Standing Radar profile v1           FROZEN historical baseline
+Fresh D Human Gold                  FROZEN (FD1-FD20)
+D estimator v1 core measurement     0.90 exact / 0.933 balanced
+Intersection diagnostic             FAILED pre-registered criterion
+D representation hypothesis         SUPPORTED
+Semantic-composition/scope boundary OPEN
+S estimator study                   AFTER D repair/closure decision
+P estimator study                   AFTER S
+```
+
+The next D action, if taken, must be a **minimal semantic repair**, not weight tuning, ontology expansion, or retuning on the existing Gold.
