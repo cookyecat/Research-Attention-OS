@@ -1,6 +1,6 @@
 # Research Attention OS — Material Consequence Estimator v1
 
-Status: **IMPLEMENTED — UNIT TEST / FREEZE CHECK NEXT**  
+Status: **FROZEN — FRESH HUMAN GOLD NEXT**  
 Date: 2026-09-06  
 Phase: II-B Attention Policy Calibration  
 Semantic baseline: `18_MATERIAL_CONSEQUENCE_STUDY.md`, `19_MATERIAL_CONSEQUENCE_REFERENCE_SCALE.md`
@@ -47,6 +47,7 @@ Version identifiers:
 estimator_version  material-consequence-estimator-v1
 prompt_version     material-consequence-v1
 profile_id         material-consequence-profile-v1
+prompt_sha256      f46808899f1b1cb2c4bfb106c6e537d65ca4433428cea8494f4eedbfccf9b776
 ```
 
 Production scheduler / Attention Policy behavior is unchanged.
@@ -133,13 +134,39 @@ false_not_material_count
 
 It intentionally does **not** embed a success criterion inside the generic metric helper.
 
-The fresh S validation criterion will be pre-registered separately after the estimator/profile pass unit tests and are frozen, avoiding the D v3 reporting-plumbing mismatch.
+The fresh S validation criterion is pre-registered separately after the estimator/profile freeze, avoiding the D v3 reporting-plumbing mismatch.
 
 The first scored artifact is write-once.
 
 ---
 
-## 7. Provenance
+## 7. Freeze evidence
+
+Targeted unit test executed after implementation:
+
+```text
+backend/.venv/bin/python -m pytest \
+  backend/tests/eval/test_material_consequence_v1.py -q
+
+9 passed, 1 warning in 0.04s
+```
+
+The warning is an unrelated Starlette/httpx deprecation warning and does not affect estimator semantics or measurement.
+
+Dry-run against the calibration-v2 Human manifest:
+
+```text
+n_cases       10
+prompt_sha256 f46808899f1b1cb2c4bfb106c6e537d65ca4433428cea8494f4eedbfccf9b776
+```
+
+No model measurement was run during this freeze check.
+
+From this point forward, the v1 prompt/profile/estimator are treated as frozen for the first fresh S validation. Any later change after Human Gold or model predictions are seen requires a new estimator version and a new fresh validation set.
+
+---
+
+## 8. Provenance
 
 The following are development/calibration evidence only and must never be reported as fresh S performance:
 
@@ -150,12 +177,11 @@ MS1-MS10
 
 No calibration case IDs or case-specific examples are copied into the estimator prompt/profile.
 
-The next sequence is:
+Sequence from this freeze point:
 
 ```text
-unit test estimator/profile
-  -> freeze estimator/profile commit
-  -> author fresh S validation after freeze
+frozen estimator/profile
+  -> author fresh S validation
   -> Human Gold before model run
   -> first scored measurement
   -> residual attribution
@@ -163,14 +189,14 @@ unit test estimator/profile
 
 ---
 
-## 8. Current pointer
+## 9. Current pointer
 
 ```text
 S semantic contract              FROZEN
-S estimator v1                   IMPLEMENTED
-S unit tests                     NEXT
-S estimator/profile freeze       AFTER TEST PASS
-Fresh S holdout                  AFTER FREEZE
+S estimator v1                   FROZEN
+S unit tests                     PASS (9/9)
+Fresh S holdout                  NEXT
+S Human Gold                     NOT YET ELICITED
 S first scored measurement       NOT RUN
 P study                          AFTER S
 ```
