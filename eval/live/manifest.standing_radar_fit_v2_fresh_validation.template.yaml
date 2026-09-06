@@ -1,0 +1,74 @@
+# STANDING RADAR FIT v2 — FRESH VALIDATION TEMPLATE
+#
+# Created after the v2 semantic-repair prompt/profile were written and before any
+# v2 model measurement. Human labels must be elicited before running the model.
+# This is a narrow repair validation, not a new large D benchmark.
+#
+# Do not run scored until all PENDING labels are replaced by HUMAN_ELICITED labels.
+
+name: raos-standing-radar-fit-v2-fresh-validation
+variable: D
+validation_type: FRESH_REPAIR_VALIDATION
+profile: eval/live/standing_radar_profile.v2.yaml
+estimator_version: standing-radar-fit-estimator-v2
+prompt_version: standing-radar-fit-v2
+semantic_contract: >-
+  D = Standing Interest Fit independent of event significance. Identify the event's
+  substantive semantic facets and judge whether at least one belongs to a world the
+  user wants RAOS to monitor on a standing basis.
+
+pre_registered_criterion:
+  exact_min: 0.875        # >= 7/8
+  in_recall_min: 0.75     # >= 3/4 if Human Gold remains 4 IN / 4 OUT
+  out_recall_min: 0.75    # >= 3/4 if Human Gold remains 4 IN / 4 OUT
+  complete_pair_flips_min: 3
+  no_clear_semantic_composition_failure: true
+
+cases:
+  - id: RV1
+    pair: energy_robotics
+    variant: excluded_context_only
+    gold_status: PENDING
+    event: "An oil-refining company deploys a new pipeline inspection system based on fixed pressure, vibration, and corrosion sensors. The system has no mobile robot, autonomous manipulation, or AI component."
+
+  - id: RV2
+    pair: energy_robotics
+    variant: excluded_context_plus_substantive_interest
+    gold_status: PENDING
+    event: "An oil-refining company develops an autonomous pipeline inspection robot that moves through hazardous plant areas, navigates obstacles, operates a robotic arm, and performs close-up equipment checks."
+
+  - id: RV3
+    pair: medicine_cancer_scope
+    variant: excluded_context_only
+    gold_status: PENDING
+    event: "A hospital introduces a new non-cancer orthopedic rehabilitation device that mechanically assists joint movement under therapist control. It has no AI and is not autonomous."
+
+  - id: RV4
+    pair: medicine_cancer_scope
+    variant: excluded_context_plus_substantive_interest
+    gold_status: PENDING
+    event: "A hospital introduces a new device for image-guided tumor ablation that helps physicians position and deliver treatment precisely to malignant tissue. It has no AI and is not autonomous."
+
+  - id: RV5
+    pair: space_ai
+    variant: excluded_context_only
+    gold_status: PENDING
+    event: "A satellite operator upgrades its conventional ground-station scheduling software for routine communications windows. The change uses standard optimization software and does not involve AI agents, robotics, or new compute architecture."
+
+  - id: RV6
+    pair: space_ai
+    variant: excluded_context_plus_substantive_interest
+    gold_status: PENDING
+    event: "A satellite operator develops an onboard multimodal AI agent that interprets sensor data, plans recovery actions, calls spacecraft tools, and autonomously handles multi-step fault-recovery procedures."
+
+  - id: RV7
+    pair: film_workflow_vs_work
+    variant: excluded_context_only
+    gold_status: PENDING
+    event: "A film studio updates its internal lighting calibration, color-management, and traditional post-production workflow. No new film or entertainment work is released."
+
+  - id: RV8
+    pair: film_workflow_vs_work
+    variant: excluded_context_plus_substantive_interest
+    gold_status: PENDING
+    event: "The same film studio releases a new feature film with a new director and cast. The production uses ordinary filmmaking methods and contains no AI-related technology."
