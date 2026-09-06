@@ -177,11 +177,11 @@ Result commit:
 Invocation:
 
 ```text
-model             deepseek-v4-flash
-thinking          disabled
-temperature       0.1
-prompt_sha256     c7ce0ed089fdcdfee69c9f986e35a860e7d6c07468801e76ad1af771a3d2ece7
-technical failures 0
+model               deepseek-v4-flash
+thinking            disabled
+temperature         0.1
+prompt_sha256       c7ce0ed089fdcdfee69c9f986e35a860e7d6c07468801e76ad1af771a3d2ece7
+technical failures  0
 ```
 
 Observed:
@@ -206,7 +206,7 @@ The JSON artifact's embedded `success_criterion` block was inherited from the ge
 
 ## 8. Residual attribution
 
-### 8.1 FJ2 — likely label/policy boundary, not estimator-semantic evidence
+### 8.1 FJ2 — exact mismatch, but model IN is semantically acceptable under the frozen clause
 
 ```text
 Gold OUT
@@ -215,11 +215,13 @@ Pred IN
 
 The event explicitly develops a multimodal maintenance Agent. The frozen v3 profile explicitly says to monitor events where AI Agents / multimodal AI are substantively developed, released, evaluated, deployed, or changed.
 
-The model's IN prediction is therefore internally consistent with the frozen clause. This case should be treated as a human-policy boundary / possible noisy-label residual rather than evidence that the estimator failed to apply the stated formal rule.
+The model's IN prediction is therefore a valid reading of the frozen Standing Radar Clause. Post-measurement human review explicitly accepted that reading as understandable and not a D-model error. Preserve the original Gold and first-run metric for provenance, but do **not** treat FJ2 as evidence that the clause semantics or estimator reasoning are wrong.
 
-Do not retune the AI clause to this single case without broader evidence.
+This case is a useful reminder that D only asks whether the event is inside the standing world. Whether a small industrial AI-Agent development is substantial enough to surface is a separate S question.
 
-### 8.2 FJ4 — clause-application failure after correct anchor recognition
+Do not retune the AI clause to this case.
+
+### 8.2 FJ4 — D/S separation violation in estimator reasoning
 
 ```text
 Gold IN
@@ -232,11 +234,21 @@ The model explicitly recognized `OpenAI` as a substantive anchor, yet did not ap
 Monitor OpenAI and Google DeepMind when either organization is a substantive actor/object in the event, independent of the event's significance.
 ```
 
-Its reason instead required a strategic/product/research/AI-system development consequence. That imports an extra condition not present in the clause and partially leaks significance/topic logic into D.
+Its reason instead required a strategic/product/research/AI-system development consequence. That imports an S-like significance condition into D.
 
-This is a real estimator implementation error.
+The intended decomposition is:
 
-### 8.3 FJ6 — affiliation-clause extraction/application failure
+```text
+OpenAI is the substantive actor   -> D = IN
+routine administrative reshuffle -> likely S = NOT MATERIAL
+D = IN and S = 0                 -> no-Delta AWARE gate can still DROP when P is also low
+```
+
+So the model's extra `OpenAI AND SignificantDevelopment` condition is precisely the kind of cross-variable leakage D/S/P are designed to prevent.
+
+This is a real estimator calibration / instruction-following error, not a flaw in Standing Attention Jurisdiction.
+
+### 8.3 FJ6 — affiliation-clause instruction-following failure
 
 ```text
 Gold IN
@@ -247,13 +259,13 @@ The event explicitly states that the hospital is where the user's parent works. 
 
 The model nevertheless said the hospital was not monitored and omitted the stable affiliation from its matched-clause reasoning.
 
-This is a real estimator implementation error.
+This is best treated as a clause execution / instruction-following failure in the current LLM estimator. It does not challenge the formal D model.
 
 ### 8.4 What the pattern means
 
 FJ8 and FJ10 show that non-domain clauses can work: the model correctly applied hometown/local-governance and film-work clauses. Therefore the failure is not simply "only topic clauses work."
 
-The narrower failure is that the current LLM procedure does not reliably apply every heterogeneous Standing Radar Clause even when the clause is explicit. In particular, the intermediate `substantive anchor -> clause match` framing can over-constrain the more general formal model.
+The narrower implementation issue is that the current LLM procedure does not reliably apply every heterogeneous Standing Radar Clause even when the clause is explicit. In particular, the intermediate `substantive anchor -> clause match` framing can over-constrain the more general formal model.
 
 The formal definition is:
 
@@ -265,7 +277,21 @@ D(E,u)=1
 }
 $$
 
-A future implementation may evaluate clauses more directly over `Sem(E),u` rather than requiring every applicability condition itself to appear as a separately extracted substantive anchor.
+A cleaner implementation view is therefore:
+
+$$
+\boxed{
+Sem(E),u
+\rightarrow
+Evaluate(\rho_1,\rho_2,\ldots,\rho_n)
+\rightarrow
+OR
+\rightarrow
+D
+}
+$$
+
+rather than making `AnchorExtraction` a mandatory semantic gate before clause evaluation.
 
 This is an implementation observation, not a reason to add domain weights, a typed ontology, or new D sub-variables.
 
@@ -280,13 +306,14 @@ D intuitive meaning                     SUPPORTED
 Standing Attention Jurisdiction model   FROZEN / CLOSED SEMANTIC BASELINE
 Standing Radar Clause representation    SUPPORTED
 Domain weights / giant ontology         NOT JUSTIFIED
-v3 first fresh estimator measurement    FAIL (0.70 exact)
-Residuals                               ATTRIBUTABLE
+v3 first fresh estimator measurement    FAIL (0.70 exact, preserved)
+FJ2 mismatch                             SEMANTICALLY ACCEPTABLE UNDER FROZEN CLAUSE
+FJ4 / FJ6 residuals                     ATTRIBUTABLE IMPLEMENTATION ERRORS
 ```
 
-The 0.70 estimator result is not strong enough to certify `standing-radar-fit-estimator-v3` as a passed estimator. However, the residuals do not force a redesign of D itself. Two of the three errors are traceable implementation failures against explicit frozen clauses; the remaining error is a plausible human-policy boundary that should not be overfit.
+The 0.70 first-run result remains the official measurement and is not rewritten. However, post-measurement attribution does not force a redesign of D itself. FJ4 and FJ6 are traceable failures to execute explicit frozen clauses; FJ2 is accepted as a reasonable IN under the frozen AI-Agent clause.
 
-Given the project objective and the explicit preference not to keep expanding D for isolated/bounded residuals, **close D semantic research for Phase II-B and move to S**. Keep the estimator residuals as known implementation debt to revisit during integrated dogfooding or when a real-world repeated error pattern appears.
+Given the project objective and the explicit preference not to keep expanding D for bounded residuals, **close D semantic research for Phase II-B and move to S**. Keep the estimator residuals as known implementation debt to revisit during integrated dogfooding or when a real-world repeated error pattern appears.
 
 Do not create another synthetic D benchmark now.
 
@@ -299,6 +326,6 @@ D semantic definition                  CLOSED / FROZEN
 D historical measurements              PRESERVED
 D v3 estimator                         NOT CERTIFIED; KNOWN ATTRIBUTABLE RESIDUALS
 Further offline D benchmark expansion  STOP
-S = Material Consequence               NEXT
+S = Material Consequence               NOW
 P = Public Attention Salience           AFTER S
 ```
