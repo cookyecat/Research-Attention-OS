@@ -1,0 +1,346 @@
+{
+  "actual_models": [
+    "deepseek-v4-flash"
+  ],
+  "cases": [
+    {
+      "case_id": "FJ1",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "OUT",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_clauses": [],
+      "model_meta": {
+        "completion_tokens": 96,
+        "estimated_cost_usd": null,
+        "latency_ms": 1329,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1401,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event is an ordinary operational update in an unmonitored industry; the language model is used only as a tool to rewrite notes, not substantively developed, deployed, or changed as an AI system.",
+      "scorable": true,
+      "substantive_anchors": [
+        "regional water-utility operator",
+        "pipe-maintenance scheduling",
+        "off-the-shelf language model"
+      ],
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FJ2",
+      "correct": false,
+      "error": null,
+      "failure_kind": null,
+      "gold": "OUT",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_clauses": [
+        "Monitor events where LLMs, foundation models, AI Agents, multimodal AI, or closely related AI systems are substantively developed, released, evaluated, deployed, or changed."
+      ],
+      "model_meta": {
+        "completion_tokens": 98,
+        "estimated_cost_usd": null,
+        "latency_ms": 2120,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1383,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event describes development of a multimodal AI Agent, which is a substantive AI system development.",
+      "scorable": true,
+      "substantive_anchors": [
+        "multimodal maintenance Agent",
+        "AI Agent"
+      ],
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FJ3",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "OUT",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_clauses": [],
+      "model_meta": {
+        "completion_tokens": 90,
+        "estimated_cost_usd": null,
+        "latency_ms": 1095,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1384,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event is about a furniture retailer's warehouse schedule change; ChatGPT is only mentioned incidentally in an interview, not substantively developed, released, or changed. No standing clause is satisfied.",
+      "scorable": true,
+      "substantive_anchors": [
+        "furniture retailer",
+        "warehouse shift schedule",
+        "ChatGPT for drafting emails"
+      ],
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FJ4",
+      "correct": false,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_clauses": [],
+      "model_meta": {
+        "completion_tokens": 108,
+        "estimated_cost_usd": null,
+        "latency_ms": 1561,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1386,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event is a routine internal organizational change with no stated strategic, product, or research consequence. Although OpenAI is a substantive actor, the event does not involve any monitored substantive development, release, evaluation, deployment, or change of AI systems or other monitored domains. The OpenAI clause requires substantive involvement, which is absent here.",
+      "scorable": true,
+      "substantive_anchors": [
+        "OpenAI",
+        "administrative team reorganization"
+      ],
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FJ5",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "OUT",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_clauses": [],
+      "model_meta": {
+        "completion_tokens": 83,
+        "estimated_cost_usd": null,
+        "latency_ms": 999,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1379,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event is routine local use of an established commercial clinical navigation system by a hospital; no standing clause is substantively satisfied. The hospital's connection via a friend's parent is not a direct-family affiliation.",
+      "scorable": true,
+      "substantive_anchors": [
+        "hospital",
+        "clinical navigation system"
+      ],
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FJ6",
+      "correct": false,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_clauses": [],
+      "model_meta": {
+        "completion_tokens": 81,
+        "estimated_cost_usd": null,
+        "latency_ms": 1354,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1378,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event is routine use of an established commercial system by a hospital; no standing clause is substantively satisfied. The hospital is not a monitored institution, and the system is not developed or modified.",
+      "scorable": true,
+      "substantive_anchors": [
+        "hospital",
+        "clinical navigation system"
+      ],
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FJ7",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "OUT",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_clauses": [],
+      "model_meta": {
+        "completion_tokens": 124,
+        "estimated_cost_usd": null,
+        "latency_ms": 1566,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1375,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event is a routine personnel adjustment in an unrelated city's government, with no substantive involvement of any monitored standing anchor (AI, robotics, compute, cloud, autonomous driving, quantum, BCI, cybersecurity, consumer electronics, internet platforms, games, finance, basic science, films, cancer research, OpenAI/DeepMind, direct-family institution, or hometown).",
+      "scorable": true,
+      "substantive_anchors": [
+        "unrelated city government",
+        "mid-level administrative office",
+        "personnel adjustment"
+      ],
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FJ8",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_clauses": [
+        "Monitor the user's configured hometown/local-governance scope when that place or its government is a substantive event actor/object"
+      ],
+      "model_meta": {
+        "completion_tokens": 95,
+        "estimated_cost_usd": null,
+        "latency_ms": 1250,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1376,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event is a personnel adjustment by the user's hometown government, making the hometown government a substantive actor, satisfying the hometown/local-governance clause.",
+      "scorable": true,
+      "substantive_anchors": [
+        "user's hometown government"
+      ],
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FJ9",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "OUT",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_clauses": [],
+      "model_meta": {
+        "completion_tokens": 88,
+        "estimated_cost_usd": null,
+        "latency_ms": 1057,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1384,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event concerns only internal production workflow changes at a film studio, with no monitored film, creator, entertainment release, or other standing clause substantively involved.",
+      "scorable": true,
+      "substantive_anchors": [
+        "film studio",
+        "internal file-naming convention",
+        "archive-folder structure",
+        "asset handoff workflow"
+      ],
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FJ10",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_clauses": [
+        "films, film works, creators/actors, entertainment releases, and entertainment-cultural phenomena"
+      ],
+      "model_meta": {
+        "completion_tokens": 88,
+        "estimated_cost_usd": null,
+        "latency_ms": 1176,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1377,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event is the release of an animated feature film, which substantively matches the standing clause for films and entertainment releases.",
+      "scorable": true,
+      "substantive_anchors": [
+        "animated feature film",
+        "original story",
+        "new director"
+      ],
+      "transport_retries": 0
+    }
+  ],
+  "dry_run": false,
+  "estimator_freeze_commit": "113c223d00f64a2243cbb533e5e40ea8f2b40144",
+  "estimator_version": "standing-radar-fit-estimator-v3",
+  "invocation": {
+    "estimator_version": "standing-radar-fit-estimator-v3",
+    "profile_id": "standing-radar-profile-v3",
+    "prompt_sha256": "c7ce0ed089fdcdfee69c9f986e35a860e7d6c07468801e76ad1af771a3d2ece7",
+    "prompt_version": "standing-radar-fit-v3",
+    "provider_base_url": "https://api.deepseek.com",
+    "reasoning_effort": null,
+    "requested_model": "deepseek-v4-flash",
+    "response_format": "json_object",
+    "structured_schema": "StandingRadarFitV3Response",
+    "temperature": 0.1,
+    "thinking": "disabled",
+    "thinking_protocol": "deepseek",
+    "timeout_seconds": 60.0
+  },
+  "manifest": "/Users/liyang/Developer/Research-Attention-OS/eval/live/manifest.standing_radar_fit_v3_final_fresh_human_gold.yaml",
+  "measurement_timestamp": "20260906T135859Z",
+  "metrics": {
+    "balanced_accuracy": 0.6666666666666667,
+    "exact_accuracy": 0.7,
+    "false_in_count": 1,
+    "false_in_rate": 0.1,
+    "false_out_count": 2,
+    "false_out_rate": 0.2,
+    "in_recall": 0.5,
+    "metrics_pass": false,
+    "n_gold_in": 4,
+    "n_gold_out": 6,
+    "n_pred_in": 3,
+    "n_pred_out": 7,
+    "n_scored": 10,
+    "out_recall": 0.8333333333333334,
+    "success_criterion": {
+      "balanced_accuracy_min": 0.8,
+      "exact_accuracy_min": 0.8,
+      "no_clear_systematic_failure": "human_judgment_after_residuals"
+    }
+  },
+  "n_cases": 10,
+  "n_technical_failures": 0,
+  "name": "raos-standing-radar-fit-v3-final-fresh-validation",
+  "prompt_sha256": "c7ce0ed089fdcdfee69c9f986e35a860e7d6c07468801e76ad1af771a3d2ece7",
+  "prompt_version": "standing-radar-fit-v3",
+  "scored": true,
+  "technical_failures": []
+}
