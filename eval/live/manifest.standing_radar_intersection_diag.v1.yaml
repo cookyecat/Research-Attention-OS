@@ -37,6 +37,17 @@ hypothesis: >-
   diagnostic tests that narrow hypothesis without changing the estimator, prompt,
   profile, or ontology.
 
+pre_registered_interpretation:
+  overall_exact_min: 0.875   # >= 7/8
+  positive_intersection_recall_min: 0.75  # IX2/IX4/IX6/IX8: >= 3/4 IN
+  complete_pair_flip_min: 0.75  # >= 3/4 pairs have OUT control + IN intersection
+  decision_rule: >-
+    If all three criteria pass and there is no repeated exclusion-dominance pattern,
+    treat the D estimator as sufficient for Phase II-B and close the D study. If the
+    positive intersection variants repeatedly stay OUT, preserve the result as a
+    semantic-composition/arbitration failure and design the smallest follow-up;
+    do not retune on this diagnostic.
+
 cases:
   - id: IX1
     pair: space_robotics
