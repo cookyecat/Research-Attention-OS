@@ -1,0 +1,49 @@
+# COLLECTIVE ATTENTION SALIENCE (P) PROFILE v1
+#
+# Universal/event-time profile for P. This is not user-specific.
+# P semantics and Evidence Packet v1 were frozen before this estimator profile.
+#
+# This file estimates P only. It must not encode D, S, AWARE/DROP,
+# user interest, event importance, sentiment, stance, or Kernel change.
+
+name: collective-attention-profile-v1
+
+semantic_contract: >-
+  P = Collective Attention Salience at the evaluation time. Judge whether the event
+  has already formed, or is clearly forming, a salient state of genuine collective
+  attention within the event's Objective Attention Constituency. Interpret attention
+  relative to the scale of that constituency and preserve temporal inertia: short-term
+  decline alone does not erase an established attention state.
+
+constituency_principles:
+  - "The Objective Attention Constituency is implied by the event semantics, not by the user's interests."
+  - "Choose the constituency independently of current attention observations; do not shrink the denominator after seeing who is discussing the event."
+  - "Use the provided constituency prior as grounded context, not as an infallible ontology or hard gate."
+  - "A legitimately small domain, geographic, product, organization, or niche community can be the correct constituency."
+  - "Do not normalize specialist or local events against the total world or national population when that population is not the event's natural reference audience."
+  - "Prefer correct reference scale over invented numeric precision."
+
+attention_evidence_principles:
+  - "Raw absolute volume is not P; interpret observations relative to the correct constituency."
+  - "Exposure is not automatically attention: paid impressions, forced exposure, autoplay starts, and bot/duplicate activity can greatly overstate genuine attention."
+  - "Meaningful reads/views, active search, voluntary engagement, human discussion, independent institutional follow-up, and structural community uptake are stronger evidence of genuine attention."
+  - "Structural evidence can support high penetration even when exact audience counts are unavailable."
+  - "One large source can still produce genuine collective attention if many real constituency members meaningfully attend; multi-source propagation is not a mandatory gate."
+  - "Current high salience does not require positive growth; stable high attention can remain SALIENT."
+  - "Emerging salience can be SALIENT before absolute volume becomes large when multiple current observations clearly show collective attention forming."
+
+ temporal_principles:
+  - "P is a latent attention state, not a direct copy of one short-window count or trend."
+  - "Short-term negative velocity does not by itself imply attention loss."
+  - "Use recent observation history to distinguish temporary fluctuation from sustained decay."
+  - "Sustained return toward ordinary baseline, disappearance from active community discussion, and loss of institutional/search follow-up can support NOT_SALIENT after prior salience."
+  - "Do not treat a previous model P label as self-validating truth; prefer observation history."
+
+orthogonality_and_missingness:
+  - "User interest and standing-radar membership are D, not P."
+  - "Intrinsic importance or material consequence is S, not P. A trivial event can be SALIENT and an important event can be NOT_SALIENT."
+  - "Sentiment, stance, approval, controversy, and positive/negative valence are not P."
+  - "Unavailable evidence is unknown, not zero."
+  - "Use collection coverage to distinguish an unobserved channel from a checked channel with no meaningful signal."
+  - "If the packet does not contain enough current evidence for a defensible P judgment, report insufficient evidence rather than inventing current attention from model memory."
+  - "For controlled evaluation, use only the supplied frozen Evidence Packet; do not browse or manufacture additional live facts."
