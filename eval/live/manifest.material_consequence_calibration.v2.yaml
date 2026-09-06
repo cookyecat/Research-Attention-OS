@@ -1,11 +1,15 @@
 # MATERIAL CONSEQUENCE (S) — CALIBRATION v2
 #
 # Development/calibration evidence only. Not a fresh holdout.
-# Authored after MC1-MC10 labels and before these labels are elicited.
-# Purpose: calibrate consequence scale, severity, and generalizability after MC6
-# falsified the rule that a large change relative to any local affected system is
-# automatically MATERIAL.
+# Revised after MC1-MC10 labels and the user's qualitative MC6 explanation,
+# but BEFORE any v2 labels are elicited.
 #
+# Purpose: test a simpler candidate rule for S:
+#   materiality may be reached either through sufficiently high absolute severity
+#   or through sufficiently broad/systemic/shared-state consequence.
+#
+# The cases intentionally do NOT mention whether mainstream media reported the
+# event, so public-attention evidence (P) cannot leak into S.
 # Judge only S. Ignore user interest D and public attention P.
 
 name: raos-material-consequence-calibration-v2
@@ -13,39 +17,65 @@ variable: S
 validation_type: HUMAN_CALIBRATION
 semantic_contract: >-
   S = Material Consequence of the underlying event, independent of user interest
-  and public attention. Judge whether the event creates a sufficiently material
-  counterfactual difference in world state. Do not normalize materiality solely to
-  the smallest affected local system.
+  and public attention. Judge whether the event is consequential enough in its own
+  right to matter beyond ordinary bounded/local/private affairs. A candidate event
+  may cross the materiality boundary through sufficiently severe absolute consequence
+  or through sufficiently broad/systemic/shared-state impact. Raw population count,
+  actor fame, or media coverage is not by itself sufficient.
+
+candidate_hypothesis: >-
+  S may have an OR-like materiality frontier: sufficiently high absolute severity
+  can make a geographically narrow event material, while sufficiently broad or
+  structural spillover can make a moderate-origin event material. Bounded local/private
+  consequences remain NOT_MATERIAL unless one of those channels crosses the boundary.
 
 cases:
   - id: MS1
-    axis: broad_scope_low_magnitude
-    event: "A nationwide postal service moves its ordinary daily pickup window five minutes later. The change affects all branches, but causes no meaningful cost, access, safety, staffing, or service-quality change."
+    pair: local_routine_vs_local_extreme_severity
+    variant: bounded_routine
+    event: "In a remote township primary school, two students have a minor fight with no serious injury. The class teacher is removed from the position after an internal disciplinary review. No wider school-system rule, policy, or social pattern changes."
 
   - id: MS2
-    axis: narrow_scope_high_severity
-    event: "An industrial accident at a single facility kills 120 people and permanently disables the site. The direct physical event is geographically local and does not itself change national policy or industry rules."
+    pair: local_routine_vs_local_extreme_severity
+    variant: extreme_severity
+    event: "At a single remote township school, a violent incident results in three student deaths and several serious injuries. The direct event remains confined to that school, and no wider policy or institutional change is stated."
 
   - id: MS3
-    axis: local_structural_change_without_spillover
-    event: "A small farming town permanently bans groundwater extraction, forcing farms and local businesses to change water sources and land use. The policy remains local, creates no legal precedent, and is not adopted elsewhere."
+    pair: local_policy_vs_systemic_precedent
+    variant: local_only
+    event: "A small farming town permanently bans groundwater extraction after contamination is confirmed, forcing local farms and businesses to change water sources and land use. The rule remains local, creates no legal precedent, and is not adopted elsewhere."
 
   - id: MS4
-    axis: local_origin_with_broad_precedent
-    event: "The same kind of groundwater ban begins in one small farming town, but a court ruling around the case establishes a precedent that changes water-use rights nationwide and forces many regions to revise their rules."
+    pair: local_policy_vs_systemic_precedent
+    variant: national_precedent
+    event: "A groundwater dispute begins in one small farming town, but the resulting court judgment establishes a nationwide precedent on water-use rights and forces many regions to revise their rules."
 
   - id: MS5
-    axis: private_internal_capability_change
-    event: "One manufacturer privately improves an internal production process and cuts its own energy use by 70%. The method is proprietary, affects only that firm, and no competitor or external practice changes."
+    pair: low_level_vs_high_authority_personnel
+    variant: low_level_local_personnel
+    event: "A county government rotates one section-level administrative official to another routine post. No policy, budget, regulatory authority, or public-service direction changes."
 
   - id: MS6
-    axis: generalizable_field_practice_change
-    event: "A new production method cuts energy use by 70% across a common industrial process, is independently reproduced by multiple manufacturers, and begins changing standard engineering practice across the sector."
+    pair: low_level_vs_high_authority_personnel
+    variant: national_minister_change
+    event: "A national cabinet-level ministry replaces its minister. The ministry's legal authority and portfolio remain the same, and no new policy has yet been announced, but the person controlling the ministry's top executive authority changes."
 
   - id: MS7
-    axis: large_population_small_effect
-    event: "A national banking system changes a routine statement layout for 80 million customers. The information, fees, access, rights, and user behavior remain effectively unchanged."
+    pair: broad_trivial_vs_narrow_structural
+    variant: broad_but_trivial
+    event: "A national banking system changes the visual layout of monthly statements for 80 million customers. Information, fees, rights, access, security, and user behavior remain effectively unchanged."
 
   - id: MS8
-    axis: bounded_population_major_constraint
-    event: "A new regulation applies to only about 60 specialist firms, but legally bans the core production method used by the entire niche industry, forcing most firms either to redesign their technology stack or exit the market."
+    pair: broad_trivial_vs_narrow_structural
+    variant: narrow_industry_structural
+    event: "A new regulation applies to only about 60 specialist firms, but legally bans the core production method used by the entire niche industry, forcing most firms either to rebuild their technical process or exit the market."
+
+  - id: MS9
+    pair: private_gain_vs_field_change
+    variant: private_internal_gain
+    event: "One small manufacturer privately improves an internal process and cuts its own energy use by 70%. The method is proprietary, affects only that firm, and no competitor, standard, or external practice changes."
+
+  - id: MS10
+    pair: private_gain_vs_field_change
+    variant: field_level_change
+    event: "A new production method cuts energy use by about 70% across a common industrial process, is independently reproduced by multiple manufacturers, and begins changing standard engineering practice across the sector."
