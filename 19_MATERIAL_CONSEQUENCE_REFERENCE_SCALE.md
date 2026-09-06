@@ -1,6 +1,6 @@
 # Research Attention OS — Material Consequence Reference Scale
 
-Status: **ACTIVE S CALIBRATION — REFERENCE-SYSTEM DISTURBANCE MODEL**  
+Status: **S SEMANTIC CONTRACT — FROZEN FOR ESTIMATOR INSTRUMENTATION**  
 Date: 2026-09-06  
 Phase: II-B Attention Policy Calibration  
 Predecessor: `18_MATERIAL_CONSEQUENCE_STUDY.md`
@@ -37,11 +37,21 @@ The relevant question is not how dramatically the smallest affected unit changes
 
 ---
 
-## 2. User's concise physical interpretation
+## 2. Canonical physical interpretation
 
 The strongest current human formulation is:
 
 > **S measures the disturbance an event creates to consequential shared systems such as the nation, society, an industry/field, or the public.**
+
+Canonical intuitive definition remains:
+
+$$
+\boxed{S:\text{这件事本身有没有实质后果？}}
+$$
+
+Operational intuition:
+
+> **How much does this event disturb a consequential shared reference system, rather than merely changing a small local/private unit?**
 
 This is close to editorial **selection / news judgment**: is the underlying event important enough, in its own right, to deserve general or beat-level coverage rather than remain a local/private/routine matter?
 
@@ -55,7 +65,7 @@ This is an elicitation aid, not the formal definition.
 
 ---
 
-## 3. Reference-system disturbance model
+## 3. Formal reference-system disturbance model
 
 Let $\mathcal G$ denote the class of consequential shared/public reference systems. Examples may include:
 
@@ -80,7 +90,7 @@ State_G(W^{\neg E}_{t+\tau})
 }
 $$
 
-Then the current candidate semantic model is:
+Then:
 
 $$
 \boxed{
@@ -99,9 +109,25 @@ The reference system is deliberately not the smallest affected household, class,
 
 ---
 
-## 4. Raw size, fame, and local severity are not S
+## 4. What “disturbance” can mean
 
-Calibration now supports several negative invariants:
+A material disturbance can be a change in a shared system's:
+
+- rules, law, or institutional constraints;
+- control / authority state;
+- technical capability or cost frontier;
+- accepted knowledge or evidence state;
+- industry/market structure or standard practice;
+- public risk or social structure;
+- broad cultural behavior or meaning.
+
+These are consequence forms, not separate S variables.
+
+Importantly, disturbance need not mean an already-realized downstream outcome. A change in the control or option structure of a consequential system may itself be material. MS6 supports this: replacing the minister changes the top control state of a national ministry even before a new policy is announced.
+
+---
+
+## 5. Negative invariants supported by calibration
 
 $$
 \boxed{PopulationCount\neq S}
@@ -129,9 +155,15 @@ MS2 has multiple deaths and serious injuries but remains a bounded local tragedy
 
 This does not mean casualties are never material. A local incident can become `S=1` if it reveals or creates a broader social problem, systemic pattern, institutional response, policy change, precedent, or other shared-system disturbance.
 
+$$
+\boxed{ObservedMediaCoverage\neq S}
+$$
+
+Coverage and virality belong to P. Media selection is only an analogy / noisy proxy for the underlying significance judgment.
+
 ---
 
-## 5. What calibration v2 supports positively
+## 6. Calibration v2 result
 
 Human labels:
 
@@ -152,33 +184,28 @@ Artifact:
 
 `eval/live/manifest.material_consequence_calibration.v2.human.yaml`
 
-The four MATERIAL cases all perturb a consequential shared system:
+The MATERIAL cases all perturb a consequential shared system:
 
-### MS4 — national legal precedent
+- **MS4** — local dispute becomes nationwide legal precedent;
+- **MS6** — top control state of a national ministry changes;
+- **MS8** — regulation changes the operating constraints of an entire niche industry despite only ~60 firms;
+- **MS10** — independently reproduced method changes standard engineering practice across a sector.
 
-A local dispute becomes a nationwide legal rule affecting water-use rights across regions.
-
-### MS6 — national control-state change
-
-A cabinet-level ministry changes its top executive controller. No new policy is required for S to be MATERIAL because the control state of a nationally consequential institution itself changes.
-
-This is important: S can include a change in **control / option structure**, not only an already-realized downstream policy outcome.
-
-### MS8 — niche-industry structural constraint
-
-Only ~60 firms are directly affected, but the regulation changes the operating constraints of the entire niche industry, forcing redesign or exit.
-
-Therefore raw headcount is not the correct scale. The relevant reference system is the industry itself.
-
-### MS10 — field-level engineering practice change
-
-A reproducible 70% energy reduction propagates across manufacturers and begins changing standard sector practice.
-
-Again, the material consequence is the change to a shared industry state, not the private gain of one firm.
+The NOT_MATERIAL cases remain bounded local/private/routine changes or have large raw scope without meaningful state change.
 
 ---
 
-## 6. Why the earlier two-route model is rejected
+## 7. Rejected models
+
+### Smallest-system normalization — rejected
+
+$$
+Large\ consequence\ relative\ to\ any\ affected\ local\ system
+\not\Rightarrow
+S=1
+$$
+
+### Absolute severity OR systemic impact — rejected
 
 The previous candidate was:
 
@@ -190,84 +217,87 @@ AbsoluteSeverity(E)\text{ high}
 SystemicImpact(E)\text{ high}
 $$
 
-MS2 falsifies the first route as an independent sufficient condition.
+MS2 falsifies absolute local severity as an independent sufficient route.
 
-The better model is not:
+### Raw scope — rejected
 
-```text
-severity OR scope
-```
+MS7 shows that very large population reach with negligible causal change remains NOT_MATERIAL.
 
-but:
+The better abstraction is therefore:
 
 ```text
 material disturbance of a consequential shared reference system
 ```
 
-Severity, reach, persistence, authority, replication, precedent, and other features are possible evidence for that disturbance. They are not yet separate S variables and should not be combined into a weighted score.
+Severity, reach, persistence, authority, replication, precedent, and other features are evidence for this disturbance. They are not separate S variables and should not be combined into a weighted score at this stage.
 
 ---
 
-## 7. Relation to media selection
+## 8. Relation to D and P
 
-The user's editorial analogy is now a central calibration aid:
-
-```text
-local/private/routine matter
-    -> usually editorially filtered out
-
-national / social / industry / scientific / market / cultural disturbance
-    -> candidate general-interest or beat-level selection
-```
-
-But RAOS preserves the decomposition:
+RAOS preserves the decomposition:
 
 $$
-\boxed{S=underlying\ consequence/significance}
+\boxed{D=D(E,u)}
 $$
 
-$$
-\boxed{D=standing\ personal\ jurisdiction}
-$$
+> Is the event inside the user's standing attention jurisdiction?
 
 $$
-\boxed{P=current\ public\ attention}
+\boxed{S=S(E)}
 $$
 
-So `mainstream media reported it` is not an S label. It may be evidence for P and noisy evidence for S. The formal S estimator must reason from the underlying event, not from coverage count.
+> Does the event materially disturb a consequential shared reference system?
+
+$$
+\boxed{P=P(E,t)}
+$$
+
+> Has the event entered or begun entering public/industry attention at time $t$?
+
+For the no-cognitive-change AWARE gap:
+
+$$
+\boxed{
+AWARE(E,u,t)=S(E)\land\bigl(D(E,u)\lor P(E,t)\bigr)
+}
+$$
 
 ---
 
-## 8. Current candidate definition
+## 9. Frozen research decision
 
-The intuitive definition remains:
+Current S semantic baseline:
 
-$$
-\boxed{S:\text{这件事本身有没有实质后果？}}
-$$
+> **S asks whether the underlying event creates a material disturbance to at least one consequential shared/public reference system—national, social, industry/field, market, scientific/technical, or cultural—rather than merely creating a large relative change inside a small bounded local/private unit.**
 
-The current formal interpretation is now:
+This is now frozen for estimator instrumentation.
 
-> **S asks whether the event creates a material disturbance in at least one consequential shared/public reference system, rather than merely producing a large relative change inside a small bounded local/private unit.**
-
-This model is more consistent with MC1-MC10 and MS1-MS10 than the earlier smallest-system normalization or absolute-severity-OR-systemic-impact models.
-
-Do not yet introduce:
+Do not introduce:
 
 - numeric disturbance weights;
-- a fixed hierarchy of geography/administrative rank;
-- an ontology of consequence types;
+- a fixed hierarchy of geography or administrative rank;
+- a large ontology of consequence types;
 - an ordinal S scale;
 - observed media coverage as the definition.
 
+If future fresh validation exposes a repeated semantic failure, attribute it before changing this contract.
+
 ---
 
-## 9. Next probe
+## 10. Next step
 
-The next small calibration should focus only on the remaining ambiguity:
+Proceed in this order:
 
-1. **control / option-state change versus realized consequence** — e.g. high-level institutional leadership or credible frontier capability before downstream adoption;
-2. **local incident versus social/systemic signal** — same local origin, but one remains isolated while another evidences a repeated social problem or triggers broader institutional change;
-3. **major private actor versus industry/shared state** — when a large company event is important because of spillover rather than mere company size.
+```text
+S semantic contract              FROZEN
+  -> implement eval-only S estimator from this contract
+  -> freeze estimator/prompt
+  -> author fresh S validation after estimator freeze
+  -> elicit Human Gold before model predictions
+  -> first scored measurement
+  -> residual attribution
+  -> P study
+```
 
-If those boundaries are stable, freeze the S semantic contract and only then implement the first S estimator.
+Do not reuse MC1-MC10 or MS1-MS10 as fresh performance evidence.
