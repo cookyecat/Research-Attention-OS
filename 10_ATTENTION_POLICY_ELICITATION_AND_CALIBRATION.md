@@ -444,3 +444,162 @@ Attribute\ errors
 Only\ then\ consider\ v2.2
 }
 $$
+
+---
+
+## 12. Phase II-B AWARE semantic baseline
+
+Status: **FROZEN FOR MEASUREMENT**  
+Date frozen: 2026-09-06  
+Scope: the no-cognitive-change awareness gap, $\Delta_t=\varnothing$  
+Production status: **research semantic baseline only; not yet a production Scheduler contract**
+
+### 12.1 AWARE meaning
+
+For this study:
+
+$$
+\boxed{AWARE = Situational\ Awareness\ without\ Cognitive\ Commitment}
+$$
+
+AWARE means that the user should briefly know that a substantive event exists, while RAOS does **not** claim a cognitive transition and does **not** assume an ongoing monitoring obligation.
+
+Therefore AWARE implies:
+
+- no Kernel write;
+- no KernelPatch requirement solely because of AWARE;
+- no continuing WATCH obligation;
+- low-cost human awareness, normally a concise summary;
+- no re-judgment of frozen $\Delta_t$ by the Attention Policy.
+
+### 12.2 Candidate no-$\Delta$ AWARE gate
+
+For the current Phase II-B research hypothesis:
+
+$$
+\boxed{
+\Delta_t=\varnothing:\quad AWARE\iff S\land(D\lor P)
+}
+$$
+
+This formula is intentionally scoped to the **no-cognitive-change AWARE/DROP problem**. It is not a universal equation for every AWARE produced after a positive `REINFORCE`, `CHALLENGE`, or `OPEN_NEW` transition.
+
+Definitions:
+
+$$
+\boxed{
+D=Standing\ Interest\ Fit\ independent\ of\ event\ significance
+}
+$$
+
+> Ignoring how important this particular event is, does its substantive topic belong to a world the user wants RAOS to monitor on a standing basis?
+
+$$
+\boxed{
+S=Material\ consequence\ of\ the\ underlying\ event,\ independent\ of\ user\ interest\ and\ public\ attention
+}
+$$
+
+> Ignoring what the user likes and whether people are discussing it, does the underlying event have substantive real consequence or phenomenon-level meaning?
+
+$$
+\boxed{
+P=Current/emerging\ public\ attention\ salience,\ independent\ of\ user\ interest\ and\ intrinsic\ significance
+}
+$$
+
+> Ignoring the user's interests and temporarily suspending judgment about whether the event deserves the attention, has it entered or is it clearly entering the public/industry attention radar now?
+
+Human-language policy statement:
+
+> **For information with no cognitive update, AWARE is justified when the underlying event has real substance and either belongs to the user's standing attention radar or has entered the public/industry attention radar.**
+
+Physical interpretation:
+
+- $S$ is the **value gate**;
+- $D$ is the **standing personal-radar channel**;
+- $P$ is the **public-attention channel**.
+
+This explains why a substantive event outside the user's normal interests can still deserve AWARE when it becomes a public phenomenon, while popularity alone cannot manufacture awareness value for a trivial event.
+
+### 12.3 Orthogonality / Occam invariants
+
+The working hypothesis is that $D$, $S$, and $P$ are the minimal orthogonal explanatory dimensions currently needed for the no-$\Delta$ AWARE gap.
+
+They are **not** assumed to combine linearly. The current gate is a logical composition, not a weighted linear model.
+
+Preserve these invariants during measurement:
+
+1. `D != S`: standing preference must not change merely because one event is unusually important.
+2. `S != P`: public attention is not intrinsic event significance.
+3. `D != P`: personal standing interest is not public popularity.
+4. `IncidentalMention != D`: mentioning or using a radar technology as an ordinary tool does not automatically make the event belong to that radar.
+5. `TechnicalNovelty != S`: an event may be consequential without technical novelty, and a novel technique may have little consequence.
+6. `ArtifactQuality != S`: a low-quality artifact can still become a consequential social/cultural event.
+7. S may represent technical, economic, scientific, social, cultural, or institutional consequence; do not split these into separate policy variables without evidence.
+8. D granularity is determined by **stable preference**, not taxonomy depth. A narrow topic may belong to D if the preference is genuinely standing; a broad topic should not be added merely to capture rare major events.
+
+### 12.4 Measurement contract
+
+To prevent label contamination, each estimator study must ask only its own variable question.
+
+For D:
+
+> **Ignoring how important this particular event is, does its substantive topic belong to a world the user wants RAOS to monitor on a standing basis?**
+
+Do not answer whether the item should be AWARE/DROP, whether it is significant, whether it is popular, or whether it changes the Kernel.
+
+For S:
+
+> **Ignoring the user and public attention, does the underlying event itself have substantive consequence?**
+
+For P:
+
+> **Ignoring the user's interests and intrinsic significance, is the event currently salient or clearly becoming salient in public/industry attention?**
+
+Only the final Attention Policy question may ask:
+
+> **Should the user DROP, AWARE, WATCH, or ENGAGE this information?**
+
+### 12.5 Provenance correction for earlier D elicitation
+
+An earlier `IN/OUT` D exercise became contaminated because the user naturally interpreted:
+
+```text
+IN  ~= AWARE
+OUT ~= DROP
+```
+
+Those labels are therefore calibration evidence, not clean D Human Gold.
+
+The subsequent H1-H10 cases participated directly in semantic refinement and are also development/calibration cases rather than a fresh holdout.
+
+The current DH1-DH15 pass is being used to calibrate the answering instrument and Standing Radar boundaries. It must **not** be frozen as formal D estimator Human Gold until the remaining profile inconsistencies are resolved.
+
+---
+
+## 13. Phase II-B decision after semantic calibration
+
+The D/S/P definitions above are frozen as the measurement instrument unless real residual evidence forces revision.
+
+Do not continue changing the formula while labeling the estimator holdout.
+
+The immediate research sequence is:
+
+$$
+\boxed{
+Calibrate\ D\ instrument
+\rightarrow
+Freeze\ fresh\ D\ Gold
+\rightarrow
+Measure\ D\ estimator
+\rightarrow
+Study\ S
+\rightarrow
+Study\ P
+\rightarrow
+Evaluate\ complete\ AWARE\ gate
+}
+$$
+
+See `11_ROADMAP_AND_PROGRESS.md` for the project-wide phase map and current position.
