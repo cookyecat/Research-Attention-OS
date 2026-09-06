@@ -2,18 +2,17 @@
 
 Status: **ACTIVE PROJECT ROADMAP**  
 Date: 2026-09-06  
-Code/eval baseline referenced: `354d2b5011a868f0295e2ac2750822275c83db51`  
-Semantic baseline: `08_COGNITIVE_TRANSITION_MODEL_V2.1.md` + Phase II-B AWARE semantics recorded in `10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md`
+Production/eval baseline referenced: `354d2b5011a868f0295e2ac2750822275c83db51`  
+Semantic baseline: `08_COGNITIVE_TRANSITION_MODEL_V2.1.md` + Phase II-B AWARE semantics in `10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md`  
+Current D study: `12_STANDING_RADAR_FIT_ESTIMATOR_STUDY.md`
 
-> Purpose: preserve the long-horizon research position of RAOS so that individual experiments, implementation sessions, or conversation loss cannot erase where the project is, what is already closed, and what must happen next.
+> Purpose: preserve the long-horizon research position of RAOS so that individual experiments, implementation sessions, or conversation loss cannot erase what is closed, what is active, and what happens next.
 
 ---
 
 ## 1. North star
 
-RAOS exists because external information volume has exceeded the amount a human can read, understand, and digest directly.
-
-The product objective is not “read more”. It is:
+RAOS exists because external information volume has exceeded what a human can read, understand, and digest directly.
 
 $$
 \boxed{
@@ -33,7 +32,7 @@ Long-term requirement:
 
 > **Continuously keep that estimate aligned as the user's cognition changes.**
 
-Directional optimization target:
+Directional objective:
 
 $$
 CROA = \frac{Useful\ Cognitive\ Change}{Human\ Attention\ Cost}
@@ -43,7 +42,7 @@ CROA is directional, not a prematurely precise scalar objective.
 
 ---
 
-## 2. Minimal constitutional loop
+## 2. Constitutional loop
 
 $$
 (I_t,K_t)
@@ -60,16 +59,14 @@ $$
 Kernel mutation remains human-authorized:
 
 $$
-K_t
-\xrightarrow{accepted\ KernelPatch}
-K_{t+1}
+K_t\xrightarrow{accepted\ KernelPatch}K_{t+1}
 $$
 
 Core invariants:
 
 - `CognitiveChange != AttentionAction`
 - `Location != UpdateTarget`
-- Claim != Observation != Inference
+- `Claim != Observation != Inference`
 - AI may propose cognition change; it may not silently commit protected cognition
 - WATCH transfers future attention responsibility to the system
 - do not replace the system with one relevance score
@@ -80,32 +77,32 @@ Core invariants:
 
 | Phase | Objective | Status |
 |---|---|---|
-| Phase I — Constitutional Vertical Slice | Establish information objects, cognitive transition, AttentionPlan, KernelPatch, provenance, and human commit boundary | **CLOSED** |
-| Phase II-A — Cognitive Transition Model | Make `Extract -> Locate -> Impact -> Delta` semantically reliable and freeze the cognitive model | **FROZEN / CLOSED BASELINE** |
-| Phase II-B — Attention Policy Calibration | Determine how frozen cognitive judgment plus legitimate non-cognitive signals should allocate DROP/AWARE/WATCH/ENGAGE | **ACTIVE — CURRENT PHASE** |
+| Phase I — Constitutional Vertical Slice | Information objects, cognitive transition, AttentionPlan, KernelPatch, provenance, human commit boundary | **CLOSED** |
+| Phase II-A — Cognitive Transition Model | Reliable `Extract -> Locate -> Impact -> Delta`; freeze cognitive semantics | **FROZEN / CLOSED BASELINE** |
+| Phase II-B — Attention Policy Calibration | Determine how frozen cognitive judgment plus legitimate non-cognitive signals allocate DROP/AWARE/WATCH/ENGAGE | **ACTIVE — CURRENT PHASE** |
 | Phase III — Continuous Attention OS | Continuous discover/ingest/dedup/cluster/route plus real WATCH re-check responsibility | **NOT STARTED** |
-| Phase IV — Longitudinal Cognitive Alignment | Keep Kernel and policy aligned as user cognition changes over time | **NOT STARTED** |
+| Phase IV — Longitudinal Cognitive Alignment | Keep Kernel and policy aligned as user cognition changes | **NOT STARTED** |
 | Phase V — Personalization at Scale | Questionnaire prior + trajectory residuals + multi-user validation | **NOT STARTED** |
 
 Current strategic position:
 
 $$
-\boxed{Phase\ II\text{-}B:\ AWARE\ signal\ estimation\ and\ policy\ calibration}
+\boxed{Phase\ II\text{-}B:\ D\ estimator\ first\ blind\ measurement\ NEXT}
 $$
 
 The project is still answering:
 
-> **Can RAOS reason about attention reliably enough for real use?**
+> **Can RAOS reason about attention reliably enough for genuine personal use?**
 
-Only after this is good enough should the project move to continuous world monitoring.
+Do not move to broad continuous monitoring until this is good enough; do not over-polish offline policy once the phase exit condition is met.
 
 ---
 
-## 4. What is already closed
+## 4. Closed / frozen baselines
 
-### 4.1 Cognitive Transition Model v2.1
+### 4.1 Cognitive Transition Model v2.1 — FROZEN
 
-`08_COGNITIVE_TRANSITION_MODEL_V2.1.md` is the frozen cognitive baseline.
+`08_COGNITIVE_TRANSITION_MODEL_V2.1.md` is the cognitive baseline.
 
 $$
 E_t=Extract(I_t)
@@ -125,27 +122,35 @@ $$
 
 The transition model is not to be redesigned merely to improve Attention Policy results.
 
-### 4.2 AttentionPlan execution semantics
+### 4.2 AttentionPlan semantics — CLOSED
 
-AttentionPlan is an allocation object, not a second cognitive judgment.
+AttentionPlan is allocation, not a second cognitive judgment.
 
-The same frozen AnalysisRun may produce different plans under different runtime contexts without changing `Delta`.
+A frozen AnalysisRun may yield different plans under different runtime contexts without changing $\Delta$.
 
-### 4.3 Phase II evaluation protocol
-
-Method:
+### 4.3 Phase II evaluation protocol — FROZEN
 
 $$
-\boxed{Freeze\ baseline\rightarrow Measure\rightarrow Attribute\rightarrow Improve}
+\boxed{
+Formalize
+\rightarrow
+Calibrate\ instrument
+\rightarrow
+Freeze\ Gold
+\rightarrow
+Measure
+\rightarrow
+Attribute
+\rightarrow
+Improve
+}
 $$
 
-Oracle-Delta and fresh end-to-end evaluation are separated. Human Gold must be elicited before observing system predictions.
+Human Gold must be elicited before seeing the system prediction used as measurement.
 
-### 4.4 Oracle-Delta policy baseline
+### 4.4 Oracle-$\Delta$ policy baseline — RECORDED
 
-The 30-case Human Gold policy study established that the existing policy does not explain all attention decisions from `Delta` alone.
-
-Recorded baseline after the targeted policy fixes:
+After the targeted policy fixes:
 
 ```text
 Exact Accuracy       0.5333333333
@@ -156,31 +161,29 @@ Under-attention      0.3
 Critical Under       0
 ```
 
-The important result was representational, not the score itself:
+Key representational result:
 
 $$
-\boxed{
-\Delta=\varnothing\ \not\Rightarrow\ DROP
-}
+\boxed{\Delta=\varnothing\not\Rightarrow DROP}
 $$
 
-### 4.5 Oracle-Awareness wiring and provenance repair
+### 4.5 Oracle-Awareness wiring / provenance — CLOSED
 
-Production `AwarenessSignals` currently contains three separate fields and is optional; production does not yet estimate them from real-world information.
-
-The Oracle-Awareness experiment and provenance repair are closed at baseline commit:
+Baseline commit:
 
 ```text
 354d2b5011a868f0295e2ac2750822275c83db51
 ```
 
-Synthetic truth-table results and Human-elicited results must remain provenance-separated. Synthetic 8/8 is a wiring test, not Human Gold generalization evidence.
+Synthetic truth-table results and Human-elicited results remain provenance-separated. Synthetic 8/8 is a wiring test, not Human Gold generalization evidence.
+
+Production does not yet estimate the real-world awareness signals.
 
 ---
 
-## 5. Current AWARE research baseline
+## 5. Phase II-B AWARE semantic baseline — FROZEN FOR MEASUREMENT
 
-For the current no-cognitive-change gap:
+Scope:
 
 $$
 \Delta_t=\varnothing
@@ -188,79 +191,133 @@ $$
 
 AWARE means:
 
-> **Situational awareness without cognitive commitment.**
+$$
+\boxed{AWARE=Situational\ Awareness\ without\ Cognitive\ Commitment}
+$$
 
 No Kernel write. No continuing WATCH obligation. Low-cost human awareness only.
 
-The current Phase II-B candidate gate is:
+Current candidate no-$\Delta$ gate:
 
 $$
-\boxed{
-AWARE\iff S\land(D\lor P)
-}
+\boxed{AWARE\iff S\land(D\lor P)}
 $$
 
 where:
 
 $$
-D=Standing\ Interest\ Fit\ independent\ of\ event\ significance
+\boxed{D=Standing\ Interest\ Fit\ independent\ of\ event\ significance}
 $$
 
 $$
-S=Material\ consequence\ of\ the\ underlying\ event,\ independent\ of\ user\ interest\ and\ public\ attention
+\boxed{S=Material\ consequence\ of\ the\ underlying\ event,\ independent\ of\ user\ interest\ and\ public\ attention}
 $$
 
 $$
-P=Current/emerging\ public\ attention\ salience,\ independent\ of\ user\ interest\ and\ intrinsic\ significance
+\boxed{P=Current/emerging\ public\ attention\ salience,\ independent\ of\ user\ interest\ and\ intrinsic\ significance}
 $$
 
 Human-language contract:
 
 > **For information with no cognitive update, AWARE is justified when the underlying event has real substance and either belongs to the user's standing attention radar or has entered the public/industry attention radar.**
 
-Interpretation:
+Physical interpretation:
 
-- `S` is the value gate.
-- `D` is the standing personal-radar channel.
-- `P` is the public-attention channel.
+- `S` = value gate
+- `D` = standing personal-radar channel
+- `P` = public-attention channel
 
-These are candidate orthogonal explanatory dimensions. The project is **not** committed to a linear weighted model.
+These are candidate orthogonal explanatory dimensions. The project is not committed to a linear weighted model.
+
+Important invariants:
+
+- `D != S`
+- `S != P`
+- `D != P`
+- incidental mention/use of a radar technology does not create D membership
+- technical novelty is not event significance
+- artifact quality is not event significance
+- S may be technical, economic, scientific, social, cultural, or institutional consequence
+- D granularity follows stable preference, not taxonomy depth
 
 ---
 
-## 6. Current subphase: measurement-instrument calibration
+## 6. D study status
 
-Current work is **not yet formal D estimator measurement**.
+### 6.1 Measurement instrument — CALIBRATED
 
-The immediate task is to make sure the Human Gold instrument asks the same question as the variable definition.
-
-### D measurement contract
-
-Ask only:
+D asks only:
 
 > **Ignoring how important this particular event is, does its substantive topic belong to a world the user wants RAOS to monitor on a standing basis?**
 
 Do not answer:
 
-- whether the item should be AWARE/DROP;
-- whether the event is important;
-- whether it is popular;
-- whether it affects the current Kernel.
+- AWARE/DROP
+- event significance
+- public popularity
+- Kernel change
 
-Important invariants under study:
+Earlier `IN/OUT`, H1-H10, and DH1-DH15 exercises are calibration/development evidence, not fresh holdout performance.
 
-- D granularity is determined by **stable preference**, not taxonomy depth.
-- incidental mention/use of a radar technology does not itself create D membership.
-- ordinary events inside a standing-interest area may still have `D=1, S=0` and be DROP later.
-- an event outside the standing radar may still become AWARE through `S=1, P=1`.
+### 6.2 Standing Radar profile v1 — FROZEN
 
-### Measurement provenance cleanup
+Artifact:
 
-Earlier D `IN/OUT` elicitation became contaminated because `IN` was interpreted as AWARE and `OUT` as DROP. Those labels are calibration evidence, **not clean D Gold**.
+`eval/live/standing_radar_profile.v1.yaml`
 
-The earlier H1-H10 cases also participated in semantic refinement and are therefore development/calibration cases, not a fresh holdout.
+The profile records stable semantic interests plus a small number of calibrated exclusions. It is intentionally not a giant inherited domain taxonomy.
 
-The current DH1-DH15 pass is being used to calibrate the answering instrument and Standing Radar boundaries. **Do not freeze it as formal estimator holdout until the identified radar-definition inconsistencies are resolved.**
+Key boundary principle:
+
+$$
+\boxed{D\ granularity=stable\ preference\ granularity}
+$$
+
+### 6.3 Fresh D Human Gold v1 — FROZEN
+
+Artifact:
+
+`eval/live/manifest.standing_radar_fit_human_gold.v1.yaml`
+
+The user labeled FD1-FD20 after the instrument/profile were calibrated and before the estimator was measured.
+
+Class composition:
+
+```text
+IN   15
+OUT   5
+N    20
+```
+
+These labels are now frozen. Do not use them to modify the estimator and then report the same set as fresh holdout evidence.
+
+### 6.4 D estimator — NEXT
+
+Research hypothesis:
+
+$$
+\boxed{EventText+StandingRadarProfile\rightarrow\hat D}
+$$
+
+Occam constraint: do not build a giant domain ontology unless residual evidence forces it.
+
+Pre-registered measurement details live in:
+
+`12_STANDING_RADAR_FIT_ESTIMATOR_STUDY.md`
+
+Because an always-IN classifier already scores 75% exact accuracy, the success criterion is:
+
+$$
+\boxed{
+ExactAccuracy\ge0.80
+\land
+BalancedAccuracy\ge0.80
+\land
+NoClearSystematicFailure
+}
+$$
+
+First predictions are the measurement.
 
 ---
 
@@ -271,19 +328,19 @@ Execute in this order:
 ```text
 NOW
   ↓
-Calibrate D answering instrument + Standing Radar boundaries
+Implement minimal model-backed D estimator
   ↓
-Freeze a fresh D Human Gold holdout
+Run first blind FD1-FD20 measurement exactly once
   ↓
-Test minimal natural-language D estimator
+Record exact + balanced accuracy + IN/OUT recall + residuals
   ↓
-Attribute residuals; do not tune to isolated cases
+Decide D estimator sufficient? YES / NO
   ↓
-Study / estimate S
+If YES: study / estimate S
   ↓
 Study / estimate P
   ↓
-Evaluate the complete no-Delta AWARE gate
+Evaluate complete no-Delta AWARE gate
   ↓
 Fresh real-world end-to-end dogfooding
   ↓
@@ -296,21 +353,15 @@ $$
 \boxed{D\ estimator\rightarrow S\ estimator\rightarrow P\ estimator}
 $$
 
-For D, the current Occam hypothesis is:
+If D passes, do not keep polishing it for cosmetic 100% performance. Preserve isolated residuals and move to S.
 
-$$
-EventText+StandingRadarProfile\rightarrow \hat D
-$$
-
-without a giant domain ontology unless residuals force one.
-
-A small D holdout should be treated as engineering evidence, not population science. A useful provisional success bar is >=80% exact accuracy with no clear systematic failure mode. Isolated residuals should remain visible rather than being patched with case-specific rules.
+If D fails systematically, attribute the failure before changing the profile, prompt, or representation. Any revised estimator claim requires a new fresh holdout.
 
 ---
 
 ## 8. Phase II-B exit condition
 
-Phase II-B is done when the Attention Policy is reliable enough for genuine personal dogfooding, not when every synthetic benchmark reaches 100%.
+Phase II-B is complete when Attention Policy is reliable enough for real personal dogfooding, not when every synthetic benchmark reaches 100%.
 
 Required qualitative properties:
 
@@ -321,13 +372,13 @@ Required qualitative properties:
 - runtime may alter allocation without rewriting frozen cognition;
 - residual policy errors are attributable rather than mysterious.
 
-Then move to Phase III instead of endlessly polishing the offline policy benchmark.
+Then move to Phase III.
 
 ---
 
 ## 9. Phase III — Continuous Attention OS
 
-The next major product step is continuous responsibility over the external world:
+Next major product step:
 
 ```text
 discover
@@ -345,24 +396,19 @@ Key principle:
 
 > **WATCH means RAOS has accepted future attention responsibility.**
 
-Phase III should not begin by building a giant crawler or recommender feed. Start with a narrow, measurable real source loop.
+Start with a narrow measurable real-source loop, not a giant crawler or recommendation feed.
 
 ---
 
-## 10. Phase IV — Longitudinal Kernel alignment
+## 10. Phase IV — Longitudinal Cognitive Alignment
 
-Once continuous information flow exists, test whether RAOS remains aligned as cognition changes:
+Once continuous information flow exists:
 
 $$
 K_t\rightarrow K_{t+1}\rightarrow K_{t+2}\rightarrow\cdots
 $$
 
-Questions:
-
-- does old attention policy become stale as projects and beliefs change?
-- does accepted KernelPatch correctly change future Locate/Impact decisions?
-- can WATCH obligations be retired when the Kernel changes?
-- can the system distinguish persistent user preference from temporary project context?
+Test whether accepted Kernel changes correctly alter future Locate/Impact/Attention decisions, whether WATCH obligations become stale, and whether standing preference remains distinct from temporary project context.
 
 ---
 
@@ -384,7 +430,7 @@ TrajectoryResidual_u
 }
 $$
 
-Do not train a personal policy from noisy click behavior before the controlled variables and causal semantics are understood.
+Do not train personal policy from noisy click behavior before the controlled variables and causal semantics are understood.
 
 ---
 
@@ -415,22 +461,4 @@ Rules:
 3. Do not convert development cases into holdout evidence after discussing their labels.
 4. Do not let Attention Policy manufacture cognitive change.
 5. Prefer residual evidence over a cosmetically perfect score.
-6. When the phase exit condition is met, move forward rather than overfitting the current benchmark.
-
----
-
-## 13. Current pointer
-
-As of 2026-09-06:
-
-$$
-\boxed{
-Phase\ II\text{-}B
-\rightarrow
-D/S/P\ semantics\ stabilized
-\rightarrow
-D\ measurement\ instrument\ calibration\ NOW
-}
-$$
-
-The next formal measurement must not start until the D answering contract and Standing Radar profile are internally consistent.
+6. When a phase exit condition is met, move forward rather than overfitting the current benchmark.
