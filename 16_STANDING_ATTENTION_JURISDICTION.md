@@ -1,9 +1,9 @@
 # Research Attention OS — Standing Attention Jurisdiction
 
-Status: **D SEMANTIC DEFINITION — FROZEN FOR FINAL VALIDATION**  
+Status: **D SEMANTIC DEFINITION — FROZEN / CLOSED BASELINE**  
 Date: 2026-09-06  
 Phase: II-B Attention Policy Calibration  
-Related: `10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md`, `12_STANDING_RADAR_FIT_ESTIMATOR_STUDY.md`, `14_STANDING_RADAR_FIT_V2_SEMANTIC_REPAIR.md`, `15_STANDING_RADAR_ANCHOR_GENERALIZATION.md`
+Related: `10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md`, `12_STANDING_RADAR_FIT_ESTIMATOR_STUDY.md`, `14_STANDING_RADAR_FIT_V2_SEMANTIC_REPAIR.md`, `15_STANDING_RADAR_ANCHOR_GENERALIZATION.md`, `17_STANDING_RADAR_FIT_V3_FINAL_VALIDATION.md`
 
 ---
 
@@ -124,6 +124,8 @@ $$
 
 This is an implementation view of the jurisdiction definition, not a new variable.
 
+Important qualification from the final v3 measurement: the anchor representation is a useful diagnostic view, but it must not become a stronger gate than the clause itself. The canonical model remains direct clause applicability over $Sem(E),u$. A stable affiliation, for example, may be a relation used by a clause even when the relation is not naturally represented as a standalone event object.
+
 ---
 
 ## 4. Exclusions
@@ -164,7 +166,7 @@ Temporary relevance belongs elsewhere in runtime/project context unless later pr
 
 ## 6. D / S / P separation
 
-The three variables now have distinct physical dependencies:
+The three variables have distinct physical dependencies:
 
 $$
 \boxed{D=D(E,u)}
@@ -202,15 +204,13 @@ Human-language contract:
 
 ## 7. Implementation policy for Phase II-B
 
-The final D estimator should use a compact natural-language Standing Radar profile containing stable clauses rather than a giant typed ontology.
-
-Preferred first implementation:
+Preferred implementation family:
 
 $$
 \boxed{
 NaturalLanguageStandingRadarClauses
 +
-LLMSemanticMatching
+SemanticMatching
 }
 $$
 
@@ -222,4 +222,38 @@ Do not introduce:
 - extra D sub-variables;
 - case-specific rules copied from prior holdouts.
 
-If this compact clause representation passes one final fresh validation without a new systematic residual, D is CLOSED for Phase II-B and the project moves to S.
+The final v3 fresh measurement did not certify the current LLM estimator: it scored 0.70 exact with two clear clause-application failures and one likely human-policy boundary. The result is recorded in `17_STANDING_RADAR_FIT_V3_FINAL_VALIDATION.md`.
+
+That estimator result does **not** invalidate the semantic model. The failures are attributable to imperfect application of explicit clauses, not evidence that D requires a different variable decomposition.
+
+Therefore the semantic research question is closed for Phase II-B. Do not create another synthetic D benchmark now. Revisit estimator implementation only when integrated dogfooding exposes a repeated real-world failure pattern.
+
+---
+
+## 8. Frozen conclusion
+
+$$
+\boxed{
+D(E,u)=\mathbf 1[E\in\mathcal J_u]
+}
+$$
+
+with:
+
+$$
+\boxed{
+\mathcal J_u
+=
+\{E\mid\exists\rho_i\in\mathcal R_u,\rho_i(Sem(E),u)=1\}
+}
+$$
+
+is the Phase II-B semantic baseline for D.
+
+Current project pointer:
+
+```text
+D semantic model       CLOSED / FROZEN
+D estimator v3         NOT CERTIFIED; attributable residuals preserved
+Next research variable S = Material Consequence
+```
