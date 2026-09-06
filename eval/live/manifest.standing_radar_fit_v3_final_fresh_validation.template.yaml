@@ -1,0 +1,89 @@
+# STANDING RADAR FIT v3 — FINAL FRESH VALIDATION TEMPLATE
+#
+# Created AFTER the v3 Standing Attention Jurisdiction semantics/profile/prompt
+# were frozen and BEFORE any v3 scored model measurement.
+# Human labels must be elicited before running the model.
+#
+# Historical FD/IX/RV/FV/BC cases are not fresh evidence for v3.
+# This is the final small D validation for Phase II-B if it passes.
+
+name: raos-standing-radar-fit-v3-final-fresh-validation
+variable: D
+validation_type: FINAL_FRESH_VALIDATION
+profile: eval/live/standing_radar_profile.v3.yaml
+estimator_version: standing-radar-fit-estimator-v3
+prompt_version: standing-radar-fit-v3
+estimator_freeze_commit: 4c857260a146bcb2ca66bd7c600cd62d9be2a8c6
+
+semantic_contract: >-
+  D = Standing Attention Jurisdiction / Standing Radar Fit independent of event
+  significance. Judge whether the event satisfies at least one stable Standing Radar
+  Clause through a substantive topic, actor, work, place, or stable affiliation.
+
+pre_registered_criterion:
+  exact_min: 0.90
+  in_recall_min: 0.80
+  out_recall_min: 0.80
+  no_clear_repeated_clause_failure: true
+  technical_failures_should_be_zero: true
+
+cases:
+  - id: FJ1
+    pair: incidental_ai_vs_substantive_ai
+    variant: incidental_tool
+    gold_status: PENDING
+    event: "A regional water-utility operator updates its pipe-maintenance scheduling process. Engineers use an off-the-shelf language model only to rewrite maintenance notes into a standard format; the maintenance system itself remains conventional and no AI system is being developed or deployed as an operational capability."
+
+  - id: FJ2
+    pair: incidental_ai_vs_substantive_ai
+    variant: substantive_ai_system
+    gold_status: PENDING
+    event: "A regional water-utility operator develops a multimodal maintenance Agent that reads inspection images and logs, plans multi-step repair procedures, calls diagnostic tools, and coordinates field actions with technicians."
+
+  - id: FJ3
+    pair: monitored_org_incidental_vs_actor
+    variant: incidental_mention
+    gold_status: PENDING
+    event: "A small furniture retailer changes its warehouse shift schedule. In an employee interview, one manager casually mentions that some staff use ChatGPT for drafting emails; OpenAI is not involved in the event."
+
+  - id: FJ4
+    pair: monitored_org_incidental_vs_actor
+    variant: substantive_actor
+    gold_status: PENDING
+    event: "OpenAI makes a routine internal organizational change: a non-executive administrative team is reorganized and given a new reporting line. The change has no stated strategic, product, or research consequence."
+
+  - id: FJ5
+    pair: stable_affiliation_vs_socially_adjacent
+    variant: socially_adjacent_institution
+    gold_status: PENDING
+    event: "A hospital where a close friend's parent works begins routine use of an already-established commercial clinical navigation system. The hospital does not develop or modify the technology."
+
+  - id: FJ6
+    pair: stable_affiliation_vs_socially_adjacent
+    variant: direct_family_affiliation
+    gold_status: PENDING
+    event: "A hospital where the user's parent works begins routine use of an already-established commercial clinical navigation system. The hospital does not develop or modify the technology."
+
+  - id: FJ7
+    pair: hometown_vs_unrelated_city
+    variant: unrelated_city
+    gold_status: PENDING
+    event: "The government of an unrelated city makes a routine low-consequence personnel adjustment in a mid-level administrative office. No major policy direction changes."
+
+  - id: FJ8
+    pair: hometown_vs_unrelated_city
+    variant: hometown_government
+    gold_status: PENDING
+    event: "The government of the user's hometown makes a routine low-consequence personnel adjustment in a mid-level administrative office. No major policy direction changes."
+
+  - id: FJ9
+    pair: film_workflow_vs_film_work
+    variant: workflow_only
+    gold_status: PENDING
+    event: "A film studio changes its internal file-naming convention, archive-folder structure, and traditional asset handoff workflow. No new film, creator work, or entertainment release is involved."
+
+  - id: FJ10
+    pair: film_workflow_vs_film_work
+    variant: film_release
+    gold_status: PENDING
+    event: "An unknown independent team releases a new animated feature film with an original story and new director. The production uses ordinary animation methods and no AI technology."
