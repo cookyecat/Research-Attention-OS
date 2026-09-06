@@ -1,0 +1,78 @@
+# COLLECTIVE ATTENTION SALIENCE (P) — FINAL FRESH HUMAN GOLD v1
+#
+# Human labels elicited AFTER P semantics, Evidence Packet v1, and P estimator v1
+# were frozen, and AFTER the fresh PF1-PF12 validation template was frozen at
+# commit e57b403fcacb1ff8f49aad23fe78a7266859c06a.
+#
+# Labels were supplied before any scored estimator prediction on PF1-PF12.
+# PC1-PC24 remain development/calibration evidence only.
+
+name: raos-collective-attention-final-fresh-human-gold-v1
+variable: P
+validation_type: FINAL_FRESH_VALIDATION
+estimator_version: collective-attention-estimator-v1
+prompt_version: collective-attention-v1
+profile_id: collective-attention-profile-v1
+evidence_interface_version: collective-attention-evidence-packet-v1
+estimator_freeze_declaration_commit: 5a08a0d8ab2700a56d91437797b664a53f842ea0
+fresh_template_commit: e57b403fcacb1ff8f49aad23fe78a7266859c06a
+prompt_sha256: 0fbc1c9c935e5cf31a98b77a0a6a9f5b99ff7473906a7e438e834f278d193b67
+label_provenance: HUMAN_ELICITED
+
+semantic_contract: >-
+  P judges whether, at the stated evaluation time, an event has already formed,
+  or is clearly forming, a salient state of genuine collective attention within
+  the event's Objective Attention Constituency. Attention is interpreted relative
+  to the scale of that constituency and has temporal inertia. Ignore user interest,
+  intrinsic material consequence, sentiment, stance, and downstream attention action.
+
+pre_registered_criterion:
+  expected_scorable_cases: 12
+  exact_min: 0.8333333333
+  salient_recall_min: 0.80
+  not_salient_recall_min: 0.80
+  insufficient_evidence_should_be_zero: true
+  technical_failures_should_be_zero: true
+  no_clear_repeated_semantic_failure: true
+
+cases:
+  - id: PF1
+    gold_status: FROZEN
+    collective_attention_salience: SALIENT
+  - id: PF2
+    gold_status: FROZEN
+    collective_attention_salience: NOT_SALIENT
+  - id: PF3
+    gold_status: FROZEN
+    collective_attention_salience: NOT_SALIENT
+  - id: PF4
+    gold_status: FROZEN
+    collective_attention_salience: SALIENT
+  - id: PF5
+    gold_status: FROZEN
+    collective_attention_salience: SALIENT
+  - id: PF6
+    gold_status: FROZEN
+    collective_attention_salience: NOT_SALIENT
+  - id: PF7
+    gold_status: FROZEN
+    collective_attention_salience: SALIENT
+  - id: PF8
+    gold_status: FROZEN
+    collective_attention_salience: NOT_SALIENT
+  - id: PF9
+    gold_status: FROZEN
+    collective_attention_salience: SALIENT
+  - id: PF10
+    gold_status: FROZEN
+    collective_attention_salience: NOT_SALIENT
+  - id: PF11
+    gold_status: FROZEN
+    collective_attention_salience: NOT_SALIENT
+  - id: PF12
+    gold_status: FROZEN
+    collective_attention_salience: SALIENT
+
+class_balance:
+  salient: 6
+  not_salient: 6
