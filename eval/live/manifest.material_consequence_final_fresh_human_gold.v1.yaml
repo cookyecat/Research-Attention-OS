@@ -1,0 +1,132 @@
+# MATERIAL CONSEQUENCE (S) — FINAL FRESH HUMAN GOLD v1
+#
+# Human labels elicited AFTER Material Consequence estimator/profile v1 were
+# frozen at commit 99b8c96e54102c3befd04d931156645a5b77d8e1 and AFTER the fresh
+# validation template was frozen at commit 51f983d0a2aeaa2a5eb730fa913657b0e127925b.
+#
+# Labels were supplied before any scored model predictions on this set.
+# MC1-MC10 and MS1-MS10 remain calibration/development evidence only.
+# Judge only S. Ignore user interest D and public attention P.
+
+name: raos-material-consequence-final-fresh-human-gold-v1
+variable: S
+validation_type: FINAL_FRESH_VALIDATION
+estimator_version: material-consequence-estimator-v1
+prompt_version: material-consequence-v1
+profile_id: material-consequence-profile-v1
+estimator_freeze_commit: 99b8c96e54102c3befd04d931156645a5b77d8e1
+fresh_template_commit: 51f983d0a2aeaa2a5eb730fa913657b0e127925b
+prompt_sha256: f46808899f1b1cb2c4bfb106c6e537d65ca4433428cea8494f4eedbfccf9b776
+label_provenance: HUMAN_ELICITED
+
+semantic_contract: >-
+  S = Material Consequence of the underlying event, independent of user interest
+  and public attention. Judge whether the event itself materially disturbs at
+  least one consequential shared reference system such as governance, public
+  systems, an industry/field, market structure, accepted knowledge, capability
+  frontier, or broadly shared cultural state. Do not normalize importance to a
+  tiny local/private unit, and do not treat raw reach, fame, or coverage as S.
+
+pre_registered_criterion:
+  exact_min: 0.8333333333
+  material_recall_min: 0.80
+  not_material_recall_min: 0.80
+  technical_failures_should_be_zero: true
+  no_clear_repeated_semantic_failure: true
+
+cases:
+  - id: SF1
+    pair: broad_reach_trivial_vs_systemic_failure
+    variant: broad_reach_trivial
+    gold_status: FROZEN
+    label_provenance: HUMAN_ELICITED
+    event: "A widely used national messaging service changes the visual shape of several default emoji icons for more than 150 million users. Message delivery, privacy, price, access, moderation rules, and user permissions do not change."
+    material_consequence: NOT_MATERIAL
+
+  - id: SF2
+    pair: broad_reach_trivial_vs_systemic_failure
+    variant: systemic_failure
+    gold_status: FROZEN
+    label_provenance: HUMAN_ELICITED
+    event: "A software defect disables the country's interbank retail-payment clearing network for most of a business day, delaying payroll and merchant settlement nationwide and causing large documented economic losses before service is restored."
+    material_consequence: MATERIAL
+
+  - id: SF3
+    pair: private_gain_vs_sector_change
+    variant: private_gain
+    gold_status: FROZEN
+    label_provenance: HUMAN_ELICITED
+    event: "A single mid-sized logistics company redesigns its internal routing process and cuts its own fuel cost by 35%. The method remains proprietary, competitors do not adopt it, and no industry standard or market structure changes."
+    material_consequence: NOT_MATERIAL
+
+  - id: SF4
+    pair: private_gain_vs_sector_change
+    variant: sector_change
+    gold_status: FROZEN
+    label_provenance: HUMAN_ELICITED
+    event: "A new open routing method cuts fuel use by about 35% across long-haul logistics, is independently reproduced by multiple major carriers, and is incorporated into the sector's standard operating guidance."
+    material_consequence: MATERIAL
+
+  - id: SF5
+    pair: bounded_local_public_system_vs_shared_public_system
+    variant: bounded_local
+    gold_status: FROZEN
+    label_provenance: HUMAN_ELICITED
+    event: "A small municipality loses access to its internal records system for one week after a server failure. Local permit and payroll work is delayed, but the failure remains confined to that municipality and does not expose a wider software, legal, or public-system problem."
+    material_consequence: NOT_MATERIAL
+
+  - id: SF6
+    pair: bounded_local_public_system_vs_shared_public_system
+    variant: shared_system
+    gold_status: FROZEN
+    label_provenance: HUMAN_ELICITED
+    event: "A design flaw is confirmed in the national digital-identity platform used across government agencies, exposing identity records for tens of millions of residents and forcing multiple agencies to change authentication and data-protection rules."
+    material_consequence: MATERIAL
+
+  - id: SF7
+    pair: famous_actor_private_vs_public_authority_change
+    variant: famous_private
+    gold_status: FROZEN
+    label_provenance: HUMAN_ELICITED
+    event: "A globally famous technology founder purchases a new private vacation home. The transaction does not change company ownership, management, strategy, regulation, market structure, or any public role."
+    material_consequence: NOT_MATERIAL
+
+  - id: SF8
+    pair: famous_actor_private_vs_public_authority_change
+    variant: public_authority_change
+    gold_status: FROZEN
+    label_provenance: HUMAN_ELICITED
+    event: "The country's highest constitutional court issues a binding interpretation that substantially narrows a category of government surveillance powers, requiring courts and agencies nationwide to change how such powers are authorized."
+    material_consequence: MATERIAL
+
+  - id: SF9
+    pair: niche_cultural_success_vs_shared_cultural_shift
+    variant: niche_success
+    gold_status: FROZEN
+    label_provenance: HUMAN_ELICITED
+    event: "A new music album is praised by a small dedicated fan community and sells well within that niche, but there is no stated change in broader language, social behavior, platform strategy, or music-industry practice."
+    material_consequence: NOT_MATERIAL
+
+  - id: SF10
+    pair: niche_cultural_success_vs_shared_cultural_shift
+    variant: shared_cultural_shift
+    gold_status: FROZEN
+    label_provenance: HUMAN_ELICITED
+    event: "A low-budget online series triggers a new storytelling format that is copied across major platforms; several large studios change commissioning strategy around the format and its phrases and visual conventions enter broad everyday use."
+    material_consequence: MATERIAL
+
+  - id: SF11
+    pair: isolated_claim_vs_accepted_knowledge_change
+    variant: isolated_claim
+    gold_status: FROZEN
+    label_provenance: HUMAN_ELICITED
+    event: "One laboratory reports an unexpected materials effect in a small experiment, but the result has not been replicated, remains compatible with measurement error, and has not changed accepted theory or engineering practice."
+    material_consequence: NOT_MATERIAL
+
+  - id: SF12
+    pair: isolated_claim_vs_accepted_knowledge_change
+    variant: accepted_change
+    gold_status: FROZEN
+    label_provenance: HUMAN_ELICITED
+    event: "Independent research groups repeatedly verify a new mechanism for a widely used semiconductor process, and the evidence becomes strong enough that reference models are revised and multiple fabrication plants begin changing process design around it."
+    material_consequence: MATERIAL
