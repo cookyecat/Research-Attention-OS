@@ -1,0 +1,103 @@
+# STANDING RADAR FIT — INTERSECTION / SEMANTIC COMPOSITION DIAGNOSTIC v1
+#
+# Human-elicited diagnostic for the narrow residual hypothesis observed in the
+# first D holdout: when an event contains both an explicitly excluded context
+# and a substantive standing-interest facet, does the frozen estimator follow
+# the substantive facet or allow the exclusion to dominate?
+#
+# This is NOT a new overall D benchmark and must not be merged into the FD1-FD20
+# first-run accuracy. It is a targeted causal diagnostic only.
+#
+# Frozen estimator to use unchanged:
+#   estimator_version: standing-radar-fit-estimator-v1
+#   prompt_version: standing-radar-fit-v1
+#   prompt_sha256: 92179131d684d84e9b6f214389c0166cb9137a12e22f44826380d2fc063da749
+#
+# Human labels were answered twice with identical results before this manifest
+# was written.
+#
+# Frozen: 2026-09-06
+# Label provenance: HUMAN_ELICITED
+
+name: raos-standing-radar-intersection-diagnostic-v1
+variable: D
+diagnostic_type: INTERSECTION_SEMANTIC_COMPOSITION
+semantic_contract: >-
+  D = Standing Interest Fit independent of event significance. Ignore importance,
+  popularity, final AWARE/DROP disposition, and Kernel change. Judge whether the
+  event's substantive topic belongs to a world the user wants RAOS to monitor on
+  a standing basis.
+profile: eval/live/standing_radar_profile.v1.yaml
+frozen_estimator_version: standing-radar-fit-estimator-v1
+frozen_prompt_version: standing-radar-fit-v1
+frozen_prompt_sha256: 92179131d684d84e9b6f214389c0166cb9137a12e22f44826380d2fc063da749
+hypothesis: >-
+  The first-run residuals may reflect an arbitration failure in which an explicit
+  standing exclusion overrides a substantive standing-interest facet. This
+  diagnostic tests that narrow hypothesis without changing the estimator, prompt,
+  profile, or ontology.
+
+cases:
+  - id: IX1
+    pair: space_robotics
+    variant: excluded_context_only
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: OUT
+    event: "A commercial-space company completes an ordinary communications-satellite attitude-control-system upgrade. The core work is traditional spacecraft control engineering, with no robotics, AI, or other standing-interest technology."
+
+  - id: IX2
+    pair: space_robotics
+    variant: excluded_context_plus_substantive_interest
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "A commercial-space company releases an autonomous on-orbit maintenance robot that can grasp satellites, move robotic arms, and autonomously replace failed modules."
+
+  - id: IX3
+    pair: medicine_cancer
+    variant: excluded_context_only
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: OUT
+    event: "A hospital releases an ordinary orthopedic mechanical positioning device for surgery. It is fully operated by physicians and does not involve cancer, autonomous robotics, or AI."
+
+  - id: IX4
+    pair: medicine_cancer
+    variant: excluded_context_plus_substantive_interest
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "A hospital releases a cancer-surgery assistance device used to improve mechanical positioning accuracy during tumor resection. It is operated by physicians, has no AI, and is not an autonomous robot."
+
+  - id: IX5
+    pair: fusion_robotics
+    variant: excluded_context_only
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: OUT
+    event: "A nuclear-fusion laboratory releases a new plasma-diagnostics system centered on traditional sensors and control engineering, with no robotics or other standing-interest direction."
+
+  - id: IX6
+    pair: fusion_robotics
+    variant: excluded_context_plus_substantive_interest
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "A nuclear-fusion laboratory develops an internal reactor inspection robot that can move autonomously, operate a robotic arm, and inspect equipment in high-radiation areas."
+
+  - id: IX7
+    pair: industrial_chips_compute
+    variant: excluded_context_only
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: OUT
+    event: "An industrial-electronics company releases a new power-management chip for factory motor control. The core technology is analog circuitry and power devices."
+
+  - id: IX8
+    pair: industrial_chips_compute
+    variant: excluded_context_plus_substantive_interest
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "The same industrial-electronics company releases a new server CPU microarchitecture for general-purpose compute servers, focused on higher memory bandwidth and multicore computing performance."
