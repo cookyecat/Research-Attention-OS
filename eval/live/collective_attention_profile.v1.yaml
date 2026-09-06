@@ -32,7 +32,7 @@ attention_evidence_principles:
   - "Current high salience does not require positive growth; stable high attention can remain SALIENT."
   - "Emerging salience can be SALIENT before absolute volume becomes large when multiple current observations clearly show collective attention forming."
 
- temporal_principles:
+temporal_principles:
   - "P is a latent attention state, not a direct copy of one short-window count or trend."
   - "Short-term negative velocity does not by itself imply attention loss."
   - "Use recent observation history to distinguish temporary fluctuation from sustained decay."
