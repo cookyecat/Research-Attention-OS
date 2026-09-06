@@ -1,0 +1,524 @@
+# INTEGRATED no-Delta AWARE — FRESH ATTRIBUTION TEMPLATE v1
+#
+# Authored only after the D/S/P integration harness was frozen at
+# commit c39292be9b4d782391c845368efa7346502be7ec.
+#
+# IMPORTANT:
+# - NO Human D/S/P labels are stored here.
+# - NO Human AWARE/DROP labels are stored here.
+# - NO integrated estimator predictions have been run on IA1-IA12.
+# - Delta is frozen to NONE for every case.
+
+name: raos-no-delta-awareness-integrated-fresh-v1
+validation_type: INTEGRATED_ATTRIBUTION
+status: TEMPLATE_ONLY_HUMAN_GOLD_UNSET
+integration_version: no-delta-awareness-integration-v1
+policy_gate_version: aware-iff-s-and-d-or-p-v1
+integration_freeze_commit: c39292be9b4d782391c845368efa7346502be7ec
+standing_radar_estimator_version: standing-radar-fit-estimator-v3
+standing_radar_profile_id: standing-radar-profile-v3
+material_consequence_estimator_version: material-consequence-estimator-v1
+collective_attention_estimator_version: collective-attention-estimator-v1
+collective_attention_evidence_interface_version: collective-attention-evidence-packet-v1
+standing_radar_profile: eval/live/standing_radar_profile.v3.yaml
+
+cases:
+  - id: IA1
+    delta: NONE
+    event: >-
+      A regional furniture wholesaler changes the visual layout of its internal invoice
+      template. The change affects only routine clerical formatting inside the company;
+      prices, permissions, accounting rules, customer contracts, and industry practice do
+      not change.
+    p_packet:
+      event:
+        event_id: ia1-invoice-template
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A regional furniture wholesaler changes the visual layout of its internal invoice
+          template without changing prices, permissions, contracts, or accounting rules.
+      constituency_prior:
+        description: "employees of the wholesaler who use or receive the internal invoice template"
+        scope: organization
+        reference_scale: "10^2"
+        reference_size_hint: "about 120"
+        basis: explicit_event_scope
+        provenance: "frozen integrated fresh statement"
+      collection_context:
+        channels_checked: [internal_feedback_summary]
+        channels_unavailable: []
+        notes: "controlled integrated packet"
+      current_attention_evidence:
+        - kind: human_discussion
+          window: "last 48h"
+          observation: "Five employees mentioned the new layout; no broader internal discussion formed."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "employee_feedback"
+          quality: direct
+          contamination: []
+      recent_attention_history: []
+
+  - id: IA2
+    delta: NONE
+    event: >-
+      A battery startup in the new-energy sector unveils a new logo and brand mascot.
+      Battery chemistry, manufacturing cost, performance, safety, contracts, and market
+      access are unchanged.
+    p_packet:
+      event:
+        event_id: ia2-battery-brand-mascot
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A battery startup unveils a new logo and brand mascot while its technology,
+          cost, performance, and market access remain unchanged.
+      constituency_prior:
+        description: "active audience following the startup and consumer-facing battery/EV brand news"
+        scope: product
+        reference_scale: "10^5"
+        reference_size_hint: "unknown"
+        basis: llm_prior
+        provenance: "frozen integrated fresh prior"
+      collection_context:
+        channels_checked: [platform_engagement, search_trends, industry_media]
+        channels_unavailable: [platform_internal_unique_viewers]
+        notes: "controlled integrated packet"
+      current_attention_evidence:
+        - kind: engagement
+          window: "last 24h"
+          observation: >-
+            The mascot reveal generated more than 90,000 comments and shares from established
+            accounts, with many distinct user-created variations and jokes.
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "organic_platform_users"
+          quality: direct
+          contamination: []
+        - kind: active_search
+          window: "last 24h"
+          observation: "Search interest for the startup and mascot is about 7x the prior-week hourly baseline."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+      recent_attention_history: []
+
+  - id: IA3
+    delta: NONE
+    event: >-
+      A well-known strategy game releases a small patch that changes two menu icons and
+      corrects several spelling errors. Game rules, balance, progression, prices, and
+      platform access do not change.
+    p_packet:
+      event:
+        event_id: ia3-game-menu-icons
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A strategy game patch changes two menu icons and fixes spelling errors without
+          changing gameplay, balance, progression, price, or access.
+      constituency_prior:
+        description: "active players and community followers of the strategy game"
+        scope: product
+        reference_scale: "10^6"
+        reference_size_hint: "unknown"
+        basis: llm_prior
+        provenance: "frozen integrated fresh prior"
+      collection_context:
+        channels_checked: [game_forums, social_discussion, search_trends]
+        channels_unavailable: []
+        notes: "controlled integrated packet"
+      current_attention_evidence:
+        - kind: human_discussion
+          window: "last 72h"
+          observation: "Only a few low-activity forum threads mention the patch, mostly to list the spelling fixes."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "game_forums"
+          quality: direct
+          contamination: []
+        - kind: active_search
+          window: "last 72h"
+          observation: "No meaningful search lift is observed for the patch."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+      recent_attention_history: []
+
+  - id: IA4
+    delta: NONE
+    event: >-
+      The same strategy game launches a limited cosmetic character skin. The skin changes
+      appearance only and has no gameplay effects, but the reveal becomes a major community
+      meme and does not change game rules, balance, price structure, or access.
+    p_packet:
+      event:
+        event_id: ia4-game-cosmetic-skin
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A strategy game launches a purely cosmetic character skin with no gameplay effects.
+      constituency_prior:
+        description: "active players and community followers of the strategy game"
+        scope: product
+        reference_scale: "10^6"
+        reference_size_hint: "unknown"
+        basis: llm_prior
+        provenance: "frozen integrated fresh prior"
+      collection_context:
+        channels_checked: [game_forums, platform_engagement, search_trends, video_platforms]
+        channels_unavailable: []
+        notes: "controlled integrated packet"
+      current_attention_evidence:
+        - kind: human_discussion
+          window: "last 24h"
+          observation: >-
+            The skin is the dominant topic across the game's largest communities, with hundreds
+            of thousands of distinct player comments, fan images, and voluntary reposts.
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "player_communities"
+          quality: direct
+          contamination: []
+        - kind: active_search
+          window: "last 24h"
+          observation: "Related search interest is about 10x the normal hourly baseline for the game."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+      recent_attention_history: []
+
+  - id: IA5
+    delta: NONE
+    event: >-
+      A national electricity-market regulator quietly issues a binding balancing rule that
+      changes how grid operators must settle real-time supply shortages and reallocates
+      substantial imbalance costs across market participants. The rule takes legal effect
+      next month.
+    p_packet:
+      event:
+        event_id: ia5-grid-balancing-rule
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A national electricity-market regulator issues a binding balancing rule that changes
+          real-time shortage settlement and reallocates imbalance costs across participants.
+      constituency_prior:
+        description: "electricity-market operators, generators, large traders, and energy-regulation professionals"
+        scope: domain
+        reference_scale: "10^5"
+        reference_size_hint: "unknown"
+        basis: llm_prior
+        provenance: "frozen integrated fresh prior"
+      collection_context:
+        channels_checked: [industry_media, professional_forums, search_trends]
+        channels_unavailable: [private_operator_internal_channels]
+        notes: "evaluation is shortly after the official filing"
+      current_attention_evidence:
+        - kind: institutional_followup
+          window: "last 6h"
+          observation: "Only two specialist law firms and one market analyst have publicly commented so far."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "early_professional_followup"
+          quality: structural
+          contamination: []
+        - kind: active_search
+          window: "last 6h"
+          observation: "Search interest remains close to the normal background for electricity balancing rules."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+      recent_attention_history: []
+
+  - id: IA6
+    delta: NONE
+    event: >-
+      A national electricity regulator replaces the existing residential-grid pricing regime
+      with a new mandatory time-of-use structure that materially changes household tariffs,
+      generator incentives, and peak-demand economics across the country.
+    p_packet:
+      event:
+        event_id: ia6-grid-pricing-reform
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A national electricity regulator replaces residential-grid pricing with a mandatory
+          time-of-use regime that changes tariffs and market incentives nationwide.
+      constituency_prior:
+        description: "national electricity consumers, utilities, market participants, and energy-policy community"
+        scope: geographic
+        reference_scale: "10^7+"
+        reference_size_hint: "tens of millions of affected households"
+        basis: explicit_event_scope
+        provenance: "frozen integrated fresh statement"
+      collection_context:
+        channels_checked: [general_media, industry_media, search_trends, public_discussion]
+        channels_unavailable: []
+        notes: "controlled integrated packet"
+      current_attention_evidence:
+        - kind: general_media_coverage
+          window: "last 24h"
+          observation: "The reform leads national news coverage and is covered by nearly every major utility and energy outlet."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "independent_media"
+          quality: structural
+          contamination: []
+        - kind: active_search
+          window: "last 24h"
+          observation: "Searches for tariff and time-of-use terms are about 15x the prior-month daily baseline."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+      recent_attention_history: []
+
+  - id: IA7
+    delta: NONE
+    event: >-
+      An international standards body adopts a mandatory memory-safety requirement for a
+      widely used cloud-infrastructure protocol. Future conforming implementations must meet
+      the new requirement, changing the field-wide security and interoperability standard.
+    p_packet:
+      event:
+        event_id: ia7-cloud-memory-safety-standard
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          An international standards body adopts a mandatory memory-safety requirement for a
+          widely used cloud-infrastructure protocol.
+      constituency_prior:
+        description: "cloud infrastructure, distributed-systems, protocol, and security professionals affected by the standard"
+        scope: domain
+        reference_scale: "10^6"
+        reference_size_hint: "unknown"
+        basis: llm_prior
+        provenance: "frozen integrated fresh prior"
+      collection_context:
+        channels_checked: [standards_feed, specialist_media, professional_forums, search_trends]
+        channels_unavailable: []
+        notes: "measurement is within 30 minutes of publication"
+      current_attention_evidence:
+        - kind: institutional_followup
+          window: "last 30m"
+          observation: "The standards body publication is live, but only one vendor engineer has publicly commented so far."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "early_followup"
+          quality: structural
+          contamination: []
+        - kind: active_search
+          window: "last 30m"
+          observation: "No measurable search increase is yet visible."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+      recent_attention_history: []
+
+  - id: IA8
+    delta: NONE
+    event: >-
+      OpenAI releases a new general foundation model whose independently reproduced results
+      substantially reduce the cost of long-horizon tool-use tasks while improving success
+      rates across several widely used agent benchmarks, materially moving the practical
+      capability frontier.
+    p_packet:
+      event:
+        event_id: ia8-openai-agent-model
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          OpenAI releases a foundation model with independently reproduced, materially better
+          cost and success rates on long-horizon tool-use tasks and major agent benchmarks.
+      constituency_prior:
+        description: "LLM/AI-agent research, engineering, product, and advanced-user community"
+        scope: domain
+        reference_scale: "10^6"
+        reference_size_hint: "unknown"
+        basis: llm_prior
+        provenance: "frozen integrated fresh prior"
+      collection_context:
+        channels_checked: [ai_researchers, industry_media, developer_forums, search_trends, social_discussion]
+        channels_unavailable: []
+        notes: "controlled integrated packet"
+      current_attention_evidence:
+        - kind: institutional_followup
+          window: "last 12h"
+          observation: "Most major AI labs and leading agent researchers have publicly discussed or evaluated the release."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "ai_labs_researchers"
+          quality: structural
+          contamination: []
+        - kind: active_search
+          window: "last 12h"
+          observation: "Search interest is about 18x the prior-week hourly baseline and remains elevated."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+      recent_attention_history: []
+
+  - id: IA9
+    delta: NONE
+    event: >-
+      OpenAI changes the catering vendor used for ordinary employee lunches at one office.
+      The change does not affect products, research, staffing, governance, pricing, public
+      services, or external partners.
+    p_packet:
+      event:
+        event_id: ia9-openai-catering
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          OpenAI changes the ordinary employee-lunch catering vendor at one office without
+          affecting products, research, staffing, governance, or external services.
+      constituency_prior:
+        description: "employees who regularly use the affected office lunch service"
+        scope: organization
+        reference_scale: "10^2"
+        reference_size_hint: "about 400"
+        basis: explicit_event_scope
+        provenance: "frozen integrated fresh statement"
+      collection_context:
+        channels_checked: [internal_feedback_summary]
+        channels_unavailable: []
+        notes: "controlled integrated packet"
+      current_attention_evidence:
+        - kind: human_discussion
+          window: "last 48h"
+          observation: "Six employees left brief comments about menu preferences; no wider internal discussion formed."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "office_feedback"
+          quality: direct
+          contamination: []
+      recent_attention_history: []
+
+  - id: IA10
+    delta: NONE
+    event: >-
+      A university explicitly stated in the event to have a stable direct-family affiliation
+      to the user renovates a small internal reading room used by about 80 students. The work
+      changes furniture and lighting only; academic policy, curriculum, access rights, research,
+      and public services are unchanged.
+    p_packet:
+      event:
+        event_id: ia10-affiliated-university-reading-room
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A university with an explicitly stated stable direct-family affiliation to the user
+          renovates a small internal reading room, changing furniture and lighting only.
+      constituency_prior:
+        description: "students and staff who regularly use the affected reading room"
+        scope: organization
+        reference_scale: "10^2"
+        reference_size_hint: "about 80"
+        basis: explicit_event_scope
+        provenance: "frozen integrated fresh statement"
+      collection_context:
+        channels_checked: [campus_feedback_summary]
+        channels_unavailable: []
+        notes: "controlled integrated packet"
+      current_attention_evidence:
+        - kind: human_discussion
+          window: "last 7d"
+          observation: "Three users commented on the new chairs; no broader campus discussion is observed."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "reading_room_users"
+          quality: direct
+          contamination: []
+      recent_attention_history: []
+
+  - id: IA11
+    delta: NONE
+    event: >-
+      A new mandatory international power-management standard for industrial motor drives is
+      adopted by the major manufacturing standards bodies. It changes efficiency requirements
+      and compliance rules across the industrial motor-control sector, but concerns ordinary
+      power-management and motor-control electronics rather than compute or AI hardware.
+    p_packet:
+      event:
+        event_id: ia11-motor-power-standard
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          Major standards bodies adopt a mandatory industrial motor-drive power-management
+          standard that changes sector-wide efficiency and compliance requirements.
+      constituency_prior:
+        description: "industrial motor-drive, power-electronics, manufacturing, and compliance professionals"
+        scope: domain
+        reference_scale: "10^6"
+        reference_size_hint: "unknown"
+        basis: llm_prior
+        provenance: "frozen integrated fresh prior"
+      collection_context:
+        channels_checked: [standards_feed, specialist_media, professional_forums, search_trends]
+        channels_unavailable: []
+        notes: "measurement is shortly after publication"
+      current_attention_evidence:
+        - kind: institutional_followup
+          window: "last 4h"
+          observation: "Only the standards bodies and two compliance consultancies have published follow-up so far."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "early_industry_followup"
+          quality: structural
+          contamination: []
+        - kind: active_search
+          window: "last 4h"
+          observation: "Search activity remains near the normal background level."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+      recent_attention_history: []
+
+  - id: IA12
+    delta: NONE
+    event: >-
+      A multinational regulatory agreement rewrites commercial satellite-launch licensing,
+      insurance, and orbital-liability rules across several major launch markets, materially
+      changing entry conditions and operating costs for the commercial space-launch sector.
+    p_packet:
+      event:
+        event_id: ia12-commercial-space-licensing
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A multinational agreement rewrites commercial satellite-launch licensing, insurance,
+          and orbital-liability rules across major launch markets.
+      constituency_prior:
+        description: "commercial launch operators, satellite firms, insurers, regulators, investors, and space-industry professionals"
+        scope: domain
+        reference_scale: "10^5"
+        reference_size_hint: "unknown"
+        basis: llm_prior
+        provenance: "frozen integrated fresh prior"
+      collection_context:
+        channels_checked: [space_industry_media, financial_media, search_trends, professional_discussion]
+        channels_unavailable: []
+        notes: "controlled integrated packet"
+      current_attention_evidence:
+        - kind: institutional_followup
+          window: "last 24h"
+          observation: "Most major launch companies, satellite operators, specialist insurers, and industry associations have issued responses."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "space_industry_institutions"
+          quality: structural
+          contamination: []
+        - kind: active_search
+          window: "last 24h"
+          observation: "Professional and public search interest for launch licensing is about 11x the prior-month daily baseline."
+          source: "frozen integrated fresh statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+      recent_attention_history: []
