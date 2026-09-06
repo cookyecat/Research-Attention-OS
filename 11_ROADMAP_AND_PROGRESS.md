@@ -4,7 +4,8 @@ Status: **ACTIVE PROJECT ROADMAP**
 Date: 2026-09-06  
 Production/eval baseline referenced: `354d2b5011a868f0295e2ac2750822275c83db51`  
 Semantic baseline: `08_COGNITIVE_TRANSITION_MODEL_V2.1.md` + Phase II-B AWARE semantics in `10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md`  
-Current D study: `12_STANDING_RADAR_FIT_ESTIMATOR_STUDY.md`  
+D semantic baseline: `16_STANDING_ATTENTION_JURISDICTION.md`  
+D final validation: `17_STANDING_RADAR_FIT_V3_FINAL_VALIDATION.md`  
 Product/recommender boundary: `13_RAOS_VS_RECOMMENDATION_SYSTEMS.md`
 
 > Purpose: preserve the long-horizon research position of RAOS so that individual experiments, implementation sessions, or conversation loss cannot erase what is closed, what is active, and what happens next.
@@ -94,8 +95,10 @@ Core invariants:
 Current strategic position:
 
 $$
-\boxed{Phase\ II\text{-}B:\ D\ semantic\text{-}composition/scope\ attribution\ NOW}
+\boxed{Phase\ II\text{-}B:\ S=Material\ Consequence\ NOW}
 $$
+
+D semantic research is closed. The v3 estimator has attributable implementation residuals and is not certified as a passed estimator; do not expand D into another offline synthetic benchmark now.
 
 The project is still answering:
 
@@ -213,7 +216,7 @@ $$
 where:
 
 $$
-\boxed{D=Standing\ Interest\ Fit\ independent\ of\ event\ significance}
+\boxed{D=D(E,u)=\mathbf 1[E\in\mathcal J_u]}
 $$
 
 $$
@@ -245,47 +248,36 @@ Important invariants:
 - technical novelty is not event significance
 - artifact quality is not event significance
 - S may be technical, economic, scientific, social, cultural, political, or institutional consequence
-- D granularity follows stable preference, not taxonomy depth
 
 ---
 
-## 6. D study status
+## 6. D study — SEMANTICS CLOSED / ESTIMATOR RESIDUALS PRESERVED
 
-### 6.1 Measurement instrument — CALIBRATED
+### 6.1 Canonical D definition
 
-D asks only:
-
-> **Ignoring how important this particular event is, does its substantive topic belong to a world the user wants RAOS to monitor on a standing basis?**
-
-Earlier `IN/OUT`, H1-H10, and DH1-DH15 are calibration/development evidence, not fresh holdout performance.
-
-### 6.2 Standing Radar profile v1 — FROZEN HISTORICAL BASELINE
-
-Artifact:
-
-`eval/live/standing_radar_profile.v1.yaml`
-
-Key boundary principle:
+`16_STANDING_ATTENTION_JURISDICTION.md` is the frozen D semantic baseline.
 
 $$
-\boxed{D\ granularity=stable\ preference\ granularity}
+\boxed{
+\mathcal J_u
+=
+\{E\mid\exists\rho_i\in\mathcal R_u,\rho_i(Sem(E),u)=1\}
+}
 $$
 
-### 6.3 Fresh D Human Gold v1 — FROZEN
+$$
+\boxed{D(E,u)=\mathbf 1[E\in\mathcal J_u]}
+$$
 
-Artifact:
+Standing Radar Clauses are applicability conditions, not domain weights. Clauses may concern a substantive topic, actor/entity/person, work/content object, place/governance scope, or stable affiliation. These semantic forms do not justify separate D sub-variables or a typed ontology.
 
-`eval/live/manifest.standing_radar_fit_human_gold.v1.yaml`
+Exclusions remain:
 
-Class composition:
+$$
+\boxed{Exclusion=ScopeGuard,\quad Exclusion\neq Veto}
+$$
 
-```text
-IN   15
-OUT   5
-N    20
-```
-
-### 6.4 D estimator v1 — CORE MEASUREMENT STRONG
+### 6.2 Historical v1 measurement
 
 First blind holdout:
 
@@ -299,70 +291,57 @@ False-OUT           FD6, FD16
 Technical failures  0
 ```
 
+This supported compact natural-language Standing Radar representation and argued against building a giant domain ontology.
+
+### 6.3 Intersection diagnostic
+
+The v1 intersection diagnostic failed its pre-registered criterion at 6/8 and exposed semantic-composition/scope problems. That evidence led to the substantive-facet, scope-guard, and later Standing-Attention-Jurisdiction formalization. Historical results remain preserved and must not be rewritten as fresh evidence.
+
+### 6.4 Final v3 fresh measurement
+
 Artifact:
 
-`eval/live/results/standing_radar_fit_v1_first_run.json`
+`eval/live/results/standing_radar_fit_v3_final_fresh_first_run.json`
 
-This strongly supports the compact natural-language Standing Radar representation and argues against building a giant domain ontology.
-
-### 6.5 Intersection / semantic-composition diagnostic — FAILED PRE-REGISTERED CRITERION
-
-Artifact:
-
-`eval/live/results/standing_radar_intersection_diag_v1_first_run.json`
-
-Commit:
+Result commit:
 
 ```text
-99a95841a5b7be00509aacf359bb43c81d009f64
+07ae4b3
 ```
 
 Observed:
 
 ```text
-Exact accuracy                6/8 = 0.75
-Excluded-context-only recall  4/4 = 1.00
-Positive-intersection recall  2/4 = 0.50
-Complete pair flips           2/4 = 0.50
-Technical failures            0
+Exact accuracy       0.70
+IN recall            0.50
+OUT recall           0.8333333333
+Balanced accuracy    0.6666666667
+False-IN             FJ2
+False-OUT            FJ4, FJ6
+Technical failures   0
 ```
 
-Failed positive intersections:
+The v3 estimator **failed the pre-registered final-validation gate** and is not certified as a passed estimator.
+
+Residual attribution is recorded in `17_STANDING_RADAR_FIT_V3_FINAL_VALIDATION.md`:
+
+- FJ2 is internally consistent with the frozen AI-Agent clause and is treated as a human-policy boundary / possible noisy-label residual rather than evidence for changing D semantics.
+- FJ4 is a real clause-application failure: the model recognized OpenAI as a substantive actor but imposed an extra significance/topic-development condition not present in the clause.
+- FJ6 is a real stable-affiliation extraction/application failure despite an explicit direct-family clause.
+
+The formal model is more general than the diagnostic `substantive anchor -> clause match` implementation view. Future integrated implementation may evaluate clauses more directly over `Sem(E),u`.
+
+Research decision:
 
 ```text
-IX2  commercial space + on-orbit robotics
-IX4  general biomed + cancer-surgery assistance device
+D semantic definition                  CLOSED / FROZEN
+D clause representation                SUPPORTED
+D v3 estimator                         NOT CERTIFIED
+Known estimator residuals              ATTRIBUTABLE
+Further synthetic D benchmark work     STOP
 ```
 
-Passed positive intersections:
-
-```text
-IX6  fusion + reactor-inspection robotics
-IX8  industrial-electronics context + server CPU
-```
-
-Therefore the failure is **not** a universal “exclusion always wins” rule.
-
-Current attribution:
-
-- IX2 suggests dominant-domain arbitration: a multi-facet event is collapsed to one domain (“space operations”) even though substantive robotics is explicitly recognized.
-- IX4 suggests a profile-scope mismatch: the frozen phrase “cancer and tumor research” is narrower than the user's demonstrated standing preference, which includes substantive cancer/tumor clinical/technical events.
-
-Candidate minimal semantic model:
-
-$$
-\boxed{E\rightarrow F_s(E)=\{substantive\ semantic\ facets\}}
-$$
-
-$$
-\boxed{
-D(E)=IN\iff\exists f\in F_s(E):Match(f,StandingRadar)
-}
-$$
-
-Exclusions should be treated as guards against over-broad matching, not automatic negative votes or vetoes.
-
-Do **not** introduce domain weights or a domain ontology at this stage.
+Do not introduce domain weights or a large ontology from this result. Revisit implementation only if integrated dogfooding exposes a repeated real-world failure pattern.
 
 ---
 
@@ -373,13 +352,13 @@ Execute in this order:
 ```text
 NOW
   ↓
-Decide / implement the minimal D semantic-composition + profile-scope repair
+Formalize S = Material Consequence
   ↓
-Do not re-report FD1-FD20 or IX1-IX8 as fresh performance
+Calibrate the S answering instrument
   ↓
-Close D for Phase II-B once the repair is accepted / validated by fresh or later integration evidence
+Freeze fresh S Human Gold
   ↓
-Study / estimate S
+Implement / measure S estimator
   ↓
 Study / estimate P
   ↓
@@ -393,10 +372,10 @@ Phase II exit decision
 Estimator sequence remains:
 
 $$
-\boxed{D\ estimator\rightarrow S\ estimator\rightarrow P\ estimator}
+\boxed{D\rightarrow S\rightarrow P}
 $$
 
-The D study must not expand into a large benchmark or ontology project. The open issue is now narrow and attributable.
+D is no longer the active research question.
 
 ---
 
