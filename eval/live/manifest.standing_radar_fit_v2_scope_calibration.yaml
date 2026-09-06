@@ -1,0 +1,70 @@
+# STANDING RADAR FIT v2 — SCOPE CALIBRATION
+#
+# Human labels elicited after the first v2 semantic-repair draft but BEFORE any
+# scored v2 model measurement. Because the RV answers exposed a profile-scope
+# correction (RV4), this set is calibration/development evidence and MUST NOT be
+# reported as fresh v2 holdout performance.
+#
+# Label provenance: HUMAN_ELICITED
+# Date: 2026-09-06
+
+name: raos-standing-radar-fit-v2-scope-calibration
+variable: D
+validation_type: CALIBRATION_AFTER_PROFILE_SCOPE_DISCOVERY
+profile_after_calibration: eval/live/standing_radar_profile.v2.yaml
+semantic_contract: >-
+  D = Standing Interest Fit independent of event significance. Judge whether the
+  event's substantive topic and event role fall inside the user's standing monitoring
+  scope. Do not use importance, popularity, AWARE/DROP, S, P, or Kernel change.
+
+cases:
+  - id: RV1
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: OUT
+    event: "An oil-refining company deploys a new pipeline inspection system based on fixed pressure, vibration, and corrosion sensors. The system has no mobile robot, autonomous manipulation, or AI component."
+
+  - id: RV2
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    human_rationale: "Robotics enabling an industrial application is a robotics-field development worth tracking."
+    event: "An oil-refining company develops an autonomous pipeline inspection robot that moves through hazardous plant areas, navigates obstacles, operates a robotic arm, and performs close-up equipment checks."
+
+  - id: RV3
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: OUT
+    event: "A hospital introduces a new non-cancer orthopedic rehabilitation device that mechanically assists joint movement under therapist control. It has no AI and is not autonomous."
+
+  - id: RV4
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: OUT
+    human_rationale: "The user does not monitor the routine dynamics of an individual hospital; the standing interest is field development."
+    event: "A hospital introduces a new device for image-guided tumor ablation that helps physicians position and deliver treatment precisely to malignant tissue. It has no AI and is not autonomous."
+
+  - id: RV5
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: OUT
+    event: "A satellite operator upgrades its conventional ground-station scheduling software for routine communications windows. The change uses standard optimization software and does not involve AI agents, robotics, or new compute architecture."
+
+  - id: RV6
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    human_rationale: "An onboard multimodal AI Agent is a substantive AI-Agent development in a traditional industry and should be tracked."
+    event: "A satellite operator develops an onboard multimodal AI agent that interprets sensor data, plans recovery actions, calls spacecraft tools, and autonomously handles multi-step fault-recovery procedures."
+
+  - id: RV7
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: OUT
+    event: "A film studio updates its internal lighting calibration, color-management, and traditional post-production workflow. No new film or entertainment work is released."
+
+  - id: RV8
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "The same film studio releases a new feature film with a new director and cast. The production uses ordinary filmmaking methods and contains no AI-related technology."
