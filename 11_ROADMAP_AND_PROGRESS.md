@@ -1,11 +1,15 @@
 # Research Attention OS — Roadmap and Progress
 
 Status: **ACTIVE PROJECT ROADMAP**  
-Date: 2026-09-06  
+Date: 2026-09-07  
 Production/eval baseline referenced: `354d2b5011a868f0295e2ac2750822275c83db51`  
 Semantic baseline: `08_COGNITIVE_TRANSITION_MODEL_V2.1.md` + Phase II-B AWARE semantics in `10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md`  
 D semantic baseline: `16_STANDING_ATTENTION_JURISDICTION.md`  
 D final validation: `17_STANDING_RADAR_FIT_V3_FINAL_VALIDATION.md`  
+S semantic baseline: `19_MATERIAL_CONSEQUENCE_REFERENCE_SCALE.md`  
+S final validation: `21_MATERIAL_CONSEQUENCE_V1_FINAL_VALIDATION.md`  
+P semantic baseline: `22_COLLECTIVE_ATTENTION_SALIENCE.md`  
+P estimator modeling: `23_COLLECTIVE_ATTENTION_ESTIMATOR_MODELING.md`  
 Product/recommender boundary: `13_RAOS_VS_RECOMMENDATION_SYSTEMS.md`
 
 > Purpose: preserve the long-horizon research position of RAOS so that individual experiments, implementation sessions, or conversation loss cannot erase what is closed, what is active, and what happens next.
@@ -95,10 +99,14 @@ Core invariants:
 Current strategic position:
 
 $$
-\boxed{Phase\ II\text{-}B:\ S=Material\ Consequence\ NOW}
+\boxed{Phase\ II\text{-}B:\ P\ estimator\ modeling\ NOW}
 $$
 
-D semantic research is closed. The v3 estimator has attributable implementation residuals and is not certified as a passed estimator; do not expand D into another offline synthetic benchmark now.
+D semantic research is closed. The v3 D estimator has attributable implementation residuals and is not certified as a passed estimator; do not expand D into another offline synthetic benchmark now.
+
+S semantic research is closed. The frozen S estimator v1 passed its fresh first-run validation 12/12 with both class recalls at 1.0 and zero technical failures; further synthetic S benchmark work is stopped.
+
+P semantic calibration is now closed/frozen. Current work is to approximate the frozen theoretical P variable from realistically available evidence without redefining the variable around present data limitations.
 
 The project is still answering:
 
@@ -220,24 +228,42 @@ $$
 $$
 
 $$
-\boxed{S=Material\ consequence\ of\ the\ underlying\ event,\ independent\ of\ user\ interest\ and\ public\ attention}
+\boxed{S=Material\ consequence\ of\ the\ underlying\ event,\ independent\ of\ user\ interest\ and\ collective\ attention}
 $$
 
 $$
-\boxed{P=Current/emerging\ public\ attention\ salience,\ independent\ of\ user\ interest\ and\ intrinsic\ significance}
+\boxed{P=P(E,t)=Collective\ Attention\ Salience}
 $$
 
-Human-language contract:
+Human-language P contract:
 
-> **For information with no cognitive update, AWARE is justified when the underlying event has real substance and either belongs to the user's standing attention radar or has entered the public/industry attention radar.**
+> **P judges whether, at the current time, an event has already formed, or is clearly forming, a salient state of genuine collective attention within the event's objective attention constituency. Attention is interpreted relative to the scale of that constituency and has temporal inertia.**
+
+Objective Attention Constituency:
+
+$$
+\boxed{\mathcal G_E=Constituency(Sem(E))}
+$$
+
+with the anti-gaming rule that `G_E` is selected from event semantics independently of observed attention and independently of user preference.
+
+The three variables use different reference frames:
+
+$$
+\boxed{
+D:\ user
+\qquad
+S:\ consequential\ shared\ systems
+\qquad
+P:\ objective\ attention\ constituency
+}
+$$
 
 Physical interpretation:
 
-- `S` = value gate
-- `D` = standing personal-radar channel
-- `P` = public-attention channel
-
-These are candidate orthogonal explanatory dimensions. The project is not committed to a linear weighted model.
+- `D` = standing personal-attention field / jurisdiction;
+- `S` = material shared-world-state disturbance;
+- `P` = collective-attention-state salience.
 
 Important invariants:
 
@@ -245,9 +271,14 @@ Important invariants:
 - `S != P`
 - `D != P`
 - incidental mention/use of a radar technology does not create D membership
-- technical novelty is not event significance
-- artifact quality is not event significance
-- S may be technical, economic, scientific, social, cultural, political, or institutional consequence
+- technical novelty is not S
+- artifact quality is not S
+- raw population/reach is not S
+- raw attention volume is not P
+- total-population normalization is not P
+- exposure / autoplay views / bot activity are not automatically genuine attention
+- public sentiment / stance are not P
+- P may be salient inside a professional, geographic, niche, or genuinely event-internal constituency without broad social salience
 
 ---
 
@@ -345,24 +376,230 @@ Do not introduce domain weights or a large ontology from this result. Revisit im
 
 ---
 
-## 7. Immediate next steps
+## 7. S study — CLOSED / ESTIMATOR v1 ACCEPTED
+
+### 7.1 Canonical S definition
+
+`19_MATERIAL_CONSEQUENCE_REFERENCE_SCALE.md` is the frozen S semantic baseline.
+
+$$
+\boxed{
+S(E)=1
+\iff
+\exists G,\tau:\ MaterialDisturbance_G(E,\tau)=1
+}
+$$
+
+Human-language contract:
+
+> **S asks whether the underlying event creates a material disturbance to at least one consequential shared/public reference system—national, social, industry/field, market, scientific/technical, or cultural—rather than merely creating a large relative change inside a small bounded local/private unit.**
+
+Key invariants include:
+
+```text
+ActorProminence != S
+TechnicalNovelty != S
+ArtifactQuality != S
+PopulationCount != S
+LargePrivateGain != S
+LocalSeverity != S
+ObservedMediaCoverage != S
+```
+
+### 7.2 Frozen estimator and fresh validation
+
+Estimator freeze commit:
+
+```text
+99b8c96e54102c3befd04d931156645a5b77d8e1
+```
+
+Fresh template commit:
+
+```text
+51f983d0a2aeaa2a5eb730fa913657b0e127925b
+```
+
+Fresh Human Gold commit:
+
+```text
+cbd41ca62c0b3ed5d0fdba07fd77515d63e48c8a
+```
+
+First-run artifact:
+
+`eval/live/results/material_consequence_v1_final_fresh_first_run.json`
+
+Measurement code HEAD:
+
+```text
+10e40a934759000100aa98629bba09a0f912823e
+```
+
+Result commit:
+
+```text
+7ae0fd07b11f1fad5e2f6b155e9cba1a1eba6b76
+```
+
+Actual model:
+
+```text
+deepseek-v4-flash
+thinking = disabled
+temperature = 0.1
+```
+
+Fresh first-run result:
+
+```text
+n_scored                    12
+Gold MATERIAL               6
+Gold NOT_MATERIAL           6
+Pred MATERIAL               6
+Pred NOT_MATERIAL           6
+Exact accuracy              1.0
+MATERIAL recall             1.0
+NOT_MATERIAL recall         1.0
+Balanced accuracy           1.0
+Technical failures          0
+Transport retries           0
+Repeated semantic failure   none
+```
+
+This passes every pre-registered gate.
+
+Research decision:
+
+```text
+S semantic definition                  CLOSED / FROZEN
+S estimator v1                         ACCEPTED FOR PHASE II-B
+Fresh validation                       PASS — 12/12
+Known semantic residuals               NONE ON FRESH SET
+Further synthetic S benchmark work     STOP
+```
+
+The 12/12 result is evidence that the frozen semantic contract was cleanly implemented on a fresh controlled holdout; it is not a claim of 100% open-world accuracy.
+
+---
+
+## 8. P study — SEMANTICS CLOSED / ESTIMATOR MODELING ACTIVE
+
+### 8.1 Canonical P definition
+
+`22_COLLECTIVE_ATTENTION_SALIENCE.md` is the frozen P semantic baseline.
+
+$$
+\boxed{
+\mathcal G_E=Constituency(Sem(E))
+}
+$$
+
+Conceptual reference-normalized attention penetration:
+
+$$
+\boxed{
+R_E(t)=\frac{1}{|\mathcal G_E|}\sum_{i\in\mathcal G_E}a_i(E,t)
+}
+$$
+
+Latent attention state:
+
+$$
+\boxed{
+P(E,t)=LatentSalience(R_E(\le t))
+}
+$$
+
+This conceptual equation is a theoretical model, not a requirement for exact direct measurement.
+
+Frozen principles:
+
+```text
+Objective Attention Constituency       selected from Sem(E), not user preference
+Reference-scale normalization          YES
+Raw absolute volume                    NOT P
+Exposure / synthetic activity          NOT automatically attention
+Current OR emerging salience            YES
+Temporal inertia                        YES
+General-public-only interpretation      REJECTED
+Sentiment / stance                      NOT P
+```
+
+Two Human calibration rounds PC1–PC24 established the core boundaries. These are development/calibration evidence and must never be reused as fresh P holdout evidence.
+
+### 8.2 Theory / engineering separation
+
+The frozen theoretical target is:
+
+$$
+\boxed{
+Theory:\quad P(E,t)=LatentSalience(R_E(\le t))
+}
+$$
+
+The current engineering approximation target is:
+
+$$
+\boxed{
+\hat P
+=
+Estimator(
+Sem(E),
+ConstituencyPrior,
+ObservableAttentionEvidence,
+History
+)
+}
+$$
+
+Estimator modeling is recorded in `23_COLLECTIVE_ATTENTION_ESTIMATOR_MODELING.md`.
+
+Important engineering distinction:
+
+- LLM prior knowledge is useful for constituency identity and coarse reference scale;
+- current attention numerator is time-dependent and requires current observable evidence;
+- a small lookup/prior table may cache stable constituency-scale knowledge;
+- exact denominator counts are not required;
+- diagnostics should not become mandatory symbolic gates without evidence;
+- insufficient current evidence is a measurement-status problem, not a third semantic P state.
+
+Current research decision:
+
+```text
+P semantic definition                  CLOSED / FROZEN
+Objective Attention Constituency       CLOSED / FROZEN CONCEPT
+Reference-scale normalization          CLOSED / FROZEN PRINCIPLE
+Temporal inertia                       CLOSED / FROZEN PRINCIPLE
+P estimator architecture               ACTIVE MODELING
+Fresh P Human Gold                     NOT CREATED
+First scored P measurement             NOT RUN
+```
+
+---
+
+## 9. Immediate next steps
 
 Execute in this order:
 
 ```text
 NOW
   ↓
-Formalize S = Material Consequence
+Define the smallest reproducible observable-attention evidence interface for P estimator v1
   ↓
-Calibrate the S answering instrument
+Decide constituency-prior / lookup representation
   ↓
-Freeze fresh S Human Gold
+Implement and freeze P estimator/profile v1
   ↓
-Implement / measure S estimator
+Create fresh P validation set AFTER estimator freeze
   ↓
-Study / estimate P
+Elicit and freeze fresh P Human Gold
   ↓
-Evaluate complete no-Delta AWARE gate
+Run first scored P measurement exactly once
+  ↓
+Attribute residuals before changing estimator
+  ↓
+Evaluate complete no-Delta AWARE gate: S ∧ (D ∨ P)
   ↓
 Fresh real-world end-to-end dogfooding
   ↓
@@ -375,11 +612,15 @@ $$
 \boxed{D\rightarrow S\rightarrow P}
 $$
 
-D is no longer the active research question.
+D and S are no longer active semantic research questions.
+
+The immediate P design question is:
+
+> **What evidence object can RAOS realistically provide to P estimator v1 such that the model can approximate current genuine collective attention without pretending to have platform-internal telemetry?**
 
 ---
 
-## 8. Phase II-B exit condition
+## 10. Phase II-B exit condition
 
 Phase II-B is complete when Attention Policy is reliable enough for real personal dogfooding, not when every synthetic benchmark reaches 100%.
 
@@ -396,7 +637,7 @@ Then move to Phase III.
 
 ---
 
-## 9. Phase III — Continuous Attention OS
+## 11. Phase III — Continuous Attention OS
 
 Next major product step:
 
@@ -420,7 +661,7 @@ Start with a narrow measurable real-source loop, not a giant crawler or recommen
 
 ---
 
-## 10. Phase IV — Longitudinal Cognitive Alignment
+## 12. Phase IV — Longitudinal Cognitive Alignment
 
 Once continuous information flow exists:
 
@@ -432,7 +673,7 @@ Test whether accepted Kernel changes correctly alter future Locate/Impact/Attent
 
 ---
 
-## 11. Phase V — Personalization
+## 13. Phase V — Personalization
 
 Only after real trajectories exist should personalization move beyond initial calibration.
 
@@ -454,7 +695,7 @@ Do not train personal policy from noisy click behavior before the controlled var
 
 ---
 
-## 12. Working discipline
+## 14. Working discipline
 
 For every open research question:
 
@@ -482,3 +723,4 @@ Rules:
 4. Do not let Attention Policy manufacture cognitive change.
 5. Prefer residual evidence over a cosmetically perfect score.
 6. When a phase exit condition is met, move forward rather than overfitting the current benchmark.
+7. Do not redefine a frozen theoretical variable merely because the current system cannot observe it directly.
