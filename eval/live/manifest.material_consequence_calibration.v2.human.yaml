@@ -1,0 +1,51 @@
+# MATERIAL CONSEQUENCE (S) — CALIBRATION v2 HUMAN LABELS
+#
+# Development/calibration evidence only. Not a fresh holdout.
+# Labels elicited before any S estimator implementation.
+# Judge only S. Ignore user interest D and public attention P.
+
+name: raos-material-consequence-calibration-v2-human
+variable: S
+validation_type: HUMAN_CALIBRATION
+label_provenance: HUMAN_ELICITED
+
+cases:
+  - id: MS1
+    event: "In a remote township primary school, two students have a minor fight with no serious injury. The class teacher is removed from the position after an internal disciplinary review. No wider school-system rule, policy, or social pattern changes."
+    material_consequence: NOT_MATERIAL
+
+  - id: MS2
+    event: "At a single remote township school, a violent incident results in three student deaths and several serious injuries. The direct event remains confined to that school, and no wider policy or institutional change is stated."
+    material_consequence: NOT_MATERIAL
+
+  - id: MS3
+    event: "A small farming town permanently bans groundwater extraction after contamination is confirmed, forcing local farms and businesses to change water sources and land use. The rule remains local, creates no legal precedent, and is not adopted elsewhere."
+    material_consequence: NOT_MATERIAL
+
+  - id: MS4
+    event: "A groundwater dispute begins in one small farming town, but the resulting court judgment establishes a nationwide precedent on water-use rights and forces many regions to revise their rules."
+    material_consequence: MATERIAL
+
+  - id: MS5
+    event: "A county government rotates one section-level administrative official to another routine post. No policy, budget, regulatory authority, or public-service direction changes."
+    material_consequence: NOT_MATERIAL
+
+  - id: MS6
+    event: "A national cabinet-level ministry replaces its minister. The ministry's legal authority and portfolio remain the same, and no new policy has yet been announced, but the person controlling the ministry's top executive authority changes."
+    material_consequence: MATERIAL
+
+  - id: MS7
+    event: "A national banking system changes the visual layout of monthly statements for 80 million customers. Information, fees, rights, access, security, and user behavior remain effectively unchanged."
+    material_consequence: NOT_MATERIAL
+
+  - id: MS8
+    event: "A new regulation applies to only about 60 specialist firms, but legally bans the core production method used by the entire niche industry, forcing most firms either to rebuild their technical process or exit the market."
+    material_consequence: MATERIAL
+
+  - id: MS9
+    event: "One small manufacturer privately improves an internal process and cuts its own energy use by 70%. The method is proprietary, affects only that firm, and no competitor, standard, or external practice changes."
+    material_consequence: NOT_MATERIAL
+
+  - id: MS10
+    event: "A new production method cuts energy use by about 70% across a common industrial process, is independently reproduced by multiple manufacturers, and begins changing standard engineering practice across the sector."
+    material_consequence: MATERIAL
