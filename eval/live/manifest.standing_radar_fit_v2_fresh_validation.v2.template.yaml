@@ -1,0 +1,75 @@
+# STANDING RADAR FIT v2 — FRESH VALIDATION v2 TEMPLATE
+#
+# Created AFTER RV1-RV8 were demoted to calibration evidence and AFTER the v2
+# cancer/tumor scope was corrected, but BEFORE any scored v2 model measurement.
+# Human labels must be elicited before running the model.
+#
+# This is a narrow repair validation, not a new large D benchmark.
+
+name: raos-standing-radar-fit-v2-fresh-validation-v2
+variable: D
+validation_type: FRESH_REPAIR_VALIDATION
+profile: eval/live/standing_radar_profile.v2.yaml
+estimator_version: standing-radar-fit-estimator-v2
+prompt_version: standing-radar-fit-v2
+semantic_contract: >-
+  D = Standing Interest Fit independent of event significance. Identify the event's
+  substantive semantic facets and judge whether at least one falls inside the user's
+  stated standing monitoring scope. Standing exclusions constrain over-broad matches
+  but do not veto an independently valid substantive match.
+
+pre_registered_criterion:
+  exact_min: 0.875
+  in_recall_min: 0.75
+  out_recall_min: 0.75
+  complete_pair_flips_min: 3
+  no_clear_semantic_composition_failure: true
+
+cases:
+  - id: FV1
+    pair: cancer_local_adoption_vs_field_development
+    variant: local_adoption
+    gold_status: PENDING
+    event: "A regional hospital begins routine use of an existing commercial tumor-navigation system already sold by a medical-device vendor. The hospital does not develop or modify the technology; this is a local clinical deployment update."
+
+  - id: FV2
+    pair: cancer_local_adoption_vs_field_development
+    variant: field_development
+    gold_status: PENDING
+    event: "A medical-device research team develops a new tumor-margin imaging system designed to help surgeons identify malignant tissue during cancer operations and releases the new technology for clinical evaluation."
+
+  - id: FV3
+    pair: space_context_vs_robotics
+    variant: excluded_context_only
+    gold_status: PENDING
+    event: "A commercial launch company updates its routine rocket-propellant loading procedure and ground-support checklist. The change is conventional aerospace operations and contains no robotics, AI, or new compute technology."
+
+  - id: FV4
+    pair: space_context_vs_robotics
+    variant: excluded_context_plus_substantive_interest
+    gold_status: PENDING
+    event: "A commercial-space company develops an autonomous dexterous robot for handling external spacecraft modules. The robot can perceive fixtures, plan grasps, manipulate tools, and reposition components without direct teleoperation."
+
+  - id: FV5
+    pair: energy_context_vs_ai_agent
+    variant: excluded_context_only
+    gold_status: PENDING
+    event: "A regional power-grid operator upgrades its conventional SCADA monitoring software and alarm dashboard using standard deterministic control logic, with no AI agent, robotics, or new compute architecture."
+
+  - id: FV6
+    pair: energy_context_vs_ai_agent
+    variant: excluded_context_plus_substantive_interest
+    gold_status: PENDING
+    event: "A power-grid company develops a multimodal AI maintenance agent that reads equipment logs and images, plans multi-step maintenance procedures, calls diagnostic tools, and coordinates recovery actions with technicians."
+
+  - id: FV7
+    pair: film_operations_vs_film_work
+    variant: excluded_workflow_only
+    gold_status: PENDING
+    event: "A film studio upgrades its internal media-archive naming rules, storage workflow, and traditional asset-management process. No new film, creator work, or entertainment release is involved."
+
+  - id: FV8
+    pair: film_operations_vs_film_work
+    variant: monitored_work
+    gold_status: PENDING
+    event: "An independent creative team releases a new animated feature film with an original story, director, and cast. The production uses ordinary animation methods and no AI technology."
