@@ -1,0 +1,56 @@
+# STANDING RADAR PROFILE v3
+#
+# Clause-aware implementation of D = Standing Attention Jurisdiction / Standing Radar Fit.
+# Historical v1/v2 profiles remain frozen and are not rewritten.
+#
+# This file still estimates D only. It does not encode S, P, AWARE/DROP,
+# cognitive change, or temporary project relevance.
+#
+# Status: FROZEN BEFORE FINAL FRESH D VALIDATION
+
+name: standing-radar-profile-v3
+
+semantic_contract: >-
+  D = Standing Radar Fit / Standing Attention Jurisdiction independent of event
+  significance. Ignore how important, popular, or attention-worthy the current event
+  is. Interpret the stated event semantically and decide whether it satisfies at least
+  one stable Standing Radar Clause. A clause may concern a substantive topic, actor,
+  work, place, or stable affiliation. Incidental mention is not enough.
+
+invariants:
+  - "An event may contain multiple substantive semantic anchors; do not force it into one dominant domain."
+  - "A standing anchor must be substantively involved in what is being developed, released, studied, deployed, changed, operated, decided, or otherwise done in the event."
+  - "Incidental mention or ordinary use of AI/GPU/Python/cloud/neural networks does not create radar membership."
+  - "Standing Radar Clauses are applicability conditions, not numeric domain weights."
+  - "Scope guards prevent over-broad inherited matching; they are not negative votes and do not veto an independently valid standing clause."
+  - "Stable topic/entity/place/affiliation relevance may belong to D; one-off project/trip/task relevance does not automatically belong to D."
+  - "Do not infer facts, relationships, affiliations, or user interests not stated in the event/profile."
+  - "Do not answer AWARE/DROP, significance S, public salience P, Kernel change, or current-project relevance."
+
+standing_clauses:
+  - "Monitor events where LLMs, foundation models, AI Agents, multimodal AI, or closely related AI systems are substantively developed, released, evaluated, deployed, or changed."
+  - "Monitor events where robotics, embodied intelligence, Physical AI, or a domain robot is itself a substantive technology/product/capability, even when deployed inside an otherwise unmonitored industry."
+  - "Monitor events where compute-oriented semiconductors or AI-compute hardware such as GPU/CPU, AI accelerators, HBM, advanced process, or closely related compute hardware are substantive."
+  - "Monitor substantive cloud-computing, data-center, networking, storage, or distributed-data-infrastructure developments."
+  - "Monitor substantive autonomous-driving, Robotaxi, or intelligent-vehicle driving-system developments."
+  - "Monitor substantive quantum-computing developments."
+  - "Monitor substantive brain-computer or neural-interface developments."
+  - "Monitor substantive cybersecurity events."
+  - "Monitor substantive consumer-electronics, phones, PCs, operating systems, or smart-device ecosystem events."
+  - "Monitor substantive internet/social/content-platform product or distribution-rule changes."
+  - "Monitor games, game products, studios, platforms, and game-industry events; event quality or importance is handled by S, not D."
+  - "Monitor financial markets, monetary/macroeconomic policy, IPO/VC/corporate-finance, and major business/market-structure events."
+  - "Monitor basic science including physics, mathematics, astronomy, and materials science."
+  - "Monitor films, film works, creators/actors, entertainment releases, and entertainment-cultural phenomena; ordinary internal production workflow alone is not enough."
+  - "Monitor cancer/tumor research and field development, including development/release of cancer/tumor scientific, diagnostic, treatment, clinical, surgical, or medical technologies; routine local use of an already-established product by an otherwise unmonitored hospital is not enough by itself."
+  - "Monitor OpenAI and Google DeepMind when either organization is a substantive actor/object in the event, independent of the event's significance."
+  - "Monitor an institution when the event states that the institution has a stable direct-family affiliation to the user and the institution is a substantive event actor/object."
+  - "Monitor the user's configured hometown/local-governance scope when that place or its government is a substantive event actor/object, independent of the event's significance."
+
+scope_guards:
+  - "General non-AI biomedicine outside the stated cancer/tumor field-development clause is not automatically monitored."
+  - "New energy, batteries, grid, fusion, and energy industry as such are not automatically monitored."
+  - "Commercial space, rockets, satellites, lunar exploration, and aerospace operations as such are not automatically monitored."
+  - "Ordinary analog, power-management, motor-control, and industrial chips unrelated to compute/AI/advanced-process interests are not automatically monitored."
+  - "Ordinary film-production technique/workflow such as lighting, grading, traditional VFX, archive naming, and post-production process is not monitored when no monitored film/work/creator/cultural clause applies."
+  - "A relationship to a friend-of-family, unrelated city, or otherwise non-standing affiliation does not satisfy a direct-family or hometown clause merely because it is socially adjacent."
