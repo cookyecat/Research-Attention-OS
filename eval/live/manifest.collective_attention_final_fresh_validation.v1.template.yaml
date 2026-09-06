@@ -1,0 +1,680 @@
+# COLLECTIVE ATTENTION SALIENCE (P) — FINAL FRESH VALIDATION TEMPLATE v1
+#
+# Authored only AFTER P semantics, Evidence Packet v1, and P estimator v1 were frozen.
+# PC1-PC24 are development/calibration evidence and are excluded from fresh reporting.
+#
+# IMPORTANT:
+# - This file contains NO Human Gold labels.
+# - No scored P model prediction has been run on PF1-PF12.
+# - Human labels must be elicited and frozen before the first scored estimator run.
+
+name: raos-collective-attention-final-fresh-validation-v1
+variable: P
+validation_type: FINAL_FRESH_VALIDATION
+status: TEMPLATE_ONLY_HUMAN_GOLD_UNSET
+estimator_version: collective-attention-estimator-v1
+prompt_version: collective-attention-v1
+profile_id: collective-attention-profile-v1
+evidence_interface_version: collective-attention-evidence-packet-v1
+estimator_freeze_declaration_commit: 5a08a0d8ab2700a56d91437797b664a53f842ea0
+estimator_implementation_commit: cea9fa3dd3763977be578046106817a47b6b6794
+profile_commit: 0093f8fb471d16e9b13265b4737f8dd1a06f3118
+evidence_interface_freeze_commit: 4a858a82693767d001f06952f8f48eba702d33a2
+prompt_sha256: 0fbc1c9c935e5cf31a98b77a0a6a9f5b99ff7473906a7e438e834f278d193b67
+semantic_baseline: 22_COLLECTIVE_ATTENTION_SALIENCE.md
+evidence_interface_baseline: 25_COLLECTIVE_ATTENTION_EVIDENCE_INTERFACE_V1_FREEZE.md
+development_cases_excluded:
+  - PC1-PC24
+
+semantic_contract: >-
+  P judges whether, at the stated evaluation time, an event has already formed,
+  or is clearly forming, a salient state of genuine collective attention within
+  the event's Objective Attention Constituency. Attention is interpreted relative
+  to the scale of that constituency and has temporal inertia. Ignore user interest,
+  intrinsic event importance/material consequence, sentiment, stance, and downstream
+  attention-action decisions.
+
+pre_registered_criterion:
+  expected_scorable_cases: 12
+  exact_min: 0.8333333333
+  salient_recall_min: 0.80
+  not_salient_recall_min: 0.80
+  insufficient_evidence_should_be_zero: true
+  technical_failures_should_be_zero: true
+  no_clear_repeated_semantic_failure: true
+
+cases:
+  - id: PF1
+    packet:
+      event:
+        event_id: pf1-niche-cryptography-result
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A new proof technique is released for a very small cryptography subfield
+          with roughly 400 active researchers worldwide.
+      constituency_prior:
+        description: "active researchers in the relevant cryptography subfield"
+        scope: domain
+        reference_scale: "10^2"
+        reference_size_hint: "about 400"
+        basis: explicit_event_scope
+        provenance: "frozen synthetic fresh-validation statement"
+      collection_context:
+        channels_checked: [manual_structural_evidence, field_forums, specialist_media]
+        channels_unavailable: [platform_internal_unique_viewers]
+        notes: "controlled fresh-validation packet"
+      current_attention_evidence:
+        - kind: human_discussion
+          window: "last 48h"
+          observation: >-
+            About 220 researchers from many independent institutions have publicly
+            discussed the technique, including members of nearly every major group
+            in the subfield.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "independent_researchers"
+          quality: direct
+          contamination: []
+        - kind: community_channel_share
+          window: "last 48h"
+          observation: >-
+            Most recent threads in the subfield's main forum and mailing list concern
+            this result.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "field_channels"
+          quality: structural
+          contamination: []
+      recent_attention_history: []
+
+  - id: PF2
+    packet:
+      event:
+        event_id: pf2-broad-cybersecurity-result
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A new defensive technique is released for the broad professional
+          cybersecurity field, which has several hundred thousand active practitioners.
+      constituency_prior:
+        description: "broad professional cybersecurity practitioner community"
+        scope: domain
+        reference_scale: "10^5"
+        reference_size_hint: "several hundred thousand"
+        basis: explicit_event_scope
+        provenance: "frozen synthetic fresh-validation statement"
+      collection_context:
+        channels_checked: [manual_structural_evidence, field_forums, specialist_media, search_trends]
+        channels_unavailable: [platform_internal_unique_viewers]
+        notes: "controlled fresh-validation packet"
+      current_attention_evidence:
+        - kind: human_discussion
+          window: "last 48h"
+          observation: >-
+            About 220 practitioners from many independent organizations have discussed
+            the technique.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "independent_practitioners"
+          quality: direct
+          contamination: []
+        - kind: institutional_followup
+          window: "last 48h"
+          observation: >-
+            Nearly all major security vendors, professional associations, large field
+            forums, and specialist outlets have not meaningfully engaged with it.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "major_field_institutions"
+          quality: structural
+          contamination: []
+        - kind: active_search
+          window: "last 48h"
+          observation: "Search interest remains near the field's ordinary background level."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+      recent_attention_history: []
+
+  - id: PF3
+    packet:
+      event:
+        event_id: pf3-forced-video-exposure
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A consumer video is placed prominently in a large platform's autoplay feed.
+      constituency_prior:
+        description: "broad active audience of the platform's consumer-video feed"
+        scope: broad_public
+        reference_scale: "10^7+"
+        reference_size_hint: unknown
+        basis: explicit_event_scope
+        provenance: "frozen synthetic fresh-validation statement"
+      collection_context:
+        channels_checked: [platform_engagement, search_trends, cross_platform_spread]
+        channels_unavailable: [exact_unique_attentive_users]
+        notes: "controlled fresh-validation packet"
+      current_attention_evidence:
+        - kind: autoplay_or_forced_exposure
+          window: "last 24h"
+          observation: >-
+            The video records 15 million autoplay starts after paid homepage placement;
+            median watch time is under 3 seconds.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "platform_autoplay"
+          quality: contaminated
+          contamination: [paid, forced_exposure]
+        - kind: engagement
+          window: "last 24h"
+          observation: >-
+            Comments, saves, shares, and voluntary repeat viewing remain extremely low
+            relative to the start count.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "platform_engagement"
+          quality: direct
+          contamination: []
+        - kind: active_search
+          window: "last 24h"
+          observation: "No meaningful search increase is observed."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+        - kind: cross_platform_spread
+          window: "last 24h"
+          observation: "Other major platforms show almost no independent discussion of the video."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "other_platforms"
+          quality: structural
+          contamination: []
+      recent_attention_history: []
+
+  - id: PF4
+    packet:
+      event:
+        event_id: pf4-genuine-video-attention
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A consumer video spreads through the same broad platform-video audience
+          without paid placement.
+      constituency_prior:
+        description: "broad active audience of the platform's consumer-video feed"
+        scope: broad_public
+        reference_scale: "10^7+"
+        reference_size_hint: unknown
+        basis: explicit_event_scope
+        provenance: "frozen synthetic fresh-validation statement"
+      collection_context:
+        channels_checked: [platform_engagement, search_trends, cross_platform_spread]
+        channels_unavailable: [exact_unique_attentive_users]
+        notes: "controlled fresh-validation packet"
+      current_attention_evidence:
+        - kind: meaningful_view_or_read
+          window: "last 24h"
+          observation: >-
+            The video records about 15 million voluntary starts; roughly two thirds of
+            viewers watch most of it.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "platform_views"
+          quality: direct
+          contamination: []
+        - kind: engagement
+          window: "last 24h"
+          observation: >-
+            More than one million users comment, save, share, or voluntarily revisit it.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "platform_engagement"
+          quality: direct
+          contamination: []
+        - kind: active_search
+          window: "last 24h"
+          observation: "Related search activity rises to roughly nine times its ordinary level."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+        - kind: cross_platform_spread
+          window: "last 24h"
+          observation: "Independent discussion is now widespread across several major platforms."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "other_platforms"
+          quality: structural
+          contamination: []
+      recent_attention_history: []
+
+  - id: PF5
+    packet:
+      event:
+        event_id: pf5-stable-industry-topic
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A new interoperability framework has been a major topic in a specialist
+          industrial-automation community for several weeks.
+      constituency_prior:
+        description: "industrial-automation engineers, vendors, and integrators affected by the framework"
+        scope: domain
+        reference_scale: "10^5"
+        reference_size_hint: unknown
+        basis: llm_prior
+        provenance: "frozen synthetic fresh-validation prior"
+      collection_context:
+        channels_checked: [field_media, community_forums, institutional_followup, search_trends]
+        channels_unavailable: [private_vendor_telemetry]
+        notes: "controlled fresh-validation packet"
+      current_attention_evidence:
+        - kind: human_discussion
+          window: "last 24h"
+          observation: >-
+            Discussion volume is almost unchanged from the prior week and remains
+            around four times the field's ordinary level.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "field_discussion"
+          quality: direct
+          contamination: []
+        - kind: institutional_followup
+          window: "last 24h"
+          observation: >-
+            Seven of the ten largest relevant vendors are still publishing technical
+            guidance or responses about the framework.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "major_vendors"
+          quality: structural
+          contamination: []
+      recent_attention_history:
+        - window: "previous 3 weeks"
+          observation: >-
+            The framework repeatedly occupied the main specialist forums and field media,
+            with broad vendor and integrator discussion throughout the period.
+          source: "frozen synthetic fresh-validation statement"
+
+  - id: PF6
+    packet:
+      event:
+        event_id: pf6-decayed-industry-topic
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A competing industrial-automation proposal was a dominant specialist topic
+          six weeks ago.
+      constituency_prior:
+        description: "industrial-automation engineers, vendors, and integrators affected by the proposal"
+        scope: domain
+        reference_scale: "10^5"
+        reference_size_hint: unknown
+        basis: llm_prior
+        provenance: "frozen synthetic fresh-validation prior"
+      collection_context:
+        channels_checked: [field_media, community_forums, institutional_followup, search_trends]
+        channels_unavailable: [private_vendor_telemetry]
+        notes: "controlled fresh-validation packet"
+      current_attention_evidence:
+        - kind: human_discussion
+          window: "last 7d"
+          observation: "Discussion has returned to approximately its pre-event background level."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "field_discussion"
+          quality: direct
+          contamination: []
+        - kind: institutional_followup
+          window: "last 7d"
+          observation: "Major vendors and specialist outlets have largely stopped following the proposal."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "major_vendors_media"
+          quality: structural
+          contamination: []
+        - kind: active_search
+          window: "last 7d"
+          observation: "Search interest is back near the long-run baseline."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+      recent_attention_history:
+        - window: "4-6 weeks ago"
+          observation: >-
+            The proposal was then one of the dominant specialist topics, with widespread
+            vendor, media, and community discussion.
+          source: "frozen synthetic fresh-validation statement"
+        - window: "previous 4 weeks"
+          observation: "Attention declined steadily week after week toward ordinary background levels."
+          source: "frozen synthetic fresh-validation statement"
+
+  - id: PF7
+    packet:
+      event:
+        event_id: pf7-emerging-medical-guideline-debate
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A technical draft guideline is released to a specialist medical community
+          that usually discusses this narrow topic only occasionally.
+      constituency_prior:
+        description: "specialists and professional bodies directly concerned with the guideline topic"
+        scope: domain
+        reference_scale: "10^4"
+        reference_size_hint: unknown
+        basis: llm_prior
+        provenance: "frozen synthetic fresh-validation prior"
+      collection_context:
+        channels_checked: [professional_bodies, specialist_media, search_trends, field_forums]
+        channels_unavailable: [closed_professional_chat_groups]
+        notes: "controlled fresh-validation packet"
+      current_attention_evidence:
+        - kind: institutional_followup
+          window: "last 2h"
+          observation: >-
+            Nine of the twelve major professional bodies or leading centers in the
+            specialty have already issued responses or scheduled emergency discussions.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "professional_bodies"
+          quality: structural
+          contamination: []
+        - kind: active_search
+          window: "last 2h"
+          observation: >-
+            Search activity is still modest in absolute terms but has risen about
+            twentyfold from this topic's normal hourly baseline and continues to rise.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+        - kind: community_channel_share
+          window: "last 2h"
+          observation: "Several major field forums have rapidly shifted discussion toward the draft."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "field_forums"
+          quality: structural
+          contamination: []
+      recent_attention_history:
+        - window: "prior 30d"
+          observation: "The narrow guideline topic normally attracted little day-to-day discussion."
+          source: "frozen synthetic fresh-validation statement"
+
+  - id: PF8
+    packet:
+      event:
+        event_id: pf8-isolated-medical-guideline-post
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A technical opinion about the same kind of narrow medical guideline is posted
+          by one well-known specialist.
+      constituency_prior:
+        description: "specialists and professional bodies directly concerned with the guideline topic"
+        scope: domain
+        reference_scale: "10^4"
+        reference_size_hint: unknown
+        basis: llm_prior
+        provenance: "frozen synthetic fresh-validation prior"
+      collection_context:
+        channels_checked: [professional_bodies, specialist_media, search_trends, field_forums]
+        channels_unavailable: [closed_professional_chat_groups]
+        notes: "controlled fresh-validation packet"
+      current_attention_evidence:
+        - kind: meaningful_view_or_read
+          window: "last 2h"
+          observation: >-
+            The specialist's post receives several thousand reads, mostly from existing followers.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "single_specialist_post"
+          quality: direct
+          contamination: []
+        - kind: institutional_followup
+          window: "last 2h"
+          observation: "No major professional body or leading center has responded or scheduled discussion."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "professional_bodies"
+          quality: structural
+          contamination: []
+        - kind: active_search
+          window: "last 2h"
+          observation: "Search activity remains at ordinary background levels."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+        - kind: community_channel_share
+          window: "last 2h"
+          observation: "Major field forums show no visible shift toward the topic."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "field_forums"
+          quality: structural
+          contamination: []
+      recent_attention_history:
+        - window: "prior 30d"
+          observation: "The topic normally attracted little day-to-day discussion."
+          source: "frozen synthetic fresh-validation statement"
+
+  - id: PF9
+    packet:
+      event:
+        event_id: pf9-specialist-uptake-missing-social
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A new reference implementation is released for a specialized database-engine
+          community.
+      constituency_prior:
+        description: "engineers and maintainers actively working with the relevant database-engine technology"
+        scope: domain
+        reference_scale: "10^4"
+        reference_size_hint: unknown
+        basis: llm_prior
+        provenance: "frozen synthetic fresh-validation prior"
+      collection_context:
+        channels_checked: [project_forums, major_maintainers, specialist_media]
+        channels_unavailable: [x, reddit, platform_internal_unique_viewers]
+        notes: "social-platform channels are unavailable for this packet"
+      current_attention_evidence:
+        - kind: institutional_followup
+          window: "last 36h"
+          observation: >-
+            Eighteen of the twenty most active independent maintainer teams have publicly
+            evaluated or responded to the implementation.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "maintainer_teams"
+          quality: structural
+          contamination: []
+        - kind: community_channel_share
+          window: "last 36h"
+          observation: >-
+            The two largest technical forums for this database engine are dominated by
+            threads about the implementation.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "project_forums"
+          quality: structural
+          contamination: []
+        - kind: domain_media_coverage
+          window: "last 36h"
+          observation: "All major specialist outlets covering this technology have reported on it."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "specialist_media"
+          quality: structural
+          contamination: []
+      recent_attention_history: []
+
+  - id: PF10
+    packet:
+      event:
+        event_id: pf10-no-uptake-one-channel-missing
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A minor plugin is released for the same specialized database-engine community.
+      constituency_prior:
+        description: "engineers and maintainers actively working with the relevant database-engine technology"
+        scope: domain
+        reference_scale: "10^4"
+        reference_size_hint: unknown
+        basis: llm_prior
+        provenance: "frozen synthetic fresh-validation prior"
+      collection_context:
+        channels_checked: [project_forums, major_maintainers, specialist_media, search_trends]
+        channels_unavailable: [one_small_private_chat_network]
+        notes: "one minor private channel is unavailable; major observable field channels were checked"
+      current_attention_evidence:
+        - kind: institutional_followup
+          window: "last 72h"
+          observation: "None of the twenty most active maintainer teams has publicly engaged with the plugin."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "maintainer_teams"
+          quality: structural
+          contamination: []
+        - kind: community_channel_share
+          window: "last 72h"
+          observation: "The two largest technical forums contain only a handful of low-activity threads about it."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "project_forums"
+          quality: structural
+          contamination: []
+        - kind: domain_media_coverage
+          window: "last 72h"
+          observation: "Major specialist outlets have not covered the plugin."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "specialist_media"
+          quality: structural
+          contamination: []
+        - kind: active_search
+          window: "last 72h"
+          observation: "Search activity shows no meaningful lift from baseline."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+      recent_attention_history: []
+
+  - id: PF11
+    packet:
+      event:
+        event_id: pf11-bot-manufactured-finance-topic
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A newly created token ticker is promoted to the broad retail-crypto trading community.
+      constituency_prior:
+        description: "active retail cryptocurrency traders across major public platforms"
+        scope: domain
+        reference_scale: "10^6"
+        reference_size_hint: unknown
+        basis: llm_prior
+        provenance: "frozen synthetic fresh-validation prior"
+      collection_context:
+        channels_checked: [social_posts, search_trends, exchange_watchlists, community_forums]
+        channels_unavailable: [platform_internal_identity_graph]
+        notes: "controlled fresh-validation packet"
+      current_attention_evidence:
+        - kind: bot_or_duplicate_activity
+          window: "last 6h"
+          observation: >-
+            About 300,000 posts mention the ticker, but automated analysis finds roughly
+            90% are near-duplicate messages from recently created accounts.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "bot_campaign"
+          quality: contaminated
+          contamination: [bot, duplicate]
+        - kind: human_discussion
+          window: "last 6h"
+          observation: "Independent established-user discussion remains sparse."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "established_users"
+          quality: direct
+          contamination: []
+        - kind: active_search
+          window: "last 6h"
+          observation: "Search activity is nearly unchanged from background."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+        - kind: community_channel_share
+          window: "last 6h"
+          observation: "Major retail-trader communities show little organic discussion of the ticker."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "major_communities"
+          quality: structural
+          contamination: []
+      recent_attention_history: []
+
+  - id: PF12
+    packet:
+      event:
+        event_id: pf12-organic-finance-topic
+        as_of: "2026-09-07T00:00:00Z"
+        semantic_summary: >-
+          A newly listed token ticker begins spreading organically through the broad
+          retail-crypto trading community.
+      constituency_prior:
+        description: "active retail cryptocurrency traders across major public platforms"
+        scope: domain
+        reference_scale: "10^6"
+        reference_size_hint: unknown
+        basis: llm_prior
+        provenance: "frozen synthetic fresh-validation prior"
+      collection_context:
+        channels_checked: [social_posts, search_trends, exchange_watchlists, community_forums]
+        channels_unavailable: [platform_internal_identity_graph]
+        notes: "controlled fresh-validation packet"
+      current_attention_evidence:
+        - kind: human_discussion
+          window: "last 6h"
+          observation: >-
+            Roughly 80,000 distinct established accounts are discussing the ticker with
+            varied original commentary rather than duplicated templates.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "established_users"
+          quality: direct
+          contamination: []
+        - kind: active_search
+          window: "last 6h"
+          observation: "Search activity rises to about twelve times the prior-week hourly baseline."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "search"
+          quality: direct
+          contamination: []
+        - kind: community_channel_share
+          window: "last 6h"
+          observation: >-
+            Several of the largest independent retail-trader communities now have the
+            ticker among their most active discussion topics.
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "major_communities"
+          quality: structural
+          contamination: []
+        - kind: trend_or_rank
+          window: "last 6h"
+          observation: "The ticker has entered multiple independent exchange watchlists and public trend lists."
+          source: "frozen synthetic fresh-validation statement"
+          observed_at: "2026-09-07T00:00:00Z"
+          independence_group: "independent_trends"
+          quality: structural
+          contamination: []
+      recent_attention_history: []
