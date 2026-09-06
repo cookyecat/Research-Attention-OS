@@ -50,8 +50,11 @@ def test_v2_profile_scope_matches_calibrated_cancer_preference():
     profile = load_standing_radar_profile()
     interests = "\n".join(profile["standing_interests"])
     exclusions = "\n".join(profile["standing_exclusions"])
-    assert "surgical/medical technology" in interests
-    assert "outside substantive cancer/tumor topics" in exclusions
+    invariants = "\n".join(profile["invariants"])
+    assert "Cancer and tumor research and field development" in interests
+    assert "routine local hospital adoption/operation" in interests
+    assert "research-and-field-development scope" in exclusions
+    assert "routine local organizational adoption/operation" in invariants
 
 
 def test_v2_prompt_uses_only_allowed_profile_fields_and_no_old_cases():
