@@ -1,0 +1,145 @@
+# STANDING RADAR FIT — HUMAN GOLD v1
+#
+# Fresh Human Gold for Phase II-B D estimator measurement.
+# Labels were elicited after the D answering instrument and Standing Radar profile
+# were calibrated, and before implementation/measurement of the estimator.
+#
+# IMPORTANT:
+# - Do not use these labels or case-specific rationales in the estimator prompt.
+# - The estimator may consume `standing_radar_profile.v1.yaml` plus event text only.
+# - First model predictions against this holdout are the measurement; do not tune
+#   the estimator on these labels and then re-report the same set as holdout.
+#
+# Frozen: 2026-09-06
+# Label provenance: HUMAN_ELICITED
+# Standing Radar input: eval/live/standing_radar_profile.v1.yaml
+
+name: raos-standing-radar-fit-human-gold-v1
+variable: D
+semantic_contract: >-
+  D = Standing Interest Fit independent of event significance. Ignoring importance,
+  popularity, final AWARE/DROP disposition, and Kernel change, judge whether the
+  event's substantive topic belongs to a world the user wants RAOS to monitor on a
+  standing basis.
+profile: eval/live/standing_radar_profile.v1.yaml
+elicited_before_estimator_measurement: true
+cases:
+  - id: FD1
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "A research team releases a new multimodal Agent architecture that lets a model autonomously complete long tasks across a browser, code editor, and terminal."
+
+  - id: FD2
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: OUT
+    event: "A pharmaceutical company announces a new formulation for a non-cancer skin-disease drug. The research and product do not involve AI, robotics, or computing technology."
+
+  - id: FD3
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "A university laboratory publishes an ordinary tumor-immunology mechanism study, with no AI and no new medical device."
+
+  - id: FD4
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "An agricultural company deploys autonomous harvesting robots that visually identify fruit, plan grasps, and navigate orchards autonomously."
+
+  - id: FD5
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: OUT
+    event: "A nuclear-fusion laboratory uses a standard convolutional neural network to help filter sensor noise; the paper's contribution remains new plasma experimental results."
+
+  - id: FD6
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "A commercial-space company develops an on-orbit maintenance robot that can autonomously grasp satellites, replace modules, and perform extravehicular work."
+
+  - id: FD7
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: OUT
+    event: "A chip company releases a new industrial motor-driver chip centered on analog circuitry and power management, without CPU, GPU, AI acceleration, or advanced-process content."
+
+  - id: FD8
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "A chip company releases a new server CPU microarchitecture focused on improving general compute performance and memory bandwidth, not specifically AI workloads."
+
+  - id: FD9
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "A new commercial film is released. The director and actors are established industry professionals, with no AI or unusual production technology involved."
+
+  - id: FD10
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: OUT
+    event: "A film company upgrades its internal color-grading, cinematography-lighting, and traditional post-production workflow, without releasing a new work and without AI technology."
+
+  - id: FD11
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "A cloud provider releases a new distributed database service aimed mainly at ordinary enterprise workloads, not specifically AI."
+
+  - id: FD12
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "A game company releases an ordinary competitive-game balance update adjusting numerical values for multiple characters, with no technical breakthrough."
+
+  - id: FD13
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "An internet platform changes recommendation-page product design and content-distribution rules, without generative AI."
+
+  - id: FD14
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "A central bank releases a new monetary-policy framework that changes how interest-rate policy is executed and communicated."
+
+  - id: FD15
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "An astronomy team publishes an ordinary exoplanet observation result, with no AI, quantum-computing, or commercial application."
+
+  - id: FD16
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "A hospital develops a new cancer-surgery assistance device centered on mechanical positioning and a physician-control interface; it is not an autonomous robot and has no AI."
+
+  - id: FD17
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: OUT
+    event: "A biology laboratory studies a new gene-therapy method for a rare genetic disease unrelated to cancer, with no AI or robotics."
+
+  - id: FD18
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "A phone manufacturer releases a new mobile operating-system version focused on window management, notifications, and cross-device coordination, with no AI features."
+
+  - id: FD19
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "Security researchers disclose a new vulnerability in router firmware and provide an attack chain and remediation method; it is unrelated to AI."
+
+  - id: FD20
+    gold_status: LABELED
+    label_provenance: HUMAN_ELICITED
+    standing_radar_fit: IN
+    event: "An automaker releases a new highway autonomous-driving system including perception, planning, control, and driver-takeover mechanisms."
