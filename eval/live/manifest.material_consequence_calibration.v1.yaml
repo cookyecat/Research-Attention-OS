@@ -1,0 +1,66 @@
+# MATERIAL CONSEQUENCE (S) — CALIBRATION v1
+#
+# Development/calibration evidence only. Not a fresh holdout.
+# Human labels must be elicited before any S estimator is implemented.
+# Judge only S = Material Consequence of the underlying event.
+# Ignore user interest D and public attention P.
+
+name: raos-material-consequence-calibration-v1
+variable: S
+validation_type: HUMAN_CALIBRATION
+semantic_contract: >-
+  S = Material Consequence of the underlying event, independent of user interest
+  and public attention. Conceptually compare the world after the event with the
+  counterfactual world in which it did not occur. Mark MATERIAL only when the
+  event creates a non-trivial difference in the affected world state.
+
+cases:
+  - id: MC1
+    pair: actor_prominence_vs_consequence
+    gold_status: PENDING
+    event: "A globally famous AI company changes the food-service vendor for one of its office cafeterias. The change has no stated effect on research, products, staffing, strategy, operations outside the cafeteria, or external users."
+
+  - id: MC2
+    pair: actor_prominence_vs_consequence
+    gold_status: PENDING
+    event: "An unknown research team releases a reproducible inference method that reduces memory use for a widely used class of large models by about 70% at the same quality, and three independent labs reproduce the result."
+
+  - id: MC3
+    pair: claimed_capability_vs_demonstrated_capability
+    gold_status: PENDING
+    event: "A small robotics startup shows a scripted stage demo claiming its robot can autonomously perform household chores. The company provides no independent tests, no reproducible benchmark, and no evidence that the demonstrated sequence generalizes beyond the staged setup."
+
+  - id: MC4
+    pair: claimed_capability_vs_demonstrated_capability
+    gold_status: PENDING
+    event: "A small robotics startup demonstrates a household robot that completes a broad set of previously unsolved multi-step chores across unfamiliar homes, and independent evaluators reproduce the capability under controlled tests."
+
+  - id: MC5
+    pair: local_scope_trivial_vs_local_scope_material
+    gold_status: PENDING
+    event: "A small town changes residential trash collection from 8:00 a.m. to 9:00 a.m. on Tuesdays. No other service, cost, safety, regulation, or access condition changes."
+
+  - id: MC6
+    pair: local_scope_trivial_vs_local_scope_material
+    gold_status: PENDING
+    event: "A small farming town permanently bans groundwater extraction after contamination is confirmed, forcing all farms and major local businesses to switch water sources and materially changing local operating costs and land use."
+
+  - id: MC7
+    pair: artifact_quality_vs_cultural_consequence
+    gold_status: PENDING
+    event: "A technically polished independent film receives excellent reviews from a small group of critics but reaches very few viewers and produces no observed change in industry practice, public behavior, or cultural discussion."
+
+  - id: MC8
+    pair: artifact_quality_vs_cultural_consequence
+    gold_status: PENDING
+    event: "A poorly reviewed low-budget film unexpectedly becomes a nationwide cultural phenomenon: phrases from it enter everyday speech, large communities imitate its style, and multiple studios change upcoming projects in response."
+
+  - id: MC9
+    pair: weak_evidence_vs_knowledge_change
+    gold_status: PENDING
+    event: "A single small laboratory reports a 1% improvement on a noisy scientific measurement, within the range of prior experimental variation, with no replication and no change to the prevailing scientific interpretation."
+
+  - id: MC10
+    pair: weak_evidence_vs_knowledge_change
+    gold_status: PENDING
+    event: "Several independent laboratories reproduce a result that contradicts a long-standing accepted mechanism, and the combined evidence is strong enough that major reference models and textbooks begin to revise the accepted explanation."
