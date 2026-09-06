@@ -1,6 +1,6 @@
 # Research Attention OS — Standing Radar Fit v2 Semantic Repair
 
-Status: **REPAIR IMPLEMENTED / FRESH HUMAN VALIDATION NEXT**  
+Status: **REPAIR CALIBRATED / FRESH HUMAN VALIDATION NEXT**  
 Date: 2026-09-06  
 Phase: II-B Attention Policy Calibration  
 Historical baseline: `12_STANDING_RADAR_FIT_ESTIMATOR_STUDY.md`
@@ -17,12 +17,9 @@ Intersection diagnostic: 6/8 exact
 Positive-intersection recall: 2/4
 ```
 
-The diagnostic did not support a global rule that exclusions always win. Instead it exposed two narrower problems:
+The diagnostic exposed a narrow semantic-composition problem: multi-facet events can be collapsed into one dominant domain. It also suggested that Standing Radar scope wording matters at event-role granularity.
 
-1. multi-facet events can be collapsed into one dominant domain;
-2. the v1 cancer/tumor standing-interest wording was narrower than the user's demonstrated standing preference.
-
-The repair therefore remains semantic and minimal. It does not introduce domain weights, a domain ontology, or a new attention variable.
+The repair remains semantic and minimal. It does not introduce domain weights, a domain ontology, or a new attention variable.
 
 ---
 
@@ -31,38 +28,26 @@ The repair therefore remains semantic and minimal. It does not introduce domain 
 Candidate representation:
 
 $$
-\boxed{
-E\rightarrow F_s(E)=\{substantive\ semantic\ facets\}
-}
+\boxed{E\rightarrow F_s(E)=\{substantive\ semantic\ facets\}}
 $$
 
 Decision rule:
 
 $$
-\boxed{
-D(E)=IN\iff\exists f\in F_s(E):Match(f,StandingRadar)
-}
+\boxed{D(E)=IN\iff\exists f\in F_s(E):Match(f,StandingRadarScope)}
 $$
 
-A substantive facet is itself part of what is being developed, released, studied, deployed, measured, changed, or operated. Incidental tools, implementation details, organizational context, or application setting do not become standing-interest matches merely by appearing in the event.
-
 An event may have multiple substantive facets. Do not force a single dominant domain.
+
+A substantive facet is not a bare keyword. It must preserve what the event is actually about and the role the topic plays in the event. Incidental tools, implementation details, organizational context, or application setting do not become standing-interest matches merely by appearing.
 
 ---
 
 ## 3. Exclusion semantics
 
-Standing exclusions are reinterpreted as **scope guards**, not negative votes and not vetoes.
+Standing exclusions are **scope guards**, not negative votes and not vetoes.
 
-They answer:
-
-> What broad inherited match should NOT automatically count as a standing interest?
-
-They do not answer:
-
-> What positive standing-interest facet should be cancelled?
-
-Thus:
+They constrain inherited or over-broad matching. They do not cancel an independently valid substantive standing-interest match.
 
 $$
 \boxed{
@@ -71,37 +56,75 @@ Exclusion\ constrains\ over\text{-}broad\ matching;
 }
 $$
 
-This preserves the earlier invariant:
+This preserves:
 
 $$
 Using\ AI\ method\neq Being\ an\ AI\ event
 $$
 
-while allowing a genuine substantive robotics/AI/compute/cancer facet to remain visible inside an otherwise excluded application domain.
+while allowing genuine robotics / AI / compute / other monitored facets to remain visible inside an otherwise excluded application domain.
 
 ---
 
-## 4. Standing Radar profile v2
+## 4. RV scope calibration — BEFORE v2 measurement
 
-New artifact:
+The first v2 draft was written before RV1-RV8 were human-labeled. The model was **not** run on RV1-RV8.
+
+Human labels:
+
+```text
+RV1 OUT
+RV2 IN
+RV3 OUT
+RV4 OUT
+RV5 OUT
+RV6 IN
+RV7 OUT
+RV8 IN
+```
+
+Because RV4 corrected the profile scope, RV1-RV8 are now **calibration/development evidence**, not fresh holdout evidence.
+
+Calibration artifact:
+
+`eval/live/manifest.standing_radar_fit_v2_scope_calibration.yaml`
+
+The important distinction is:
+
+- RV2: an industrial company **develops** an autonomous inspection robot -> robotics itself is a monitored development -> IN.
+- RV6: a satellite operator **develops** a multimodal AI Agent -> AI Agent itself is a monitored development -> IN.
+- RV8: a studio **releases** a film -> the monitored artifact itself is the event -> IN.
+- RV4: a hospital merely **introduces / uses** a cancer-treatment device in local practice -> the user does not monitor routine dynamics of an individual hospital as such -> OUT.
+
+This does **not** create a universal rule that adoption is always OUT. It shows that Standing Radar scope is profile-specific and event-role-sensitive.
+
+---
+
+## 5. Standing Radar profile v2 — calibrated scope
+
+Artifact:
 
 `eval/live/standing_radar_profile.v2.yaml`
 
 Historical v1 remains frozen.
 
-The only intentional scope repair beyond the general composition semantics is the cancer/tumor interest wording. v2 records the demonstrated preference as including substantive cancer/tumor scientific, diagnostic, treatment, clinical, surgical, and technical developments rather than only research-paper-like events.
+Cancer/tumor scope is now recorded as:
+
+> cancer/tumor research and field development, including development/release of diagnostic, treatment, clinical, surgical, or medical technologies; routine local hospital adoption/operation as such is not a standing interest.
+
+This is narrower than the initial v2 draft and matches the latest human calibration.
 
 No other interest taxonomy was expanded.
 
 ---
 
-## 5. Estimator v2
+## 6. Estimator v2
 
-New eval-only estimator:
+Eval-only estimator:
 
 `eval/live/standing_radar_fit_v2.py`
 
-Version identifiers:
+Version identifiers remain:
 
 ```text
 estimator_version  standing-radar-fit-estimator-v2
@@ -109,32 +132,30 @@ prompt_version     standing-radar-fit-v2
 profile_id         standing-radar-profile-v2
 ```
 
-The v2 prompt requires the model to:
+The prompt itself did not need a second repair. It already requires:
 
-1. identify all substantive semantic facets;
-2. preserve multiple substantive facets;
-3. distinguish substantive facets from incidental tools/context;
-4. match each substantive facet against the Standing Radar;
-5. return IN if at least one substantive facet genuinely matches;
-6. treat exclusions only as scope guards.
+1. all substantive semantic facets;
+2. no single dominant-domain collapse;
+3. separation of substantive facets from incidental tools/context;
+4. Standing Radar matching per substantive facet;
+5. IN when at least one substantive facet genuinely matches;
+6. exclusions as scope guards only.
 
-Diagnostic output now includes `substantive_facets`, but only `standing_radar_fit` is scored. The facet list is diagnostic evidence, not a production ontology.
-
-Production scheduler behavior remains unchanged.
+The scope correction is carried by the calibrated Standing Radar profile. Production scheduler behavior remains unchanged.
 
 ---
 
-## 6. Fresh validation contract
+## 7. Fresh validation contract — RESET AFTER CALIBRATION
 
-Template:
+The original RV template must not be used as fresh v2 evidence because its Human labels informed the final profile calibration.
 
-`eval/live/manifest.standing_radar_fit_v2_fresh_validation.template.yaml`
+New fresh template:
 
-The template contains eight fresh paired cases and intentionally has no Human Gold yet.
+`eval/live/manifest.standing_radar_fit_v2_fresh_validation.v2.template.yaml`
 
-Human labels must be elicited before model measurement.
+It contains eight new paired cases and intentionally has no Human Gold yet.
 
-Pre-registered target:
+Pre-registered target remains:
 
 ```text
 Exact >= 7/8
@@ -144,21 +165,23 @@ Complete pair flips >= 3/4
 No clear semantic-composition failure
 ```
 
-The old FD1-FD20 and IX1-IX8 sets must not be re-reported as fresh v2 evidence.
+The old FD1-FD20, IX1-IX8, and RV1-RV8 sets must not be re-reported as fresh v2 performance.
 
-The first scored v2 run on frozen fresh Human Gold is the measurement.
+The first scored v2 run on the new frozen fresh Human Gold is the measurement.
 
 ---
 
-## 7. Current pointer
+## 8. Current pointer
 
 ```text
 D semantics                         FROZEN
 D v1 historical baseline            PRESERVED
-D v2 minimal semantic repair        IMPLEMENTED
+D v2 semantic repair                IMPLEMENTED
+RV scope calibration                RECORDED / DEVELOPMENT ONLY
+Standing Radar profile v2           CALIBRATED BEFORE MEASUREMENT
 Fresh v2 Human Gold                 NEXT
 Fresh v2 model measurement          AFTER HUMAN GOLD FREEZE
 S estimator study                   AFTER D v2 closure decision
 ```
 
-Do not expand D into a larger benchmark. If v2 passes the fresh repair validation without a new systematic residual, close D for Phase II-B and move to S.
+Do not expand D into a larger benchmark. If v2 passes the new fresh repair validation without a new systematic residual, close D for Phase II-B and move to S.
