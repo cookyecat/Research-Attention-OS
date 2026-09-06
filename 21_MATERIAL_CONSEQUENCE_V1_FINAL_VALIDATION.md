@@ -1,6 +1,6 @@
 # Research Attention OS — Material Consequence v1 Final Validation
 
-Status: **ESTIMATOR FROZEN / FRESH HUMAN GOLD NEXT**  
+Status: **HUMAN GOLD FROZEN / FIRST SCORED RUN NEXT**  
 Date: 2026-09-06  
 Phase: II-B Attention Policy Calibration  
 Semantic baseline: `18_MATERIAL_CONSEQUENCE_STUDY.md`, `19_MATERIAL_CONSEQUENCE_REFERENCE_SCALE.md`  
@@ -32,7 +32,7 @@ Targeted validation before freeze:
 10-case dry-run completed
 ```
 
-No scored S model measurement had been run before the fresh validation set was authored.
+No scored S model measurement had been run before the fresh validation set was authored or before Human Gold was frozen.
 
 ---
 
@@ -59,7 +59,55 @@ MS1-MS10
 
 ---
 
-## 3. What the fresh set probes
+## 3. Frozen fresh Human Gold
+
+Human Gold manifest:
+
+`eval/live/manifest.material_consequence_final_fresh_human_gold.v1.yaml`
+
+Human Gold freeze commit:
+
+```text
+cbd41ca62c0b3ed5d0fdba07fd77515d63e48c8a
+```
+
+Label provenance:
+
+```text
+HUMAN_ELICITED
+```
+
+The labels were elicited after the fresh template and estimator were frozen and before any scored model prediction on SF1-SF12.
+
+Frozen labels:
+
+```text
+SF1   NOT_MATERIAL
+SF2   MATERIAL
+SF3   NOT_MATERIAL
+SF4   MATERIAL
+SF5   NOT_MATERIAL
+SF6   MATERIAL
+SF7   NOT_MATERIAL
+SF8   MATERIAL
+SF9   NOT_MATERIAL
+SF10  MATERIAL
+SF11  NOT_MATERIAL
+SF12  MATERIAL
+```
+
+Observed class balance after elicitation:
+
+```text
+MATERIAL       6
+NOT_MATERIAL   6
+```
+
+This balance was not assumed when the success criterion was pre-registered.
+
+---
+
+## 4. What the fresh set probes
 
 The 12-case set uses six controlled contrasts across different consequence forms:
 
@@ -76,7 +124,7 @@ The cases intentionally do not state whether media covered or discussed the even
 
 ---
 
-## 4. Pre-registered success criterion
+## 5. Pre-registered success criterion
 
 ```text
 Exact accuracy            >= 10/12 = 0.8333333333
@@ -86,20 +134,20 @@ Technical failures        = 0
 No clear repeated semantic failure mode
 ```
 
-The exact class balance is not assumed before Human Gold is elicited. Recall thresholds will be computed against the frozen Human labels.
+The exact class balance was not assumed before Human Gold was elicited. Recall thresholds are computed against the frozen Human labels.
 
 This is a personal engineering validation, not a population benchmark.
 
 ---
 
-## 5. Measurement rule
+## 6. Measurement rule
 
 Sequence is strict:
 
 ```text
-fresh template already frozen
-  -> Human labels
-  -> freeze Human Gold manifest
+fresh template frozen
+  -> Human labels elicited
+  -> Human Gold manifest frozen
   -> run unchanged estimator exactly once
   -> preserve write-once first-run artifact
   -> attribute residuals before any estimator change
@@ -107,9 +155,15 @@ fresh template already frozen
 
 Do not modify prompt/profile/estimator after seeing Human Gold and then report this same set as fresh performance. Any such change requires a new estimator version and new fresh set.
 
+The expected first-run artifact remains:
+
+`eval/live/results/material_consequence_v1_final_fresh_first_run.json`
+
+At Human Gold freeze time this artifact did not exist.
+
 ---
 
-## 6. Closure rule
+## 7. Closure rule
 
 If v1 meets the pre-registered gate without a repeated semantic failure:
 
@@ -123,13 +177,14 @@ If it misses only isolated attributable cases, preserve the result and make an e
 
 ---
 
-## 7. Current pointer
+## 8. Current pointer
 
 ```text
 S semantic contract             FROZEN
 S estimator v1                  FROZEN
 Fresh S template                FROZEN
-Fresh S Human Gold              NEXT
-First scored S measurement      NOT RUN
+Fresh S Human Gold              FROZEN
+Human Gold commit               cbd41ca62c0b3ed5d0fdba07fd77515d63e48c8a
+First scored S measurement      NEXT / NOT RUN
 P study                         AFTER S
 ```
