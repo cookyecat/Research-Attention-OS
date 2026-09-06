@@ -1,0 +1,251 @@
+{
+  "actual_models": [
+    "deepseek-v4-flash"
+  ],
+  "cases": [
+    {
+      "case_id": "IX1",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "OUT",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [],
+      "model_meta": {
+        "completion_tokens": 59,
+        "estimated_cost_usd": null,
+        "latency_ms": 701,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 880,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event is a communications-satellite attitude-control-system upgrade, which falls under commercial space, an explicit standing exclusion. No standing-interest technology is substantively involved.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "IX2",
+      "correct": false,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [],
+      "model_meta": {
+        "completion_tokens": 71,
+        "estimated_cost_usd": null,
+        "latency_ms": 966,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 871,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event is about commercial space and on-orbit maintenance robotics, which falls under the standing exclusion for commercial space as such. Although robotics is a standing interest, the event's substantive topic is space operations, not robotics development.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "IX3",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "OUT",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [],
+      "model_meta": {
+        "completion_tokens": 57,
+        "estimated_cost_usd": null,
+        "latency_ms": 701,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 873,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event concerns an ordinary orthopedic mechanical positioning device, which falls under general non-AI biomedicine, an explicit exclusion. No standing interest is matched.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "IX4",
+      "correct": false,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [],
+      "model_meta": {
+        "completion_tokens": 59,
+        "estimated_cost_usd": null,
+        "latency_ms": 1256,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 879,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event is a non-AI medical device for cancer surgery, which falls under general non-AI biomedicine outside cancer/tumor research, an explicit exclusion.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "IX5",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "OUT",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [],
+      "model_meta": {
+        "completion_tokens": 61,
+        "estimated_cost_usd": null,
+        "latency_ms": 1028,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 872,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event is about a nuclear-fusion laboratory's plasma-diagnostics system, which falls under fusion energy, an explicit standing exclusion. No other standing interest is substantively involved.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "IX6",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [
+        "Robotics, embodied intelligence, Physical AI, including domain robots when robotics is a substantive event topic"
+      ],
+      "model_meta": {
+        "completion_tokens": 84,
+        "estimated_cost_usd": null,
+        "latency_ms": 1051,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 874,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event is about a robot developed for nuclear fusion reactor inspection, which is a domain robot. Robotics is a substantive topic here, not incidental, so it matches the standing interest in robotics.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "IX7",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "OUT",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [],
+      "model_meta": {
+        "completion_tokens": 67,
+        "estimated_cost_usd": null,
+        "latency_ms": 1179,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 869,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event concerns an industrial power-management chip for motor control, which falls under the standing exclusion for ordinary analog, power-management, motor-control, and industrial chips unrelated to compute/AI/advanced-process interests.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "IX8",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [
+        "AI compute and compute-oriented semiconductors: GPU/CPU, AI accelerators, HBM, advanced process, and related compute hardware"
+      ],
+      "model_meta": {
+        "completion_tokens": 82,
+        "estimated_cost_usd": null,
+        "latency_ms": 745,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 873,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event concerns a new server CPU microarchitecture for general-purpose compute servers, which falls under compute-oriented semiconductors and related compute hardware.",
+      "scorable": true,
+      "transport_retries": 0
+    }
+  ],
+  "dry_run": false,
+  "estimator_freeze_commit": "7768f2ded019f6613a37aa738dab3f7a1235034c",
+  "estimator_version": "standing-radar-fit-estimator-v1",
+  "invocation": {
+    "estimator_version": "standing-radar-fit-estimator-v1",
+    "profile_id": "standing-radar-profile-v1",
+    "prompt_sha256": "92179131d684d84e9b6f214389c0166cb9137a12e22f44826380d2fc063da749",
+    "prompt_version": "standing-radar-fit-v1",
+    "provider_base_url": "https://api.deepseek.com",
+    "reasoning_effort": null,
+    "requested_model": "deepseek-v4-flash",
+    "response_format": "json_object",
+    "structured_schema": "StandingRadarFitResponse",
+    "temperature": 0.1,
+    "thinking": "disabled",
+    "thinking_protocol": "deepseek",
+    "timeout_seconds": 60.0
+  },
+  "manifest": "eval/live/manifest.standing_radar_intersection_diag.v1.yaml",
+  "measurement_timestamp": "20260906T104407Z",
+  "metrics": {
+    "balanced_accuracy": 0.75,
+    "exact_accuracy": 0.75,
+    "false_in_count": 0,
+    "false_in_rate": 0.0,
+    "false_out_count": 2,
+    "false_out_rate": 0.25,
+    "in_recall": 0.5,
+    "metrics_pass": false,
+    "n_gold_in": 4,
+    "n_gold_out": 4,
+    "n_pred_in": 2,
+    "n_pred_out": 6,
+    "n_scored": 8,
+    "out_recall": 1.0,
+    "success_criterion": {
+      "balanced_accuracy_min": 0.8,
+      "exact_accuracy_min": 0.8,
+      "no_clear_systematic_failure": "human_judgment_after_residuals"
+    }
+  },
+  "n_cases": 8,
+  "n_technical_failures": 0,
+  "name": "raos-standing-radar-intersection-diagnostic-v1",
+  "prompt_sha256": "92179131d684d84e9b6f214389c0166cb9137a12e22f44826380d2fc063da749",
+  "prompt_version": "standing-radar-fit-v1",
+  "scored": true,
+  "technical_failures": []
+}
