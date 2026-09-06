@@ -1,6 +1,6 @@
 {
   "pack": "Research Attention OS Codex Development Pack",
-  "version": "v1.8",
+  "version": "v1.9",
   "documents": [
     "01_PRODUCT.md",
     "02_DOMAIN_MODEL.md",
@@ -18,7 +18,8 @@
     "14_STANDING_RADAR_FIT_V2_SEMANTIC_REPAIR.md",
     "15_STANDING_RADAR_ANCHOR_GENERALIZATION.md",
     "16_STANDING_ATTENTION_JURISDICTION.md",
-    "17_STANDING_RADAR_FIT_V3_FINAL_VALIDATION.md"
+    "17_STANDING_RADAR_FIT_V3_FINAL_VALIDATION.md",
+    "18_MATERIAL_CONSEQUENCE_STUDY.md"
   ],
   "recommended_read_order": [
     "01_PRODUCT.md",
@@ -33,6 +34,7 @@
     "15_STANDING_RADAR_ANCHOR_GENERALIZATION.md",
     "16_STANDING_ATTENTION_JURISDICTION.md",
     "17_STANDING_RADAR_FIT_V3_FINAL_VALIDATION.md",
+    "18_MATERIAL_CONSEQUENCE_STUDY.md",
     "04_SCHEDULER_SPEC.md",
     "05_INGESTION_SPEC.md",
     "06_SOURCE_GRAPH_SPEC.md",
