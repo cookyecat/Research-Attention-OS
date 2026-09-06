@@ -4,7 +4,8 @@ Status: **ACTIVE PROJECT ROADMAP**
 Date: 2026-09-06  
 Production/eval baseline referenced: `354d2b5011a868f0295e2ac2750822275c83db51`  
 Semantic baseline: `08_COGNITIVE_TRANSITION_MODEL_V2.1.md` + Phase II-B AWARE semantics in `10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md`  
-Current D study: `12_STANDING_RADAR_FIT_ESTIMATOR_STUDY.md`
+Current D study: `12_STANDING_RADAR_FIT_ESTIMATOR_STUDY.md`  
+Product/recommender boundary: `13_RAOS_VS_RECOMMENDATION_SYSTEMS.md`
 
 > Purpose: preserve the long-horizon research position of RAOS so that individual experiments, implementation sessions, or conversation loss cannot erase what is closed, what is active, and what happens next.
 
@@ -39,6 +40,12 @@ CROA = \frac{Useful\ Cognitive\ Change}{Human\ Attention\ Cost}
 $$
 
 CROA is directional, not a prematurely precise scalar objective.
+
+Product contrast recorded in `13_RAOS_VS_RECOMMENDATION_SYSTEMS.md`:
+
+> **Recommendation systems compete for attention; RAOS budgets attention.**
+
+More rigorously, RAOS optimizes attention efficiency rather than assuming that more consumption / engagement is the desired outcome.
 
 ---
 
@@ -87,7 +94,7 @@ Core invariants:
 Current strategic position:
 
 $$
-\boxed{Phase\ II\text{-}B:\ S\ estimator\ study\ NEXT}
+\boxed{Phase\ II\text{-}B:\ D\ semantic\text{-}composition/scope\ attribution\ NOW}
 $$
 
 The project is still answering:
@@ -237,7 +244,7 @@ Important invariants:
 - incidental mention/use of a radar technology does not create D membership
 - technical novelty is not event significance
 - artifact quality is not event significance
-- S may be technical, economic, scientific, social, cultural, or institutional consequence
+- S may be technical, economic, scientific, social, cultural, political, or institutional consequence
 - D granularity follows stable preference, not taxonomy depth
 
 ---
@@ -250,22 +257,13 @@ D asks only:
 
 > **Ignoring how important this particular event is, does its substantive topic belong to a world the user wants RAOS to monitor on a standing basis?**
 
-Do not answer:
+Earlier `IN/OUT`, H1-H10, and DH1-DH15 are calibration/development evidence, not fresh holdout performance.
 
-- AWARE/DROP
-- event significance
-- public popularity
-- Kernel change
-
-Earlier `IN/OUT`, H1-H10, and DH1-DH15 exercises are calibration/development evidence, not fresh holdout performance.
-
-### 6.2 Standing Radar profile v1 — FROZEN
+### 6.2 Standing Radar profile v1 — FROZEN HISTORICAL BASELINE
 
 Artifact:
 
 `eval/live/standing_radar_profile.v1.yaml`
-
-The profile records stable semantic interests plus a small number of calibrated exclusions. It is intentionally not a giant inherited domain taxonomy.
 
 Key boundary principle:
 
@@ -279,8 +277,6 @@ Artifact:
 
 `eval/live/manifest.standing_radar_fit_human_gold.v1.yaml`
 
-The user labeled FD1-FD20 after the instrument/profile were calibrated and before the estimator was measured.
-
 Class composition:
 
 ```text
@@ -289,17 +285,9 @@ OUT   5
 N    20
 ```
 
-These labels are now frozen. Do not use them to modify the estimator and then report the same set as fresh holdout evidence.
+### 6.4 D estimator v1 — CORE MEASUREMENT STRONG
 
-### 6.4 D estimator — MEASURED (first run sufficient)
-
-Research hypothesis:
-
-$$
-\boxed{EventText+StandingRadarProfile\rightarrow\hat D}
-$$
-
-First blind holdout (FD1-FD20), estimator freeze `be6db49af93d87e5cbb29bdf54806a5f2ae07859`:
+First blind holdout:
 
 ```text
 ExactAccuracy       0.90
@@ -309,12 +297,72 @@ OUT recall          1.0
 False-IN            0
 False-OUT           FD6, FD16
 Technical failures  0
-Decision            A. SUFFICIENT FOR PHASE II-B
 ```
 
-Artifact: `eval/live/results/standing_radar_fit_v1_first_run.json`
+Artifact:
 
-Isolated interest/exclusion-boundary residuals are preserved. Do not retune on this holdout. Do not build a domain ontology.
+`eval/live/results/standing_radar_fit_v1_first_run.json`
+
+This strongly supports the compact natural-language Standing Radar representation and argues against building a giant domain ontology.
+
+### 6.5 Intersection / semantic-composition diagnostic — FAILED PRE-REGISTERED CRITERION
+
+Artifact:
+
+`eval/live/results/standing_radar_intersection_diag_v1_first_run.json`
+
+Commit:
+
+```text
+99a95841a5b7be00509aacf359bb43c81d009f64
+```
+
+Observed:
+
+```text
+Exact accuracy                6/8 = 0.75
+Excluded-context-only recall  4/4 = 1.00
+Positive-intersection recall  2/4 = 0.50
+Complete pair flips           2/4 = 0.50
+Technical failures            0
+```
+
+Failed positive intersections:
+
+```text
+IX2  commercial space + on-orbit robotics
+IX4  general biomed + cancer-surgery assistance device
+```
+
+Passed positive intersections:
+
+```text
+IX6  fusion + reactor-inspection robotics
+IX8  industrial-electronics context + server CPU
+```
+
+Therefore the failure is **not** a universal “exclusion always wins” rule.
+
+Current attribution:
+
+- IX2 suggests dominant-domain arbitration: a multi-facet event is collapsed to one domain (“space operations”) even though substantive robotics is explicitly recognized.
+- IX4 suggests a profile-scope mismatch: the frozen phrase “cancer and tumor research” is narrower than the user's demonstrated standing preference, which includes substantive cancer/tumor clinical/technical events.
+
+Candidate minimal semantic model:
+
+$$
+\boxed{E\rightarrow F_s(E)=\{substantive\ semantic\ facets\}}
+$$
+
+$$
+\boxed{
+D(E)=IN\iff\exists f\in F_s(E):Match(f,StandingRadar)
+}
+$$
+
+Exclusions should be treated as guards against over-broad matching, not automatic negative votes or vetoes.
+
+Do **not** introduce domain weights or a domain ontology at this stage.
 
 ---
 
@@ -324,6 +372,12 @@ Execute in this order:
 
 ```text
 NOW
+  ↓
+Decide / implement the minimal D semantic-composition + profile-scope repair
+  ↓
+Do not re-report FD1-FD20 or IX1-IX8 as fresh performance
+  ↓
+Close D for Phase II-B once the repair is accepted / validated by fresh or later integration evidence
   ↓
 Study / estimate S
   ↓
@@ -336,15 +390,13 @@ Fresh real-world end-to-end dogfooding
 Phase II exit decision
 ```
 
-Estimator sequence:
+Estimator sequence remains:
 
 $$
 \boxed{D\ estimator\rightarrow S\ estimator\rightarrow P\ estimator}
 $$
 
-If D passes, do not keep polishing it for cosmetic 100% performance. Preserve isolated residuals and move to S.
-
-If D fails systematically, attribute the failure before changing the profile, prompt, or representation. Any revised estimator claim requires a new fresh holdout.
+The D study must not expand into a large benchmark or ontology project. The open issue is now narrow and attributable.
 
 ---
 
