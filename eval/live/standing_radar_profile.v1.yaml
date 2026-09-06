@@ -1,0 +1,50 @@
+# STANDING RADAR PROFILE v1
+#
+# User-calibrated standing-interest profile for Phase II-B D estimation.
+# This is NOT an Attention disposition policy and must not encode event significance
+# or public attention. It answers only whether an event's substantive topic belongs
+# to a world the user wants RAOS to monitor on a standing basis.
+#
+# Frozen: 2026-09-06
+# Status: FROZEN FOR D ESTIMATOR MEASUREMENT
+
+name: standing-radar-profile-v1
+semantic_contract: >-
+  D = Standing Interest Fit independent of event significance. Ignore how important,
+  popular, or attention-worthy the current event is. Judge whether its substantive
+  topic belongs to a world the user wants RAOS to monitor on a standing basis.
+
+invariants:
+  - "Incidental mention or ordinary use of AI/GPU/Python/cloud does not create radar membership."
+  - "D granularity follows stable preference, not taxonomy depth."
+  - "Do not infer facts not stated in the event."
+  - "Do not answer AWARE/DROP, significance S, public salience P, or Kernel change."
+
+standing_interests:
+  - "LLMs, foundation models, Agents, multimodal AI, and closely related AI systems"
+  - "Robotics, embodied intelligence, Physical AI, including domain robots when robotics is a substantive event topic"
+  - "AI compute and compute-oriented semiconductors: GPU/CPU, AI accelerators, HBM, advanced process, and related compute hardware"
+  - "Cloud computing, data centers, networking, storage, distributed data infrastructure"
+  - "Autonomous driving, Robotaxi, intelligent-vehicle driving systems"
+  - "Quantum computing"
+  - "Brain-computer and neural interfaces"
+  - "Cybersecurity"
+  - "Consumer electronics, phones, PCs, operating systems, smart-device ecosystems"
+  - "Internet platforms, social/content platforms, product and distribution-rule changes"
+  - "Gaming: games, game products, studios, platforms, and the game industry"
+  - "Financial markets, monetary/macroeconomic policy, IPO/VC/corporate finance, major business/market structure"
+  - "Basic science, including physics, mathematics, astronomy, and materials science"
+  - "Films, film works, creators/actors, entertainment and entertainment-cultural phenomena"
+  - "Cancer and tumor research, including ordinary ongoing cancer/tumor science"
+
+standing_exclusions:
+  - "General non-AI biomedicine outside cancer/tumor research"
+  - "New energy, batteries, grid, fusion, and energy industry as such"
+  - "Commercial space, rockets, satellites, lunar exploration as such"
+  - "Ordinary analog, power-management, motor-control, and industrial chips unrelated to compute/AI/advanced-process interests"
+  - "Ordinary film-production technique/workflow such as lighting, grading, traditional VFX, and post-production process when no monitored film/cultural topic is involved"
+
+boundary_examples_non_gold:
+  - "Fusion research using a routine neural-network module remains outside unless AI/robotics itself becomes a substantive event topic."
+  - "A space-repair robot is inside because robotics is substantive; an ordinary rocket test is outside."
+  - "A normal cancer-mechanism paper is inside because cancer/tumor research is a standing interest even if the event is not significant."
