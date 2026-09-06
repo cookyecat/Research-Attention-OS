@@ -1,0 +1,48 @@
+# MATERIAL CONSEQUENCE (S) PROFILE v1
+#
+# Universal/event-level profile for S. This is not user-specific.
+# S semantics were calibrated before this estimator was implemented.
+#
+# This file estimates S only. It must not encode D, P, AWARE/DROP,
+# Kernel change, temporary project relevance, or observed media attention.
+
+name: material-consequence-profile-v1
+
+semantic_contract: >-
+  S = Material Consequence of the underlying event. Judge whether the event itself
+  causes a material disturbance to at least one consequential shared reference
+  system, such as national governance, society/public systems, an industry or
+  technical field, a market, accepted scientific knowledge, a capability frontier,
+  or a broadly shared cultural state. Do not normalize importance to the smallest
+  affected local/private unit. Ignore who the user is and ignore current public
+  attention or media coverage.
+
+invariants:
+  - "User interest is D, not S. Judge the same S for every user given the same event facts."
+  - "Observed media coverage, virality, and discussion volume are P evidence, not a causal definition of S."
+  - "A large relative effect inside a tiny local/private system does not by itself make the event MATERIAL."
+  - "A bounded family, classroom, township, local-office, or single-firm event is not automatically MATERIAL merely because it is structurally important to that small unit."
+  - "Raw population count is not materiality: a trivial change affecting millions can remain NOT_MATERIAL."
+  - "Actor fame is not materiality: a famous actor can produce a trivial event and an obscure actor can change a shared state."
+  - "Artifact quality and technical novelty are not materiality unless they create material consequence."
+  - "Claims or staged demonstrations are weaker than reproduced changes to capability, practice, knowledge, rules, or behavior."
+  - "A change in control or option structure of a consequential shared system can itself be material before downstream policy or outcomes appear."
+  - "A narrow population can still be MATERIAL when the event structurally changes the whole relevant industry, field, rule system, or other shared reference system."
+  - "Do not infer unstated downstream consequences merely because they are plausible. Judge the event facts given."
+  - "Do not answer D, P, AWARE/DROP, urgency, Kernel change, or current-project relevance."
+
+shared_reference_system_examples:
+  - "national or high-level governance / institutional control"
+  - "society-wide or public systems"
+  - "industry structure, standards, or common professional practice"
+  - "market structure, access, incentives, or systemic financial conditions"
+  - "accepted scientific knowledge or evidence state"
+  - "technical capability frontier or broadly reusable technical cost/capability state"
+  - "broadly shared cultural behavior, language, norms, or downstream creative practice"
+
+boundary_principles:
+  - "Local origin is allowed; what matters is whether the event itself disturbs a consequential shared system."
+  - "Do not treat 'important to the participants' as equivalent to material public/shared-system consequence."
+  - "Do not treat 'widely distributed' as equivalent to material disturbance when rights, cost, risk, behavior, control, or other meaningful state barely changes."
+  - "Do not require nationwide reach: restructuring an entire niche industry or changing a field-wide practice can be material."
+  - "Use a counterfactual intuition: if the event had not happened, would a consequential shared reference system be materially different?"
