@@ -19,6 +19,7 @@ if str(BACKEND) not in sys.path:
 from eval.live.run_standing_radar_fit_eval import git_head, load_repo_env
 from eval.live.material_consequence_v1 import (
     ESTIMATOR_VERSION,
+    PROFILE_ID,
     PROMPT_VERSION,
     build_messages,
     compute_material_consequence_metrics,
@@ -51,10 +52,31 @@ def load_material_manifest(path: Path) -> dict[str, Any]:
         name: str | None = None
         variable: str | None = None
         semantic_contract: str | None = None
+        estimator_version: str | None = None
+        prompt_version: str | None = None
+        profile_id: str | None = None
+        estimator_freeze_commit: str | None = None
+        prompt_sha256: str | None = None
         cases: list[MaterialCase] = Field(default_factory=list)
 
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     return MaterialManifest.model_validate(data).model_dump()
+
+
+def validate_manifest_provenance(manifest: dict[str, Any]) -> None:
+    expected = {
+        "estimator_version": ESTIMATOR_VERSION,
+        "prompt_version": PROMPT_VERSION,
+        "profile_id": PROFILE_ID,
+        "prompt_sha256": prompt_sha256(),
+    }
+    mismatches = {
+        key: {"manifest": manifest.get(key), "runtime": value}
+        for key, value in expected.items()
+        if manifest.get(key) is not None and manifest.get(key) != value
+    }
+    if mismatches:
+        raise ValueError(f"material consequence manifest provenance mismatch: {mismatches}")
 
 
 def run_manifest_v1(
@@ -69,6 +91,7 @@ def run_manifest_v1(
 
     profile = load_material_consequence_profile()
     manifest = load_material_manifest(manifest_path)
+    validate_manifest_provenance(manifest)
     rows: list[dict[str, Any]] = []
     technical_failures: list[dict[str, Any]] = []
 
@@ -138,7 +161,8 @@ def run_manifest_v1(
         "estimator_version": ESTIMATOR_VERSION,
         "prompt_version": PROMPT_VERSION,
         "prompt_sha256": prompt_sha256(),
-        "estimator_freeze_commit": git_head(),
+        "estimator_freeze_commit": manifest.get("estimator_freeze_commit"),
+        "measurement_git_head": git_head(),
         "measurement_timestamp": datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ"),
         "manifest": str(manifest_path),
         "dry_run": dry_run,
