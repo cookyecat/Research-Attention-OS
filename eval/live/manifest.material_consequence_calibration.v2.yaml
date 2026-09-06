@@ -1,0 +1,51 @@
+# MATERIAL CONSEQUENCE (S) — CALIBRATION v2
+#
+# Development/calibration evidence only. Not a fresh holdout.
+# Authored after MC1-MC10 labels and before these labels are elicited.
+# Purpose: calibrate consequence scale, severity, and generalizability after MC6
+# falsified the rule that a large change relative to any local affected system is
+# automatically MATERIAL.
+#
+# Judge only S. Ignore user interest D and public attention P.
+
+name: raos-material-consequence-calibration-v2
+variable: S
+validation_type: HUMAN_CALIBRATION
+semantic_contract: >-
+  S = Material Consequence of the underlying event, independent of user interest
+  and public attention. Judge whether the event creates a sufficiently material
+  counterfactual difference in world state. Do not normalize materiality solely to
+  the smallest affected local system.
+
+cases:
+  - id: MS1
+    axis: broad_scope_low_magnitude
+    event: "A nationwide postal service moves its ordinary daily pickup window five minutes later. The change affects all branches, but causes no meaningful cost, access, safety, staffing, or service-quality change."
+
+  - id: MS2
+    axis: narrow_scope_high_severity
+    event: "An industrial accident at a single facility kills 120 people and permanently disables the site. The direct physical event is geographically local and does not itself change national policy or industry rules."
+
+  - id: MS3
+    axis: local_structural_change_without_spillover
+    event: "A small farming town permanently bans groundwater extraction, forcing farms and local businesses to change water sources and land use. The policy remains local, creates no legal precedent, and is not adopted elsewhere."
+
+  - id: MS4
+    axis: local_origin_with_broad_precedent
+    event: "The same kind of groundwater ban begins in one small farming town, but a court ruling around the case establishes a precedent that changes water-use rights nationwide and forces many regions to revise their rules."
+
+  - id: MS5
+    axis: private_internal_capability_change
+    event: "One manufacturer privately improves an internal production process and cuts its own energy use by 70%. The method is proprietary, affects only that firm, and no competitor or external practice changes."
+
+  - id: MS6
+    axis: generalizable_field_practice_change
+    event: "A new production method cuts energy use by 70% across a common industrial process, is independently reproduced by multiple manufacturers, and begins changing standard engineering practice across the sector."
+
+  - id: MS7
+    axis: large_population_small_effect
+    event: "A national banking system changes a routine statement layout for 80 million customers. The information, fees, access, rights, and user behavior remain effectively unchanged."
+
+  - id: MS8
+    axis: bounded_population_major_constraint
+    event: "A new regulation applies to only about 60 specialist firms, but legally bans the core production method used by the entire niche industry, forcing most firms either to redesign their technology stack or exit the market."
