@@ -50,6 +50,8 @@ Thumbs.db
 eval/live/results/*
 !eval/live/results/.gitkeep
 !eval/live/results/standing_radar_fit_v1_first_run.json
+!eval/live/results/standing_radar_intersection_diag_v1_first_run.json
+!eval/live/results/standing_radar_fit_v2_first_fresh_run.json
 .idea/
 .vscode/
 *.swp
