@@ -70,7 +70,7 @@ where $H$ is a relevant consequence horizon.
 
 Human-language interpretation:
 
-> **If this event had not happened, would the resulting world be non-trivially different in a way that matters to the affected system, field, population, institution, market, knowledge state, or culture?**
+> **If this event had not happened, would the resulting world be non-trivially different in a way that matters beyond a merely trivial or narrowly bounded operational change?**
 
 This is a conceptual causal test, not a requirement to numerically simulate the world.
 
@@ -135,19 +135,14 @@ Materiality may depend on properties such as:
 
 - **Magnitude** — how large the causal change is;
 - **Scope** — how broadly the consequences propagate;
-- **Persistence** — how long / structurally the change remains.
+- **Persistence** — how long / structurally the change remains;
+- **Generalizability / shared-state impact** — whether the change alters a field, practice, knowledge state, capability frontier, market/cultural state, or other shared state rather than only a bounded local operation.
 
 These are candidate explanatory lenses only.
 
-Do **not** yet implement:
+Do **not** yet implement a weighted score or assume linear compensation among them.
 
-$$
-w_M M+w_S S+w_P P
-$$
-
-or any other weighted score.
-
-Do not assume every material event must be large on all three lenses. A locally scoped event can still be material inside its affected system; a short event can be material if the immediate consequence is large.
+Do not assume every material event must be large on all lenses. A short event can be material if its immediate consequence is severe; a narrow event may still be material if its magnitude is extreme. These cases remain to be calibrated.
 
 The current Phase-II-B question is binary:
 
@@ -209,7 +204,7 @@ NOT_MATERIAL
 
 using this question:
 
-> **Erase the user's identity and erase public attention. If the event is true, does it create a non-trivial counterfactual difference in the affected world state?**
+> **Erase the user's identity and erase public attention. If the event is true, does it create a sufficiently material counterfactual difference in world state?**
 
 Do not ask:
 
@@ -244,18 +239,95 @@ Initial controlled calibration template:
 
 `eval/live/manifest.material_consequence_calibration.v1.yaml`
 
+Human-labeled calibration artifact:
+
+`eval/live/manifest.material_consequence_calibration.v1.human.yaml`
+
 This set is development evidence only.
 
 ---
 
-## 10. Current pointer
+## 10. Calibration v1 result and attribution
+
+Human labels:
+
+```text
+MC1   NOT_MATERIAL
+MC2   MATERIAL
+MC3   NOT_MATERIAL
+MC4   MATERIAL
+MC5   NOT_MATERIAL
+MC6   NOT_MATERIAL
+MC7   NOT_MATERIAL
+MC8   MATERIAL
+MC9   NOT_MATERIAL
+MC10  MATERIAL
+```
+
+Four paired contrasts strongly support the original invariants:
+
+```text
+famous actor + trivial change            -> NOT_MATERIAL
+unknown actor + large reproduced effect  -> MATERIAL
+
+scripted capability claim                -> NOT_MATERIAL
+independently reproduced capability jump -> MATERIAL
+
+high artifact quality, little consequence -> NOT_MATERIAL
+low artifact quality, broad cultural effect -> MATERIAL
+
+weak/noisy evidence                      -> NOT_MATERIAL
+accepted knowledge-state revision        -> MATERIAL
+```
+
+The important calibration result is **MC6**. The initial candidate note said that a locally scoped event could be material merely because it structurally changed its affected local system. The human rejected that proposition:
+
+```text
+small farming town
+permanent groundwater ban
+large local operating-cost / land-use change
+-> NOT_MATERIAL
+```
+
+Therefore this candidate rule is falsified:
+
+$$
+\boxed{
+Large\ consequence\ relative\ to\ any\ affected\ local\ system
+\not\Rightarrow
+S=1
+}
+$$
+
+This means S cannot normalize materiality entirely to the smallest affected system. Some notion of consequence scale, broader shared-state impact, or sufficiently extreme magnitude is required.
+
+At the same time, the current evidence does **not** justify the opposite rule that `local = NOT_MATERIAL`. A geographically narrow event with extreme casualties, catastrophic loss, or a precedent-setting institutional effect may still be MATERIAL. That boundary has not yet been calibrated.
+
+The strongest current qualitative pattern among MATERIAL cases is that they alter a **shared state** beyond a routine bounded operation:
+
+- MC2 changes a broadly usable technical cost/capability state;
+- MC4 changes the demonstrated capability frontier under independent validation;
+- MC8 changes broad cultural behavior and downstream industry response;
+- MC10 changes the accepted scientific knowledge state.
+
+Candidate hypothesis for the next probe:
+
+> **S is material world-state change at a consequential reference scale; bounded local operational change is insufficient unless magnitude/severity or broader structural/precedent effects cross a materiality boundary.**
+
+This is still a hypothesis, not the frozen semantic definition.
+
+---
+
+## 11. Current pointer
 
 ```text
 D semantic research              CLOSED
 D estimator residuals            PRESERVED AS DEBT
 S intuitive definition           ESTABLISHED
-S counterfactual formalization   CANDIDATE
-S Human calibration              NOW
+S counterfactual formalization   SUPPORTED BUT INCOMPLETE
+S calibration v1                 COMPLETE
+MC6 local-scope hypothesis       FALSIFIED
+S scale/severity boundary        NOW
 S estimator                      NOT STARTED
 P study                          AFTER S
 ```
