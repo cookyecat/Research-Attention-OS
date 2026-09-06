@@ -11,15 +11,11 @@ Related: `12_STANDING_RADAR_FIT_ESTIMATOR_STUDY.md`, `14_STANDING_RADAR_FIT_V2_S
 
 Fresh Human labeling after the v2 topic/facet repair exposed a broader but simpler interpretation of D.
 
-D is not only a domain/topic-membership test. Stable standing radar can also be anchored by persistent monitored entities, places, and personal affiliations.
+D is not only a domain/topic-membership test. Standing radar may also be anchored by persistent monitored entities, places, or stable personal affiliations.
 
-Counterfactual calibration examples showed that keeping event content approximately fixed while changing only the user's persistent relationship to the event can flip D.
+The strongest current evidence is the direct-family-affiliation counterfactual: keeping the external event essentially the same while changing only whether the institution has a direct-family standing affiliation flips the Human D label. This cannot be explained by event significance S or public salience P.
 
-Examples in abstract form:
-
-- an event at an institution with a direct-family standing affiliation may be IN, while the same event at a non-affiliated institution is OUT;
-- an event concerning the user's hometown/local government may be IN, while the same event in an unrelated city is OUT;
-- a commercial-space event may be IN when a standing-monitored AI lab is a substantive actor, while an unknown commercial-space startup remains OUT.
+Additional examples involving a monitored AI organization and the user's hometown suggest entity/place anchors as well, but those examples contain potentially material events. They therefore require significance-stripped counterfactual calibration before being treated as clean D-only Gold.
 
 These examples are calibration evidence, not fresh benchmark evidence.
 
@@ -37,7 +33,7 @@ $$
 
 is too narrow if read as domain preference only.
 
-The preferred definition is now:
+The preferred working definition is:
 
 $$
 \boxed{
@@ -67,7 +63,7 @@ $$
 R_u=UserStandingRadarProfile
 $$
 
-Then:
+Then the candidate rule is:
 
 $$
 \boxed{
@@ -105,7 +101,7 @@ Examples:
 
 - a routine fusion experiment using a neural-network utility remains OUT when AI is merely a tool;
 - a commercial-space company developing an autonomous robot may be IN because robotics is itself a substantive event object;
-- a commercial-space company substantively partnering with a standing-monitored AI organization may be IN because the monitored organization is an event actor, not incidental context.
+- if a monitored organization is later confirmed as a standing entity anchor, that organization must be substantively involved in the event rather than merely mentioned.
 
 ---
 
@@ -113,7 +109,7 @@ Examples:
 
 D must remain a **standing** radar signal.
 
-Stable topic/entity/place/affiliation anchors belong in D.
+Stable topic/entity/place/affiliation anchors may belong in D.
 
 Temporary situational relevance does not automatically belong in D. For example, a location that matters only because of a one-off trip or an organization that matters only because of a short-lived task should remain runtime/project context rather than silently expanding the standing radar.
 
@@ -181,17 +177,40 @@ This is an extension of the substantive-facet model, not a replacement with a we
 
 ---
 
-## 9. Current pointer
+## 9. Clean calibration still needed
+
+Before freezing entity/place anchors into the standing profile, run significance-stripped counterfactuals.
+
+Examples of the required form:
 
 ```text
-D semantic meaning                 STANDING RADAR FIT
-Topic-only interpretation          TOO NARROW
-Substantive-facet repair            SUPPORTED
-Persistent entity/place/affiliation anchors  CALIBRATED
-Weights / ontology                  NOT JUSTIFIED
-Anchor-aware estimator freeze       NEXT
-Fresh final D validation            AFTER FREEZE
-S estimator study                   AFTER D closure
+Same monitored organization, but a trivial ordinary event:
+Would D still be IN?
 ```
 
-The D study must remain narrow. The next change should be a minimal anchor-aware semantic repair, followed by one final small fresh validation. If that passes without a new systematic residual, close D for Phase II-B and move to S.
+```text
+Same hometown/local-government relation, but an ordinary low-consequence update:
+Would D still be IN?
+```
+
+If the answer remains IN, that is clean evidence for a true standing entity/place anchor. If the answer flips OUT, the earlier example was partly S-contaminated and should not be encoded in D.
+
+The direct-family-affiliation example already has this property because the event was routine local adoption rather than a major field development.
+
+---
+
+## 10. Current pointer
+
+```text
+D semantic meaning                         STANDING RADAR FIT
+Topic-only interpretation                  TOO NARROW
+Substantive-facet repair                    SUPPORTED
+Stable personal-affiliation anchor          CLEANLY SUPPORTED
+Monitored entity/place anchors              CANDIDATE — CLEAN D CALIBRATION NEEDED
+Weights / ontology                          NOT JUSTIFIED
+Anchor-aware estimator freeze               AFTER CLEAN CALIBRATION
+Fresh final D validation                    AFTER FREEZE
+S estimator study                           AFTER D closure
+```
+
+The D study must remain narrow. Resolve the two remaining significance-stripped anchor calibrations, then freeze the minimal anchor-aware semantic contract and run one final small fresh validation. If that passes without a new systematic residual, close D for Phase II-B and move to S.
