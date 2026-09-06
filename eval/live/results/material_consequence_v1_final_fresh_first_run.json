@@ -1,0 +1,387 @@
+{
+  "actual_models": [
+    "deepseek-v4-flash"
+  ],
+  "cases": [
+    {
+      "affected_shared_systems": [],
+      "case_id": "SF1",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "NOT_MATERIAL",
+      "gold_status": "FROZEN",
+      "label_provenance": "HUMAN_ELICITED",
+      "material_changes": [],
+      "model_meta": {
+        "completion_tokens": 67,
+        "estimated_cost_usd": null,
+        "latency_ms": 1181,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1096,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "NOT_MATERIAL",
+      "reason": "The event only changes the visual appearance of default emoji icons for many users; no shared system's state, rules, capabilities, or practices are materially disturbed.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "affected_shared_systems": [
+        "national payment and settlement infrastructure",
+        "national economy and financial markets"
+      ],
+      "case_id": "SF2",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "MATERIAL",
+      "gold_status": "FROZEN",
+      "label_provenance": "HUMAN_ELICITED",
+      "material_changes": [
+        "interbank clearing network disabled for most of a business day",
+        "payroll and merchant settlement delayed nationwide",
+        "large documented economic losses incurred"
+      ],
+      "model_meta": {
+        "completion_tokens": 111,
+        "estimated_cost_usd": null,
+        "latency_ms": 2298,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1092,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "MATERIAL",
+      "reason": "The event directly disrupted a critical national financial infrastructure, causing widespread delays and significant economic losses, thereby materially disturbing a consequential shared system.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "affected_shared_systems": [],
+      "case_id": "SF3",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "NOT_MATERIAL",
+      "gold_status": "FROZEN",
+      "label_provenance": "HUMAN_ELICITED",
+      "material_changes": [],
+      "model_meta": {
+        "completion_tokens": 69,
+        "estimated_cost_usd": null,
+        "latency_ms": 1208,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1095,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "NOT_MATERIAL",
+      "reason": "The event is a proprietary internal process improvement within a single company, with no adoption, standard change, or market impact; it does not disturb any consequential shared reference system.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "affected_shared_systems": [
+        "long-haul logistics industry standards and practices",
+        "fuel efficiency technical capability frontier"
+      ],
+      "case_id": "SF4",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "MATERIAL",
+      "gold_status": "FROZEN",
+      "label_provenance": "HUMAN_ELICITED",
+      "material_changes": [
+        "adoption of new routing method into standard operating guidance",
+        "reduction of fuel use by ~35% across long-haul logistics"
+      ],
+      "model_meta": {
+        "completion_tokens": 101,
+        "estimated_cost_usd": null,
+        "latency_ms": 1415,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1091,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "MATERIAL",
+      "reason": "The event changes industry-wide practice and capability, affecting a consequential shared system.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "affected_shared_systems": [],
+      "case_id": "SF5",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "NOT_MATERIAL",
+      "gold_status": "FROZEN",
+      "label_provenance": "HUMAN_ELICITED",
+      "material_changes": [],
+      "model_meta": {
+        "completion_tokens": 80,
+        "estimated_cost_usd": null,
+        "latency_ms": 953,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1102,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "NOT_MATERIAL",
+      "reason": "The event is confined to a single municipality's internal records system, causing temporary delays in local permit and payroll work. It does not disturb any consequential shared reference system such as a broader software, legal, or public-system issue.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "affected_shared_systems": [
+        "national digital-identity platform",
+        "government agency authentication and data-protection rules"
+      ],
+      "case_id": "SF6",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "MATERIAL",
+      "gold_status": "FROZEN",
+      "label_provenance": "HUMAN_ELICITED",
+      "material_changes": [
+        "identity records of tens of millions exposed",
+        "multiple agencies forced to change authentication and data-protection rules"
+      ],
+      "model_meta": {
+        "completion_tokens": 104,
+        "estimated_cost_usd": null,
+        "latency_ms": 1149,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1092,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "MATERIAL",
+      "reason": "The event compromises a national identity system and forces systemic rule changes across government agencies, materially disturbing public governance and security infrastructure.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "affected_shared_systems": [],
+      "case_id": "SF7",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "NOT_MATERIAL",
+      "gold_status": "FROZEN",
+      "label_provenance": "HUMAN_ELICITED",
+      "material_changes": [],
+      "model_meta": {
+        "completion_tokens": 71,
+        "estimated_cost_usd": null,
+        "latency_ms": 937,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1087,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "NOT_MATERIAL",
+      "reason": "The purchase of a private vacation home by a famous founder does not alter any consequential shared system; it is a private transaction with no impact on company, market, or public structures.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "affected_shared_systems": [
+        "national governance and legal system",
+        "government surveillance powers and civil liberties framework"
+      ],
+      "case_id": "SF8",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "MATERIAL",
+      "gold_status": "FROZEN",
+      "label_provenance": "HUMAN_ELICITED",
+      "material_changes": [
+        "binding interpretation narrows scope of surveillance powers",
+        "requires nationwide change in authorization procedures for courts and agencies"
+      ],
+      "model_meta": {
+        "completion_tokens": 120,
+        "estimated_cost_usd": null,
+        "latency_ms": 1369,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1087,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "MATERIAL",
+      "reason": "The event directly alters the legal constraints on government surveillance at the national level, changing the rules and procedures that govern all such powers, which is a material disturbance to the shared system of governance and civil liberties.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "affected_shared_systems": [],
+      "case_id": "SF9",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "NOT_MATERIAL",
+      "gold_status": "FROZEN",
+      "label_provenance": "HUMAN_ELICITED",
+      "material_changes": [],
+      "model_meta": {
+        "completion_tokens": 67,
+        "estimated_cost_usd": null,
+        "latency_ms": 857,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1094,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "NOT_MATERIAL",
+      "reason": "The event is confined to a niche fan community and album sales; no stated change to broader shared systems such as industry practice, market structure, or cultural norms.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "affected_shared_systems": [
+        "entertainment industry commissioning and production practices",
+        "broadly shared cultural language and visual conventions"
+      ],
+      "case_id": "SF10",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "MATERIAL",
+      "gold_status": "FROZEN",
+      "label_provenance": "HUMAN_ELICITED",
+      "material_changes": [
+        "major studios altered commissioning strategy to adopt the new format",
+        "phrases and visual conventions from the series entered broad everyday use"
+      ],
+      "model_meta": {
+        "completion_tokens": 107,
+        "estimated_cost_usd": null,
+        "latency_ms": 1163,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1091,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "MATERIAL",
+      "reason": "The event changed industry-wide commissioning strategy and seeded widely adopted cultural conventions, materially disturbing shared reference systems.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "affected_shared_systems": [],
+      "case_id": "SF11",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "NOT_MATERIAL",
+      "gold_status": "FROZEN",
+      "label_provenance": "HUMAN_ELICITED",
+      "material_changes": [],
+      "model_meta": {
+        "completion_tokens": 51,
+        "estimated_cost_usd": null,
+        "latency_ms": 781,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1089,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "NOT_MATERIAL",
+      "reason": "Unreplicated, possibly erroneous lab result does not change accepted knowledge or practice.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "affected_shared_systems": [
+        "semiconductor manufacturing industry",
+        "technical reference models and standards"
+      ],
+      "case_id": "SF12",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "MATERIAL",
+      "gold_status": "FROZEN",
+      "label_provenance": "HUMAN_ELICITED",
+      "material_changes": [
+        "reference models revised",
+        "process design changed in multiple fabrication plants"
+      ],
+      "model_meta": {
+        "completion_tokens": 89,
+        "estimated_cost_usd": null,
+        "latency_ms": 1115,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 1090,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "MATERIAL",
+      "reason": "The event changes accepted technical knowledge and common practice in a major industry, with multiple plants altering their processes.",
+      "scorable": true,
+      "transport_retries": 0
+    }
+  ],
+  "dry_run": false,
+  "estimator_freeze_commit": "99b8c96e54102c3befd04d931156645a5b77d8e1",
+  "estimator_version": "material-consequence-estimator-v1",
+  "invocation": {
+    "estimator_version": "material-consequence-estimator-v1",
+    "profile_id": "material-consequence-profile-v1",
+    "prompt_sha256": "f46808899f1b1cb2c4bfb106c6e537d65ca4433428cea8494f4eedbfccf9b776",
+    "prompt_version": "material-consequence-v1",
+    "provider_base_url": "https://api.deepseek.com",
+    "reasoning_effort": null,
+    "requested_model": "deepseek-v4-flash",
+    "response_format": "json_object",
+    "structured_schema": "MaterialConsequenceV1Response",
+    "temperature": 0.1,
+    "thinking": "disabled",
+    "thinking_protocol": "deepseek",
+    "timeout_seconds": 60.0
+  },
+  "manifest": "/Users/liyang/Developer/Research-Attention-OS/eval/live/manifest.material_consequence_final_fresh_human_gold.v1.yaml",
+  "measurement_git_head": "10e40a934759000100aa98629bba09a0f912823e",
+  "measurement_timestamp": "20260906T160931Z",
+  "metrics": {
+    "balanced_accuracy": 1.0,
+    "exact_accuracy": 1.0,
+    "false_material_count": 0,
+    "false_material_rate": 0.0,
+    "false_not_material_count": 0,
+    "false_not_material_rate": 0.0,
+    "material_recall": 1.0,
+    "n_gold_material": 6,
+    "n_gold_not_material": 6,
+    "n_pred_material": 6,
+    "n_pred_not_material": 6,
+    "n_scored": 12,
+    "not_material_recall": 1.0
+  },
+  "n_cases": 12,
+  "n_technical_failures": 0,
+  "name": "raos-material-consequence-final-fresh-human-gold-v1",
+  "prompt_sha256": "f46808899f1b1cb2c4bfb106c6e537d65ca4433428cea8494f4eedbfccf9b776",
+  "prompt_version": "material-consequence-v1",
+  "scored": true,
+  "technical_failures": []
+}
