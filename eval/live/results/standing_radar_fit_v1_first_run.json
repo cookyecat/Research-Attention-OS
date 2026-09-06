@@ -1,0 +1,574 @@
+{
+  "actual_models": [
+    "deepseek-v4-flash"
+  ],
+  "cases": [
+    {
+      "case_id": "FD1",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [
+        "LLMs, foundation models, Agents, multimodal AI, and closely related AI systems"
+      ],
+      "model_meta": {
+        "completion_tokens": 65,
+        "estimated_cost_usd": null,
+        "latency_ms": 1105,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 871,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event is about a multimodal Agent architecture, which directly falls under the standing interest in Agents and multimodal AI.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD2",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "OUT",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [],
+      "model_meta": {
+        "completion_tokens": 53,
+        "estimated_cost_usd": null,
+        "latency_ms": 1216,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 874,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event concerns a non-cancer skin-disease drug, which falls under general non-AI biomedicine, an explicit standing exclusion.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD3",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [
+        "Cancer and tumor research, including ordinary ongoing cancer/tumor science"
+      ],
+      "model_meta": {
+        "completion_tokens": 62,
+        "estimated_cost_usd": null,
+        "latency_ms": 945,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 865,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event is a tumor-immunology mechanism study, which falls under cancer/tumor research, a standing interest.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD4",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [
+        "Robotics, embodied intelligence, Physical AI, including domain robots when robotics is a substantive event topic"
+      ],
+      "model_meta": {
+        "completion_tokens": 68,
+        "estimated_cost_usd": null,
+        "latency_ms": 953,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 867,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event is about autonomous harvesting robots, which is a substantive robotics topic, matching the standing interest in robotics.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD5",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "OUT",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [],
+      "model_meta": {
+        "completion_tokens": 61,
+        "estimated_cost_usd": null,
+        "latency_ms": 1124,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 870,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event is about nuclear fusion experimental results, which falls under the standing exclusion for fusion energy. The use of a convolutional neural network is incidental and does not create radar membership.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD6",
+      "correct": false,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [],
+      "model_meta": {
+        "completion_tokens": 71,
+        "estimated_cost_usd": null,
+        "latency_ms": 1024,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 872,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event is about commercial space and on-orbit maintenance robotics, which falls under the standing exclusion for commercial space as such. Although robotics is a standing interest, the event's substantive topic is space operations, not robotics development.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD7",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "OUT",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [],
+      "model_meta": {
+        "completion_tokens": 65,
+        "estimated_cost_usd": null,
+        "latency_ms": 823,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 875,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event concerns an industrial motor-driver chip with analog and power-management content, which is explicitly excluded as ordinary analog/power-management/industrial chips unrelated to compute/AI/advanced-process interests.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD8",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [
+        "AI compute and compute-oriented semiconductors: GPU/CPU, AI accelerators, HBM, advanced process, and related compute hardware"
+      ],
+      "model_meta": {
+        "completion_tokens": 77,
+        "estimated_cost_usd": null,
+        "latency_ms": 881,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 868,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event concerns a new server CPU microarchitecture, which falls under compute-oriented semiconductors, a standing interest.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD9",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [
+        "Films, film works, creators/actors, entertainment and entertainment-cultural phenomena"
+      ],
+      "model_meta": {
+        "completion_tokens": 67,
+        "estimated_cost_usd": null,
+        "latency_ms": 1045,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 868,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event is about a new commercial film release with established industry professionals, which directly matches the standing interest in films and entertainment.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD10",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "OUT",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [],
+      "model_meta": {
+        "completion_tokens": 54,
+        "estimated_cost_usd": null,
+        "latency_ms": 930,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 874,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event concerns traditional film production workflow upgrades without AI or a new film work, which falls under the standing exclusion for ordinary film-production technique.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD11",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [
+        "Cloud computing, data centers, networking, storage, distributed data infrastructure"
+      ],
+      "model_meta": {
+        "completion_tokens": 68,
+        "estimated_cost_usd": null,
+        "latency_ms": 789,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 863,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event is about a new distributed database service from a cloud provider, which falls under the standing interest in cloud computing and distributed data infrastructure.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD12",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [
+        "Gaming: games, game products, studios, platforms, and the game industry"
+      ],
+      "model_meta": {
+        "completion_tokens": 60,
+        "estimated_cost_usd": null,
+        "latency_ms": 890,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 865,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event is a game balance update, which falls under the standing interest in gaming.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD13",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [
+        "Internet platforms, social/content platforms, product and distribution-rule changes"
+      ],
+      "model_meta": {
+        "completion_tokens": 65,
+        "estimated_cost_usd": null,
+        "latency_ms": 609,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 861,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event is a product and distribution-rule change on an internet platform, which is a standing interest.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD14",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [
+        "Financial markets, monetary/macroeconomic policy"
+      ],
+      "model_meta": {
+        "completion_tokens": 57,
+        "estimated_cost_usd": null,
+        "latency_ms": 819,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 864,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event concerns monetary-policy framework changes, which falls under the standing interest in monetary/macroeconomic policy.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD15",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [
+        "Basic science, including physics, mathematics, astronomy, and materials science"
+      ],
+      "model_meta": {
+        "completion_tokens": 59,
+        "estimated_cost_usd": null,
+        "latency_ms": 854,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 868,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event is an exoplanet observation result, which falls under astronomy, a standing interest.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD16",
+      "correct": false,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [],
+      "model_meta": {
+        "completion_tokens": 58,
+        "estimated_cost_usd": null,
+        "latency_ms": 848,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 874,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "The event is a non-AI mechanical surgical assistance device, which falls under general non-AI biomedicine outside cancer/tumor research, and is excluded.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD17",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "OUT",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [],
+      "model_meta": {
+        "completion_tokens": 56,
+        "estimated_cost_usd": null,
+        "latency_ms": 874,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 868,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "OUT",
+      "reason": "Gene-therapy research for a rare genetic disease is general non-AI biomedicine, which is explicitly excluded unless it is cancer/tumor research.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD18",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [
+        "Consumer electronics, phones, PCs, operating systems, smart-device ecosystems"
+      ],
+      "model_meta": {
+        "completion_tokens": 63,
+        "estimated_cost_usd": null,
+        "latency_ms": 738,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 871,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event concerns a new mobile operating system, which falls under the standing interest in consumer electronics and operating systems.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD19",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [
+        "Cybersecurity"
+      ],
+      "model_meta": {
+        "completion_tokens": 45,
+        "estimated_cost_usd": null,
+        "latency_ms": 596,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 867,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event is about a router firmware vulnerability and remediation, which falls under cybersecurity.",
+      "scorable": true,
+      "transport_retries": 0
+    },
+    {
+      "case_id": "FD20",
+      "correct": true,
+      "error": null,
+      "failure_kind": null,
+      "gold": "IN",
+      "gold_status": "LABELED",
+      "label_provenance": "HUMAN_ELICITED",
+      "matched_interests": [
+        "Autonomous driving, Robotaxi, intelligent-vehicle driving systems"
+      ],
+      "model_meta": {
+        "completion_tokens": 64,
+        "estimated_cost_usd": null,
+        "latency_ms": 800,
+        "model": "deepseek-v4-flash",
+        "prompt_tokens": 867,
+        "reasoning_effort": null,
+        "thinking": "disabled",
+        "timeout": 60.0
+      },
+      "prediction": "IN",
+      "reason": "The event concerns a highway autonomous-driving system, which directly matches the standing interest in autonomous driving and intelligent-vehicle driving systems.",
+      "scorable": true,
+      "transport_retries": 0
+    }
+  ],
+  "dry_run": false,
+  "estimator_freeze_commit": "be6db49af93d87e5cbb29bdf54806a5f2ae07859",
+  "estimator_version": "standing-radar-fit-estimator-v1",
+  "invocation": {
+    "estimator_version": "standing-radar-fit-estimator-v1",
+    "profile_id": "standing-radar-profile-v1",
+    "prompt_sha256": "92179131d684d84e9b6f214389c0166cb9137a12e22f44826380d2fc063da749",
+    "prompt_version": "standing-radar-fit-v1",
+    "provider_base_url": "https://api.deepseek.com",
+    "reasoning_effort": null,
+    "requested_model": "deepseek-v4-flash",
+    "response_format": "json_object",
+    "structured_schema": "StandingRadarFitResponse",
+    "temperature": 0.1,
+    "thinking": "disabled",
+    "thinking_protocol": "deepseek",
+    "timeout_seconds": 60.0
+  },
+  "manifest": "eval/live/manifest.standing_radar_fit_human_gold.v1.yaml",
+  "measurement_timestamp": "20260906T095043Z",
+  "metrics": {
+    "balanced_accuracy": 0.9333333333333333,
+    "exact_accuracy": 0.9,
+    "false_in_count": 0,
+    "false_in_rate": 0.0,
+    "false_out_count": 2,
+    "false_out_rate": 0.1,
+    "in_recall": 0.8666666666666667,
+    "metrics_pass": true,
+    "n_gold_in": 15,
+    "n_gold_out": 5,
+    "n_pred_in": 13,
+    "n_pred_out": 7,
+    "n_scored": 20,
+    "out_recall": 1.0,
+    "success_criterion": {
+      "balanced_accuracy_min": 0.8,
+      "exact_accuracy_min": 0.8,
+      "no_clear_systematic_failure": true
+    },
+    "pass": true
+  },
+  "n_cases": 20,
+  "n_technical_failures": 0,
+  "name": "raos-standing-radar-fit-human-gold-v1",
+  "prompt_sha256": "92179131d684d84e9b6f214389c0166cb9137a12e22f44826380d2fc063da749",
+  "prompt_version": "standing-radar-fit-v1",
+  "scored": true,
+  "technical_failures": [],
+  "decision": "SUFFICIENT FOR PHASE II-B",
+  "residual_attribution": {
+    "false_in_cases": [],
+    "false_out_cases": ["FD6", "FD16"],
+    "pattern": "isolated interest/exclusion boundary",
+    "notes": [
+      "FD6 gold IN / pred OUT: on-orbit maintenance robot. Model treated commercial-space exclusion as the event subject and denied substantive robotics. Human Gold treats robotics as the standing topic.",
+      "FD16 gold IN / pred OUT: cancer-surgery assistance device, non-AI. Model applied general non-AI biomedicine exclusion and missed cancer/tumor research as the standing topic.",
+      "Shared weak pattern: when an exclusion domain (space, biomedicine) co-occurs with a standing interest (robotics, cancer), the first-run model preferred the exclusion.",
+      "Not treated as a clear systematic representation failure: 18/20 correct, OUT recall 1.0, incidental-tool-use (FD5) and other stacked boundaries (FD4, FD7, FD10) were correct. Residuals preserved; no prompt or ontology change."
+    ]
+  }
+}

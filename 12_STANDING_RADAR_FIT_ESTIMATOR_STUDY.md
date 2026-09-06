@@ -1,6 +1,6 @@
 # Research Attention OS — Standing Radar Fit Estimator Study
 
-Status: **HUMAN GOLD FROZEN / ESTIMATOR NOT YET MEASURED**  
+Status: **FIRST D MEASUREMENT RECORDED**  
 Date: 2026-09-06  
 Phase: II-B Attention Policy Calibration  
 Related: `10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md`, `11_ROADMAP_AND_PROGRESS.md`
@@ -172,17 +172,77 @@ Do not connect this estimator to production `scheduler.py` during the measuremen
 
 ---
 
-## 8. Current project pointer
+## 8. Frozen first-run measurement
+
+Artifact:
+
+`eval/live/results/standing_radar_fit_v1_first_run.json`
+
+Estimator freeze commit (prompt/code frozen before Gold inspection):
+
+```text
+be6db49af93d87e5cbb29bdf54806a5f2ae07859
+```
+
+Invocation:
+
+```text
+estimator_version     standing-radar-fit-estimator-v1
+prompt_version        standing-radar-fit-v1
+requested_model       deepseek-v4-flash
+actual_model          deepseek-v4-flash
+provider_base_url     https://api.deepseek.com
+thinking_protocol     deepseek
+thinking              disabled
+reasoning_effort      null
+timeout_seconds       60.0
+temperature           0.1
+measurement_timestamp 20260906T095043Z
+```
+
+Holdout result (N scored = 20, technical failures = 0):
+
+```text
+ExactAccuracy       0.90
+IN recall           0.8666666666666667
+OUT recall          1.0
+BalancedAccuracy    0.9333333333333333
+False-IN            0
+False-OUT           2 (FD6, FD16)
+```
+
+Pre-registered criterion:
+
+```text
+ExactAccuracy >= 0.80
+AND BalancedAccuracy >= 0.80
+AND no clear systematic failure
+```
+
+Decision: **A. SUFFICIENT FOR PHASE II-B**
+
+Residual attribution (not a prompt change):
+
+- FD6: on-orbit maintenance robot. Gold IN (robotics substantive). Pred OUT (commercial-space exclusion treated as the event subject).
+- FD16: cancer-surgery assistance device, non-AI. Gold IN (cancer/tumor research). Pred OUT (general non-AI biomedicine exclusion).
+- Weak shared pattern: when an exclusion domain co-occurs with a standing interest, the first-run model preferred the exclusion.
+- Incidental-tool-use (FD5 fusion + CNN) was correct OUT. Residuals are preserved. Do not add ontology or retune on this holdout.
+
+Next: study / estimate S. Do not polish D for cosmetic 100%.
+
+---
+
+## 9. Current project pointer
 
 ```text
 D semantics                 FROZEN
 Standing Radar profile      CALIBRATED / FROZEN v1
 D answering instrument      CALIBRATED
 Fresh D Human Gold          FROZEN (FD1-FD20)
-D estimator                 NEXT — first blind measurement
-S estimator study           AFTER D decision
+D estimator                 MEASURED — first run sufficient for Phase II-B
+S estimator study           NEXT
 P estimator study           AFTER S
 Complete no-Delta AWARE     AFTER D/S/P estimation studies
 ```
 
-The next action is to implement the smallest model-backed D estimator and run exactly one first measurement against the frozen FD1-FD20 holdout.
+The next action is the S estimator study. Do not retune D on FD1-FD20.

@@ -87,7 +87,7 @@ Core invariants:
 Current strategic position:
 
 $$
-\boxed{Phase\ II\text{-}B:\ D\ estimator\ first\ blind\ measurement\ NEXT}
+\boxed{Phase\ II\text{-}B:\ S\ estimator\ study\ NEXT}
 $$
 
 The project is still answering:
@@ -291,7 +291,7 @@ N    20
 
 These labels are now frozen. Do not use them to modify the estimator and then report the same set as fresh holdout evidence.
 
-### 6.4 D estimator — NEXT
+### 6.4 D estimator — MEASURED (first run sufficient)
 
 Research hypothesis:
 
@@ -299,25 +299,22 @@ $$
 \boxed{EventText+StandingRadarProfile\rightarrow\hat D}
 $$
 
-Occam constraint: do not build a giant domain ontology unless residual evidence forces it.
+First blind holdout (FD1-FD20), estimator freeze `be6db49af93d87e5cbb29bdf54806a5f2ae07859`:
 
-Pre-registered measurement details live in:
+```text
+ExactAccuracy       0.90
+BalancedAccuracy    0.9333333333333333
+IN recall           0.8666666666666667
+OUT recall          1.0
+False-IN            0
+False-OUT           FD6, FD16
+Technical failures  0
+Decision            A. SUFFICIENT FOR PHASE II-B
+```
 
-`12_STANDING_RADAR_FIT_ESTIMATOR_STUDY.md`
+Artifact: `eval/live/results/standing_radar_fit_v1_first_run.json`
 
-Because an always-IN classifier already scores 75% exact accuracy, the success criterion is:
-
-$$
-\boxed{
-ExactAccuracy\ge0.80
-\land
-BalancedAccuracy\ge0.80
-\land
-NoClearSystematicFailure
-}
-$$
-
-First predictions are the measurement.
+Isolated interest/exclusion-boundary residuals are preserved. Do not retune on this holdout. Do not build a domain ontology.
 
 ---
 
@@ -328,15 +325,7 @@ Execute in this order:
 ```text
 NOW
   ↓
-Implement minimal model-backed D estimator
-  ↓
-Run first blind FD1-FD20 measurement exactly once
-  ↓
-Record exact + balanced accuracy + IN/OUT recall + residuals
-  ↓
-Decide D estimator sufficient? YES / NO
-  ↓
-If YES: study / estimate S
+Study / estimate S
   ↓
 Study / estimate P
   ↓
