@@ -18,6 +18,7 @@ if str(BACKEND) not in sys.path:
 
 from eval.live.material_consequence_v1 import (
     ESTIMATOR_VERSION,
+    PROFILE_ID,
     PROMPT_VERSION,
     SYSTEM_PROMPT,
     MaterialConsequenceV1Response,
@@ -28,7 +29,10 @@ from eval.live.material_consequence_v1 import (
     prompt_sha256,
     render_profile_for_prompt,
 )
-from eval.live.run_material_consequence_v1_eval import write_artifact
+from eval.live.run_material_consequence_v1_eval import (
+    validate_manifest_provenance,
+    write_artifact,
+)
 
 
 def test_s_v1_versions_and_prompt_hash():
@@ -133,6 +137,21 @@ def test_s_v1_is_eval_only_and_direct_not_mandatory_pipeline():
     assert "scheduler" not in source
     assert "anchor" not in source.lower()
     assert "clause" not in source.lower()
+
+
+def test_s_v1_manifest_provenance_validation():
+    manifest = {
+        "estimator_version": ESTIMATOR_VERSION,
+        "prompt_version": PROMPT_VERSION,
+        "profile_id": PROFILE_ID,
+        "prompt_sha256": prompt_sha256(),
+    }
+    validate_manifest_provenance(manifest)
+
+    bad = dict(manifest)
+    bad["prompt_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="provenance mismatch"):
+        validate_manifest_provenance(bad)
 
 
 def test_s_v1_first_run_artifact_is_write_once(tmp_path):
