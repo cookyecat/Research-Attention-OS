@@ -1,0 +1,89 @@
+name: raos-semantic-evidence-development-corpus-v0.1
+status: DEVELOPMENT_ONLY_NOT_FRESH_VALIDATION
+interface_version: semantic-evidence-frame-v0.1
+created_at: 2026-09-07
+purpose: >-
+  First real/raw-source development corpus for calibrating the Semantic Evidence
+  Extraction / Sensor Front-End. These sources may be inspected, prompt-tuned,
+  annotated, and reused for development. They must never later be reported as
+  fresh holdout evidence for the extractor.
+
+methodology:
+  - Raw source files remain unchanged; provenance is pinned by git_blob_sha.
+  - Sources 01-12 are development data.
+  - Sources 13-14 are intentionally not included in this development manifest and should remain uninspected by extractor-development code until explicitly promoted to another role.
+  - This corpus may expose representation failures; v0.1 is not yet frozen.
+  - Do not assume one raw source necessarily contains exactly one event.
+  - Do not add D/S/P/A labels to the sensor frame.
+
+sources:
+  - id: RS01
+    path: eval_samples/01_2021-Science-Robotics-Focus-The_unstable_queen-pre-print.pdf
+    git_blob_sha: 41a1ba932fb02f677c2a84ddae8979c432be7115
+    media_type: application/pdf
+    role: development
+  - id: RS02
+    path: eval_samples/02_AI_Coding_work_flow.txt
+    git_blob_sha: 951a454800cb3e86378f370832ea8e4caee2be8f
+    media_type: text/plain
+    role: development
+  - id: RS03
+    path: "eval_samples/03_Learning vision-­driven reactive soccer skills for humanoid robots.pdf"
+    git_blob_sha: 6ec78bc7188c6c97d635faebd092dda3d4b56619
+    media_type: application/pdf
+    role: development
+  - id: RS04
+    path: eval_samples/04_Physical AI is enabled by mechanical hardware.pdf
+    git_blob_sha: 4503afa34f8df893aa232e704551445f5e864926
+    media_type: application/pdf
+    role: development
+  - id: RS05
+    path: eval_samples/05_PyTorch 性能剖析（第 1 部分）.txt
+    git_blob_sha: cf257af82eca625c5a614381b94b139252acfae9
+    media_type: text/plain
+    role: development
+  - id: RS06
+    path: eval_samples/06_Sam Altman最新访谈：我在几件事上判断错了，AI改变世界没那么快.txt
+    git_blob_sha: fff4cccb5233f299386b30169a932f82d9fb81a2
+    media_type: text/plain
+    role: development
+  - id: RS07
+    path: eval_samples/07_ZEST_Zero_shot_Embodied_Skill_Transfer.pdf
+    git_blob_sha: de6e295ba5e00fb2ec00c602949d2ba8c8766d68
+    media_type: application/pdf
+    role: development
+  - id: RS08
+    path: eval_samples/08_s41467-026-70240-6.pdf
+    git_blob_sha: 70c36e1302d14324557532cde33983e213abd951
+    media_type: application/pdf
+    role: development
+  - id: RS09
+    path: eval_samples/09_what is your most reliable model.md
+    git_blob_sha: 9e6936c026b01b5c2a666b4f4891b00f584a1d2d
+    media_type: text/markdown
+    role: development
+  - id: RS10
+    path: eval_samples/10_刚刚！“虚拟组织” AI大模型《Nature》.txt
+    git_blob_sha: e5bcb649c2374c41374bd8528598c06545989559
+    media_type: text/plain
+    role: development
+  - id: RS11
+    path: eval_samples/11_刚刚，Qwen3.8-Flash震撼发布，我们看到了Qwen4的骨架.txt
+    git_blob_sha: 334ce867f9888bf07e6f851a9d19c51f033506af
+    media_type: text/plain
+    role: development
+  - id: RS12
+    path: eval_samples/12_独家专访临界点CEO乔天杰：机器人运动会7冠背后，灵巧手真正该比什么.txt
+    git_blob_sha: 72d8b85eab2030ebfdb567d664c0073f62b96531
+    media_type: text/plain
+    role: development
+
+reserved_unconsumed:
+  - id: RS13
+    path: eval_samples/13_看懂银河通用，就读懂了具身智能的未来.txt
+    git_blob_sha: c93e5d61237df82fa5e54f274a73a36a1ecf9690
+    status: RESERVED_NOT_IN_DEV_CORPUS
+  - id: RS14
+    path: eval_samples/14_突发！Opus 5.1被曝本周发布，最强AI智能体恐大洗牌.txt
+    git_blob_sha: b75c584b3ebcadba2465207415dc00d4f8ca9939
+    status: RESERVED_NOT_IN_DEV_CORPUS
