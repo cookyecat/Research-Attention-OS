@@ -125,15 +125,20 @@ def test_auditor_repairs_structurally_invalid_first_output_once():
     assert result["schema_events"][1]["status"] == "repaired"
 
 
-def test_controlled_cases_are_pinned_and_cover_three_verdicts():
+def test_controlled_cases_are_pinned_and_preserve_gold_provenance():
     source = _rs02_source()
     _verify_case_supports_exist(source)
 
     assert [case["human_gold"] for case in CONTROLLED_CASES] == [
         "SUFFICIENT",
         "INSUFFICIENT",
+        "INSUFFICIENT",
         "UNCERTAIN",
     ]
+    assert CONTROLLED_CASES[2]["gold_status"] == "POST_RUN_ADJUDICATED_20260907"
+    assert CONTROLLED_CASES[3]["gold_status"] == "PREDECLARED_CALIBRATION_AFTER_INITIAL_RUN"
+    assert "PR throughput" in CONTROLLED_CASES[2]["semantic_object"]
+    assert "PR throughput" not in CONTROLLED_CASES[3]["semantic_object"]
     assert all(case["evidence"] for case in CONTROLLED_CASES)
     assert all(
         support["support_excerpt"] in source.rendered_text
