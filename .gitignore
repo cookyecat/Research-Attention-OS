@@ -47,7 +47,7 @@ pnpm-debug.log*
 Thumbs.db
 
 # Live eval reports
-eval/live/results/*
+# eval/live/results/*
 !eval/live/results/.gitkeep
 !eval/live/results/standing_radar_fit_v1_first_run.json
 !eval/live/results/standing_radar_intersection_diag_v1_first_run.json
