@@ -1,0 +1,28 @@
+# NO-DELTA AWARE INTEGRATED HUMAN GOLD v1
+# Human labels elicited after the integrated wiring harness was frozen and before any scored integrated estimator run.
+# Preserve all labels exactly as supplied; do not repair formula inconsistencies post hoc.
+
+name: raos-no-delta-aware-integrated-human-gold-v1
+variable: NO_DELTA_AWARE
+validation_type: INTEGRATED_FRESH_VALIDATION
+label_provenance: HUMAN_ELICITED
+fresh_template_commit: 20bf62d173790692acdbeeb1d29a5575d85f79e6
+integration_freeze_commit: c39292be9b4d782391c845368efa7346502be7ec
+user_reported_repo_head_after_p_archive: 4d91f20288a887b3c0bcf0c5d3353fcb8cadb971
+notes:
+  - "Some cases felt borderline to the Human annotator; preserve labels as-is for attribution."
+  - "Final is an independently elicited attention-action judgment, not mechanically derived from D/S/P."
+
+cases:
+  - {id: IA1, D: OUT, S: NOT_MATERIAL, P: NOT_SALIENT, final: DROP}
+  - {id: IA2, D: OUT, S: NOT_MATERIAL, P: SALIENT, final: DROP}
+  - {id: IA3, D: IN, S: NOT_MATERIAL, P: NOT_SALIENT, final: DROP}
+  - {id: IA4, D: IN, S: NOT_MATERIAL, P: SALIENT, final: AWARE}
+  - {id: IA5, D: IN, S: MATERIAL, P: NOT_SALIENT, final: AWARE}
+  - {id: IA6, D: IN, S: MATERIAL, P: SALIENT, final: AWARE}
+  - {id: IA7, D: IN, S: MATERIAL, P: NOT_SALIENT, final: AWARE}
+  - {id: IA8, D: IN, S: MATERIAL, P: SALIENT, final: AWARE}
+  - {id: IA9, D: IN, S: NOT_MATERIAL, P: NOT_SALIENT, final: DROP}
+  - {id: IA10, D: OUT, S: NOT_MATERIAL, P: NOT_SALIENT, final: DROP}
+  - {id: IA11, D: OUT, S: MATERIAL, P: NOT_SALIENT, final: DROP}
+  - {id: IA12, D: OUT, S: MATERIAL, P: SALIENT, final: DROP}
