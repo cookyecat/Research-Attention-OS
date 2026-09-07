@@ -32,6 +32,9 @@ class LoadedSemanticSource:
     char_count: int
     page_count: int | None
     rendered_text: str
+    published_at: str = "unknown"
+    updated_at: str = "unknown"
+    captured_at: str = "unknown"
 
 
 def _sha256_bytes(payload: bytes) -> str:
@@ -47,6 +50,11 @@ def _git_blob_sha(path: Path) -> str:
         text=True,
     )
     return proc.stdout.strip()
+
+
+def _metadata_value(entry: dict[str, Any], key: str) -> str:
+    value = str(entry.get(key, "unknown") or "unknown").strip()
+    return value or "unknown"
 
 
 def load_dev_manifest(path: Path | None = None) -> dict[str, Any]:
@@ -123,6 +131,9 @@ def load_manifest_source(entry: dict[str, Any]) -> LoadedSemanticSource:
         char_count=len(rendered_text),
         page_count=page_count,
         rendered_text=rendered_text,
+        published_at=_metadata_value(entry, "published_at"),
+        updated_at=_metadata_value(entry, "updated_at"),
+        captured_at=_metadata_value(entry, "captured_at"),
     )
 
 
@@ -146,6 +157,9 @@ def corpus_inventory(path: Path | None = None) -> list[dict[str, Any]]:
                 "text_sha256": source.text_sha256,
                 "char_count": source.char_count,
                 "page_count": source.page_count,
+                "published_at": source.published_at,
+                "updated_at": source.updated_at,
+                "captured_at": source.captured_at,
             }
         )
     return inventory
