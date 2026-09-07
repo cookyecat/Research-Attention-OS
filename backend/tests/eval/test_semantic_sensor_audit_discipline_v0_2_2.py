@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import sys
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -158,6 +159,37 @@ def test_v0_2_2_accepts_first_pass_auditable_output_without_schema_change():
     affected = frame["affected_systems_populations"][0]
     assert affected["support_ids"] == ["ev-codebase"]
     assert len(result["batch"]["non_event_units"]) == 1
+
+
+def test_v0_2_2_repair_path_serializes_pydantic_valueerror_context():
+    source = _source()
+    invalid = _auditable_batch(source)
+    invalid["event_frames"][0]["affected_systems_populations"][0]["support_ids"] = ["missing-evidence"]
+    calls = 0
+
+    def fake_chat(messages, **kwargs):
+        nonlocal calls
+        calls += 1
+        payload = invalid if calls == 1 else _auditable_batch(source)
+        return payload, {
+            "model": "fake",
+            "prompt_tokens": 1,
+            "completion_tokens": 1,
+            "latency_ms": 1,
+        }
+
+    result = estimate_semantic_evidence_v0_2_2(
+        source,
+        as_of="2026-09-07",
+        chat_fn=fake_chat,
+    )
+
+    assert calls == 2
+    assert result["scorable"] is True
+    assert result["repair_used"] is True
+    # Regression for Pydantic v2 errors whose ctx contains a raw ValueError object.
+    serialized = json.dumps(result["schema_events"], ensure_ascii=False)
+    assert "missing-evidence" in serialized
 
 
 def test_v0_2_2_invocation_records_audit_policy():
