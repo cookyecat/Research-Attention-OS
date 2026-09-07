@@ -1,0 +1,98 @@
+name: raos-semantic-sensor-auditor-broadening-v0.1
+status: DEVELOPMENT_ONLY_PREREGISTERED
+created_at: 2026-09-07
+purpose: >-
+  Cross-source broadening after RS02 saturation. Freeze the current Semantic Sensor
+  and Semantic Evidence Auditor, then inspect whether previously observed failure
+  structures repeat across heterogeneous development sources before changing any
+  mechanism.
+
+methodology_contract:
+  anti_overfitting_protocol: 56_SENSOR_AUDITOR_GENERALIZATION_AND_ANTI_OVERFITTING_PROTOCOL.md
+  rs02_status: SATURATED_DEVELOPMENT
+  rs02_use: REGRESSION_AND_BUG_REPRODUCTION_ONLY
+  reserved_sources_must_remain_unconsumed:
+    - RS13
+    - RS14
+  no_between_source_tuning: true
+  no_new_rule_from_single_source: true
+  mechanism_change_requires_cross_source_repetition: true
+
+frozen_system:
+  sensor:
+    version: semantic-evidence-extractor-v0.2.2
+    prompt_version: semantic-evidence-extraction-v0.2.2
+    prompt_sha256: 52bae84a3d06bbaa597cdbf43460c8945dcd13cb53616390c05a6a40995dfbe9
+    structured_schema: SemanticExtractionBatchV0_2
+    temporal_anchor_policy: measurement-time-never-substitutes-source-time-v0.2.1
+    audit_policy: sufficient-provenance-attribution-locator-dedup-v0.2.2
+    thinking: disabled
+    temperature: 0.1
+  auditor:
+    version: semantic-evidence-auditor-v0.1.1
+    prompt_version: semantic-evidence-audit-v0.1.1
+    prompt_sha256: d22540217a0bec35468e327c6b6df8041eee7fb1c79dd676cfa38935774b81bb
+    decision_policy: binary-sufficiency-v0.1.1
+    audit_scope: one-semantic-object-vs-cited-evidence-only
+    thinking: disabled
+    temperature: 0.1
+  evidence_policy:
+    mode: BASELINE_CITED_EVIDENCE_ONLY
+    packet_v0_1_augmentation: disabled
+    rationale: >-
+      Evidence Packet v0.1 has only partial RS02 development support and must not be
+      promoted to a general default before cross-source evidence exists.
+
+source_order:
+  - id: RS11
+    genre: news_release_like
+    path: eval_samples/11_刚刚，Qwen3.8-Flash震撼发布，我们看到了Qwen4的骨架.txt
+    git_blob_sha: 334ce867f9888bf07e6f851a9d19c51f033506af
+    lifecycle_before_run: DEVELOPMENT_ACTIVE
+  - id: RS05
+    genre: technical_tutorial_method
+    path: eval_samples/05_PyTorch 性能剖析（第 1 部分）.txt
+    git_blob_sha: cf257af82eca625c5a614381b94b139252acfae9
+    lifecycle_before_run: DEVELOPMENT_ACTIVE
+  - id: RS06
+    genre: long_interview_mixed_epistemic
+    path: eval_samples/06_Sam Altman最新访谈：我在几件事上判断错了，AI改变世界没那么快.txt
+    git_blob_sha: fff4cccb5233f299386b30169a932f82d9fb81a2
+    lifecycle_before_run: DEVELOPMENT_ACTIVE
+  - id: RS04
+    genre: healthy_pdf_paper_like
+    path: eval_samples/04_Physical AI is enabled by mechanical hardware.pdf
+    git_blob_sha: 4503afa34f8df893aa232e704551445f5e864926
+    lifecycle_before_run: DEVELOPMENT_ACTIVE
+
+predeclared_sensor_observations:
+  - first_pass_structural_validity
+  - repair_usage
+  - event_frame_count
+  - epistemic_unit_count
+  - semantic_omission
+  - semantic_overreach
+  - actor_time_scope_fidelity
+  - event_epistemic_decomposition
+  - provenance_traceability
+  - provenance_support_sufficiency
+  - context_dependency
+  - metadata_dependency
+
+predeclared_auditor_observations:
+  - first_pass_structural_validity
+  - sufficient_count
+  - insufficient_count
+  - reason_code_distribution
+  - likely_false_accept
+  - likely_false_reject
+  - repeated_failure_structure_across_sources
+
+interpretation_rules:
+  - Do not report sufficient_rate as Auditor accuracy without Human Gold.
+  - Do not modify Sensor, Auditor, prompt, schema, or evidence policy between sources.
+  - If an implementation/instrumentation bug invalidates the round, archive it as invalid, fix the bug, version the fix, and restart or separate the round.
+  - A pattern seen in only one broadening source is a local residual, not a new general rule.
+  - Mechanism redesign is considered only after the same causal structure repeats across materially different sources and survives Human adjudication.
+
+fresh_validation: NONE
