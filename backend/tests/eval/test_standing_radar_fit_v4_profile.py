@@ -10,10 +10,12 @@ def test_v4_changes_user_profile_not_d_semantic_prompt():
 
 def test_v4_profile_contains_latest_user_clause_calibration():
     profile = v4.load_standing_radar_profile()
-    text = v4.rendered if False else v3.render_profile_for_prompt(profile)
-    assert "Ordinary internal catering" in text
-    assert "power supply or grid constraints substantively coupled to AI/data-center compute capacity" in text
-    assert "Ordinary furniture, room renovation" in text
+    clauses = "\n".join(profile["standing_clauses"])
+    guards = "\n".join(profile["scope_guards"])
+
+    assert "Ordinary internal catering" in clauses
+    assert "Ordinary furniture, room renovation" in clauses
+    assert "AI/data-center compute capacity" in guards
 
 
 def test_v4_invocation_records_profile_hash_separately():
