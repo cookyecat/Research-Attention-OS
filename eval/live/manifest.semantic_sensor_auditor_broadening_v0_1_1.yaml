@@ -1,0 +1,89 @@
+name: raos-semantic-sensor-auditor-broadening-v0.1.1
+status: DEVELOPMENT_ONLY_PREREGISTERED
+created_at: 2026-09-08
+purpose: >-
+  Text-first cross-source broadening after Round v0.1 was blocked by three malformed
+  long-text model completions. PDF ingestion is explicitly out of scope for this round.
+
+methodology_contract:
+  anti_overfitting_protocol: 56_SENSOR_AUDITOR_GENERALIZATION_AND_ANTI_OVERFITTING_PROTOCOL.md
+  prior_round: eval/live/manifest.semantic_sensor_auditor_broadening_v0_1.yaml
+  prior_round_status: BLOCKED_BY_MODEL_OUTPUT_OBSERVABILITY
+  rs02_status: SATURATED_DEVELOPMENT
+  rs02_use: REGRESSION_AND_BUG_REPRODUCTION_ONLY
+  pdf_ingestion_scope: DEFERRED_NOT_CURRENT_FRONTIER
+  no_between_source_tuning: true
+  no_new_rule_from_single_source: true
+  mechanism_change_requires_cross_source_repetition: true
+  reserved_sources_must_remain_unconsumed:
+    - RS13
+    - RS14
+
+frozen_system:
+  sensor:
+    version: semantic-evidence-extractor-v0.2.2
+    prompt_version: semantic-evidence-extraction-v0.2.2
+    prompt_sha256: 52bae84a3d06bbaa597cdbf43460c8945dcd13cb53616390c05a6a40995dfbe9
+    structured_schema: SemanticExtractionBatchV0_2
+    temporal_anchor_policy: measurement-time-never-substitutes-source-time-v0.2.1
+    audit_policy: sufficient-provenance-attribution-locator-dedup-v0.2.2
+    thinking: disabled
+    temperature: 0.1
+  auditor:
+    version: semantic-evidence-auditor-v0.1.1
+    prompt_version: semantic-evidence-audit-v0.1.1
+    prompt_sha256: d22540217a0bec35468e327c6b6df8041eee7fb1c79dd676cfa38935774b81bb
+    decision_policy: binary-sufficiency-v0.1.1
+    audit_scope: one-semantic-object-vs-cited-evidence-only
+    thinking: disabled
+    temperature: 0.1
+  evidence_policy:
+    mode: BASELINE_CITED_EVIDENCE_ONLY
+    packet_v0_1_augmentation: disabled
+
+source_order:
+  - id: RS11
+    genre: news_release_like
+    path: eval_samples/11_刚刚，Qwen3.8-Flash震撼发布，我们看到了Qwen4的骨架.txt
+    git_blob_sha: 334ce867f9888bf07e6f851a9d19c51f033506af
+  - id: RS05
+    genre: technical_tutorial_method
+    path: eval_samples/05_PyTorch 性能剖析（第 1 部分）.txt
+    git_blob_sha: cf257af82eca625c5a614381b94b139252acfae9
+  - id: RS06
+    genre: long_interview_mixed_epistemic
+    path: eval_samples/06_Sam Altman最新访谈：我在几件事上判断错了，AI改变世界没那么快.txt
+    git_blob_sha: fff4cccb5233f299386b30169a932f82d9fb81a2
+  - id: RS12
+    genre: industry_technical_interview
+    path: eval_samples/12_独家专访临界点CEO乔天杰：机器人运动会7冠背后，灵巧手真正该比什么.txt
+    git_blob_sha: 72d8b85eab2030ebfdb567d664c0073f62b96531
+
+predeclared_sensor_observations:
+  - first_pass_structural_validity
+  - repair_usage
+  - event_frame_count
+  - epistemic_unit_count
+  - semantic_omission
+  - semantic_overreach
+  - actor_time_scope_fidelity
+  - event_epistemic_decomposition
+  - provenance_traceability
+  - provenance_support_sufficiency
+
+predeclared_transport_observations:
+  - model_call_success
+  - json_parse_success
+  - finish_reason_if_available
+  - prompt_tokens_if_available
+  - completion_tokens_if_available
+  - raw_completion_length_if_available
+
+interpretation_rules:
+  - PDF behavior from RS04 is archived but must not drive this round.
+  - Do not report malformed model output as semantic failure.
+  - Do not modify Sensor/Auditor semantics between sources.
+  - Instrumentation-only observability fixes may be versioned separately if required.
+  - A pattern seen in only one broadening source is a local residual, not a general rule.
+
+fresh_validation: NONE
