@@ -1,7 +1,8 @@
 """DeepSeek-specific explicit thinking transport for controlled development A/B.
 
 This bypasses RAOS_LLM_THINKING_PROTOCOL so the wire-level thinking state is unambiguous.
-It stores only reasoning-content length, never reasoning text.
+It stores reasoning observability only (token count / presence / character count), never
+reasoning text.
 """
 from __future__ import annotations
 
@@ -14,6 +15,15 @@ import httpx
 
 ThinkingType = Literal["enabled", "disabled"]
 ReasoningEffort = Literal["low", "high", "max"]
+
+
+class DeepSeekJSONParseError(RuntimeError):
+    """Final answer JSON failed parsing, while preserving provider diagnostics."""
+
+    def __init__(self, message: str, *, meta: dict[str, Any], raw_content_tail: str):
+        super().__init__(message)
+        self.meta = meta
+        self.raw_content_tail = raw_content_tail
 
 
 def _parse_json_object(content: str) -> dict[str, Any]:
@@ -72,15 +82,14 @@ def chat_json_deepseek_explicit_thinking(
     content = message.get("content") or ""
     reasoning_content = message.get("reasoning_content") or ""
     usage = body.get("usage") or {}
-    try:
-        parsed = _parse_json_object(content)
-    except Exception as exc:
-        raise LLMError(f"model did not return JSON: {exc}") from exc
+    completion_details = usage.get("completion_tokens_details") or {}
 
+    # Construct diagnostics BEFORE parsing so malformed/truncated JSON remains observable.
     meta = {
         "latency_ms": latency_ms,
         "prompt_tokens": int(usage.get("prompt_tokens") or 0),
         "completion_tokens": int(usage.get("completion_tokens") or 0),
+        "reasoning_tokens": int(completion_details.get("reasoning_tokens") or 0),
         "model": body.get("model") or (model or settings.llm_model),
         "estimated_cost_usd": estimate_cost_usd(
             int(usage.get("prompt_tokens") or 0),
@@ -97,4 +106,14 @@ def chat_json_deepseek_explicit_thinking(
         "temperature_requested": 0.1,
         "temperature_note": "DeepSeek documents temperature as ignored when thinking is enabled.",
     }
+
+    try:
+        parsed = _parse_json_object(content)
+    except Exception as exc:
+        raise DeepSeekJSONParseError(
+            f"model did not return JSON: {exc}",
+            meta=meta,
+            raw_content_tail=content[-1200:],
+        ) from exc
+
     return parsed, meta
