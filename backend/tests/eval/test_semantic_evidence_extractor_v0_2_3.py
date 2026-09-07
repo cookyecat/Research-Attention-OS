@@ -1,6 +1,16 @@
 from __future__ import annotations
 
+from pathlib import Path
+import sys
+
 import pytest
+
+ROOT = Path(__file__).resolve().parents[3]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+BACKEND = ROOT / "backend"
+if str(BACKEND) not in sys.path:
+    sys.path.insert(0, str(BACKEND))
 
 from eval.live.semantic_evidence_batch_v0_2 import SemanticExtractionBatchV0_2
 from eval.live.semantic_evidence_extractor_v0_2_3 import (
