@@ -1,4 +1,5 @@
 from pathlib import Path
+import subprocess
 
 import pytest
 from pydantic import ValidationError
@@ -22,6 +23,19 @@ def test_dev_corpus_is_12_and_reserves_13_14():
     manifest = load_dev_manifest()
     assert [item["id"] for item in manifest["sources"]] == [f"RS{i:02d}" for i in range(1, 13)]
     assert [item["id"] for item in manifest["reserved_unconsumed"]] == ["RS13", "RS14"]
+
+
+def test_all_development_paths_match_pinned_git_blobs():
+    manifest = load_dev_manifest()
+    for entry in manifest["sources"]:
+        path = ROOT / entry["path"]
+        assert path.is_file(), entry["path"]
+        actual = subprocess.check_output(
+            ["git", "hash-object", str(path)],
+            cwd=ROOT,
+            text=True,
+        ).strip()
+        assert actual == entry["git_blob_sha"], entry["id"]
 
 
 def test_text_loader_verifies_blob_and_adds_paragraph_pointers():
