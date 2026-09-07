@@ -1,17 +1,19 @@
 from pathlib import Path
 import subprocess
+import sys
 
 import pytest
 from pydantic import ValidationError
+
+ROOT = Path(__file__).resolve().parents[3]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from eval.live.semantic_evidence_batch_v0_1 import SemanticExtractionBatchV0_1
 from eval.live.semantic_source_loader_v0_1 import (
     load_dev_manifest,
     load_manifest_source,
 )
-
-
-ROOT = Path(__file__).resolve().parents[3]
 
 
 def _entry(source_id: str):
