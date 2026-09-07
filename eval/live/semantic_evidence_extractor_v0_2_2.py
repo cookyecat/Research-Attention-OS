@@ -160,6 +160,17 @@ def build_messages(source: LoadedSemanticSource, *, as_of: str) -> list[dict[str
     return [{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": user}]
 
 
+def _json_safe(value: Any) -> Any:
+    """Normalize diagnostics so Pydantic ctx objects remain artifact/repair JSON-safe."""
+    return json.loads(json.dumps(value, ensure_ascii=False, default=str))
+
+
+def _validation_errors(exc: ValidationError | ValueError) -> list[dict[str, Any]]:
+    if isinstance(exc, ValidationError):
+        return _json_safe(exc.errors(include_url=False))
+    return [{"type": "source_binding", "msg": str(exc)}]
+
+
 def _validate_source_binding(batch: SemanticExtractionBatchV0_2, source: LoadedSemanticSource, *, as_of: str) -> None:
     if batch.source_ids != [source.source_id]:
         raise ValueError(f"batch source_ids must equal [{source.source_id!r}], got {batch.source_ids!r}")
@@ -205,18 +216,18 @@ def estimate_semantic_evidence_v0_2_2(source: LoadedSemanticSource, *, as_of: st
         meta["schema_repaired"] = False
         return {"scorable": True, "batch": obj.model_dump(mode="json"), "failure_kind": None, "error": None, "repair_used": False, "schema_events": [], "invalid_raw": None, "model_meta": meta}
     except (ValidationError, ValueError) as exc:
-        errors = exc.errors(include_url=False) if isinstance(exc, ValidationError) else [{"type": "source_binding", "msg": str(exc)}]
+        errors = _validation_errors(exc)
         schema_events.append({"retry": 0, "status": "invalid", "errors": errors})
 
     repair_messages = list(messages) + [
-        {"role": "assistant", "content": json.dumps(parsed, ensure_ascii=False)[:16000]},
+        {"role": "assistant", "content": json.dumps(parsed, ensure_ascii=False, default=str)[:16000]},
         {"role": "user", "content": "Your JSON failed the required contract. Correct structural/provenance/temporal-binding errors only; do not invent unsupported evidence. Preserve the audit rules on evidence sufficiency, attribution, locator filtering, and deduplication.\nErrors:\n" + json.dumps(schema_events[-1]["errors"], ensure_ascii=False) + "\nReturn corrected JSON only.\n\n" + COMPACT_OUTPUT_CONTRACT},
     ]
     try:
         parsed2, meta2 = fn(repair_messages, **call_kw)
         meta = merge_usage_meta(meta, meta2)
     except LLMError as exc:
-        return {"scorable": False, "batch": None, "failure_kind": "model_call_after_schema_failure", "error": str(exc)[:2000], "repair_used": True, "schema_events": schema_events, "invalid_raw": parsed, "model_meta": dict(meta or {})}
+        return {"scorable": False, "batch": None, "failure_kind": "model_call_after_schema_failure", "error": str(exc)[:2000], "repair_used": True, "schema_events": schema_events, "invalid_raw": _json_safe(parsed), "model_meta": dict(meta or {})}
 
     try:
         obj = SemanticExtractionBatchV0_2.model_validate(parsed2)
@@ -225,9 +236,9 @@ def estimate_semantic_evidence_v0_2_2(source: LoadedSemanticSource, *, as_of: st
         meta["schema_repaired"] = True
         return {"scorable": True, "batch": obj.model_dump(mode="json"), "failure_kind": None, "error": None, "repair_used": True, "schema_events": schema_events, "invalid_raw": None, "model_meta": meta}
     except (ValidationError, ValueError) as exc2:
-        errors2 = exc2.errors(include_url=False) if isinstance(exc2, ValidationError) else [{"type": "source_binding", "msg": str(exc2)}]
+        errors2 = _validation_errors(exc2)
         schema_events.append({"retry": 1, "status": "invalid", "errors": errors2})
-        return {"scorable": False, "batch": None, "failure_kind": "schema_validation", "error": "SemanticExtractionBatchV0_2 invalid after repair", "repair_used": True, "schema_events": schema_events, "invalid_raw": parsed2, "model_meta": meta}
+        return {"scorable": False, "batch": None, "failure_kind": "schema_validation", "error": "SemanticExtractionBatchV0_2 invalid after repair", "repair_used": True, "schema_events": schema_events, "invalid_raw": _json_safe(parsed2), "model_meta": meta}
 
 
 def invocation_record(*, requested_model: str | None, provider_base_url: str | None) -> dict[str, Any]:
