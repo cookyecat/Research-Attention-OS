@@ -11,11 +11,21 @@ Frozen policy gate:
 This module does not redefine D, S, P, or the production Scheduler. It adapts the
 three research estimators to the Scheduler's existing AwarenessSignals placeholder
 and preserves component diagnostics for attribution.
+
+Important eval bootstrap invariant:
+    repo .env must be loaded before importing production Scheduler/model modules,
+    because that import chain reaches app.db -> app.config.settings and Settings()
+    is instantiated at import time.
 """
 
 from __future__ import annotations
 
 from typing import Any, Literal
+
+# Load eval credentials/config before any app.* import can instantiate Settings().
+from eval.live.run_standing_radar_fit_eval import load_repo_env
+
+load_repo_env()
 
 from app.enums import Disposition
 from app.services.scheduler import AwarenessSignals, SchedulerFeatures, route
