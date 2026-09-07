@@ -1,0 +1,94 @@
+name: raos-semantic-sensor-minimal-sufficient-v0.1
+status: DEVELOPMENT_ONLY_PREREGISTERED
+created_at: 2026-09-08
+purpose: >-
+  Test whether Semantic Sensor can preserve independent source-grounded semantics
+  while materially reducing representation cost and eliminating observed 8192-token
+  completion truncation.
+
+methodology_contract:
+  anti_overfitting_protocol: 56_SENSOR_AUDITOR_GENERALIZATION_AND_ANTI_OVERFITTING_PROTOCOL.md
+  theory_doc: 59_SEMANTIC_SENSOR_MINIMAL_SUFFICIENT_REPRESENTATION.md
+  no_between_source_tuning: true
+  no_new_rule_from_single_source: true
+  reserved_sources_must_remain_unconsumed:
+    - RS13
+    - RS14
+
+baseline:
+  extractor_version: semantic-evidence-extractor-v0.2.2
+  prompt_sha256: 52bae84a3d06bbaa597cdbf43460c8945dcd13cb53616390c05a6a40995dfbe9
+  model: deepseek-v4-flash
+  thinking: disabled
+  temperature: 0.1
+  provider_completion_ceiling_observed: 8192
+  transport_diagnostic:
+    RS11:
+      completion_tokens: 7605
+      finish_reason: stop
+    RS05:
+      completion_tokens: 8192
+      finish_reason: length
+    RS06:
+      completion_tokens: 7097
+      finish_reason: stop
+    RS12:
+      completion_tokens: 8192
+      finish_reason: length
+
+candidate:
+  extractor_version: semantic-evidence-extractor-v0.2.3
+  prompt_version: semantic-evidence-extraction-v0.2.3-minimal-sufficient
+  structured_schema: SemanticExtractionBatchV0_2
+  temporal_anchor_policy: measurement-time-never-substitutes-source-time-v0.2.1
+  audit_policy: sufficient-provenance-attribution-locator-dedup-v0.2.2
+  compression_policy: minimal-sufficient-semantic-basis-v0.2.3
+  max_non_event_units: 12
+  max_supports_per_non_event_unit: 4
+  preferred_non_event_range: 6..10_when_semantically_sufficient
+  model: deepseek-v4-flash
+  thinking: disabled
+  temperature: 0.1
+
+source_order:
+  - RS11
+  - RS05
+  - RS06
+  - RS12
+
+predeclared_transport_metrics:
+  - scorable
+  - first_pass_valid
+  - repair_used
+  - completion_tokens
+  - event_frame_count
+  - non_event_unit_count
+  - support_count
+  - statement_chars
+  - support_excerpt_chars
+
+preferred_engineering_region:
+  completion_tokens: approximately_6000_or_less
+  note: >-
+    This is engineering headroom under the observed 8192-token provider ceiling,
+    not a semantic law and not a standalone pass/fail criterion.
+
+predeclared_human_semantic_sufficiency_dimensions:
+  - missing_independent_event_or_result
+  - missing_independent_claim_method_or_mechanism
+  - missing_material_quantitative_result
+  - lost_condition_caveat_or_counterexample
+  - actor_attribution_error
+  - time_or_scope_error
+  - semantic_overreach
+  - event_epistemic_decomposition
+  - provenance_traceability
+  - provenance_sufficiency
+
+acceptance_logic:
+  - Representation cost must fall materially and truncation should disappear.
+  - Shortness alone is not success; Human Semantic Sufficiency must remain acceptable.
+  - Do not use Auditor pass rate as semantic coverage.
+  - Do not change the candidate after seeing an early source.
+
+fresh_validation: NONE
