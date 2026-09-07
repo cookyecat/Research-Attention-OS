@@ -43,8 +43,8 @@ def _rs02_source():
     return load_manifest_source(entry)
 
 
-# Human development labels. These cases are intentionally tiny and reused only for
-# calibration/attribution; they are not fresh validation evidence.
+# Development labels only. They may be calibrated, but every post-run adjudication must
+# remain explicit so a later report cannot silently reinterpret the initial controlled run.
 CONTROLLED_CASES = [
     {
         "audit_id": "RS02-AUD-001-correct-codebase-support",
@@ -58,6 +58,7 @@ CONTROLLED_CASES = [
             }
         ],
         "human_gold": "SUFFICIENT",
+        "gold_status": "PREDECLARED_INITIAL",
         "why": "The excerpt explicitly identifies the code as Cursor code.",
     },
     {
@@ -72,10 +73,11 @@ CONTROLLED_CASES = [
             }
         ],
         "human_gold": "INSUFFICIENT",
+        "gold_status": "PREDECLARED_INITIAL",
         "why": "The excerpt supports PR volume, but not the identity of the affected codebase.",
     },
     {
-        "audit_id": "RS02-AUD-003-ambiguous-efficiency-scope",
+        "audit_id": "RS02-AUD-003-overstrong-efficiency-scope",
         "object_type": "epistemic_unit",
         "semantic_object": "Boris achieved approximately the same PR throughput as Lauren Tan.",
         "evidence": [
@@ -85,8 +87,24 @@ CONTROLLED_CASES = [
                 "support_excerpt": "很多人，包括 Claude Code 的 Boris，都提过自己借助 coding agent 达到了类似的效率。",
             }
         ],
+        "human_gold": "INSUFFICIENT",
+        "gold_status": "POST_RUN_ADJUDICATED_20260907",
+        "why": "The excerpt says similar efficiency, but PR throughput is a stronger material claim not stated or conservatively entailed by the cited evidence.",
+    },
+    {
+        "audit_id": "RS02-AUD-004-ambiguous-efficiency-reference",
+        "object_type": "epistemic_unit",
+        "semantic_object": "Boris achieved efficiency similar to Lauren Tan's.",
+        "evidence": [
+            {
+                "source_id": "RS02",
+                "support_pointer": "PARA 0006",
+                "support_excerpt": "很多人，包括 Claude Code 的 Boris，都提过自己借助 coding agent 达到了类似的效率。",
+            }
+        ],
         "human_gold": "UNCERTAIN",
-        "why": "The excerpt says similar efficiency but does not define whether efficiency means PR throughput specifically.",
+        "gold_status": "PREDECLARED_CALIBRATION_AFTER_INITIAL_RUN",
+        "why": "The excerpt is relevant and contains an explicit similarity relation, but the local excerpt does not resolve what the anaphoric '类似' refers to, so Lauren Tan as the comparison target remains ambiguous.",
     },
 ]
 
@@ -129,6 +147,7 @@ def main() -> None:
                 "semantic_object": case["semantic_object"],
                 "evidence": case["evidence"],
                 "human_gold": case["human_gold"],
+                "gold_status": case["gold_status"],
                 "human_gold_rationale": case["why"],
                 "scorable": bool(result.get("scorable")),
                 "failure_kind": result.get("failure_kind"),
@@ -164,6 +183,7 @@ def main() -> None:
         "n_first_pass_valid": sum(1 for row in rows if row["scorable"] and not row["repair_used"]),
         "n_verdict_match": sum(1 for row in rows if row["verdict_match"]),
         "cases": rows,
+        "methodology_note": "Development/calibration only. AUD-003 Gold was adjudicated after the first real run; do not reinterpret the original 2/3 predeclared result as fresh 3/3 evidence.",
     }
 
     DEFAULT_OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -184,6 +204,7 @@ def main() -> None:
                     {
                         "audit_id": row["audit_id"],
                         "gold": row["human_gold"],
+                        "gold_status": row["gold_status"],
                         "predicted": row["predicted_verdict"],
                         "match": row["verdict_match"],
                         "repair_used": row["repair_used"],
