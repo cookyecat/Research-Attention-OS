@@ -1,108 +1,132 @@
 # DeepSeek Pro High-Thinking Raw Observability Checkpoint
 
-Status: **ACTIVE DEVELOPMENT / HIGH-THINKING RESULT NOT YET ATTRIBUTED**
+Status: **ATTRIBUTED / WORKING BASELINE SELECTED / MODEL-CAPABILITY FRONTIER DEFERRED**  
+Date: 2026-09-08
 
-## Why this checkpoint exists
+## Final controlled result
 
-The first explicit-thinking A/B on RS05 produced a valid explicit-disabled result but an unscorable explicit-enabled/high result because malformed final JSON caused the probe to discard provider diagnostics.
-
-That run therefore established only:
-
-```text
-EXPLICIT_DISABLED
-36 semantic units
-finish_reason = stop
-reasoning_content = absent
-```
-
-which independently reproduced DeepSeek Pro's proposition-level semantic fragmentation under confirmed non-thinking mode.
-
-The high-thinking branch remained unresolved.
-
-## Instrumentation correction
-
-The new v0.2 probe captures provider observability before attempting final JSON parsing.
-
-Recorded fields include:
+RS05 explicit non-thinking reference:
 
 ```text
-prompt_tokens
-prompt_cache_hit_tokens
-prompt_cache_miss_tokens
-completion_tokens
-completion_tokens_details.reasoning_tokens
-total_tokens
-finish_reason
-reasoning_content presence / character count / SHA256
-final content character count / SHA256 / diagnostic head+tail
-JSON parse status
-schema validation status
+model                         deepseek-v4-pro
+thinking                      disabled (wire explicit)
+non_event_units               36
+completion_tokens             8917
+finish_reason                 stop
+reasoning_content             absent
 ```
 
-Reasoning text itself is not persisted.
-
-## Frozen semantic comparison
-
-The semantic prompt remains the RS05 open-stop prompt from v0.1:
+RS05 explicit high-thinking probe:
 
 ```text
-same source = RS05
-same open semantic stopping contract
-same Semantic Independence Test
-same hierarchical-abstraction instruction
-same provenance / temporal / epistemic rules
-same JSON field family
-model = deepseek-v4-pro
+model                         deepseek-v4-pro
+thinking                      enabled (wire explicit)
+reasoning_effort              high
+max_tokens                    32768
+prompt_tokens                 9708
+prompt_cache_hit_tokens       9600
+prompt_cache_miss_tokens      108
+completion_tokens             13421
+reasoning_tokens              3660
+visible_output_tokens         9761
+finish_reason                 stop
+reasoning_content_chars       15943
+final_content_chars           25604
+JSON parse                    PASS
+strict schema                 FAIL only because one unit had 5 supports > provenance cap 4
+apparent top-level units      29 (RS05-U01 ... RS05-U29)
 ```
 
-The high-thinking condition is explicit at the provider wire level:
+The output completed normally with substantial transport headroom. Therefore:
 
 ```text
-thinking = enabled
-reasoning_effort = high
+transport truncation          NOT CAUSAL
+JSON-mode completion          PASS
+high-thinking activation      CONFIRMED
 ```
 
-## Transport headroom
+The strict schema failure is a provenance guardrail violation, not evidence that the semantic completion failed.
 
-For this capability probe only:
+## Attribution
+
+Explicit high-effort reasoning appears to reduce top-level semantic fragmentation:
 
 ```text
-max_tokens = 32768
+non-thinking                  36 units
+high-thinking                 ~29 units
 ```
 
-This is a measurement choice, not a production recommendation. It exists to avoid confusing a reasoning+final-answer generation ceiling with semantic capability.
+This is a moderate consolidation improvement, not a solution to the minimal-semantic-basis problem.
 
-## Attribution questions
+The strongest current attribution is:
 
-The next result should distinguish:
+> **DeepSeek Pro is strong at proposition extraction, but its hierarchical semantic abstraction and global representation budgeting remain materially weaker than the manual GPT-5.6 Sol upper-bound probe on RS05 (~10 cohesive semantic clusters).**
 
-1. **Thinking improves hierarchical abstraction**
-   - materially fewer top-level units than the explicit-disabled 36-unit reference;
-   - semantic coverage preserved;
-   - final JSON complete.
+Thinking helps local consolidation, but does not close the abstraction-level gap.
 
-2. **Thinking does not materially improve hierarchical abstraction**
-   - top-level unit count remains near the mid/high 30s with complete output.
+Important distinction:
 
-3. **Reasoning consumes the generation budget**
-   - finish_reason=length or completion_tokens approaches max_tokens;
-   - reasoning_tokens consume a large fraction of generation;
-   - final JSON is truncated.
+```text
+more reasoning
+    !=
+automatically choosing a higher semantic abstraction level
+```
 
-4. **Thinking + JSON output stability issue**
-   - finish_reason=stop with substantial headroom;
-   - final JSON still malformed.
+The model must not only know which propositions are independently true; it must know **at what semantic level independence should be judged**.
 
-## Current theoretical frontier
+## Current engineering decision
 
-Current evidence supports:
+Do not continue tuning this frontier now.
 
-> **DeepSeek Pro is strong at proposition extraction but tends to represent too many propositions as separate top-level semantic units.**
+Use DeepSeek as the executable Semantic Sensor baseline so the full RAOS pipeline can continue to be integrated and measured.
 
-The open capability question is whether explicit high-effort reasoning can improve:
+Preferred working baseline for the current research phase:
 
-> **hierarchical semantic abstraction + global representation budgeting**
+```text
+model                         deepseek-v4-pro
+sensor                        v0.2.3 bounded minimal-sufficient candidate
+thinking                      disabled unless a downstream experiment explicitly requires otherwise
+status                        WORKING_BASELINE_WITH_KNOWN_ABSTRACTION_LIMITATION
+```
 
-Memorable methodology remains:
+Why:
+- v0.2.3 is structurally reliable and bounded;
+- Pro showed better global coverage than Flash under the same bounded contract;
+- high-thinking increases latency/output cost substantially while only partially improving fragmentation;
+- the remaining gap is now sufficiently attributed to justify deferral rather than further prompt churn.
+
+Do not reinterpret this baseline as a claim that 12 semantic units are universally sufficient. The numeric bound remains an engineering compromise, not the semantic law.
+
+## Deferred frontier
+
+Future work may revisit hierarchical abstraction through one or more of:
+
+```text
+stronger future model
+better abstraction-aware prompt / representation theory
+second-pass hierarchical consolidation
+multi-turn refinement
+local/open-source model after capability improves
+distillation from a stronger semantic-basis teacher
+```
+
+A second LLM pass may improve abstraction, but it adds another model round and is therefore intentionally deferred until end-to-end RAOS evidence shows that the current Sensor limitation is a real downstream bottleneck.
+
+## Role of GPT-5.6 Sol during development
+
+GPT-5.6 Sol may continue to serve as a **development upper-bound / adjudication oracle**, not as an implicit runtime dependency.
+
+Use it to answer questions such as:
+- what would a stronger hierarchical semantic basis look like?
+- is a DeepSeek omission or fragmentation materially important?
+- does a proposed representation change improve semantic sufficiency?
+
+The executable RAOS pipeline should remain reproducible without depending on the current chat session.
+
+## Methodology
 
 > **研发阶段买清晰度，生产阶段买效率。**
+
+And for this frontier:
+
+> **Do not keep optimizing an attributed model-capability residual when the current baseline is already sufficient to unlock the next system-level experiment.**
