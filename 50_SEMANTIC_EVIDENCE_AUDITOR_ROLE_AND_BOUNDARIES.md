@@ -2,7 +2,7 @@
 
 Status: **CANONICAL ROLE DEFINITION / ACTIVE MAINTENANCE CONTRACT**  
 Date: 2026-09-07  
-Purpose: preserve the stable role, boundaries, mental models, and engineering invariants of the Semantic Evidence Auditor so future work does not silently expand or distort its responsibilities.
+Purpose: preserve the stable role, boundaries, mental models, epistemic humility, and engineering invariants of the Semantic Evidence Auditor so future work does not silently expand or distort its responsibilities.
 
 > **If future implementation choices seem to make the Auditor reread, repair, judge importance, or allocate attention, return to this document before changing the architecture.**
 
@@ -40,13 +40,17 @@ Chinese compression:
 
 > **当前引用的证据，够不够支持这个语义对象？**
 
-This is the Auditor's core question. Do not silently expand it.
+A fuller statement of its operating philosophy is:
+
+> **在明确、有限、可审计的证据条件下，尽可能判断当前语义对象是否被充分支持，并把判断依据留下来。**
+
+This is the Auditor's core question and epistemic stance. Do not silently expand it.
 
 ---
 
 # 3. Airport-security / regulator mental model
 
-The Auditor is like **airport security** or a **regulatory checkpoint**.
+The Auditor is like **airport security**, a **regulatory checkpoint**, or a narrowly scoped **prosecutorial/evidentiary review gate**.
 
 Airport security does not decide:
 
@@ -66,7 +70,7 @@ It asks only:
 ```text
 semantic object
       ↑
-currently attached evidence
+currently attached evidence packet
 
 Is this edge sufficiently supported?
 ```
@@ -92,7 +96,7 @@ The Auditor MUST retain exactly these powers:
 
 ```text
 1. inspect one semantic object;
-2. inspect the evidence currently attached to that object;
+2. inspect the evidence packet explicitly presented with that object;
 3. decide whether those evidence items are sufficient;
 4. if insufficient, explain the specific reason and unsupported aspect.
 ```
@@ -140,47 +144,35 @@ If retrieval or repair is later justified by evidence, it should be a separate s
 
 ---
 
-# 5. What an INSUFFICIENT verdict means — and what it does NOT mean
+# 5. Epistemic humility: INSUFFICIENT is not FALSE
 
-Very important:
+The Auditor is not an Oracle and should never be treated as one.
 
-```text
-INSUFFICIENT evidence
-!=
-semantic object is false
-```
+Core invariant:
 
-The object may be true in the full source or in the outside world.
+$$
+\boxed{INSUFFICIENT \neq FALSE}
+$$
 
-The Auditor says only:
+Operational meaning:
 
-> **The evidence currently attached to this object is not enough to carry the object as written.**
+$$
+\boxed{INSUFFICIENT = Not\ proven\ by\ the\ current\ evidence\ packet}
+$$
 
-Example:
+The semantic object may be true in the full source or in the outside world. The Auditor says only:
 
-```text
-object:
-  affected system = Cursor codebase
+> **The evidence currently presented to this gate is not enough to carry the object as written.**
 
-current evidence:
-  PARA 0004 -> PR volume
-  PARA 0011 -> auto-merge
+Chinese compression:
 
-possible missing support elsewhere:
-  PARA 0005 -> explicitly identifies Cursor code
-```
+> **INSUFFICIENT 不是在说“这句话一定错了”，而是在说“你现在拿出来的证据还撑不起这句话”。**
 
-The Auditor must still return INSUFFICIENT for the current edge.
+This is an important form of epistemic humility. RAOS should not seek an Auditor that is imagined to be infallible. The actual goal is:
 
-It is not allowed to rescue the edge by searching for PARA 0005.
+> **不是追求一个永不犯错的 Auditor，而是构建一个证据边界明确、错误可审计、理由可追溯、权限受约束的监管层。**
 
-This distinction protects provenance integrity:
-
-```text
-Semantic plausibility != Evidence sufficiency
-Statement truth       != Evidence sufficiency
-Traceability          != Evidence sufficiency
-```
+This framing matters because real semantic interpretation is context-sensitive and even careful human institutions can make evidentiary mistakes. The engineering objective is therefore bounded, reviewable judgment—not omniscience.
 
 ---
 
@@ -215,7 +207,7 @@ Diagnosis = descriptive
 
 Why no third UNCERTAIN verdict?
 
-If ambiguity prevents the current evidence from sufficiently supporting the specific object, then the gate decision is still:
+If ambiguity prevents the current evidence packet from sufficiently supporting the specific object, then the gate decision is still:
 
 ```text
 INSUFFICIENT
@@ -231,7 +223,127 @@ This is simpler and more faithful to the gate's purpose.
 
 ---
 
-# 7. Auditor is not an Attention Policy
+# 7. Evidence Packet quality bounds Audit quality
+
+Real semantic meaning is not always recoverable from one isolated sentence.
+
+Conceptually:
+
+$$
+\boxed{Meaning \approx f(LocalExcerpt,\ DiscourseContext,\ SourceMetadata)}
+$$
+
+Therefore:
+
+$$
+\boxed{AuditQuality \le EvidencePacketQuality}
+$$
+
+A weak or truncated packet can make a semantically correct object impossible to approve locally.
+
+The right response is **not** to grant the Auditor more authority. Instead, upstream may explicitly prepare a better evidence packet.
+
+Memorable boundary:
+
+> **Auditor 不应该拥有更多权力，但可以获得更完整的卷宗。**
+
+Invariant:
+
+$$
+\boxed{Better\ Context \neq More\ Auditor\ Authority}
+$$
+
+A better packet remains explicit, finite, and auditable. The Auditor still does not search beyond it.
+
+---
+
+# 8. What counts as an Evidence Packet
+
+Conceptually, evidence is broader than a short prose excerpt:
+
+```text
+Evidence Packet
+├── Primary evidence
+│   directly cited source span / page / observation
+├── Citation context
+│   bounded context belonging to the already-cited container
+│   needed to preserve discourse meaning or references
+└── Trusted source metadata
+    deterministic metadata such as published_at / captured_at
+```
+
+Examples may include:
+
+```text
+source text excerpt
+full cited paragraph container
+PDF page/span
+transcript span
+direct observation
+trusted/deterministic source metadata
+```
+
+But every item must be **explicitly presented to the Auditor**.
+
+The Auditor must not obtain missing evidence by searching, inference, or browsing.
+
+This distinction matters for statements derived from metadata, such as:
+
+```text
+source publication time = unknown
+```
+
+A prose paragraph may not support that statement; trusted source metadata can.
+
+If the packet omits the metadata evidence, the Auditor should fail the current packet rather than silently fetch or infer the missing basis.
+
+Likewise, if an excerpt omits wording that exists inside its already-cited paragraph container, upstream may explicitly include that bounded citation context. This improves the dossier without turning the Auditor into a source-search engine.
+
+---
+
+# 9. Semantic plausibility, truth, and evidence sufficiency are different
+
+The Auditor does NOT ask:
+
+> “Is this statement probably true?”
+
+It asks:
+
+> **“Do these explicitly supplied evidence items support this statement?”**
+
+A clearly attributed source claim can pass the Auditor even if the source is later proven wrong.
+
+Therefore:
+
+```text
+Semantic plausibility != Evidence sufficiency
+Statement truth       != Evidence sufficiency
+World fact             != Evidence sufficiency
+Traceability           != Evidence sufficiency
+Source claim           != World fact
+```
+
+Example:
+
+```text
+object:
+  affected system = Cursor codebase
+
+current evidence:
+  PARA 0004 -> PR volume
+  PARA 0011 -> auto-merge
+
+possible missing support elsewhere:
+  PARA 0005 -> explicitly identifies Cursor code
+```
+
+The Auditor must still return INSUFFICIENT for the current packet if PARA 0005 is not explicitly included.
+
+It is not allowed to rescue the edge by searching for PARA 0005.
+
+---
+
+# 10. Auditor is not an Attention Policy
 
 Invariant:
 
@@ -253,7 +365,7 @@ Raw Source
    ↓
 Semantic Sensor
    ↓
-Candidate semantic object + evidence
+Candidate semantic object + evidence packet
    ↓
 Semantic Evidence Auditor
    ↓
@@ -284,64 +396,7 @@ Human attention wasted
 
 ---
 
-# 8. Auditor is not outside-world fact checking
-
-The Auditor does NOT ask:
-
-> “Is this statement objectively true?”
-
-It asks:
-
-> **“Do these cited evidence items support this statement?”**
-
-A clearly attributed source claim can pass the Auditor even if the source is later proven wrong.
-
-Outside-world verification is a different problem and, if needed, must be represented separately.
-
-Therefore:
-
-```text
-Evidence sufficiency != World truth
-Source claim         != World fact
-```
-
----
-
-# 9. What counts as evidence
-
-The conceptual requirement is broader than prose paragraphs:
-
-```text
-Evidence = any explicitly attached, auditable support item
-```
-
-Examples may include:
-
-```text
-source text excerpt
-PDF page excerpt
-transcript span
-direct observation
-trusted/deterministic source metadata
-```
-
-But evidence must be **explicitly presented to the Auditor**.
-
-The Auditor must not obtain missing evidence by searching or inference.
-
-This distinction matters for statements derived from metadata, such as:
-
-```text
-source publication time = unknown
-```
-
-A paragraph may not support that statement; the source metadata can.
-
-If the audit packet omits the metadata evidence, the Auditor should fail the current packet rather than silently fetch or infer the missing basis.
-
----
-
-# 10. Relation to Semantic Sensor
+# 11. Relation to Semantic Sensor
 
 Semantic Sensor responsibility:
 
@@ -349,7 +404,7 @@ Semantic Sensor responsibility:
 
 Auditor responsibility:
 
-> **Do the evidence items currently attached to each extracted meaning actually support that meaning?**
+> **Do the evidence items currently presented with each extracted meaning actually support that meaning?**
 
 The Sensor may produce a semantically plausible object but attach incomplete evidence.
 
@@ -371,7 +426,7 @@ A semantically correct statement can still have an insufficient provenance edge.
 
 ---
 
-# 11. Relation to D / S / P / Delta
+# 12. Relation to D / S / P / Delta
 
 The Auditor is an engineering evidence gate, not a new RAOS theoretical state variable.
 
@@ -397,7 +452,7 @@ Perception
 
 ---
 
-# 12. Development and evaluation discipline
+# 13. Development and evaluation discipline
 
 Development Gold may improve through:
 
@@ -425,7 +480,7 @@ into an “Auditor accuracy” number without independent Human Gold.
 
 ---
 
-# 13. Memorable compressions
+# 14. Memorable compressions
 
 Use these sentences when recovering context:
 
@@ -435,21 +490,27 @@ Use these sentences when recovering context:
 
 > **不是判断“这个说法可能对不对”，而是判断“这些证据够不够”。**
 
+> **在明确、有限、可审计的证据条件下，尽可能判断当前语义对象是否被充分支持，并把判断依据留下来。**
+
 > **INSUFFICIENT 不是在说“这句话一定错了”，而是在说“你现在拿出来的证据还撑不起这句话”。**
+
+> **Auditor 不应该拥有更多权力，但可以获得更完整的卷宗。**
 
 > **能追溯到某处，不等于那处真的足以支持这个意思。**
 
 > **安检负责放不放行；为什么不放行属于诊断；去哪儿、值不值得去、到了以后做什么，都不是安检的职责。**
 
+> **不是追求一个永不犯错的 Auditor，而是构建一个证据边界明确、错误可审计、理由可追溯、权限受约束的监管层。**
+
 ---
 
-# 14. Maintenance rule
+# 15. Maintenance rule
 
 If any future change modifies:
 
 ```text
 Auditor core question
-input scope
+input/evidence-packet scope
 binary verdict semantics
 diagnosis semantics
 review-vs-repair boundary
