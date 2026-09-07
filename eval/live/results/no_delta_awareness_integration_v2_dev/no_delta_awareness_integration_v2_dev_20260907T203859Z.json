@@ -1,0 +1,1205 @@
+{
+  "name": "raos-no-delta-awareness-integration-v2-post-calibration-dev",
+  "status": "DEVELOPMENT_ONLY_POST_CALIBRATION_NOT_VALIDATION",
+  "measurement_timestamp": "20260907T203859Z",
+  "measurement_git_head": "7b955f667def8bcef3b3c9c33626be60224d1472",
+  "integration_version": "no-delta-awareness-integration-v2-d-v4",
+  "source_cases": "IA1-IA12 already-consumed integrated Human Gold",
+  "component_identity": {
+    "D": {
+      "estimator_version": "standing-radar-fit-estimator-v4",
+      "profile_id": "standing-radar-profile-v4",
+      "prompt_sha256": "c7ce0ed089fdcdfee69c9f986e35a860e7d6c07468801e76ad1af771a3d2ece7"
+    },
+    "S": {
+      "estimator_version": "material-consequence-estimator-v1"
+    },
+    "P": {
+      "estimator_version": "collective-attention-estimator-v1"
+    }
+  },
+  "actual_models": {
+    "D": [
+      "deepseek-v4-flash"
+    ],
+    "S": [
+      "deepseek-v4-flash"
+    ],
+    "P": [
+      "deepseek-v4-flash"
+    ]
+  },
+  "n_cases": 12,
+  "n_scorable": 11,
+  "metrics": {
+    "D": {
+      "n_scored": 12,
+      "n_gold_positive": 7,
+      "n_gold_negative": 5,
+      "exact_accuracy": 0.75,
+      "positive_recall": 0.5714285714285714,
+      "negative_recall": 1.0,
+      "false_positive_count": 0,
+      "false_negative_count": 3
+    },
+    "S": {
+      "n_scored": 12,
+      "n_gold_positive": 6,
+      "n_gold_negative": 6,
+      "exact_accuracy": 1.0,
+      "positive_recall": 1.0,
+      "negative_recall": 1.0,
+      "false_positive_count": 0,
+      "false_negative_count": 0
+    },
+    "P": {
+      "n_scored": 11,
+      "n_gold_positive": 5,
+      "n_gold_negative": 6,
+      "exact_accuracy": 1.0,
+      "positive_recall": 1.0,
+      "negative_recall": 1.0,
+      "false_positive_count": 0,
+      "false_negative_count": 0
+    },
+    "final": {
+      "n_scored": 11,
+      "n_gold_positive": 4,
+      "n_gold_negative": 7,
+      "exact_accuracy": 0.7272727272727273,
+      "positive_recall": 0.5,
+      "negative_recall": 0.8571428571428571,
+      "false_positive_count": 1,
+      "false_negative_count": 2,
+      "aware_recall": 0.5,
+      "drop_recall": 0.8571428571428571,
+      "false_aware_count": 1,
+      "false_drop_count": 2
+    },
+    "human_gate_consistency": {
+      "n": 12,
+      "exact": 10,
+      "accuracy": 0.8333333333333334,
+      "mismatch_cases": [
+        "IA4",
+        "IA12"
+      ]
+    },
+    "masked_component_error_cases": [
+      "IA6",
+      "IA9"
+    ],
+    "causal_final_error_cases": [
+      "IA4",
+      "IA5",
+      "IA12"
+    ],
+    "wiring_mismatch_cases": []
+  },
+  "cases": [
+    {
+      "case_id": "IA1",
+      "gold_D": "OUT",
+      "pred_D": "OUT",
+      "gold_S": "NOT_MATERIAL",
+      "pred_S": "NOT_MATERIAL",
+      "gold_P": "NOT_SALIENT",
+      "pred_P": "NOT_SALIENT",
+      "gold_final": "DROP",
+      "pred_final": "DROP",
+      "human_gate_final": "DROP",
+      "D_correct": true,
+      "S_correct": true,
+      "P_correct": true,
+      "final_correct": true,
+      "any_component_error": false,
+      "gate_wiring_matches": true,
+      "scorable": true,
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "OUT",
+        "substantive_anchors": [
+          "regional furniture wholesaler",
+          "internal invoice template"
+        ],
+        "matched_clauses": [],
+        "reason": "The event is a routine internal clerical formatting change with no substantive involvement of any monitored standing anchor (AI, robotics, compute, cloud, etc.).",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 872,
+          "prompt_tokens": 1682,
+          "completion_tokens": 75,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "NOT_MATERIAL",
+        "affected_shared_systems": [],
+        "material_changes": [],
+        "reason": "The event is an internal clerical formatting change with no effect on prices, contracts, rules, or industry practice; it does not disturb any consequential shared reference system.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 741,
+          "prompt_tokens": 1096,
+          "completion_tokens": 67,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "NOT_SALIENT",
+        "objective_constituency": "employees of the wholesaler who use or receive the internal invoice template",
+        "attention_state_summary": "Only five employees mentioned the new layout; no broader internal discussion formed.",
+        "inertia_summary": "No prior attention history; current evidence is too sparse to indicate forming collective attention.",
+        "reason": "Relative to the constituency of about 120 employees, five mentions do not constitute salient collective attention.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1216,
+          "prompt_tokens": 1695,
+          "completion_tokens": 121,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "case_id": "IA2",
+      "gold_D": "OUT",
+      "pred_D": "OUT",
+      "gold_S": "NOT_MATERIAL",
+      "pred_S": "NOT_MATERIAL",
+      "gold_P": "SALIENT",
+      "pred_P": "SALIENT",
+      "gold_final": "DROP",
+      "pred_final": "DROP",
+      "human_gate_final": "DROP",
+      "D_correct": true,
+      "S_correct": true,
+      "P_correct": true,
+      "final_correct": true,
+      "any_component_error": false,
+      "gate_wiring_matches": true,
+      "scorable": true,
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "OUT",
+        "substantive_anchors": [
+          "battery startup",
+          "new-energy sector",
+          "logo",
+          "brand mascot"
+        ],
+        "matched_clauses": [],
+        "reason": "Event is a branding change in the new-energy/battery sector, which is not a monitored standing clause. No substantive involvement of AI, compute, robotics, or other monitored domains.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1004,
+          "prompt_tokens": 1675,
+          "completion_tokens": 88,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "NOT_MATERIAL",
+        "affected_shared_systems": [],
+        "material_changes": [],
+        "reason": "A logo and mascot change does not alter battery chemistry, cost, performance, safety, contracts, or market access, so no consequential shared system is materially disturbed.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 756,
+          "prompt_tokens": 1089,
+          "completion_tokens": 68,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "SALIENT",
+        "objective_constituency": "active audience following the startup and consumer-facing battery/EV brand news",
+        "attention_state_summary": "The mascot reveal generated over 90,000 comments and shares from established accounts, with many distinct user-created variations, and search interest spiked to 7x baseline, indicating genuine collective engagement within the constituency.",
+        "inertia_summary": "No prior history available; current evidence shows clear formation of collective attention, so salience is established at this time.",
+        "reason": "High engagement and active search relative to the constituency scale indicate genuine collective attention, not mere exposure.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1581,
+          "prompt_tokens": 1829,
+          "completion_tokens": 157,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "case_id": "IA3",
+      "gold_D": "IN",
+      "pred_D": "IN",
+      "gold_S": "NOT_MATERIAL",
+      "pred_S": "NOT_MATERIAL",
+      "gold_P": "NOT_SALIENT",
+      "pred_P": "NOT_SALIENT",
+      "gold_final": "DROP",
+      "pred_final": "DROP",
+      "human_gate_final": "DROP",
+      "D_correct": true,
+      "S_correct": true,
+      "P_correct": true,
+      "final_correct": true,
+      "any_component_error": false,
+      "gate_wiring_matches": true,
+      "scorable": true,
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "IN",
+        "substantive_anchors": [
+          "strategy game",
+          "patch"
+        ],
+        "matched_clauses": [
+          "Monitor games, game products, studios, platforms, and game-industry events"
+        ],
+        "reason": "The event is a patch to a strategy game, which is a game product event, satisfying the standing clause for games regardless of triviality.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 880,
+          "prompt_tokens": 1676,
+          "completion_tokens": 86,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "NOT_MATERIAL",
+        "affected_shared_systems": [],
+        "material_changes": [],
+        "reason": "The patch only changes menu icons and fixes spelling errors; no rules, balance, progression, prices, or platform access change. No consequential shared reference system is materially disturbed.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 942,
+          "prompt_tokens": 1090,
+          "completion_tokens": 69,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "NOT_SALIENT",
+        "objective_constituency": "active players and community followers of the strategy game",
+        "attention_state_summary": "Only a few low-activity forum threads mention the patch, mostly listing spelling fixes; no meaningful search lift observed.",
+        "inertia_summary": "No prior attention history; current evidence shows no established or forming collective attention.",
+        "reason": "The event is minor and the evidence indicates very low genuine engagement within the constituency, with no search interest or meaningful discussion.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1350,
+          "prompt_tokens": 1795,
+          "completion_tokens": 130,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "case_id": "IA4",
+      "gold_D": "IN",
+      "pred_D": "IN",
+      "gold_S": "NOT_MATERIAL",
+      "pred_S": "NOT_MATERIAL",
+      "gold_P": "SALIENT",
+      "pred_P": "SALIENT",
+      "gold_final": "AWARE",
+      "pred_final": "DROP",
+      "human_gate_final": "DROP",
+      "D_correct": true,
+      "S_correct": true,
+      "P_correct": true,
+      "final_correct": false,
+      "any_component_error": false,
+      "gate_wiring_matches": true,
+      "scorable": true,
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "IN",
+        "substantive_anchors": [
+          "strategy game",
+          "cosmetic character skin"
+        ],
+        "matched_clauses": [
+          "Monitor games, game products, studios, platforms, and game-industry events"
+        ],
+        "reason": "The event is a game product release (a cosmetic skin) within a strategy game, which falls under the standing clause for games and game products.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 984,
+          "prompt_tokens": 1684,
+          "completion_tokens": 91,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "NOT_MATERIAL",
+        "affected_shared_systems": [],
+        "material_changes": [],
+        "reason": "The event is a cosmetic-only skin with no gameplay, rule, balance, price, or access changes. It does not disturb any consequential shared reference system; community meme status is attention, not material consequence.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1186,
+          "prompt_tokens": 1098,
+          "completion_tokens": 76,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "SALIENT",
+        "objective_constituency": "active players and community followers of the strategy game",
+        "attention_state_summary": "Dominant topic across largest game communities with hundreds of thousands of distinct player comments, fan images, and voluntary reposts; search interest 10x baseline.",
+        "inertia_summary": "No prior history; current evidence indicates clearly forming collective attention, so salience is established now.",
+        "reason": "Genuine collective attention is forming within the game's active player community, evidenced by massive voluntary human discussion and active search, well above normal baseline.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1292,
+          "prompt_tokens": 1811,
+          "completion_tokens": 147,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "case_id": "IA5",
+      "gold_D": "IN",
+      "pred_D": "OUT",
+      "gold_S": "MATERIAL",
+      "pred_S": "MATERIAL",
+      "gold_P": "NOT_SALIENT",
+      "pred_P": "NOT_SALIENT",
+      "gold_final": "AWARE",
+      "pred_final": "DROP",
+      "human_gate_final": "AWARE",
+      "D_correct": false,
+      "S_correct": true,
+      "P_correct": true,
+      "final_correct": false,
+      "any_component_error": true,
+      "gate_wiring_matches": true,
+      "scorable": true,
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "OUT",
+        "substantive_anchors": [
+          "national electricity-market regulator",
+          "grid operators",
+          "balancing rule",
+          "imbalance costs"
+        ],
+        "matched_clauses": [],
+        "reason": "The event concerns electricity market regulation and grid balancing, which is not covered by any standing clause. It does not substantively involve AI, compute hardware, cloud infrastructure, autonomous driving, quantum, cybersecurity, consumer electronics, internet platforms, games, finance, basic science, films, cancer research, or monitored organizations/affiliations. Scope guard explicitly excludes energy/grid as such.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1232,
+          "prompt_tokens": 1680,
+          "completion_tokens": 129,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "MATERIAL",
+        "affected_shared_systems": [
+          "national electricity market regulatory framework",
+          "grid operators and market participants' financial settlement system"
+        ],
+        "material_changes": [
+          "binding rule changes settlement procedures for real-time supply shortages",
+          "reallocates substantial imbalance costs across market participants"
+        ],
+        "reason": "The event changes binding rules and cost allocation in a national market, materially altering the operational and financial structure for all grid operators and participants.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1165,
+          "prompt_tokens": 1094,
+          "completion_tokens": 109,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "NOT_SALIENT",
+        "objective_constituency": "electricity-market operators, generators, large traders, and energy-regulation professionals",
+        "attention_state_summary": "Only two specialist law firms and one market analyst have publicly commented; search interest remains at normal background levels for electricity balancing rules.",
+        "inertia_summary": "No prior attention history; current evidence shows no forming collective attention.",
+        "reason": "Within the specialist constituency, early institutional follow-up is minimal and search interest is at baseline, indicating attention has not yet formed or is not clearly forming.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1322,
+          "prompt_tokens": 1821,
+          "completion_tokens": 141,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "case_id": "IA6",
+      "gold_D": "IN",
+      "pred_D": "OUT",
+      "gold_S": "MATERIAL",
+      "pred_S": "MATERIAL",
+      "gold_P": "SALIENT",
+      "pred_P": "SALIENT",
+      "gold_final": "AWARE",
+      "pred_final": "AWARE",
+      "human_gate_final": "AWARE",
+      "D_correct": false,
+      "S_correct": true,
+      "P_correct": true,
+      "final_correct": true,
+      "any_component_error": true,
+      "gate_wiring_matches": true,
+      "scorable": true,
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "OUT",
+        "substantive_anchors": [
+          "national electricity regulator",
+          "residential-grid pricing regime",
+          "time-of-use structure",
+          "household tariffs",
+          "generator incentives",
+          "peak-demand economics"
+        ],
+        "matched_clauses": [],
+        "reason": "The event is a national electricity regulatory change. It does not substantively involve any monitored standing clause (AI, robotics, compute hardware, cloud, autonomous driving, quantum, BCI, cybersecurity, consumer electronics, internet platforms, games, finance, basic science, films, cancer research, OpenAI/DeepMind, direct-family institution, or hometown governance). Energy/grid events are not automatically monitored, and no independent monitored clause is satisfied.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1544,
+          "prompt_tokens": 1675,
+          "completion_tokens": 154,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "MATERIAL",
+        "affected_shared_systems": [
+          "national electricity market and regulatory framework",
+          "residential and industrial energy consumption patterns",
+          "grid infrastructure and peak demand management"
+        ],
+        "material_changes": [
+          "mandatory shift from flat to time-of-use tariffs alters household electricity costs and consumption incentives",
+          "changes generator revenue streams and investment signals",
+          "restructures peak-demand economics and grid load management"
+        ],
+        "reason": "The event replaces a nationwide pricing regime, materially altering tariffs, incentives, and grid economics across a consequential shared system.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1468,
+          "prompt_tokens": 1089,
+          "completion_tokens": 130,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "SALIENT",
+        "objective_constituency": "national electricity consumers, utilities, market participants, and energy-policy community",
+        "attention_state_summary": "National news coverage and 15x search spike indicate genuine collective attention forming across the constituency.",
+        "inertia_summary": "No prior history; current evidence shows clear emergence of salient attention.",
+        "reason": "Event is nationally scoped and current evidence shows structural media coverage and active search, indicating genuine collective attention relative to the large constituency.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1226,
+          "prompt_tokens": 1826,
+          "completion_tokens": 129,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "case_id": "IA7",
+      "gold_D": "IN",
+      "pred_D": "IN",
+      "gold_S": "MATERIAL",
+      "pred_S": "MATERIAL",
+      "gold_P": "NOT_SALIENT",
+      "pred_P": null,
+      "gold_final": "AWARE",
+      "pred_final": null,
+      "human_gate_final": "AWARE",
+      "D_correct": true,
+      "S_correct": true,
+      "P_correct": null,
+      "final_correct": null,
+      "any_component_error": null,
+      "gate_wiring_matches": null,
+      "scorable": false,
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "IN",
+        "substantive_anchors": [
+          "cloud-infrastructure protocol",
+          "memory-safety requirement",
+          "international standards body"
+        ],
+        "matched_clauses": [
+          "substantive cloud-computing, data-center, networking, storage, or distributed-data-infrastructure developments"
+        ],
+        "reason": "The event is a substantive change to a cloud-infrastructure protocol's security and interoperability standard, directly matching the standing clause for cloud-computing and distributed-data-infrastructure developments.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1074,
+          "prompt_tokens": 1678,
+          "completion_tokens": 107,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "MATERIAL",
+        "affected_shared_systems": [
+          "international technical standards for cloud infrastructure",
+          "cloud computing industry"
+        ],
+        "material_changes": [
+          "mandatory memory-safety requirement changes the field-wide security and interoperability standard",
+          "future conforming implementations must meet new requirement, altering industry practice"
+        ],
+        "reason": "The event changes a consequential shared reference system: the international standard governing a widely used cloud-infrastructure protocol. This alters the rules that all conforming implementations must follow, thereby materially disturbing the technical and industry-wide standard.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1363,
+          "prompt_tokens": 1092,
+          "completion_tokens": 117,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": false,
+        "measurement_status": "insufficient_evidence",
+        "collective_attention_salience": null,
+        "objective_constituency": "cloud infrastructure, distributed-systems, protocol, and security professionals affected by the standard",
+        "attention_state_summary": "Within 30 minutes of publication, only one vendor engineer has publicly commented; no measurable search increase yet. Evidence is too sparse to determine if collective attention is forming.",
+        "inertia_summary": "No prior attention history; cannot infer temporal inertia.",
+        "reason": "The evidence packet contains only very early, minimal signals (one comment, no search increase) insufficient to judge whether genuine collective attention is forming in the constituency.",
+        "failure_kind": "insufficient_evidence",
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1235,
+          "prompt_tokens": 1812,
+          "completion_tokens": 147,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "case_id": "IA8",
+      "gold_D": "IN",
+      "pred_D": "IN",
+      "gold_S": "MATERIAL",
+      "pred_S": "MATERIAL",
+      "gold_P": "SALIENT",
+      "pred_P": "SALIENT",
+      "gold_final": "AWARE",
+      "pred_final": "AWARE",
+      "human_gate_final": "AWARE",
+      "D_correct": true,
+      "S_correct": true,
+      "P_correct": true,
+      "final_correct": true,
+      "any_component_error": false,
+      "gate_wiring_matches": true,
+      "scorable": true,
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "IN",
+        "substantive_anchors": [
+          "OpenAI",
+          "general foundation model",
+          "AI agents",
+          "agent benchmarks"
+        ],
+        "matched_clauses": [
+          "Monitor events where LLMs, foundation models, AI Agents, multimodal AI, or closely related AI systems are substantively developed, released, evaluated, deployed, or changed.",
+          "Monitor OpenAI and Google DeepMind when the organization is a substantive actor/object in a research, model, product, technical deployment, safety/governance, strategic partnership, major leadership, financing, corporate-structure, or similarly substantive company-level event."
+        ],
+        "reason": "The event is a substantive release of a foundation model by OpenAI, directly matching the AI model clause and the OpenAI actor clause.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1528,
+          "prompt_tokens": 1681,
+          "completion_tokens": 162,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "MATERIAL",
+        "affected_shared_systems": [
+          "technical capability frontier for AI agent systems",
+          "cost structure of long-horizon tool-use tasks"
+        ],
+        "material_changes": [
+          "reduces cost and improves success rates on widely used agent benchmarks",
+          "moves the practical capability frontier for agentic AI"
+        ],
+        "reason": "The event materially changes the cost and capability state of a broadly reusable technical system (AI agents), affecting the whole field's practical frontier.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1275,
+          "prompt_tokens": 1095,
+          "completion_tokens": 116,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "SALIENT",
+        "objective_constituency": "LLM/AI-agent research, engineering, product, and advanced-user community",
+        "attention_state_summary": "Major AI labs and leading agent researchers have publicly discussed or evaluated the release, and search interest is 18x baseline, indicating genuine collective attention within the constituency.",
+        "inertia_summary": "No prior history; current evidence shows clear formation of salient attention, so inertia is not a factor.",
+        "reason": "The event is highly relevant to the AI community, and the evidence shows structural institutional follow-up and active search, both strong indicators of genuine collective attention at the constituency scale.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1483,
+          "prompt_tokens": 1824,
+          "completion_tokens": 159,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "case_id": "IA9",
+      "gold_D": "IN",
+      "pred_D": "OUT",
+      "gold_S": "NOT_MATERIAL",
+      "pred_S": "NOT_MATERIAL",
+      "gold_P": "NOT_SALIENT",
+      "pred_P": "NOT_SALIENT",
+      "gold_final": "DROP",
+      "pred_final": "DROP",
+      "human_gate_final": "DROP",
+      "D_correct": false,
+      "S_correct": true,
+      "P_correct": true,
+      "final_correct": true,
+      "any_component_error": true,
+      "gate_wiring_matches": true,
+      "scorable": true,
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "OUT",
+        "substantive_anchors": [
+          "OpenAI",
+          "catering vendor",
+          "employee lunches"
+        ],
+        "matched_clauses": [],
+        "reason": "Event is an ordinary internal administrative detail (catering) at OpenAI, explicitly excluded by the OpenAI actor clause and not substantive to any monitored domain.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 811,
+          "prompt_tokens": 1676,
+          "completion_tokens": 78,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "NOT_MATERIAL",
+        "affected_shared_systems": [],
+        "material_changes": [],
+        "reason": "The event is an internal catering vendor change for employee lunches at one office, with no effect on products, research, staffing, governance, pricing, public services, or external partners. It does not disturb any consequential shared reference system.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 808,
+          "prompt_tokens": 1090,
+          "completion_tokens": 81,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "NOT_SALIENT",
+        "objective_constituency": "employees who regularly use the affected office lunch service",
+        "attention_state_summary": "Only six brief comments about menu preferences were observed; no wider internal discussion formed.",
+        "inertia_summary": "No prior attention history; current evidence does not indicate forming collective attention.",
+        "reason": "The event is scoped to a small constituency of about 400 employees, but only six brief comments were observed, which is below the threshold for genuine collective attention. No other channels showed meaningful engagement.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1530,
+          "prompt_tokens": 1696,
+          "completion_tokens": 138,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "case_id": "IA10",
+      "gold_D": "OUT",
+      "pred_D": "OUT",
+      "gold_S": "NOT_MATERIAL",
+      "pred_S": "NOT_MATERIAL",
+      "gold_P": "NOT_SALIENT",
+      "pred_P": "NOT_SALIENT",
+      "gold_final": "DROP",
+      "pred_final": "DROP",
+      "human_gate_final": "DROP",
+      "D_correct": true,
+      "S_correct": true,
+      "P_correct": true,
+      "final_correct": true,
+      "any_component_error": false,
+      "gate_wiring_matches": true,
+      "scorable": true,
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "OUT",
+        "substantive_anchors": [
+          "university with direct-family affiliation",
+          "internal reading room renovation"
+        ],
+        "matched_clauses": [],
+        "reason": "The event is a trivial facilities renovation (furniture and lighting) at a family-affiliated university. The affiliation clause explicitly excludes ordinary furniture/room renovation, and no other standing clause applies.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 806,
+          "prompt_tokens": 1694,
+          "completion_tokens": 87,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "NOT_MATERIAL",
+        "affected_shared_systems": [],
+        "material_changes": [],
+        "reason": "Renovating a small reading room with furniture and lighting changes does not disturb any consequential shared reference system; it is a bounded local facility improvement.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 853,
+          "prompt_tokens": 1108,
+          "completion_tokens": 64,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "NOT_SALIENT",
+        "objective_constituency": "students and staff who regularly use the affected reading room",
+        "attention_state_summary": "Only three users commented on the new chairs; no broader campus discussion observed.",
+        "inertia_summary": "No prior attention history; current evidence is minimal and does not indicate forming collective attention.",
+        "reason": "The event is scoped to a small reading room constituency of about 80 people. Three comments from users are too few to constitute genuine collective attention, even relative to that small group. There is no evidence of broader discussion or structural uptake.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1635,
+          "prompt_tokens": 1700,
+          "completion_tokens": 149,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "case_id": "IA11",
+      "gold_D": "OUT",
+      "pred_D": "OUT",
+      "gold_S": "MATERIAL",
+      "pred_S": "MATERIAL",
+      "gold_P": "NOT_SALIENT",
+      "pred_P": "NOT_SALIENT",
+      "gold_final": "DROP",
+      "pred_final": "DROP",
+      "human_gate_final": "DROP",
+      "D_correct": true,
+      "S_correct": true,
+      "P_correct": true,
+      "final_correct": true,
+      "any_component_error": false,
+      "gate_wiring_matches": true,
+      "scorable": true,
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "OUT",
+        "substantive_anchors": [
+          "international power-management standard",
+          "industrial motor drives",
+          "manufacturing standards bodies"
+        ],
+        "matched_clauses": [],
+        "reason": "The event concerns industrial motor-drive power-management standards, which fall under ordinary power-management and motor-control electronics. No standing clause for AI, compute hardware, cloud, robotics, or other monitored domains is substantively engaged.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1070,
+          "prompt_tokens": 1689,
+          "completion_tokens": 95,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "MATERIAL",
+        "affected_shared_systems": [
+          "international industrial motor-control standards and compliance regime"
+        ],
+        "material_changes": [
+          "mandatory efficiency requirements and compliance rules changed across the sector"
+        ],
+        "reason": "The event changes binding rules for an entire industry sector, altering the shared regulatory and technical framework.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1101,
+          "prompt_tokens": 1103,
+          "completion_tokens": 81,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "NOT_SALIENT",
+        "objective_constituency": "industrial motor-drive, power-electronics, manufacturing, and compliance professionals",
+        "attention_state_summary": "Shortly after publication, only standards bodies and two compliance consultancies have published follow-up; search activity remains at background levels.",
+        "inertia_summary": "No prior attention history; current evidence shows no forming collective attention.",
+        "reason": "Evidence shows only early institutional follow-up and no active search or broader community uptake, insufficient to indicate genuine collective attention forming.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1340,
+          "prompt_tokens": 1808,
+          "completion_tokens": 135,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "case_id": "IA12",
+      "gold_D": "OUT",
+      "pred_D": "OUT",
+      "gold_S": "MATERIAL",
+      "pred_S": "MATERIAL",
+      "gold_P": "SALIENT",
+      "pred_P": "SALIENT",
+      "gold_final": "DROP",
+      "pred_final": "AWARE",
+      "human_gate_final": "AWARE",
+      "D_correct": true,
+      "S_correct": true,
+      "P_correct": true,
+      "final_correct": false,
+      "any_component_error": false,
+      "gate_wiring_matches": true,
+      "scorable": true,
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "OUT",
+        "substantive_anchors": [
+          "commercial space-launch sector",
+          "satellite-launch licensing",
+          "orbital-liability rules"
+        ],
+        "matched_clauses": [],
+        "reason": "Event concerns commercial space-launch regulation, which is explicitly excluded by scope guard; no standing clause applies.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 808,
+          "prompt_tokens": 1679,
+          "completion_tokens": 77,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "MATERIAL",
+        "affected_shared_systems": [
+          "commercial space-launch industry",
+          "international regulatory framework for satellite launches"
+        ],
+        "material_changes": [
+          "rewrites licensing, insurance, and liability rules across major launch markets",
+          "changes entry conditions and operating costs for commercial launch providers"
+        ],
+        "reason": "The event structurally alters the regulatory and market conditions of the entire commercial space-launch sector, affecting all participants and reshaping industry-wide rules and costs.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1116,
+          "prompt_tokens": 1093,
+          "completion_tokens": 113,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "SALIENT",
+        "objective_constituency": "commercial launch operators, satellite firms, insurers, regulators, investors, and space-industry professionals",
+        "attention_state_summary": "Institutional follow-up from major launch companies, satellite operators, insurers, and industry associations, plus an 11x surge in professional search interest, indicate genuine collective attention within the space industry constituency.",
+        "inertia_summary": "No prior history available; current evidence shows clear formation of salient attention, so inertia is not a factor.",
+        "reason": "The event is directly relevant to the constituency, and the combination of structural institutional responses and high active search interest demonstrates genuine collective attention at a scale appropriate to the constituency.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1529,
+          "prompt_tokens": 1825,
+          "completion_tokens": 170,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    }
+  ],
+  "methodology_note": "Not fresh validation. D v4/profile v4 was calibrated after inspection of the earlier IA run. This measurement only checks expected post-calibration behavior before raw-source integration."
+}
