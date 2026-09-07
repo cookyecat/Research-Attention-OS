@@ -81,6 +81,30 @@ Therefore there is no simple one-sided patch justified by the current evidence.
 
 Do not respond by adding weights, exceptions, or a larger ontology.
 
+### 4.1 Retrospective first-instinct signal
+
+After the Human Gold had already been frozen and after the IA4/IA12 mismatch had been explicitly surfaced, the user reported that the *initial intuitive choices before deliberation* had actually been:
+
+```text
+IA4  first instinct = DROP
+IA12 first instinct = AWARE
+```
+
+Those first-instinct choices exactly match the frozen Boolean gate.
+
+This is qualitatively interesting because it suggests the gate may capture a stable fast/latent attention preference that can sometimes be displaced by later conscious boundary deliberation. In that limited sense, the mismatch may be a sign that the RAOS factorization is probing a real latent policy structure rather than simply failing to represent the user's preference.
+
+However, this observation is **post-hoc introspection**, not blinded validation evidence. It was reported only after the mismatch had been shown, so it must not be used to rewrite the frozen Human Gold, increase measured accuracy, or certify the gate.
+
+Preserve both facts:
+
+```text
+Frozen explicit Human Final          IA4=AWARE, IA12=DROP
+Retrospective reported first instinct IA4=DROP,  IA12=AWARE
+```
+
+Future fresh/dogfooding evidence should determine whether this fast-vs-deliberated pattern repeats.
+
 ## 5. Separate component-semantic note
 
 IA10 was labeled:
@@ -96,12 +120,13 @@ Preserve the label as Human Gold. Attribute any D disagreement explicitly rather
 ## 6. Research decision
 
 ```text
-Human Gold                         FROZEN AS SUPPLIED
-Frozen AWARE gate                  UNCHANGED
-Human-gate consistency             10/12
-Boundary residuals                 IA4, IA12
+Human Gold                          FROZEN AS SUPPLIED
+Frozen AWARE gate                   UNCHANGED
+Human-gate consistency              10/12
+Boundary residuals                  IA4, IA12
+Retrospective first-instinct signal MATCHES FROZEN GATE ON IA4/IA12
 Potential D semantic-policy tension IA10
-Estimator run                      STILL UNSEEN
+Estimator run                       STILL UNSEEN (valid run not yet completed)
 ```
 
 The first integrated run remains an attribution run, not a certification gate. Proceed without retuning D/S/P, the gate, or the Human Gold.
