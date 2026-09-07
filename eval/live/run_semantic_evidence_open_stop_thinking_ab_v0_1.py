@@ -7,6 +7,7 @@ conditions, but DeepSeek documents that temperature is ignored when thinking is 
 """
 from __future__ import annotations
 
+import argparse
 from datetime import datetime, timezone
 import json
 from pathlib import Path
@@ -29,7 +30,10 @@ from eval.live.semantic_evidence_open_stop_probe_v0_1 import (
     build_messages,
     prompt_sha256,
 )
-from eval.live.deepseek_explicit_thinking_transport_v0_1 import chat_json_deepseek_explicit_thinking
+from eval.live.deepseek_explicit_thinking_transport_v0_1 import (
+    DeepSeekJSONParseError,
+    chat_json_deepseek_explicit_thinking,
+)
 
 OUT_DIR = ROOT / "eval" / "live" / "results" / "semantic_evidence_open_stop_thinking_ab_v0_1"
 SOURCE_ID = "RS05"
@@ -82,8 +86,20 @@ def run_condition(source, condition: dict, model: str) -> dict:
             "failure_kind": None,
             "error": None,
             "model_meta": meta,
+            "raw_content_tail": None,
             **metrics(batch),
             "batch": batch,
+        }
+    except DeepSeekJSONParseError as exc:
+        return {
+            "condition": condition,
+            "scorable": False,
+            "failure_kind": "json_parse",
+            "error": str(exc)[:2000],
+            "model_meta": exc.meta,
+            "raw_content_tail": exc.raw_content_tail,
+            **metrics(None),
+            "batch": None,
         }
     except Exception as exc:
         return {
@@ -92,12 +108,25 @@ def run_condition(source, condition: dict, model: str) -> dict:
             "failure_kind": "model_or_schema",
             "error": str(exc)[:2000],
             "model_meta": None,
+            "raw_content_tail": None,
             **metrics(None),
             "batch": None,
         }
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--condition",
+        choices=[c["name"] for c in CONDITIONS],
+        default=None,
+        help="Run only one condition for a focused instrumentation retry.",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
+    args = parse_args()
     load_repo_env()
     from app.config import settings
     if not settings.llm_api_key:
@@ -107,7 +136,8 @@ def main() -> None:
 
     entries = {e["id"]: e for e in load_dev_manifest()["sources"]}
     source = load_manifest_source(entries[SOURCE_ID])
-    rows = [run_condition(source, condition, settings.llm_model) for condition in CONDITIONS]
+    selected = CONDITIONS if args.condition is None else [c for c in CONDITIONS if c["name"] == args.condition]
+    rows = [run_condition(source, condition, settings.llm_model) for condition in selected]
 
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     artifact = {
@@ -123,7 +153,7 @@ def main() -> None:
         "conditions": rows,
         "methodology_note": (
             "Explicit wire-level thinking A/B. Bypasses RAOS_LLM_THINKING_PROTOCOL so prior configuration ambiguity cannot affect this run. "
-            "No prompt/schema/provenance/stopping change between conditions. DeepSeek documents temperature as ignored in thinking mode."
+            "No prompt/schema/provenance/stopping change between conditions. Parse failures preserve provider usage/finish/reasoning diagnostics."
         ),
     }
 
@@ -137,14 +167,17 @@ def main() -> None:
             {
                 "condition": row["condition"]["name"],
                 "scorable": row["scorable"],
+                "failure_kind": row["failure_kind"],
                 "n_non_event_units": row["n_non_event_units"],
                 "n_non_event_supports": row["n_non_event_supports"],
                 "statement_chars": row["statement_chars"],
                 "support_excerpt_chars": row["support_excerpt_chars"],
                 "completion_tokens": (row.get("model_meta") or {}).get("completion_tokens"),
+                "reasoning_tokens": (row.get("model_meta") or {}).get("reasoning_tokens"),
                 "finish_reason": (row.get("model_meta") or {}).get("finish_reason"),
                 "reasoning_content_present": (row.get("model_meta") or {}).get("reasoning_content_present"),
                 "reasoning_content_chars": (row.get("model_meta") or {}).get("reasoning_content_chars"),
+                "raw_content_chars": (row.get("model_meta") or {}).get("raw_content_chars"),
             }
             for row in rows
         ],
