@@ -10,7 +10,7 @@ purpose: >-
 
 methodology:
   - Raw source files remain unchanged; provenance is pinned by git_blob_sha.
-  - Sources 01-12 are development data.
+  - Sources 01-12 and 15 are development data.
   - Sources 13-14 are intentionally not included in this development manifest and should remain uninspected by extractor-development code until explicitly promoted to another role.
   - This corpus may expose representation failures; v0.1 is not yet frozen.
   - Do not assume one raw source necessarily contains exactly one event.
@@ -75,6 +75,11 @@ sources:
   - id: RS12
     path: eval_samples/12_独家专访临界点CEO乔天杰：机器人运动会7冠背后，灵巧手真正该比什么.txt
     git_blob_sha: 72d8b85eab2030ebfdb567d664c0073f62b96531
+    media_type: text/plain
+    role: development
+  - id: RS15
+    path: eval_samples/15_机器人基础模型的「协作时代」来了！芝诺机器人发布全球首个协作具身智能基础模型.txt
+    git_blob_sha: 6e69f8d4cdddb2bce72e0e2626f5d32bd0ada3cf
     media_type: text/plain
     role: development
 
