@@ -11,19 +11,28 @@ Measurement command: `backend/.venv/bin/python eval/live/run_semantic_source_inv
 
 ## 1. Result summary
 
-All 12 pinned development files were located and their Git blob identities matched the manifest. The corpus naturally separates into three input regimes.
+All 12 pinned development files were located and their Git blob identities matched the manifest. The corpus includes five PDFs (`RS01`, `RS03`, `RS04`, `RS07`, `RS08`) and seven direct-text sources. PDF media type itself is not a failure mode: four of the five PDFs expose usable text layers through the current `pypdf` sensor. The corpus naturally separates into three input regimes.
 
-### A. Text-layer modality failure
+### A. PDF text-layer extraction failure
 
 | Source | Type | Pages | Rendered chars | Decision |
 |---|---|---:|---:|---|
 | RS01 | PDF | 2 | 25 | **TEXT-LAYER UNUSABLE** |
 
-The 25 rendered characters are effectively only page-pointer scaffolding / negligible extracted payload. E0 therefore treats RS01 as a front-end modality failure for the current text-only PDF sensor.
+The 25 rendered characters are effectively only page-pointer scaffolding / negligible extracted payload. E0 therefore treats RS01 as a text-layer observability failure for the current `pypdf`-based PDF sensor, not as evidence that PDF files in general are unsupported.
 
-Do not silently repair this source with OCR or external knowledge inside the v0.1 measurement. A future vision/PDF-render fallback is a new sensor capability and must be evaluated separately.
+The other four PDFs are text-layer usable:
 
-### B. Direct-text / moderate-context candidates
+```text
+RS03  15 pages   78,167 chars
+RS04   4 pages   13,833 chars
+RS07  29 pages  119,937 chars
+RS08  17 pages   85,750 chars
+```
+
+Do not silently repair RS01 with OCR, vision extraction, or external knowledge inside the v0.1 measurement. A future PDF-render / vision fallback is a new sensor capability and must be evaluated separately.
+
+### B. Whole-source / moderate-context candidates
 
 | Source | Type | Rendered chars |
 |---|---|---:|
@@ -36,9 +45,9 @@ Do not silently repair this source with OCR or external knowledge inside the v0.
 | RS11 | TXT | 10,297 |
 | RS12 | TXT | 7,697 |
 
-These are suitable for first source-level Semantic Extraction development without introducing chunking yet.
+These are suitable for first whole-source Semantic Extraction development without introducing chunking yet. Note that RS04 is a healthy PDF text-layer case and belongs here despite being PDF media.
 
-### C. Long-context sources
+### C. Long-context, text-layer-usable PDF sources
 
 | Source | Type | Pages | Rendered chars |
 |---|---|---:|---:|
@@ -46,7 +55,7 @@ These are suitable for first source-level Semantic Extraction development withou
 | RS07 | PDF | 29 | 119,937 |
 | RS08 | PDF | 17 | 85,750 |
 
-These should not be silently truncated. They define a later explicit long-source / hierarchical extraction study.
+These are not PDF parsing failures. Their text layers are usable; the problem is source length / context management. They should not be silently truncated. They define a later explicit long-source / hierarchical extraction study.
 
 ---
 
@@ -67,7 +76,8 @@ raw source
 Therefore:
 
 ```text
-SensorFailure != SemanticExtractionFailure
+PDF != modality failure
+TextLayerFailure != SemanticExtractionFailure
 LongContextProblem != D/S/PProblem
 ```
 
@@ -100,8 +110,10 @@ Do not run RS03/RS07/RS08 until long-source behavior is explicitly designed.
 
 ```text
 E0 corpus provenance       PASS — 12/12 files resolved / blob-verified
-Text-layer usable          11/12
-Text-layer modality fail   RS01
+PDF files                  5 total
+PDF text-layer usable      4/5 — RS03, RS04, RS07, RS08
+PDF text-layer unusable    RS01
+Overall text-layer usable  11/12
 Long-context deferred      RS03, RS07, RS08
 First semantic dev pair    RS02, RS09
 Fresh-validation status    NONE — development only
