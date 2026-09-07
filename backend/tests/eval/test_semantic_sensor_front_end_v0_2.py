@@ -1,7 +1,12 @@
 from pathlib import Path
+import sys
 
 import pytest
 from pydantic import ValidationError
+
+ROOT = Path(__file__).resolve().parents[3]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from eval.live.semantic_evidence_batch_v0_2 import SemanticExtractionBatchV0_2
 from eval.live.semantic_evidence_extractor_v0_2 import (
