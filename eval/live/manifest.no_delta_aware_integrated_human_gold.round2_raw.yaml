@@ -1,0 +1,71 @@
+name: raos-no-delta-aware-integrated-human-gold-round2-raw
+validation_type: POST_HOC_HUMAN_ADJUDICATION
+status: RAW_AS_SUPPLIED_AFTER_FIRST_PREDICTION_REVIEW
+source_first_run_artifact: eval/live/results/no_delta_awareness_integration_v1_fresh_first_run.json
+notes:
+  - This is not fresh/blinded Human Gold. The annotator had already seen first-run predictions before supplying this second round.
+  - Preserve the original v1 Human Gold and first-run artifact unchanged.
+  - Re-score frozen predictions against this round; do not re-run the model merely to accommodate post-hoc label adjudication.
+  - IA9 has a prose/list tension: prose says trivial OpenAI internal catering should be OUT, while the raw list says IN.
+  - IA8 has a semantic/gate tension: raw list says S=NOT_MATERIAL and Final=AWARE, which is inconsistent with the frozen gate and with the event text describing a material capability/cost-frontier shift.
+cases:
+  - id: IA1
+    D: OUT
+    S: NOT_MATERIAL
+    P: NOT_SALIENT
+    final: DROP
+  - id: IA2
+    D: OUT
+    S: NOT_MATERIAL
+    P: SALIENT
+    final: DROP
+  - id: IA3
+    D: IN
+    S: NOT_MATERIAL
+    P: NOT_SALIENT
+    final: DROP
+  - id: IA4
+    D: IN
+    S: NOT_MATERIAL
+    P: SALIENT
+    final: DROP
+  - id: IA5
+    D: OUT
+    S: MATERIAL
+    P: NOT_SALIENT
+    final: DROP
+  - id: IA6
+    D: OUT
+    S: MATERIAL
+    P: SALIENT
+    final: AWARE
+  - id: IA7
+    D: IN
+    S: MATERIAL
+    P: NOT_SALIENT
+    final: AWARE
+  - id: IA8
+    D: IN
+    S: NOT_MATERIAL
+    P: SALIENT
+    final: AWARE
+  - id: IA9
+    D: IN
+    S: NOT_MATERIAL
+    P: NOT_SALIENT
+    final: DROP
+  - id: IA10
+    D: OUT
+    S: NOT_MATERIAL
+    P: NOT_SALIENT
+    final: DROP
+  - id: IA11
+    D: OUT
+    S: MATERIAL
+    P: NOT_SALIENT
+    final: DROP
+  - id: IA12
+    D: OUT
+    S: MATERIAL
+    P: SALIENT
+    final: AWARE
