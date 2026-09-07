@@ -15,6 +15,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from eval.live.semantic_evidence_frame_v0_1 import (
+    Confidence,
     EpistemicStatus,
     SemanticEvidenceFrameV0_1,
 )
@@ -30,7 +31,10 @@ class NonEventSemanticUnitV0_1(BaseModel):
     unit_id: str = Field(min_length=1, max_length=300)
     statement: str = Field(min_length=1, max_length=4000)
     epistemic_status: EpistemicStatus
-    support_ids: list[str] = Field(min_length=1, max_length=100)
+    confidence: Confidence = "UNKNOWN"
+    source_id: str = Field(min_length=1, max_length=300)
+    support_pointer: str = Field(min_length=1, max_length=1000)
+    support_excerpt: str = Field(default="", max_length=1200)
     note: str = Field(default="", max_length=2000)
 
 
@@ -53,7 +57,6 @@ class SemanticExtractionBatchV0_1(BaseModel):
 
         allowed_sources = set(self.source_ids)
         event_ids: list[str] = []
-        evidence_ids: set[str] = set()
 
         for frame in self.event_frames:
             event_ids.append(frame.event.event_id)
@@ -61,7 +64,6 @@ class SemanticExtractionBatchV0_1(BaseModel):
             if not frame_source_ids.issubset(allowed_sources):
                 missing = sorted(frame_source_ids - allowed_sources)
                 raise ValueError(f"event frame references source(s) outside batch: {missing}")
-            evidence_ids.update(e.evidence_id for e in frame.evidence)
 
         if len(event_ids) != len(set(event_ids)):
             raise ValueError("duplicate event_id across event_frames")
@@ -70,20 +72,12 @@ class SemanticExtractionBatchV0_1(BaseModel):
         if len(unit_ids) != len(set(unit_ids)):
             raise ValueError("duplicate unit_id across non_event_units")
 
-        # A non-event unit must point to evidence already preserved by an event
-        # frame when such evidence exists. A later source-level Epistemic Bundle may
-        # lift evidence out of event frames; v0.1 deliberately keeps the contract
-        # minimal and permits source-pointer ids prefixed with 'source:' as an escape
-        # hatch for content with no event frame.
-        for unit in self.non_event_units:
-            for support_id in unit.support_ids:
-                if support_id in evidence_ids:
-                    continue
-                if support_id.startswith("source:"):
-                    continue
-                raise ValueError(
-                    "non-event support_id must reference frame evidence or use a "
-                    f"source: pointer in v0.1: {support_id}"
-                )
+        missing_unit_sources = sorted(
+            {u.source_id for u in self.non_event_units if u.source_id not in allowed_sources}
+        )
+        if missing_unit_sources:
+            raise ValueError(
+                f"non-event units reference source(s) outside batch: {missing_unit_sources}"
+            )
 
         return self
