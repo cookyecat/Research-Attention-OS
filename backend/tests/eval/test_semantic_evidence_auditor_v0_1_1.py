@@ -39,8 +39,11 @@ def test_binary_prompt_has_no_third_verdict_and_preserves_occam_boundary():
     )
     text = "\n".join(message["content"] for message in messages)
 
-    assert "SUFFICIENT / INSUFFICIENT" in text
+    # Lock semantic invariants, not incidental prompt typography.
+    assert "Binary verdict:" in text
+    assert '"verdict": "SUFFICIENT" | "INSUFFICIENT"' in text
     assert "There is NO third verdict" in text
+    assert '"verdict": "UNCERTAIN"' not in text
     assert "AMBIGUOUS_REFERENCE" in text
     assert "Do not use outside knowledge" in text
     assert "Do not search for, imagine, or request uncited nearby paragraphs" in text
