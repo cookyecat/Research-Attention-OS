@@ -197,6 +197,19 @@ def run_integrated_v1(
     p_chat_fn=None,
 ) -> dict[str, Any]:
     load_repo_env()
+
+    # Integration imports production Scheduler code, which can instantiate app.config.settings
+    # through app.db. The harness bootstrap now loads .env before that import chain. This
+    # runtime preflight prevents a missing/stale API key from being recorded as a fake first run.
+    if not dry_run and any(fn is None for fn in (d_chat_fn, s_chat_fn, p_chat_fn)):
+        from app.config import settings
+
+        if not settings.llm_api_key:
+            raise RuntimeError(
+                "RAOS_LLM_API_KEY is unavailable after integrated eval bootstrap; "
+                "refusing to start or write a canonical first-run artifact"
+            )
+
     template, gold, joined = load_joined_cases(template_path, gold_path)
     validate_provenance(template, gold)
 
@@ -274,23 +287,42 @@ def run_integrated_v1(
         row["S"] = out.get("S")
         row["P"] = out.get("P")
 
-        for component in ("D", "S", "P"):
-            meta = ((out.get(component) or {}).get("model_meta") or {})
+        d_out = out.get("D") or {}
+        s_out = out.get("S") or {}
+        p_out = out.get("P") or {}
+
+        for component, component_out in (("D", d_out), ("S", s_out), ("P", p_out)):
+            meta = component_out.get("model_meta") or {}
             if meta.get("model"):
                 actual_models[component].add(str(meta["model"]))
+
+        # Preserve independent component measurements even if another component fails.
+        if d_out.get("scorable") and d_out.get("standing_radar_fit") in {"IN", "OUT"}:
+            row["pred_D"] = d_out["standing_radar_fit"]
+            row["D_correct"] = row["pred_D"] == gold_d
+        if s_out.get("scorable") and s_out.get("material_consequence") in {"MATERIAL", "NOT_MATERIAL"}:
+            row["pred_S"] = s_out["material_consequence"]
+            row["S_correct"] = row["pred_S"] == gold_s
+        if p_out.get("scorable") and p_out.get("collective_attention_salience") in {"SALIENT", "NOT_SALIENT"}:
+            row["pred_P"] = p_out["collective_attention_salience"]
+            row["P_correct"] = row["pred_P"] == gold_p
 
         if not row["scorable"]:
             component_failures.append({
                 "case_id": cid,
                 "component_scorable": out.get("component_scorable"),
-                "D_failure": (out.get("D") or {}).get("failure_kind"),
-                "S_failure": (out.get("S") or {}).get("failure_kind"),
-                "P_failure": (out.get("P") or {}).get("failure_kind"),
+                "D_failure": d_out.get("failure_kind"),
+                "D_error": d_out.get("error"),
+                "S_failure": s_out.get("failure_kind"),
+                "S_error": s_out.get("error"),
+                "P_failure": p_out.get("failure_kind"),
+                "P_error": p_out.get("error"),
             })
             rows.append(row)
             continue
 
         labels = out["labels"]
+        # Assert the integration labels agree with the independently preserved component labels.
         row["pred_D"] = labels["D"]
         row["pred_S"] = labels["S"]
         row["pred_P"] = labels["P"]
