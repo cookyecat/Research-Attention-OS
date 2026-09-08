@@ -12,6 +12,7 @@ BACKEND = ROOT / "backend"
 if str(BACKEND) not in sys.path:
     sys.path.insert(0, str(BACKEND))
 
+from app.enums import ClaimType
 from app.models.source import Source
 from eval.live.phase8c2_production_sensor_bridge_v0_1 import (
     SemanticSensorProductionBridgeV0_1,
@@ -165,3 +166,58 @@ def test_non_url_source_keeps_existing_blank_line_paragraph_semantics():
     packed = production_source_to_sensor_source(source)
     assert packed.rendered_text.count("[PARA ") == 2
     assert "line one\nline two" in packed.rendered_text
+
+def test_bridge_restores_production_separations_from_admitted_claims_only():
+    source = _source()
+    source.content_text = (
+        "Revolutionary publicity wording must not bypass the Auditor gate. "
+        "Latency benchmark evidence is present in the admitted semantic state."
+    )
+    sid = str(source.id)
+    supports = [{"source_id": sid, "support_pointer": "PARA 0001", "support_excerpt": "support"}]
+    units = [
+        {"unit_id": "T1", "statement": "The latency benchmark reports a controlled result.", "epistemic_status": "SOURCE_CLAIM", "confidence": "HIGH", "supports": supports, "note": ""},
+        {"unit_id": "F1", "statement": "A deployment is planned for a later stage.", "epistemic_status": "SOURCE_CLAIM", "confidence": "MEDIUM", "supports": supports, "note": ""},
+        {"unit_id": "C1", "statement": "The system is available to customers today.", "epistemic_status": "SOURCE_CLAIM", "confidence": "HIGH", "supports": supports, "note": ""},
+    ]
+    bridge = SemanticSensorProductionBridgeV0_1(
+        sensor_chat_fn=_sensor_chat(_batch(source, units=units)),
+        auditor_chat_fn=_auditor_chat(),
+    )
+    result = bridge.extract(source, [])
+    extraction = result.extraction
+    by_text = {claim.text: claim for claim in extraction.claims}
+    assert by_text["The latency benchmark reports a controlled result."].claim_type == ClaimType.TECHNICAL
+    assert by_text["A deployment is planned for a later stage."].claim_type == ClaimType.PREDICTIVE
+    assert by_text["The system is available to customers today."].claim_type == ClaimType.FACTUAL
+    assert extraction.technical_claims == ["The latency benchmark reports a controlled result."]
+    assert extraction.future_plans == ["A deployment is planned for a later stage."]
+    assert extraction.current_facts == ["The system is available to customers today."]
+    assert extraction.promotional_framing == []
+    assert extraction.marketing_heavy is False
+    assert extraction.evidence_maturity == 0.4
+    diag = result.diagnostics["sources"][0]["production_separations"]
+    assert diag["n_technical_claims"] == 1
+    assert diag["n_future_plans"] == 1
+
+
+def test_bridge_marketing_heavy_uses_admitted_claims_not_raw_source_text():
+    source = _source()
+    source.content_text = "Revolutionary game-changing raw wording. Latency benchmark evidence."
+    sid = str(source.id)
+    units = [{
+        "unit_id": "T1",
+        "statement": "The latency benchmark reports a result.",
+        "epistemic_status": "SOURCE_CLAIM",
+        "confidence": "HIGH",
+        "supports": [{"source_id": sid, "support_pointer": "PARA 0001", "support_excerpt": "Latency benchmark evidence."}],
+        "note": "",
+    }]
+    bridge = SemanticSensorProductionBridgeV0_1(
+        sensor_chat_fn=_sensor_chat(_batch(source, units=units)),
+        auditor_chat_fn=_auditor_chat(),
+    )
+    extraction = bridge.extract(source, []).extraction
+    assert extraction.technical_claims == ["The latency benchmark reports a result."]
+    assert extraction.promotional_framing == []
+    assert extraction.marketing_heavy is False

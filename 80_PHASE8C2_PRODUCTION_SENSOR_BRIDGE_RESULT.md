@@ -147,3 +147,21 @@ URL source
 ```
 
 Non-URL source packaging remains on the existing development-compatible paragraph renderer. The packaging version must change so the new candidate has a distinct execution fingerprint before rerunning Tier 2.
+
+## 6. Packaging v0.3 validation and repaired Tier-2 pass
+
+Measurement SHA: `d9e0dc15eca9ce7986b7d6cb8232c5f2e75f5f0a`
+
+A Sensor-only live probe on the exact Azure A source passed without repair after URL provenance packaging v0.3: 38 stable PARA blocks, maximum payload 563 characters, one event frame, 12 non-event units, and no schema events.
+
+The full A/C/D/X real-world continuity run then passed on the first pair with no confirmation required. Artifact: `eval/live/results/phase8c2_real_world_continuity_ab_v0_1/phase8c2_real_world_continuity_ab_v0_1_20260908T205328Z.json`; SHA256: `9b1804290de9bff55316d9622250f908356d68b2bf0d3b65383c2cef1431eeb9`. All four production-normalized hashes and character counts matched Phase 8C.1. Legacy and Sensor arms preserved `C SECONDARY -> KEEP_ACTIVE`, `X unrelated -> ordinary analysis`, `D INDEPENDENT -> PROMOTED`, a single Watch obligation, identical WATCH history, and final `PROMOTED` state. All four analysis identities were distinct across arms and Sensor event-frame counts were fully observable.
+
+Exact-SHA relevant regression after the measurement passed `70 passed, 1 deselected, 1 warning`; the deselected test is the pre-existing Case K residual already causally excluded from Phase 8C.2.
+
+## 7. Post-gate diagnostic — ExtractionResult separation fidelity
+
+The Tier-2 methodology preregistered ungolded cognitive differences on A/C/D/X as diagnostics rather than pass/fail gates. One such difference remains important: on initial Azure A, legacy produced `AWARE / SUMMARY` while Sensor produced `DROP / NONE`; C, X, and D were cognitively identical.
+
+Attribution shows both arms had no Kernel match. Legacy produced an `OPEN_NEW` candidate with reason `No current Kernel target; possible new question or model candidate.` and contained one `technical_claims` entry. The audited-units adapter, however, reconstructs only `claims / observations / inferences` and hard-codes source claims as `FACTUAL`; it leaves production separation fields such as `technical_claims` empty. Those fields are decision-active in Impact/Scheduler/Delta.
+
+Therefore the A-initial difference is a bridge schema-translation fidelity gap, not evidence that the compact Sensor representation is intrinsically too small. The next remediation must restore production separation fields only from Auditor-admitted claim statements, without allowing raw unaudited source text back into downstream cognition. Sensor v0.2.6, Auditor v0.1.1, Delta, D/S/P, WATCH, and Attention remain frozen.

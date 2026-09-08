@@ -11,8 +11,18 @@ import re
 from typing import Any
 
 from app.config import settings
+from app.enums import ClaimType
 from app.models.source import Source
-from app.services.extraction import ExtractionResult, merge_extractions
+from app.services.extraction import (
+    PROMOTIONAL_CUES,
+    TECHNICAL_CUES,
+    ExtractionResult,
+    _claim_type_for,
+    _contains_any,
+    _contains_unnegated_any,
+    _evidence_maturity,
+    merge_extractions,
+)
 from app.services.extraction_bridge import ExtractionBridgeResult
 from eval.live.phase6b_cognitive_semantics_v0_1 import (
     admitted_epistemic_units,
@@ -33,7 +43,7 @@ from eval.live.semantic_evidence_extractor_v0_2_6 import (
 )
 from eval.live.semantic_source_loader_v0_1 import LoadedSemanticSource, _render_text_paragraphs
 
-BRIDGE_VERSION = "phase8c2-production-sensor-bridge-v0.1"
+BRIDGE_VERSION = "phase8c2-production-sensor-bridge-v0.2"
 SOURCE_PACKAGING_VERSION = "production-source-to-semantic-sensor-v0.3-url-provenance-blocks"
 URL_PROVENANCE_BLOCK_MAX_CHARS = 580
 
@@ -112,6 +122,37 @@ def _render_production_source_text(source: Source, raw: str) -> str:
     if source_type == "URL" or ingestion_method == "URL_FETCH":
         return _render_url_connector_blocks(raw)
     return _render_text_paragraphs(raw)
+
+
+def _project_production_separations(extraction: ExtractionResult) -> ExtractionResult:
+    """Restore decision-active ExtractionResult separations from admitted claims only.
+
+    Raw source text is intentionally excluded: the Auditor gate remains authoritative.
+    """
+    extraction.current_facts = []
+    extraction.future_plans = []
+    extraction.technical_claims = []
+    extraction.promotional_framing = []
+    for claim in extraction.claims:
+        claim_type = _claim_type_for(claim.text)
+        claim.claim_type = claim_type
+        claim.temporal_status = "FUTURE" if claim_type == ClaimType.PREDICTIVE else "CURRENT"
+        if claim_type == ClaimType.PREDICTIVE:
+            extraction.future_plans.append(claim.text)
+        elif claim_type == ClaimType.PROMOTIONAL:
+            extraction.promotional_framing.append(claim.text)
+        elif claim_type == ClaimType.TECHNICAL:
+            extraction.technical_claims.append(claim.text)
+        elif claim_type != ClaimType.OPINION:
+            extraction.current_facts.append(claim.text)
+
+    admitted_claim_text = "\n".join(claim.text for claim in extraction.claims)
+    extraction.marketing_heavy = (
+        _contains_any(admitted_claim_text, PROMOTIONAL_CUES)
+        and not _contains_unnegated_any(admitted_claim_text, TECHNICAL_CUES)
+    )
+    extraction.evidence_maturity = _evidence_maturity(extraction)
+    return extraction
 
 
 def production_source_to_sensor_source(source: Source) -> LoadedSemanticSource:
@@ -280,7 +321,9 @@ class SemanticSensorProductionBridgeV0_1:
             )
 
         admitted_units = [*event_units, *non_admitted]
-        extraction = audited_units_to_extraction(admitted_units)
+        extraction = _project_production_separations(
+            audited_units_to_extraction(admitted_units)
+        )
         extraction.event_title = source.title
         diagnostics = {
             "source_id": source_id,
@@ -295,6 +338,14 @@ class SemanticSensorProductionBridgeV0_1:
                 "n_event_units_admitted": len(event_units),
             },
             "events": event_diagnostics,
+            "production_separations": {
+                "n_current_facts": len(extraction.current_facts),
+                "n_future_plans": len(extraction.future_plans),
+                "n_technical_claims": len(extraction.technical_claims),
+                "n_promotional_framing": len(extraction.promotional_framing),
+                "marketing_heavy": bool(extraction.marketing_heavy),
+                "evidence_maturity": extraction.evidence_maturity,
+            },
             "n_total_admitted_units": len(admitted_units),
         }
         return extraction, diagnostics
