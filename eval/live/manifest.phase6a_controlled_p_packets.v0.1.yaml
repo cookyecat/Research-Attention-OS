@@ -1,0 +1,37 @@
+name: raos-phase6a-controlled-p-packets-v0.1
+status: DEVELOPMENT_ONLY_WIRING_EVIDENCE
+purpose: >-
+  Controlled external attention-sensor packets for Phase 6A vertical-slice wiring.
+  These observations are synthetic test inputs, not claims about real-world current attention.
+as_of: "2026-09-08T00:00:00Z"
+policy:
+  - Event semantics must be injected from the audited event projection at runtime.
+  - Constituency and attention observations are independent test inputs, not inferred from article wording.
+  - Labels are not stored; P v1 must infer SALIENT/NOT_SALIENT from the packet.
+  - Conditions alternate strong/low salience to exercise the P sensor path without encoding a final action.
+
+cases:
+  RS11-E1:
+    constituency: {description: "AI model developers and practitioners", scope: domain, reference_scale: "10^6", basis: explicit_event_scope}
+    condition: strong_salience
+  RS11-E2:
+    constituency: {description: "DeepSeek API users and AI API developers", scope: product, reference_scale: "10^5", basis: explicit_event_scope}
+    condition: low_salience
+  RS12-E1:
+    constituency: {description: "humanoid robotics and dexterous-manipulation community", scope: domain, reference_scale: "10^4", basis: explicit_event_scope}
+    condition: strong_salience
+  RS12-E2:
+    constituency: {description: "dexterous robotic manipulation researchers and teams", scope: domain, reference_scale: "10^4", basis: explicit_event_scope}
+    condition: low_salience
+  RS12-E3:
+    constituency: {description: "dexterous robotic manipulation researchers and teams", scope: domain, reference_scale: "10^4", basis: explicit_event_scope}
+    condition: strong_salience
+  RS12-E4:
+    constituency: {description: "humanoid robotics competition and manipulation community", scope: domain, reference_scale: "10^4", basis: explicit_event_scope}
+    condition: low_salience
+  RS12-E5:
+    constituency: {description: "dexterous robotic-hand buyers, integrators, and robotics industry", scope: product, reference_scale: "10^4", basis: explicit_event_scope}
+    condition: strong_salience
+  RS15-E1:
+    constituency: {description: "embodied-AI and multi-robot collaboration community", scope: domain, reference_scale: "10^5", basis: explicit_event_scope}
+    condition: strong_salience

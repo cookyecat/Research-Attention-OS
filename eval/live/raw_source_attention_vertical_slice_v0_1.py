@@ -175,3 +175,30 @@ def render_audited_event_projection(projection: dict[str, Any]) -> str:
         for obj in projection["uncertainties"]:
             lines.append(f"- {obj.get('field','')}: {obj.get('kind','')} — {obj.get('note','')}")
     return "\n".join(lines)
+
+
+def admitted_support_context(audit_rows: list[dict[str, Any]]) -> list[str]:
+    """Preserve evidence context only from SUFFICIENT edges; never resurrect rejected objects."""
+    excerpts: list[str] = []
+    for row in audit_rows:
+        result = row.get("audit_result") or {}
+        if not (row.get("scorable") and result.get("verdict") == "SUFFICIENT"):
+            continue
+        for evidence in row.get("evidence") or []:
+            excerpt = str(evidence.get("support_excerpt") or "").strip()
+            if excerpt and excerpt not in excerpts:
+                excerpts.append(excerpt)
+    return excerpts
+
+
+def render_audited_event_with_support_context(
+    projection: dict[str, Any], audit_rows: list[dict[str, Any]]
+) -> str:
+    """Render admitted semantics plus their already-audited evidence context."""
+    base = render_audited_event_projection(projection)
+    excerpts = admitted_support_context(audit_rows)
+    if not excerpts:
+        return base
+    lines = [base, "Audited support context (from SUFFICIENT edges only):"]
+    lines.extend(f"- {excerpt}" for excerpt in excerpts)
+    return "\n".join(lines)

@@ -77,3 +77,25 @@ def test_projection_blocks_when_action_is_not_sufficient():
     assert projection["routing_status"] == "AUDIT_BLOCKED_NO_SUPPORTED_ACTION"
     assert projection["rendered_event_text"] == ""
     assert len(projection["rejected_or_unscorable_objects"]) == 1
+
+
+def test_support_context_uses_only_sufficient_edges():
+    from eval.live.raw_source_attention_vertical_slice_v0_1 import admitted_support_context
+    rows = [
+        {
+            "scorable": True,
+            "audit_result": {"verdict": "SUFFICIENT"},
+            "evidence": [{"support_excerpt": "keep me"}],
+        },
+        {
+            "scorable": True,
+            "audit_result": {"verdict": "INSUFFICIENT"},
+            "evidence": [{"support_excerpt": "reject me"}],
+        },
+        {
+            "scorable": False,
+            "audit_result": None,
+            "evidence": [{"support_excerpt": "unscorable"}],
+        },
+    ]
+    assert admitted_support_context(rows) == ["keep me"]
