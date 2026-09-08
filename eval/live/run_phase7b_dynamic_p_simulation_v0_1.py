@@ -30,7 +30,12 @@ def _route_action(p_label: str) -> tuple[str, str]:
         event_significance=True,   # controlled S=MATERIAL
         attention_momentum=(p_label == "SALIENT"),
     )
-    plan = validate_plan(route(SchedulerFeatures(), RuntimeView(), awareness=awareness))
+    neutral = SchedulerFeatures(
+        topic_relevance=0.0, structural_relevance=0.0, decision_relevance=0.0,
+        novelty=0.0, credibility=0.0, kernel_delta=0.0, bottleneck_alignment=0.0,
+        disagreement=0.0, actionability=0.0, temporal_value=0.0, cognitive_cost=0.0,
+    )
+    plan = validate_plan(route(neutral, RuntimeView(), awareness=awareness))
     return plan.disposition.value, plan.reason
 
 
