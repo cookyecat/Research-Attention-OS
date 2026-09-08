@@ -1,0 +1,22 @@
+name: semantic-sensor-v0.2.5-context-bearing-development
+status: DEVELOPMENT_ONLY_NOT_FRESH_VALIDATION
+parent: semantic-evidence-extractor-v0.2.4
+question: >-
+  Can evidence-complete semantic clustering preserve decision-critical scope/setup context,
+  especially in technical tutorials, without regressing the RS15 world-model fidelity repair?
+controlled_change:
+  - add context-bearing evidence rule for setup/scope/conditions
+  - split only at genuine semantic boundaries when 4-support cap cannot carry setup plus result
+unchanged:
+  - SemanticExtractionBatchV0_2
+  - max 12 non-event units
+  - max 4 supports per non-event unit
+  - temporal/source-binding rules
+  - Auditor v0.1.1
+  - frozen Delta semantics
+  - Attention Policy
+initial_development_sources: [RS15, RS05]
+success_conditions:
+  RS15: audited representation preserves Q2 shared-world-model meaning
+  RS05: audited representation restores CHALLENGE(CF-B-PERF) -> ENGAGE
+  no_atomization: unit count remains bounded and semantically clustered
