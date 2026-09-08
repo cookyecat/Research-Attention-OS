@@ -745,3 +745,28 @@ Raw source → Sensor → Auditor → represented world → Delta / D/S/P → At
 ```
 
 A surprising final action is not, by itself, evidence that the policy or Delta semantics are wrong.
+---
+
+## 15. Phase 6B integrated cognitive-attention status — 2026-09-08
+
+The raw-source cognitive path is now connected through audited semantics, Kernel localization, frozen Delta, and the production Attention Policy.
+
+Same-SHA development runs repeatedly exercised:
+
+```text
+NONE → AWARE
+NONE → DROP
+REINFORCE → WATCH
+CHALLENGE → ENGAGE
+```
+
+All four attention actions were reached without automatic Kernel mutation.
+
+`OPEN_NEW` was not forced merely because no legal update target existed; this preserves the frozen rule that OPEN_NEW is a genuine new cognitive branch, not a fallback.
+
+Current next step:
+
+```text
+Phase 6C
+Human Feedback / Kernel authorization boundary
+```
