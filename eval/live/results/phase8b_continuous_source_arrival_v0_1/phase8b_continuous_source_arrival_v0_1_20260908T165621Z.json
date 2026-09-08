@@ -1,0 +1,98 @@
+{
+  "artifact_id": "raos-phase8b-continuous-source-arrival-v0.1",
+  "measurement_git_head": "e9d6b7c107c9e94b9ee42e68c4ce216a62d316dc",
+  "timestamp_utc": "2026-09-08T16:56:21.481439+00:00",
+  "evidence_type": "CONTROLLED_DEVELOPMENT_SIMULATION",
+  "sources": {
+    "A": "dcc9dbb3-8ba9-4561-8366-6b0bec38de55",
+    "B": "9283d808-1eb9-4cc0-b440-8ce0e6eca12e",
+    "C": "d3c00bc5-9d7b-4b08-9aff-4be56301b4b1",
+    "D": "2afd6c4e-30e6-4674-ab12-6404784f3d3d",
+    "X": "23cdc467-e4ab-499e-8fe7-e5340db8efc0"
+  },
+  "decisions": {
+    "B_repost": [
+      {
+        "watch_id": "d5b9ad5c-5025-4ccd-9f61-4a5e2e22f9e4",
+        "relevant": true,
+        "evidence_class": "DUPLICATE",
+        "action": "SUPPRESS_RECHECK",
+        "check_id": "e6d9c631-b891-4ff9-a8ef-090f4472313f",
+        "disposition": "SKIPPED",
+        "outcome": "DUPLICATE_SUPPRESSED"
+      }
+    ],
+    "C_secondary": [
+      {
+        "watch_id": "d5b9ad5c-5025-4ccd-9f61-4a5e2e22f9e4",
+        "relevant": true,
+        "evidence_class": "SECONDARY",
+        "action": "RECHECK",
+        "check_id": "ab91c0a6-cab1-422f-b295-7037d5d5d897",
+        "disposition": "WATCH",
+        "outcome": "KEEP_ACTIVE"
+      }
+    ],
+    "X_unrelated": {
+      "matched_watch": false,
+      "ordinary_analysis": true
+    },
+    "D_independent": [
+      {
+        "watch_id": "d5b9ad5c-5025-4ccd-9f61-4a5e2e22f9e4",
+        "relevant": true,
+        "evidence_class": "INDEPENDENT",
+        "action": "RECHECK",
+        "check_id": "dcf34ba1-1c2f-4f5f-aee3-a2b2a52f3450",
+        "disposition": "AWARE",
+        "outcome": "PROMOTED"
+      }
+    ]
+  },
+  "relational_context": {
+    "C_secondary": {
+      "independent_sources": 1,
+      "secondary_reports": 1,
+      "independent_source_ids": [
+        "dcc9dbb3-8ba9-4561-8366-6b0bec38de55"
+      ],
+      "secondary_source_ids": [
+        "d3c00bc5-9d7b-4b08-9aff-4be56301b4b1"
+      ],
+      "is_duplicate": false
+    },
+    "D_independent": {
+      "independent_sources": 2,
+      "secondary_reports": 1,
+      "independent_source_ids": [
+        "dcc9dbb3-8ba9-4561-8366-6b0bec38de55",
+        "2afd6c4e-30e6-4674-ab12-6404784f3d3d"
+      ],
+      "secondary_source_ids": [
+        "d3c00bc5-9d7b-4b08-9aff-4be56301b4b1"
+      ],
+      "is_duplicate": false
+    }
+  },
+  "watch_check_outcomes": [
+    "DUPLICATE_SUPPRESSED",
+    "KEEP_ACTIVE",
+    "PROMOTED"
+  ],
+  "conditions": {
+    "repost_suppressed": true,
+    "repost_no_analysis": true,
+    "secondary_rechecked": true,
+    "secondary_kept_active": true,
+    "secondary_not_independent": true,
+    "secondary_counted_as_secondary": true,
+    "unrelated_ordinary_route": true,
+    "independent_promoted": true,
+    "independent_count_incremented": true,
+    "secondary_count_preserved": true,
+    "single_watch_obligation": true,
+    "watch_history_complete": true,
+    "final_watch_promoted": true
+  },
+  "all_conditions_pass": true
+}

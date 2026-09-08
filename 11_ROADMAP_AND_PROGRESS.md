@@ -826,3 +826,14 @@ Do not expand Brain World Model inference breadth before live dogfooding reveals
 WATCH now has a cumulative responsibility loop with auditable `WatchCheck` history. Existing WATCH obligations re-evaluate prior plus new evidence, remain ACTIVE when evidence is still insufficient, and become PROMOTED when AWARE/ENGAGE is reached. Rechecks do not create duplicate Watch obligations.
 
 Current work moves to **Phase 8B — Narrow Continuous Ingestion / Dogfooding**.
+## Phase 8B continuous source arrival — CLOSED 2026-09-09
+
+Continuous source arrival now distinguishes article novelty from evidence novelty before spending additional WATCH analysis budget.
+
+Research memory:
+
+> **The system's input unit is an article, but its cognitive unit is not an article.**
+
+> **Article count is not evidence count.**
+
+Current work moves to **Phase 8C — Narrow Real Dogfood Loop** using a small auditable source inbox/feed. Broad crawling and open-world semantic clustering remain deferred until repeated real failures justify them.

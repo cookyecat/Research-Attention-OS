@@ -47,3 +47,17 @@ After 8A, Phase 8 should add narrow ingestion/dogfooding rather than expanding s
 Phase 8A is **CLOSED / sufficient**. The canonical controlled loop passed all preregistered lifecycle conditions, including cumulative evidence continuity, KEEP_ACTIVE, PROMOTED, WatchCheck history, and duplicate-Watch suppression.
 
 Current subphase: **8B — Narrow Continuous Ingestion / Dogfooding.**
+## 5. Phase 8B result — 2026-09-09
+
+Phase 8B is **CLOSED / sufficient**. The exact-SHA controlled arrival loop demonstrated that new documents are not automatically new independent evidence.
+
+Validated sequence:
+
+```text
+repost -> suppress recheck
+secondary report -> recheck without independence increment
+unrelated source -> ordinary route
+independent same-event evidence -> independence increment and WATCH promotion
+```
+
+Current subphase: **8C — Narrow Real Dogfood Loop.**
