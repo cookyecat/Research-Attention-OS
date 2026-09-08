@@ -1,0 +1,1017 @@
+{
+  "name": "raos-phase7a-external-world-model-fidelity-ab-v0.1",
+  "status": "DEVELOPMENT_ATTRIBUTION_NOT_FRESH_VALIDATION",
+  "measurement_timestamp": "20260908T075104Z",
+  "measurement_git_head": "c8bdd91685c741864f405d838d319bab257c4344",
+  "input_sensor_artifact": "/Users/liyang/Developer/Research-Attention-OS/eval/live/results/semantic_evidence_dev_v0_2_3/semantic_evidence_dev_v0_2_3_20260907T204332Z.json",
+  "input_audit_artifact": "/Users/liyang/Developer/Research-Attention-OS/eval/live/results/phase6b_epistemic_unit_audit_v0_1/phase6b_epistemic_unit_audit_v0_1_20260908T041732Z.json",
+  "conditions": {
+    "A": "production-valid Auditor-admitted semantics",
+    "B": "diagnostic pre-audit Sensor semantics; attribution only, never production truth"
+  },
+  "n_sources": 4,
+  "n_delta_preserved": 3,
+  "n_attention_preserved": 3,
+  "rows": [
+    {
+      "source_id": "RS11",
+      "kernel_fixture": "phase6b-mvp-in-memory-copy",
+      "sensor_units": 12,
+      "auditor_admitted_units": 7,
+      "admission_rate": 0.5833,
+      "A_production_valid_audited": {
+        "n_units": 7,
+        "matches": [
+          {
+            "fixture_code": "BT1",
+            "node_type": "BOTTLENECK",
+            "title": "Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+            "score": 0.6
+          },
+          {
+            "fixture_code": "B1",
+            "node_type": "BELIEF",
+            "title": "Large unified models may be unsuitable for the fastest embodied-control loop.",
+            "score": 0.5
+          },
+          {
+            "fixture_code": "M1",
+            "node_type": "MODEL",
+            "title": "Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+            "score": 0.4
+          },
+          {
+            "fixture_code": "Q1",
+            "node_type": "QUESTION",
+            "title": "Should high-frequency motor control depend on a large unified model?",
+            "score": 0.4
+          },
+          {
+            "fixture_code": "P1",
+            "node_type": "PROJECT",
+            "title": "Motor Intelligence",
+            "score": 0.3
+          }
+        ],
+        "primary_delta": {
+          "operation": null,
+          "target_fixture_code": null,
+          "delta_content": "No material cognitive change relative to the current Kernel."
+        },
+        "attention_without_awareness": "DROP",
+        "features": {
+          "topic_relevance": 0.6,
+          "structural_relevance": 0.0,
+          "decision_relevance": 0.0,
+          "novelty": 0.6,
+          "credibility": 0.35,
+          "kernel_delta": 0.0,
+          "bottleneck_alignment": 0.6,
+          "disagreement": 0.0,
+          "actionability": 0.7,
+          "temporal_value": 0.4,
+          "cognitive_cost": 0.2,
+          "is_duplicate": false,
+          "evidence_maturity": 0.3,
+          "threatens_active_work": false,
+          "marketing_heavy": false,
+          "sources_conflict": false,
+          "evidence_links_present": false,
+          "evidence_stage_skipped": false,
+          "evidence_skip_reason": null,
+          "independent_source_count": 1,
+          "secondary_report_count": 0,
+          "high_quality_technical": false,
+          "foundational_paper": false,
+          "exploration_candidate": false,
+          "change_magnitude": 0.0,
+          "epistemic_strength": 0.2,
+          "target_importance": 0.0,
+          "attention_cost": 0.2
+        },
+        "stage_provenance": {
+          "matching": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 4061,
+            "prompt_tokens": 2494,
+            "completion_tokens": 543,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          },
+          "impact": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 1498,
+            "prompt_tokens": 2488,
+            "completion_tokens": 76,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          }
+        }
+      },
+      "B_diagnostic_pre_audit_sensor": {
+        "n_units": 12,
+        "matches": [],
+        "primary_delta": {
+          "operation": null,
+          "target_fixture_code": null,
+          "delta_content": "No material cognitive change relative to the current Kernel."
+        },
+        "attention_without_awareness": "DROP",
+        "features": {
+          "topic_relevance": 0.0,
+          "structural_relevance": 0.0,
+          "decision_relevance": 0.0,
+          "novelty": 0.6,
+          "credibility": 0.35,
+          "kernel_delta": 0.0,
+          "bottleneck_alignment": 0.0,
+          "disagreement": 0.0,
+          "actionability": 0.35,
+          "temporal_value": 0.4,
+          "cognitive_cost": 0.0,
+          "is_duplicate": false,
+          "evidence_maturity": 0.0,
+          "threatens_active_work": false,
+          "marketing_heavy": false,
+          "sources_conflict": false,
+          "evidence_links_present": false,
+          "evidence_stage_skipped": false,
+          "evidence_skip_reason": null,
+          "independent_source_count": 1,
+          "secondary_report_count": 0,
+          "high_quality_technical": false,
+          "foundational_paper": false,
+          "exploration_candidate": false,
+          "change_magnitude": 0.0,
+          "epistemic_strength": 0.2,
+          "target_importance": 0.0,
+          "attention_cost": 0.0
+        },
+        "stage_provenance": {
+          "matching": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 956,
+            "prompt_tokens": 3598,
+            "completion_tokens": 7,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          },
+          "impact": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 815,
+            "prompt_tokens": 1966,
+            "completion_tokens": 76,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          }
+        }
+      },
+      "delta_preserved": true,
+      "attention_preserved": true
+    },
+    {
+      "source_id": "RS12",
+      "kernel_fixture": "phase6b-mvp-in-memory-copy",
+      "sensor_units": 12,
+      "auditor_admitted_units": 11,
+      "admission_rate": 0.9167,
+      "A_production_valid_audited": {
+        "n_units": 11,
+        "matches": [
+          {
+            "fixture_code": "Q1",
+            "node_type": "QUESTION",
+            "title": "Should high-frequency motor control depend on a large unified model?",
+            "score": 0.7
+          },
+          {
+            "fixture_code": "B1",
+            "node_type": "BELIEF",
+            "title": "Large unified models may be unsuitable for the fastest embodied-control loop.",
+            "score": 0.7
+          },
+          {
+            "fixture_code": "M1",
+            "node_type": "MODEL",
+            "title": "Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+            "score": 0.6
+          },
+          {
+            "fixture_code": "BT1",
+            "node_type": "BOTTLENECK",
+            "title": "Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+            "score": 0.8
+          },
+          {
+            "fixture_code": "P1",
+            "node_type": "PROJECT",
+            "title": "Motor Intelligence",
+            "score": 0.6
+          },
+          {
+            "fixture_code": "G1",
+            "node_type": "GOAL",
+            "title": "Build better embodied and multi-agent intelligence systems.",
+            "score": 0.5
+          }
+        ],
+        "primary_delta": {
+          "operation": "REINFORCE",
+          "target_fixture_code": "BT1",
+          "delta_content": "The competition's dexterous-hand tasks and the teams' engineering choices (e.g., using a single hardware config across tasks, adding scenario-based reliability tests, and tuning for success probability over speed) provide concrete examples of task-success and reliability evaluation for high-frequency embodied control, reinforcing the bottleneck's relevance and the need for such evaluation."
+        },
+        "attention_without_awareness": "WATCH",
+        "features": {
+          "topic_relevance": 0.8,
+          "structural_relevance": 0.0,
+          "decision_relevance": 0.0,
+          "novelty": 0.6,
+          "credibility": 0.35,
+          "kernel_delta": 0.45,
+          "bottleneck_alignment": 0.8,
+          "disagreement": 0.0,
+          "actionability": 0.7,
+          "temporal_value": 0.4,
+          "cognitive_cost": 0.4,
+          "is_duplicate": false,
+          "evidence_maturity": 0.3,
+          "threatens_active_work": false,
+          "marketing_heavy": false,
+          "sources_conflict": false,
+          "evidence_links_present": false,
+          "evidence_stage_skipped": false,
+          "evidence_skip_reason": null,
+          "independent_source_count": 1,
+          "secondary_report_count": 0,
+          "high_quality_technical": true,
+          "foundational_paper": false,
+          "exploration_candidate": false,
+          "change_magnitude": 0.45,
+          "epistemic_strength": 0.35,
+          "target_importance": 0.8,
+          "attention_cost": 0.4
+        },
+        "stage_provenance": {
+          "matching": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 3576,
+            "prompt_tokens": 5481,
+            "completion_tokens": 522,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          },
+          "impact": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 3263,
+            "prompt_tokens": 2912,
+            "completion_tokens": 400,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          }
+        }
+      },
+      "B_diagnostic_pre_audit_sensor": {
+        "n_units": 12,
+        "matches": [
+          {
+            "fixture_code": "Q1",
+            "node_type": "QUESTION",
+            "title": "Should high-frequency motor control depend on a large unified model?",
+            "score": 0.8
+          },
+          {
+            "fixture_code": "B1",
+            "node_type": "BELIEF",
+            "title": "Large unified models may be unsuitable for the fastest embodied-control loop.",
+            "score": 0.8
+          },
+          {
+            "fixture_code": "M1",
+            "node_type": "MODEL",
+            "title": "Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+            "score": 0.7
+          },
+          {
+            "fixture_code": "BT1",
+            "node_type": "BOTTLENECK",
+            "title": "Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+            "score": 0.7
+          },
+          {
+            "fixture_code": "P1",
+            "node_type": "PROJECT",
+            "title": "Motor Intelligence",
+            "score": 0.6
+          },
+          {
+            "fixture_code": "G1",
+            "node_type": "GOAL",
+            "title": "Build better embodied and multi-agent intelligence systems.",
+            "score": 0.6
+          },
+          {
+            "fixture_code": "B2",
+            "node_type": "BELIEF",
+            "title": "True swarm-style collective intelligence requires meaningful decentralized local intelligence.",
+            "score": 0.5
+          },
+          {
+            "fixture_code": "Q2",
+            "node_type": "QUESTION",
+            "title": "Can shared world models reduce explicit multi-agent communication?",
+            "score": 0.4
+          },
+          {
+            "fixture_code": "P2",
+            "node_type": "PROJECT",
+            "title": "Collective Intelligence",
+            "score": 0.3
+          },
+          {
+            "fixture_code": "D1",
+            "node_type": "DECISION",
+            "title": "Evaluate startup equity terms independently from employment obligations.",
+            "score": 0.1
+          }
+        ],
+        "primary_delta": {
+          "operation": "REINFORCE",
+          "target_fixture_code": "BT1",
+          "delta_content": "The source provides concrete examples of task-success metrics (e.g., number of beans picked, powder weighing success) and mentions latency/control frequency (100Hz) and reliability testing, but does not provide integrated latency × energy × task-success evaluation. It reinforces the bottleneck by showing that such evaluation is still lacking in practice."
+        },
+        "attention_without_awareness": "AWARE",
+        "features": {
+          "topic_relevance": 0.8,
+          "structural_relevance": 0.5,
+          "decision_relevance": 0.1,
+          "novelty": 0.6,
+          "credibility": 0.35,
+          "kernel_delta": 0.3,
+          "bottleneck_alignment": 0.7,
+          "disagreement": 0.0,
+          "actionability": 0.7,
+          "temporal_value": 0.4,
+          "cognitive_cost": 0.5,
+          "is_duplicate": false,
+          "evidence_maturity": 0.3,
+          "threatens_active_work": false,
+          "marketing_heavy": false,
+          "sources_conflict": false,
+          "evidence_links_present": false,
+          "evidence_stage_skipped": false,
+          "evidence_skip_reason": null,
+          "independent_source_count": 1,
+          "secondary_report_count": 0,
+          "high_quality_technical": true,
+          "foundational_paper": false,
+          "exploration_candidate": false,
+          "change_magnitude": 0.3,
+          "epistemic_strength": 0.3,
+          "target_importance": 0.8,
+          "attention_cost": 0.5
+        },
+        "stage_provenance": {
+          "matching": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 5746,
+            "prompt_tokens": 5939,
+            "completion_tokens": 887,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          },
+          "impact": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 4603,
+            "prompt_tokens": 3569,
+            "completion_tokens": 584,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          }
+        }
+      },
+      "delta_preserved": true,
+      "attention_preserved": false
+    },
+    {
+      "source_id": "RS15",
+      "kernel_fixture": "phase6b-mvp-in-memory-copy",
+      "sensor_units": 7,
+      "auditor_admitted_units": 2,
+      "admission_rate": 0.2857,
+      "A_production_valid_audited": {
+        "n_units": 2,
+        "matches": [
+          {
+            "fixture_code": "B2",
+            "node_type": "BELIEF",
+            "title": "True swarm-style collective intelligence requires meaningful decentralized local intelligence.",
+            "score": 0.9
+          },
+          {
+            "fixture_code": "P2",
+            "node_type": "PROJECT",
+            "title": "Collective Intelligence",
+            "score": 0.8
+          },
+          {
+            "fixture_code": "Q2",
+            "node_type": "QUESTION",
+            "title": "Can shared world models reduce explicit multi-agent communication?",
+            "score": 0.7
+          },
+          {
+            "fixture_code": "G1",
+            "node_type": "GOAL",
+            "title": "Build better embodied and multi-agent intelligence systems.",
+            "score": 0.6
+          },
+          {
+            "fixture_code": "Q1",
+            "node_type": "QUESTION",
+            "title": "Should high-frequency motor control depend on a large unified model?",
+            "score": 0.5
+          },
+          {
+            "fixture_code": "B1",
+            "node_type": "BELIEF",
+            "title": "Large unified models may be unsuitable for the fastest embodied-control loop.",
+            "score": 0.5
+          },
+          {
+            "fixture_code": "M1",
+            "node_type": "MODEL",
+            "title": "Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+            "score": 0.4
+          },
+          {
+            "fixture_code": "BT1",
+            "node_type": "BOTTLENECK",
+            "title": "Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+            "score": 0.4
+          }
+        ],
+        "primary_delta": {
+          "operation": "REINFORCE",
+          "target_fixture_code": "B2",
+          "delta_content": "Source argues decentralized architecture scales and is robust, aligning with the belief that true swarm intelligence requires decentralized local intelligence. However, evidence is largely argumentative and industry trend, not direct empirical proof."
+        },
+        "attention_without_awareness": "WATCH",
+        "features": {
+          "topic_relevance": 0.9,
+          "structural_relevance": 0.5,
+          "decision_relevance": 0.0,
+          "novelty": 0.6,
+          "credibility": 0.3,
+          "kernel_delta": 0.4,
+          "bottleneck_alignment": 0.4,
+          "disagreement": 0.0,
+          "actionability": 0.35,
+          "temporal_value": 0.4,
+          "cognitive_cost": 0.3,
+          "is_duplicate": false,
+          "evidence_maturity": 0.3,
+          "threatens_active_work": false,
+          "marketing_heavy": true,
+          "sources_conflict": false,
+          "evidence_links_present": false,
+          "evidence_stage_skipped": false,
+          "evidence_skip_reason": null,
+          "independent_source_count": 1,
+          "secondary_report_count": 0,
+          "high_quality_technical": false,
+          "foundational_paper": false,
+          "exploration_candidate": false,
+          "change_magnitude": 0.4,
+          "epistemic_strength": 0.3,
+          "target_importance": 0.75,
+          "attention_cost": 0.3
+        },
+        "stage_provenance": {
+          "matching": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 4513,
+            "prompt_tokens": 2240,
+            "completion_tokens": 649,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          },
+          "impact": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 3104,
+            "prompt_tokens": 2694,
+            "completion_tokens": 346,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          }
+        }
+      },
+      "B_diagnostic_pre_audit_sensor": {
+        "n_units": 7,
+        "matches": [
+          {
+            "fixture_code": "Q2",
+            "node_type": "QUESTION",
+            "title": "Can shared world models reduce explicit multi-agent communication?",
+            "score": 0.9
+          },
+          {
+            "fixture_code": "B2",
+            "node_type": "BELIEF",
+            "title": "True swarm-style collective intelligence requires meaningful decentralized local intelligence.",
+            "score": 0.85
+          },
+          {
+            "fixture_code": "P2",
+            "node_type": "PROJECT",
+            "title": "Collective Intelligence",
+            "score": 0.8
+          },
+          {
+            "fixture_code": "G1",
+            "node_type": "GOAL",
+            "title": "Build better embodied and multi-agent intelligence systems.",
+            "score": 0.75
+          },
+          {
+            "fixture_code": "B1",
+            "node_type": "BELIEF",
+            "title": "Large unified models may be unsuitable for the fastest embodied-control loop.",
+            "score": 0.6
+          },
+          {
+            "fixture_code": "M1",
+            "node_type": "MODEL",
+            "title": "Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+            "score": 0.6
+          },
+          {
+            "fixture_code": "BT1",
+            "node_type": "BOTTLENECK",
+            "title": "Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+            "score": 0.7
+          }
+        ],
+        "primary_delta": {
+          "operation": "REINFORCE",
+          "target_fixture_code": "Q2",
+          "delta_content": "Zeno-1's action-conditioned world model predicts shared physical state evolution and enables failure prediction without explicit communication, providing concrete evidence that shared world models can reduce the need for explicit multi-agent communication in embodied collaboration."
+        },
+        "attention_without_awareness": "WATCH",
+        "features": {
+          "topic_relevance": 0.9,
+          "structural_relevance": 0.6,
+          "decision_relevance": 0.0,
+          "novelty": 0.6,
+          "credibility": 0.35,
+          "kernel_delta": 0.5,
+          "bottleneck_alignment": 0.7,
+          "disagreement": 0.0,
+          "actionability": 0.7,
+          "temporal_value": 0.4,
+          "cognitive_cost": 0.5,
+          "is_duplicate": false,
+          "evidence_maturity": 0.35,
+          "threatens_active_work": false,
+          "marketing_heavy": false,
+          "sources_conflict": false,
+          "evidence_links_present": false,
+          "evidence_stage_skipped": false,
+          "evidence_skip_reason": null,
+          "independent_source_count": 1,
+          "secondary_report_count": 0,
+          "high_quality_technical": true,
+          "foundational_paper": false,
+          "exploration_candidate": false,
+          "change_magnitude": 0.5,
+          "epistemic_strength": 0.35,
+          "target_importance": 0.7,
+          "attention_cost": 0.5
+        },
+        "stage_provenance": {
+          "matching": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 4245,
+            "prompt_tokens": 4370,
+            "completion_tokens": 599,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          },
+          "impact": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 3005,
+            "prompt_tokens": 2850,
+            "completion_tokens": 353,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          }
+        }
+      },
+      "delta_preserved": false,
+      "attention_preserved": true
+    },
+    {
+      "source_id": "RS05",
+      "kernel_fixture": "phase6b-perf-challenge-counterfactual",
+      "sensor_units": 12,
+      "auditor_admitted_units": 2,
+      "admission_rate": 0.1667,
+      "A_production_valid_audited": {
+        "n_units": 2,
+        "matches": [
+          {
+            "fixture_code": "CF-B-PERF",
+            "node_type": "BELIEF",
+            "title": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+            "score": 0.9
+          },
+          {
+            "fixture_code": "CF-P-PERF",
+            "node_type": "PROJECT",
+            "title": "PyTorch Performance Profiling",
+            "score": 0.8
+          },
+          {
+            "fixture_code": "CF-G-PERF",
+            "node_type": "GOAL",
+            "title": "Understand and optimize PyTorch GPU performance.",
+            "score": 0.7
+          }
+        ],
+        "primary_delta": {
+          "operation": "CHALLENGE",
+          "target_fixture_code": "CF-B-PERF",
+          "delta_content": "The source provides direct profiling evidence that for a 64x64 bf16 matmul with bias, kernel launch and synchronization overhead dominate (CPU time 2.3ms vs GPU time 23us), directly contradicting the existing belief that computation dominates runtime."
+        },
+        "attention_without_awareness": "ENGAGE",
+        "features": {
+          "topic_relevance": 0.9,
+          "structural_relevance": 0.0,
+          "decision_relevance": 0.0,
+          "novelty": 0.6,
+          "credibility": 0.35,
+          "kernel_delta": 0.8,
+          "bottleneck_alignment": 0.0,
+          "disagreement": 0.8,
+          "actionability": 0.7,
+          "temporal_value": 0.4,
+          "cognitive_cost": 0.3,
+          "is_duplicate": false,
+          "evidence_maturity": 0.35,
+          "threatens_active_work": false,
+          "marketing_heavy": false,
+          "sources_conflict": false,
+          "evidence_links_present": false,
+          "evidence_stage_skipped": false,
+          "evidence_skip_reason": null,
+          "independent_source_count": 1,
+          "secondary_report_count": 0,
+          "high_quality_technical": true,
+          "foundational_paper": false,
+          "exploration_candidate": false,
+          "change_magnitude": 0.8,
+          "epistemic_strength": 0.35,
+          "target_importance": 0.9,
+          "attention_cost": 0.3
+        },
+        "stage_provenance": {
+          "matching": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 2427,
+            "prompt_tokens": 1209,
+            "completion_tokens": 239,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          },
+          "impact": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 2431,
+            "prompt_tokens": 1829,
+            "completion_tokens": 226,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          }
+        }
+      },
+      "B_diagnostic_pre_audit_sensor": {
+        "n_units": 12,
+        "matches": [
+          {
+            "fixture_code": "CF-P-PERF",
+            "node_type": "PROJECT",
+            "title": "PyTorch Performance Profiling",
+            "score": 0.9
+          },
+          {
+            "fixture_code": "CF-B-PERF",
+            "node_type": "BELIEF",
+            "title": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+            "score": 0.8
+          },
+          {
+            "fixture_code": "CF-G-PERF",
+            "node_type": "GOAL",
+            "title": "Understand and optimize PyTorch GPU performance.",
+            "score": 0.7
+          }
+        ],
+        "primary_delta": {
+          "operation": "CHALLENGE",
+          "target_fixture_code": "CF-B-PERF",
+          "delta_content": "The tutorial's profiling of a 64x64 bf16 matmul+add shows Self CPU time 2.314ms vs Self CUDA time 23.104us, indicating overhead-bound behavior where kernel preparation/launch dominates, directly contradicting the belief that computation dominates for small matrices."
+        },
+        "attention_without_awareness": "ENGAGE",
+        "features": {
+          "topic_relevance": 0.9,
+          "structural_relevance": 0.0,
+          "decision_relevance": 0.0,
+          "novelty": 0.6,
+          "credibility": 0.35,
+          "kernel_delta": 0.75,
+          "bottleneck_alignment": 0.0,
+          "disagreement": 0.7,
+          "actionability": 0.7,
+          "temporal_value": 0.4,
+          "cognitive_cost": 0.4,
+          "is_duplicate": false,
+          "evidence_maturity": 0.35,
+          "threatens_active_work": false,
+          "marketing_heavy": false,
+          "sources_conflict": false,
+          "evidence_links_present": false,
+          "evidence_stage_skipped": false,
+          "evidence_skip_reason": null,
+          "independent_source_count": 1,
+          "secondary_report_count": 0,
+          "high_quality_technical": true,
+          "foundational_paper": false,
+          "exploration_candidate": false,
+          "change_magnitude": 0.7,
+          "epistemic_strength": 0.35,
+          "target_importance": 0.9,
+          "attention_cost": 0.4
+        },
+        "stage_provenance": {
+          "matching": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 2294,
+            "prompt_tokens": 3932,
+            "completion_tokens": 254,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          },
+          "impact": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 2459,
+            "prompt_tokens": 2721,
+            "completion_tokens": 234,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          }
+        }
+      },
+      "delta_preserved": true,
+      "attention_preserved": true
+    }
+  ],
+  "methodology_note": "Condition B is an information-availability ablation, not an oracle. Differences show that Auditor/Sensor provenance admission can causally alter downstream judgment; agreement does not prove semantic completeness."
+}

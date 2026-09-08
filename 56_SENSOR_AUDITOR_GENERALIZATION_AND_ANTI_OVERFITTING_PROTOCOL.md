@@ -382,3 +382,26 @@ broadening protocol
 update this document in the same research change.
 
 Do not rely on conversational memory for anti-overfitting discipline.
+
+---
+
+# 17. Phase 7A concrete overfitting case
+
+Phase 7A produced a direct example of researcher-level overfitting.
+
+```text
+v0.2.4 evidence-complete cohesion
+was motivated by RS15
+↓
+RS15 causal world-model loss improved
+↓
+RS05 technical tutorial regressed from a stable CHALLENGE path to NONE
+```
+
+Therefore:
+
+> **A mechanism does not graduate because it repairs the case that created it.**
+
+A candidate must survive materially different source styles and downstream causal checks before it becomes a working baseline.
+
+v0.2.6 was selected only after targeted RS15/RS05 decision-fidelity probes plus RS11/RS12 cross-source regression.

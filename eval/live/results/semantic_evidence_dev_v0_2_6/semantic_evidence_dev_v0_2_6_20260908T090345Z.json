@@ -1,0 +1,590 @@
+{
+  "name": "raos-semantic-evidence-development-run-v0.2.6-evidence-complete-cohesion",
+  "status": "DEVELOPMENT_ONLY_NOT_FRESH_VALIDATION",
+  "measurement_timestamp": "20260908T090345Z",
+  "measurement_git_head": "b2388e40453bf0ceb1d5b22cfb065e515becb19d",
+  "as_of": "2026-09-08",
+  "invocation": {
+    "extractor_version": "semantic-evidence-extractor-v0.2.6",
+    "prompt_version": "semantic-evidence-extraction-v0.2.6-predicate-explicit-context-bearing",
+    "prompt_sha256": "11b7547dc3e157787cf39689380b4102754e9e605253f0863b81e8d441d072f9",
+    "thinking": "disabled",
+    "reasoning_effort": null,
+    "timeout_seconds": 90.0,
+    "temperature": 0.1,
+    "requested_model": "deepseek-v4-pro",
+    "provider_base_url": "https://api.deepseek.com",
+    "response_format": "json_object",
+    "structured_schema": "SemanticExtractionBatchV0_2",
+    "temporal_anchor_policy": "measurement-time-never-substitutes-source-time-v0.2.1",
+    "audit_policy": "sufficient-provenance-attribution-locator-dedup-v0.2.2",
+    "compression_policy": "minimal-sufficient-semantic-basis-v0.2.3",
+    "max_non_event_units": 12,
+    "max_supports_per_non_event_unit": 4,
+    "preferred_non_event_range": "6..10 when the source genuinely contains that many independent epistemic points"
+  },
+  "n_sources": 2,
+  "n_scorable": 2,
+  "n_first_pass_valid": 1,
+  "sources": [
+    {
+      "source": {
+        "source_id": "RS15",
+        "path": "eval_samples/15_机器人基础模型的「协作时代」来了！芝诺机器人发布全球首个协作具身智能基础模型.txt",
+        "media_type": "text/plain",
+        "git_blob_sha": "6e69f8d4cdddb2bce72e0e2626f5d32bd0ada3cf",
+        "file_sha256": "0d501f1a37782a29923f18434928caa06c1d88b512eb8e03d153b10cb59a170f",
+        "text_sha256": "b4d8ea08d18c3fd7df107a4ff96a6423cf15247f0309ad03e497c347b413f69a",
+        "char_count": 6295,
+        "page_count": null,
+        "published_at": "unknown",
+        "updated_at": "unknown",
+        "captured_at": "unknown"
+      },
+      "scorable": true,
+      "failure_kind": null,
+      "error": null,
+      "repair_used": true,
+      "schema_events": [
+        {
+          "retry": 0,
+          "status": "invalid",
+          "errors": [
+            {
+              "type": "source_binding",
+              "msg": "minimal-sufficient policy allows at most 4 supports per non-event unit; RS15-NEU1 has 5"
+            }
+          ]
+        },
+        {
+          "retry": 1,
+          "status": "repaired"
+        }
+      ],
+      "invalid_raw": null,
+      "model_meta": {
+        "latency_ms": 61283,
+        "prompt_tokens": 15810,
+        "completion_tokens": 6585,
+        "model": "deepseek-v4-pro",
+        "estimated_cost_usd": null,
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 90.0,
+        "schema_repaired": true
+      },
+      "n_event_frames": 1,
+      "n_non_event_units": 10,
+      "n_non_event_supports": 23,
+      "statement_chars": 811,
+      "support_excerpt_chars": 1423,
+      "batch": {
+        "interface_version": "semantic-evidence-batch-v0.2",
+        "batch_id": "RS15-semantic-batch-v0.2",
+        "source_ids": [
+          "RS15"
+        ],
+        "event_frames": [
+          {
+            "interface_version": "semantic-evidence-frame-v0.1",
+            "event": {
+              "event_id": "RS15-E1",
+              "as_of": "2026-09-08",
+              "summary": "芝诺机器人发布 Zeno-1，全球首个专为去中心化多机器人协作设计的物理智能基础模型，3B 参数，本地 30Hz 闭环视觉-运动推理。"
+            },
+            "sources": [
+              {
+                "source_id": "RS15",
+                "source_type": "text/plain",
+                "published_at": "unknown",
+                "locator": "eval_samples/15_机器人基础模型的「协作时代」来了！芝诺机器人发布全球首个协作具身智能基础模型.txt"
+              }
+            ],
+            "evidence": [
+              {
+                "evidence_id": "RS15-E1-EV1",
+                "source_id": "RS15",
+                "support_pointer": "PARA 0012",
+                "support_excerpt": "芝诺机器人发布了 Zeno-1，一个 3B 参数的基础模型，是第一个专为去中心化多机器人协作设计的物理智能基础模型，能在本地以 30 Hz 的频率进行闭环视觉 — 运动推理。",
+                "epistemic_status": "SOURCE_CLAIM",
+                "confidence": "HIGH"
+              }
+            ],
+            "substantive_actors_objects": [
+              {
+                "name": "芝诺机器人",
+                "role": "发布者",
+                "substantive_basis": "发布 Zeno-1 模型",
+                "support_ids": [
+                  "RS15-E1-EV1"
+                ]
+              },
+              {
+                "name": "Zeno-1",
+                "role": "被发布的基础模型",
+                "substantive_basis": "3B 参数，专为去中心化多机器人协作设计，本地 30Hz 闭环视觉-运动推理",
+                "support_ids": [
+                  "RS15-E1-EV1"
+                ]
+              }
+            ],
+            "actions_changes": [
+              {
+                "description": "发布 Zeno-1 基础模型",
+                "temporal_status": "ANNOUNCED",
+                "support_ids": [
+                  "RS15-E1-EV1"
+                ]
+              }
+            ],
+            "affected_systems_populations": [
+              {
+                "description": "多机器人协作系统",
+                "reference_scope": "去中心化多机器人协作",
+                "support_ids": [
+                  "RS15-E1-EV1"
+                ]
+              }
+            ],
+            "temporal_context": {
+              "event_time": "unknown",
+              "effective_time": "unknown",
+              "as_of": "2026-09-08",
+              "notes": "来源未提供发布日期。"
+            },
+            "uncertainties": [
+              {
+                "field": "event_time",
+                "kind": "UNKNOWN",
+                "note": "来源未提供发布日期。",
+                "support_ids": []
+              }
+            ]
+          }
+        ],
+        "non_event_units": [
+          {
+            "unit_id": "RS15-NEU1",
+            "statement": "Zeno-1 采用四阶段递进训练：大规模视频预训练、单体具身训练、闭环伙伴交互（CPI）、协作失败针对性纠正。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0026",
+                "support_excerpt": "四阶段递进训练"
+              },
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0027",
+                "support_excerpt": "第一阶段：学习世界（大规模视频预训练）。"
+              },
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0031",
+                "support_excerpt": "第二阶段：学习自身（单体具身训练）。"
+              },
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0036",
+                "support_excerpt": "第三阶段：学习协作（闭环伙伴交互，Closed-loop partner interaction，CPI）。"
+              }
+            ],
+            "note": "第四阶段见 PARA 0042，因支持上限未列入。"
+          },
+          {
+            "unit_id": "RS15-NEU2",
+            "statement": "CPI 训练让两台独立运行的机器人互为训练伙伴，各自根据观测独立行动，通过共享物理环境交互，协作行为从闭环交互中自发涌现。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0038",
+                "support_excerpt": "CPI 的思路完全不同。它让两台独立运行的机器人互为训练伙伴。每台机器人根据自己的观测独立行动，而它的动作会改变共享的物理环境，进而影响另一台机器人的下一步决策。"
+              },
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0041",
+                "support_excerpt": "通过 CPI 训练，Zeno-1 学会了一系列具体的协作适应行为：减速、等待、让步、维持接触、重新校准时序，然后在交互重新变得兼容时恢复正常节奏。这些行为完全从闭环交互中自发涌现。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS15-NEU3",
+            "statement": "Zeno-1 包含持久交互记忆模块，维护压缩的交互历史表征，编码任务进展、搭档行为模式和共享物理状态演变；消融实验表明该模块对超过 3 分钟的协作任务至关重要。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0057",
+                "support_excerpt": "Zeno-1 通过一个可学习的记忆模块来解决这个问题。这个模块在每个时间步更新，维护一个压缩的交互历史表征。它编码了三类信息："
+              },
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0058",
+                "support_excerpt": "任务进展：当前任务处于哪个阶段，哪些子目标已经完成。"
+              },
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0059",
+                "support_excerpt": "搭档行为模式：搭档近期的动作趋势，是否在减速、加速、改变策略。"
+              },
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0060",
+                "support_excerpt": "共享物理状态演变：物体构型如何变化，接触点如何迁移。"
+              }
+            ],
+            "note": "消融实验结论见 PARA 0061，因支持上限未列入。"
+          },
+          {
+            "unit_id": "RS15-NEU4",
+            "statement": "Zeno-1 的预测式内省机制在搭档交互层面评估候选动作对搭档后续行为的影响，在保留测试集上 87% 的概率选择让搭档后续行为更优的动作，移除该模块后降至 61%。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0066",
+                "support_excerpt": "Zeno-1 会评估每个候选动作对搭档后续行为的可能影响。根据技术报告中在保留测试集上的评估数据："
+              },
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0067",
+                "support_excerpt": "Zeno-1 在协作决策点上有 87% 的概率选择了让搭档后续行为更优的动作。"
+              },
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0068",
+                "support_excerpt": "作为对照，移除搭档行为预测模块后（只考虑动作的即时效果），这一比例降至 61%。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS15-NEU5",
+            "statement": "Zeno-1 内置行动条件世界模型，在动作执行前预测共享物理状态演变并识别可能失败；在 200 次真实机器人实验中，0.5 秒预警窗口内接触失败预测 AUC 为 0.94，仅基于当前观测的 AUC 为 0.81。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0070",
+                "support_excerpt": "在物理接触层面，Zeno-1 内置了一个行动条件世界模型（Action-Conditioned Latent World Model），可以预测执行某个动作后共享物理状态会如何演变。"
+              },
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0071",
+                "support_excerpt": "它的核心功能是在动作执行前识别可能的失败：抓取失误、滑动、抓握不稳和物体扰动。"
+              },
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0072",
+                "support_excerpt": "研究团队在 200 次真实机器人实验中的测试，这个世界模型在 0.5 秒预警窗口内对接触失败的预测 AUC 达到 0.94，而仅基于当前观测预测的 AUC 为 0.81。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS15-NEU6",
+            "statement": "Zeno-1 采用去中心化架构，增加机器人只需加载同一策略副本，计算量线性增长；而中心化控制器的联合动作空间随机器人数量指数膨胀（d^N）。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0077",
+                "support_excerpt": "扩展性。 中心化控制器的联合动作空间随机器人数量指数膨胀。假设每台机器人的动作空间维度为 d，N 台机器人的联合空间为 d^N。Zeno-1 的去中心化架构下，增加一台机器人只需要加载同一个策略副本，无需重新设计控制器或重新划分联合动作空间，计算量线性增长。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS15-NEU7",
+            "statement": "去中心化系统避免单点故障：每台机器人独立决策，单个节点故障不会传播到整个团队；而中心化系统存在单点故障，中央控制器延迟或故障会导致所有机器人同时失效。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0078",
+                "support_excerpt": "鲁棒性。 中心化系统存在单点故障。中央控制器如果出现延迟或故障，所有机器人同时失效。去中心化系统中，每台机器人独立决策，单个节点的故障不会传播到整个团队。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS15-NEU8",
+            "statement": "Zeno-1 的协调不依赖显式通信和统一调度，而是以共享物理世界本身作为协调接口，每台机器人通过观察环境和其他机器人行为判断任务进度并调整动作。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0082",
+                "support_excerpt": "在 Zeno-1 的技术路径中，「共享的物理世界本身就是协调接口」。每台机器人通过观察环境以及其他机器人的行为，判断任务进度、理解协作状态，并据此调整自己的下一步动作。协调不再完全依赖显式通信和统一调度，而是在真实世界的持续交互中自然产生。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS15-NEU9",
+            "statement": "产业界和学术界正将多机器人协作视为机器人基础模型下一阶段核心能力：斯坦福 CHORUS 提出基于单一 VLA policy 的去中心化多机器人协作，Figure Helix 02 和 Google DeepMind Gemini Robotics 2 已展示或强调 multi-robot collaboration。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0083",
+                "support_excerpt": "学术界也已经开始沿着类似方向推进。今年 6 月，斯坦福的 Chelsea Finn、Jeannette Bohg 的课题组提出一篇名为 CHORUS 的方法，提出了基于单一 VLA policy 的去中心化多机器人协作。"
+              },
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0084",
+                "support_excerpt": "产业界也开始把 collaboration 视为下一阶段的重要能力。Figure 的 Helix 02 和 Google DeepMind 的 Gemini Robotics 2 都已经明确展示或强调 multi-robot collaboration，说明协作正在逐渐进入机器人基础模型的核心能力定义。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS15-NEU10",
+            "statement": "Zeno-1 验证了协作物理智能可以在单一去中心化策略中实现，机器人基础模型正从单体能力走向协作智能。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0086",
+                "support_excerpt": "Zeno-1 至少验证了一件事：协作物理智能可以在单一去中心化策略中实现。"
+              },
+              {
+                "source_id": "RS15",
+                "support_pointer": "PARA 0085",
+                "support_excerpt": "一个越来越清晰的趋势由此浮现：机器人基础模型正在从单体能力进一步走向协作智能。"
+              }
+            ],
+            "note": ""
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "source": {
+        "source_id": "RS05",
+        "path": "eval_samples/05_PyTorch 性能剖析（第 1 部分）.txt",
+        "media_type": "text/plain",
+        "git_blob_sha": "cf257af82eca625c5a614381b94b139252acfae9",
+        "file_sha256": "0412d02c6512e892b5d5d47e22c2aa6fb19a806facb0e65a558af26d2745d378",
+        "text_sha256": "b57b153613e95071a51caca25c9a2ca3729bb528c6aa907b27602bcea519631c",
+        "char_count": 17278,
+        "page_count": null,
+        "published_at": "unknown",
+        "updated_at": "unknown",
+        "captured_at": "unknown"
+      },
+      "scorable": true,
+      "failure_kind": null,
+      "error": null,
+      "repair_used": false,
+      "schema_events": [],
+      "invalid_raw": null,
+      "model_meta": {
+        "latency_ms": 30883,
+        "prompt_tokens": 11023,
+        "completion_tokens": 2715,
+        "model": "deepseek-v4-pro",
+        "estimated_cost_usd": null,
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 90.0,
+        "schema_repaired": false
+      },
+      "n_event_frames": 0,
+      "n_non_event_units": 10,
+      "n_non_event_supports": 15,
+      "statement_chars": 2492,
+      "support_excerpt_chars": 1947,
+      "batch": {
+        "interface_version": "semantic-evidence-batch-v0.2",
+        "batch_id": "RS05-semantic-batch-v0.2",
+        "source_ids": [
+          "RS05"
+        ],
+        "event_frames": [],
+        "non_event_units": [
+          {
+            "unit_id": "RS05-U01",
+            "statement": "The tutorial demonstrates that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS05",
+                "support_pointer": "PARA 0036",
+                "support_excerpt": "GPU 上花费的时间（内核 ampere_bf16_s16816gemm...）不到 CPU 上花费时间（matmul_add 操作）的 1%。GPU 大部分时间处于空闲状态，这是一个明显的警示信号。出现这种情况的原因是，小规模矩阵乘法在 GPU 上运算极快，程序绝大部分开销都消耗在内核准备、GPU 任务启动、发送待乘数据和收集结果等环节。这类受调度开销制约的算法被称作 开销受限型（overhead-bound） 算法。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS05-U02",
+            "statement": "Increasing matrix size from 64x64 to 4096x4096 shifts the workload from overhead-bound to compute-bound, with GPU kernel time becoming comparable to CPU time and dominating CUDA time.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS05",
+                "support_pointer": "PARA 0041",
+                "support_excerpt": "两项耗时单位均为毫秒，可见仅通过增大矩阵尺寸，就能让 GPU 承担更多实际计算。对照图 2 能发现：如今绝大部分 CUDA 耗时消耗在 GPU 内核（ampere_bf16_s16816gemm_..）上，而非发起内核调用的 CPU 操作（matmul_add）。这说明程序成功从开销受限型（overhead-bound）转为计算受限型（compute-bound）。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS05-U03",
+            "statement": "The first profiling step (ProfileStep#2) shows a ~228 µs gap between entering the record_function('matmul_add') block and dispatching aten::matmul, attributed to one-time GPU initialization overhead such as workspace allocation, cuBLAS heuristics, or lazy module loading; warmup avoids capturing this overhead.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS05",
+                "support_pointer": "PARA 0053",
+                "support_excerpt": "图 6 中标注的约 228 微秒，是从进入 record_function(\"matmul_add\") 代码块，到 PyTorch 真正下发 aten::matmul 算子之间的空窗期。造成这段耗时的诱因有很多：临时显存工作区申请、cuBLAS（NVIDIA 专有的 GPU 加速基础线性代数库）内部启发式策略开销，或是动态懒加载模块。对此可以先暂时跳过，也可以遵循通用做法：在性能采集前补充多轮预热运行。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS05-U04",
+            "statement": "The ~2.5 ms offset between CPU and GPU timelines is caused by profiler activity buffer allocation, as confirmed by setting wait=0/warmup=0 and observing an Activity Buffer Request event before GPU operations, and by a gap appearing only once in 20 active iterations.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS05",
+                "support_pointer": "PARA 0061",
+                "support_excerpt": "图 9 显示，所有 GPU 运算开始前，GPU 时间线里出现了一项 Activity Buffer Request（活动缓冲区申请）事件，接下来我们放大视图细看细节。"
+              },
+              {
+                "source_id": "RS05",
+                "support_pointer": "PARA 0064",
+                "support_excerpt": "如图 11 所示，仅在 ProfileStep#1 出现该空隙，和之前推断吻合，因此可以确定空档源自缓冲区内存申请。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS05-U05",
+            "statement": "In the CPU dispatch chain, aten::matmul dispatches to aten::mm for 2D matrices, but adding a batch dimension causes it to dispatch to aten::bmm with additional CUDA runtime calls, reflecting cuBLAS heuristic kernel selection.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS05",
+                "support_pointer": "PARA 0067",
+                "support_excerpt": "面向用户的 PyTorch 矩阵乘法调用最终会落到 ATen 层 的 aten::matmul 调度接口。aten::mm 是专用于二维矩阵相乘的底层后端算子。"
+              },
+              {
+                "source_id": "RS05",
+                "support_pointer": "PARA 0071",
+                "support_excerpt": "在图 13 中，给输入张量新增批量维度后，aten::matmul 内部不再调用 aten::mm，转而使用 aten::bmm，同时还附带一系列前置 CUDA 运行时调用。这也侧面体现出 cuBLAS 会依靠内部启发式逻辑，为当前运算择优调度最合适的 GPU 内核。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS05-U06",
+            "statement": "Matrix multiplication kernels are preceded by a cudaOccupancyMaxActiveBlocksPerMultiprocessor query because cuBLAS uses occupancy information to select among many kernel variants, whereas elementwise addition kernels have fixed low resource usage and do not require such a query.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS05",
+                "support_pointer": "PARA 0077",
+                "support_excerpt": "从图 15 可见，矩阵乘法的单线程寄存器占用、共享内存占用会随矩阵尺寸动态变化。cuBLAS 内置上百种不同版本的矩阵乘内核，每种内核都依托启发式策略完成启动，而该策略需要实时获取硬件算力信息，占用率查询就是启发逻辑的一环。"
+              },
+              {
+                "source_id": "RS05",
+                "support_pointer": "PARA 0078",
+                "support_excerpt": "反观图 16，加法内核固定占用 32 个寄存器、不使用共享内存，资源需求极小，硬件资源不会成为运行瓶颈，因此无需提前查询占用率。这类算子天生轻量化。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS05-U07",
+            "statement": "Even with identical hardware, code, and inputs, GPU kernel execution times vary across profiling steps due to GPU clock frequency changes, temperature, power scheduling, and driver background tasks; relying on average times can mislead optimization.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS05",
+                "support_pointer": "PARA 0086",
+                "support_excerpt": "该轨迹点明一个理想化示例里容易忽略的关键点：即便硬件环境、代码、输入数据完全相同，GPU 内核的实际运行耗时也并非固定值。"
+              },
+              {
+                "source_id": "RS05",
+                "support_pointer": "PARA 0091",
+                "support_excerpt": "GPU 空闲或加速状态下的时钟频率变化\n显卡温升带来的性能波动\n显卡功耗调度策略\n显卡驱动后台例行维护任务\n只看平均耗时的开发者会得出结论：矩阵乘法平均耗时约 1 毫秒（5 次均值为 1084 微秒）；而查看时序轨迹后能发现：除个别硬件扰动时刻外，矩阵乘法大多只需约 580 微秒。两种结论对应的优化思路天差地别，后者才符合真实运行情况。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS05-U08",
+            "statement": "torch.compile fuses torch.add(torch.matmul(x,w), b) into a single aten::addmm call at the scheduler level, but does not create a new fused CUDA kernel; the GPU still runs the same cuBLAS GEMM kernel with a separate DtoD memory copy for bias initialization.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS05",
+                "support_pointer": "PARA 0100",
+                "support_excerpt": "这属于计算图层面的算子融合：Inductor 将 torch.add(torch.matmul(x, w), b) 改写为单次 aten::addmm(b, x, w) 调用。关键细节是：该优化并未生成全新的融合 CUDA 内核。GPU 底层仍沿用动态执行模式使用的同一个 cuBLAS 内核 ampere_bf16_s16816gemm_bf16_128x256_ldg8_f2f_stages_64x3_nn。换言之，本次融合仅发生在算子调度层，而非 GPU 内核层。"
+              },
+              {
+                "source_id": "RS05",
+                "support_pointer": "PARA 0112",
+                "support_excerpt": "out = copy(C) ← 这是 DtoD 内存拷贝（32 MB，耗时约 33 µs）\nout = α·(A·B) + β·out ← 使用 α=β=1 的 GEMM，将偏置加法融合到写回阶段\n数学结果等价，但优化存在隐性开销：额外一次显存拷贝 + 复杂度略高的 GEMM 收尾逻辑。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS05-U09",
+            "statement": "For a single-operator workload, torch.compile increases CPU overhead approximately 2x compared to eager execution because every call traverses the full Dynamo→AOTAutograd→Inductor pipeline; this overhead is amortized only in large multi-operator models.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS05",
+                "support_pointer": "PARA 0116",
+                "support_excerpt": "编译版本单轮 CPU 耗时约为原生的 2 倍。原因是每次调用都完整经过 Dynamo→AOTAutograd→Inductor 整套调度链路，同时保留原有 aten::addmm 调度开销。编译框架面向多算子大型模型设计，海量算子可平摊单次调用的编译开销；单算子场景下，编译调度反而带来额外性能损耗。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS05-U10",
+            "statement": "The tutorial provides a quick-reference table mapping observed profiler patterns (e.g., large CPU vs GPU time, cudaOccupancyMaxActiveBlocksPerMultiprocessor presence, Activity Buffer Request, kernel time variation) to their typical meanings for performance diagnosis.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS05",
+                "support_pointer": "PARA 0119",
+                "support_excerpt": "轨迹阅读速查表\n本小节汇总前文出现过的模式：在性能轨迹中看到相应现象时，可以快速对照判断含义。"
+              }
+            ],
+            "note": "This unit summarizes the existence and purpose of the quick-reference table; individual mappings are covered by other units."
+          }
+        ],
+        "notes": []
+      }
+    }
+  ],
+  "methodology_note": "Development-only minimal-sufficient semantic compression study. Same candidate policy across all selected sources; no Auditor scoring and no fresh validation claim."
+}

@@ -774,3 +774,27 @@ New engineering rule:
 > **A model inference about the user is not automatically an authoritative user/runtime state.**
 
 Phase 6B weak-Δ boundary jitter is recorded as a probabilistic calibration residual and does not reopen frozen Δ semantics.
+---
+
+## Phase 7A — External World Model Fidelity
+
+Status: **SUFFICIENT / WORKING BASELINE SELECTED**
+
+Selected Sensor baseline:
+
+```text
+semantic-evidence-extractor-v0.2.6
+predicate-explicit context-bearing
+```
+
+Key formulation:
+
+> **Decision-Sufficient Semantic Precision = Evidence Fidelity + Scope Fidelity + Relational Fidelity.**
+
+Phase 7A found and attributed real world-model losses, demonstrated an overfitting failure in v0.2.4, and selected v0.2.6 only after heterogeneous downstream-causal regression.
+
+Current execution frontier:
+
+```text
+Phase 7B — Dynamic P / simulated collective-attention evidence
+```

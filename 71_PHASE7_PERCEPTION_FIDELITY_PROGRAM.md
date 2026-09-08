@@ -117,3 +117,34 @@ Working rule:
 5. Preserve source/evidence provenance through abstraction.
 6. Keep simulated P evidence explicitly labeled as simulated development evidence.
 7. Move to Phase 8 once remaining perception errors are bounded and attributable, not when they disappear.
+---
+
+## 8. Phase 7A result — 2026-09-08
+
+Status: **SUFFICIENT / WORKING BASELINE SELECTED**
+
+Selected Sensor:
+
+```text
+v0.2.6 — predicate-explicit context-bearing
+```
+
+Phase 7A established a causal fidelity target rather than a generic extraction score. The working formulation is:
+
+```text
+Decision-Sufficient Semantic Precision
+= Evidence Fidelity + Scope Fidelity + Relational Fidelity
+```
+
+See `72_PHASE7A_EXTERNAL_WORLD_MODEL_FIDELITY_RESULT.md`.
+
+Phase 7A remains an open-world learning problem, but it is sufficiently observable and attributable to stop prompt tuning and move forward.
+Current Phase 7 frontier:
+
+```text
+7A External World Model Fidelity     SUFFICIENT / BASELINE SELECTED
+7B Dynamic P Evidence                ACTIVE / NEXT EXECUTION FRONTIER
+7C Minimal Trusted Brain World Model QUEUED
+```
+
+Do not reopen v0.2.6 tuning from saturated RS05/RS15 unless a new cross-source or downstream-causal failure justifies it.

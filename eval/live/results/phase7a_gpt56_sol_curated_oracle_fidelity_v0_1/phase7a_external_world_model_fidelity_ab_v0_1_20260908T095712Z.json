@@ -1,0 +1,536 @@
+{
+  "name": "raos-phase7a-external-world-model-fidelity-ab-v0.1",
+  "status": "DEVELOPMENT_ATTRIBUTION_NOT_FRESH_VALIDATION",
+  "measurement_timestamp": "20260908T095712Z",
+  "measurement_git_head": "9cde21f1d228532b7b63492b5fb8e7dd2f558c29",
+  "input_sensor_artifact": "eval/live/results/phase7a_gpt56_sol_curated_oracle_v0_1/phase7a_gpt56_sol_curated_oracle_v0_1_20260908T095535Z.json",
+  "input_audit_artifact": "eval/live/results/phase7a_gpt56_sol_curated_oracle_audit_v0_1/phase6b_epistemic_unit_audit_v0_1_20260908T095623Z.json",
+  "conditions": {
+    "A": "production-valid Auditor-admitted semantics",
+    "B": "diagnostic pre-audit Sensor semantics; attribution only, never production truth"
+  },
+  "n_sources": 2,
+  "n_delta_preserved": 2,
+  "n_attention_preserved": 2,
+  "rows": [
+    {
+      "source_id": "RS15",
+      "kernel_fixture": "phase6b-mvp-in-memory-copy",
+      "sensor_units": 9,
+      "auditor_admitted_units": 7,
+      "admission_rate": 0.7778,
+      "A_production_valid_audited": {
+        "n_units": 7,
+        "matches": [
+          {
+            "fixture_code": "Q2",
+            "node_type": "QUESTION",
+            "title": "Can shared world models reduce explicit multi-agent communication?",
+            "score": 0.9
+          },
+          {
+            "fixture_code": "Q1",
+            "node_type": "QUESTION",
+            "title": "Should high-frequency motor control depend on a large unified model?",
+            "score": 0.8
+          },
+          {
+            "fixture_code": "B2",
+            "node_type": "BELIEF",
+            "title": "True swarm-style collective intelligence requires meaningful decentralized local intelligence.",
+            "score": 0.85
+          },
+          {
+            "fixture_code": "B1",
+            "node_type": "BELIEF",
+            "title": "Large unified models may be unsuitable for the fastest embodied-control loop.",
+            "score": 0.75
+          },
+          {
+            "fixture_code": "G1",
+            "node_type": "GOAL",
+            "title": "Build better embodied and multi-agent intelligence systems.",
+            "score": 0.8
+          },
+          {
+            "fixture_code": "BT1",
+            "node_type": "BOTTLENECK",
+            "title": "Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+            "score": 0.7
+          },
+          {
+            "fixture_code": "M1",
+            "node_type": "MODEL",
+            "title": "Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+            "score": 0.7
+          },
+          {
+            "fixture_code": "P1",
+            "node_type": "PROJECT",
+            "title": "Motor Intelligence",
+            "score": 0.8
+          },
+          {
+            "fixture_code": "P2",
+            "node_type": "PROJECT",
+            "title": "Collective Intelligence",
+            "score": 0.9
+          }
+        ],
+        "primary_delta": {
+          "operation": "REINFORCE",
+          "target_fixture_code": "Q2",
+          "delta_content": "Zeno-1's action-conditioned latent world model predicting contact failures and using the shared physical world as coordination interface provides a concrete instance where shared world models reduce reliance on explicit communication, supporting the question's premise."
+        },
+        "attention_without_awareness": "WATCH",
+        "features": {
+          "topic_relevance": 0.9,
+          "structural_relevance": 0.0,
+          "decision_relevance": 0.0,
+          "novelty": 0.6,
+          "credibility": 0.3,
+          "kernel_delta": 0.5,
+          "bottleneck_alignment": 0.7,
+          "disagreement": 0.0,
+          "actionability": 0.7,
+          "temporal_value": 0.4,
+          "cognitive_cost": 0.4,
+          "is_duplicate": false,
+          "evidence_maturity": 0.3,
+          "threatens_active_work": false,
+          "marketing_heavy": true,
+          "sources_conflict": false,
+          "evidence_links_present": false,
+          "evidence_stage_skipped": false,
+          "evidence_skip_reason": null,
+          "independent_source_count": 1,
+          "secondary_report_count": 0,
+          "high_quality_technical": false,
+          "foundational_paper": false,
+          "exploration_candidate": false,
+          "change_magnitude": 0.5,
+          "epistemic_strength": 0.3,
+          "target_importance": 0.7,
+          "attention_cost": 0.4
+        },
+        "stage_provenance": {
+          "matching": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 5372,
+            "prompt_tokens": 3119,
+            "completion_tokens": 773,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          },
+          "impact": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 4134,
+            "prompt_tokens": 3086,
+            "completion_tokens": 648,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          }
+        }
+      },
+      "B_diagnostic_pre_audit_sensor": {
+        "n_units": 9,
+        "matches": [
+          {
+            "fixture_code": "Q2",
+            "node_type": "QUESTION",
+            "title": "Can shared world models reduce explicit multi-agent communication?",
+            "score": 0.9
+          },
+          {
+            "fixture_code": "Q1",
+            "node_type": "QUESTION",
+            "title": "Should high-frequency motor control depend on a large unified model?",
+            "score": 0.8
+          },
+          {
+            "fixture_code": "B2",
+            "node_type": "BELIEF",
+            "title": "True swarm-style collective intelligence requires meaningful decentralized local intelligence.",
+            "score": 0.85
+          },
+          {
+            "fixture_code": "G1",
+            "node_type": "GOAL",
+            "title": "Build better embodied and multi-agent intelligence systems.",
+            "score": 0.8
+          },
+          {
+            "fixture_code": "BT1",
+            "node_type": "BOTTLENECK",
+            "title": "Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+            "score": 0.7
+          },
+          {
+            "fixture_code": "B1",
+            "node_type": "BELIEF",
+            "title": "Large unified models may be unsuitable for the fastest embodied-control loop.",
+            "score": 0.75
+          },
+          {
+            "fixture_code": "M1",
+            "node_type": "MODEL",
+            "title": "Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+            "score": 0.7
+          },
+          {
+            "fixture_code": "P1",
+            "node_type": "PROJECT",
+            "title": "Motor Intelligence",
+            "score": 0.8
+          },
+          {
+            "fixture_code": "P2",
+            "node_type": "PROJECT",
+            "title": "Collective Intelligence",
+            "score": 0.85
+          }
+        ],
+        "primary_delta": {
+          "operation": "REINFORCE",
+          "target_fixture_code": "Q2",
+          "delta_content": "Zeno-1's design treats the shared physical world as a coordination interface and uses an action-conditioned latent world model to predict partner behavior, providing a concrete instance where shared world models reduce reliance on explicit communication. This supports the question's affirmative direction, though evidence is from a single system and self-reported."
+        },
+        "attention_without_awareness": "WATCH",
+        "features": {
+          "topic_relevance": 0.9,
+          "structural_relevance": 0.0,
+          "decision_relevance": 0.0,
+          "novelty": 0.6,
+          "credibility": 0.3,
+          "kernel_delta": 0.5,
+          "bottleneck_alignment": 0.7,
+          "disagreement": 0.0,
+          "actionability": 0.7,
+          "temporal_value": 0.4,
+          "cognitive_cost": 0.5,
+          "is_duplicate": false,
+          "evidence_maturity": 0.3,
+          "threatens_active_work": false,
+          "marketing_heavy": true,
+          "sources_conflict": false,
+          "evidence_links_present": false,
+          "evidence_stage_skipped": false,
+          "evidence_skip_reason": null,
+          "independent_source_count": 1,
+          "secondary_report_count": 0,
+          "high_quality_technical": false,
+          "foundational_paper": false,
+          "exploration_candidate": false,
+          "change_magnitude": 0.5,
+          "epistemic_strength": 0.3,
+          "target_importance": 0.7,
+          "attention_cost": 0.5
+        },
+        "stage_provenance": {
+          "matching": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 4866,
+            "prompt_tokens": 3580,
+            "completion_tokens": 799,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          },
+          "impact": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 3850,
+            "prompt_tokens": 3216,
+            "completion_tokens": 547,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          }
+        }
+      },
+      "delta_preserved": true,
+      "attention_preserved": true
+    },
+    {
+      "source_id": "RS05",
+      "kernel_fixture": "phase6b-perf-challenge-counterfactual",
+      "sensor_units": 12,
+      "auditor_admitted_units": 7,
+      "admission_rate": 0.5833,
+      "A_production_valid_audited": {
+        "n_units": 7,
+        "matches": [
+          {
+            "fixture_code": "CF-B-PERF",
+            "node_type": "BELIEF",
+            "title": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+            "score": 0.7
+          },
+          {
+            "fixture_code": "CF-G-PERF",
+            "node_type": "GOAL",
+            "title": "Understand and optimize PyTorch GPU performance.",
+            "score": 0.8
+          },
+          {
+            "fixture_code": "CF-P-PERF",
+            "node_type": "PROJECT",
+            "title": "PyTorch Performance Profiling",
+            "score": 0.9
+          }
+        ],
+        "primary_delta": {
+          "operation": "CHALLENGE",
+          "target_fixture_code": "CF-B-PERF",
+          "delta_content": "The tutorial's profiling evidence directly contradicts the existing belief that for a small 64x64 matmul with bias, computation dominates runtime. The source shows that for small workloads, overhead (cudaDeviceSynchronize, launch) dominates, with ~98% idle time, and only when scaling to 4096x4096 does compute dominate. This challenges the scope of the belief for small workloads."
+        },
+        "attention_without_awareness": "ENGAGE",
+        "features": {
+          "topic_relevance": 0.9,
+          "structural_relevance": 0.0,
+          "decision_relevance": 0.0,
+          "novelty": 0.6,
+          "credibility": 0.35,
+          "kernel_delta": 0.6,
+          "bottleneck_alignment": 0.0,
+          "disagreement": 0.6,
+          "actionability": 0.7,
+          "temporal_value": 0.4,
+          "cognitive_cost": 0.4,
+          "is_duplicate": false,
+          "evidence_maturity": 0.35,
+          "threatens_active_work": false,
+          "marketing_heavy": false,
+          "sources_conflict": false,
+          "evidence_links_present": false,
+          "evidence_stage_skipped": false,
+          "evidence_skip_reason": null,
+          "independent_source_count": 1,
+          "secondary_report_count": 0,
+          "high_quality_technical": true,
+          "foundational_paper": false,
+          "exploration_candidate": false,
+          "change_magnitude": 0.6,
+          "epistemic_strength": 0.35,
+          "target_importance": 0.9,
+          "attention_cost": 0.4
+        },
+        "stage_provenance": {
+          "matching": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 1778,
+            "prompt_tokens": 3049,
+            "completion_tokens": 270,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          },
+          "impact": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 2258,
+            "prompt_tokens": 2164,
+            "completion_tokens": 254,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          }
+        }
+      },
+      "B_diagnostic_pre_audit_sensor": {
+        "n_units": 12,
+        "matches": [
+          {
+            "fixture_code": "CF-B-PERF",
+            "node_type": "BELIEF",
+            "title": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+            "score": 0.9
+          },
+          {
+            "fixture_code": "CF-P-PERF",
+            "node_type": "PROJECT",
+            "title": "PyTorch Performance Profiling",
+            "score": 0.8
+          },
+          {
+            "fixture_code": "CF-G-PERF",
+            "node_type": "GOAL",
+            "title": "Understand and optimize PyTorch GPU performance.",
+            "score": 0.7
+          }
+        ],
+        "primary_delta": {
+          "operation": "CHALLENGE",
+          "target_fixture_code": "CF-B-PERF",
+          "delta_content": "The tutorial's profiler measurements directly contradict the existing belief: for a 64x64 matmul+add workload, Self CPU time is 2.314 ms and GPU kernel time is under 1% of CPU time, with most runtime spent on kernel preparation, launch, data movement, and result collection. This is direct evidence that for small workloads, overhead dominates rather than computation."
+        },
+        "attention_without_awareness": "ENGAGE",
+        "features": {
+          "topic_relevance": 0.9,
+          "structural_relevance": 0.0,
+          "decision_relevance": 0.0,
+          "novelty": 0.6,
+          "credibility": 0.35,
+          "kernel_delta": 0.8,
+          "bottleneck_alignment": 0.0,
+          "disagreement": 0.8,
+          "actionability": 0.7,
+          "temporal_value": 0.4,
+          "cognitive_cost": 0.4,
+          "is_duplicate": false,
+          "evidence_maturity": 0.35,
+          "threatens_active_work": false,
+          "marketing_heavy": false,
+          "sources_conflict": false,
+          "evidence_links_present": false,
+          "evidence_stage_skipped": false,
+          "evidence_skip_reason": null,
+          "independent_source_count": 1,
+          "secondary_report_count": 0,
+          "high_quality_technical": true,
+          "foundational_paper": false,
+          "exploration_candidate": false,
+          "change_magnitude": 0.8,
+          "epistemic_strength": 0.35,
+          "target_importance": 0.9,
+          "attention_cost": 0.4
+        },
+        "stage_provenance": {
+          "matching": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 2719,
+            "prompt_tokens": 3989,
+            "completion_tokens": 276,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          },
+          "impact": {
+            "provider": "model",
+            "model": "deepseek-v4-flash",
+            "status": "success",
+            "retry": 0,
+            "latency_ms": 3489,
+            "prompt_tokens": 2480,
+            "completion_tokens": 251,
+            "estimated_cost_usd": null,
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "llm_called": true,
+            "evidence_stage_skipped": null,
+            "evidence_skip_reason": null,
+            "attempts": [
+              {
+                "status": "success",
+                "provider": "model"
+              }
+            ]
+          }
+        }
+      },
+      "delta_preserved": true,
+      "attention_preserved": true
+    }
+  ],
+  "methodology_note": "Condition B is an information-availability ablation, not an oracle. Differences show that Auditor/Sensor provenance admission can causally alter downstream judgment; agreement does not prove semantic completeness."
+}

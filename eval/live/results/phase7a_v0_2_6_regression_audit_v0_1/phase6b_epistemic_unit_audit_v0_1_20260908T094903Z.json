@@ -1,0 +1,1306 @@
+{
+  "name": "raos-phase6b-epistemic-unit-audit-v0.1",
+  "status": "DEVELOPMENT_ONLY_NOT_FRESH_VALIDATION",
+  "measurement_timestamp": "20260908T094903Z",
+  "measurement_git_head": "5948d06f63783067f3a813bac7055a2c00199b30",
+  "cognitive_slice_version": "phase6b-cognitive-semantics-v0.1",
+  "input_sensor_artifact": "eval/live/results/semantic_evidence_dev_v0_2_6_regression/semantic_evidence_dev_v0_2_6_20260908T091024Z.json",
+  "auditor": {
+    "version": "semantic-evidence-auditor-v0.1.1",
+    "prompt_version": "semantic-evidence-audit-v0.1.1",
+    "prompt_sha256": "d22540217a0bec35468e327c6b6df8041eee7fb1c79dd676cfa38935774b81bb"
+  },
+  "actual_models": [
+    "deepseek-v4-flash"
+  ],
+  "n_sources": 2,
+  "n_units": 24,
+  "n_scorable": 24,
+  "n_sufficient": 19,
+  "reason_counts": {
+    "MISSING_SUPPORT": 2,
+    "OVERSTRONG_SCOPE": 3,
+    "SUPPORTED": 19
+  },
+  "sources": [
+    {
+      "source_id": "RS11",
+      "n_units": 12,
+      "n_scorable": 12,
+      "n_sufficient": 8,
+      "audits": [
+        {
+          "audit_id": "RS11:RS11-N1:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-N1",
+          "statement": "Qwen3.8-Flash achieves strong benchmark results, outperforming larger predecessor Qwen3.7-Plus on DeepSWE 1.1 (58.7 vs 16.5) and Claude Opus 4.6 on CoWorkBench (73.9 vs 68.2) and JobBench (55.7 vs 36.6), but trails Opus 4.6 on HLE (35.9 vs 40.0) and DeepSeek-V4-Flash-0731 on NL2Repo-Bench.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0010",
+              "support_excerpt": "在智能体编程基准 DeepSWE 1.1 上，它拿到 58.7 分，而参数规模是它三倍的前代 Qwen3.7-Plus 只有 16.5 分；长周期办公任务 CoWorkBench 和专业岗位任务 JobBench 上分别为 73.9 和 55.7 分，明显高于 Claude Opus 4.6（Max）的 68.2 和 36.6 分；多模态方面，AndroidWorld、ERQA、MathVision 等基准同样大幅领先。它并非全面占优，HLE 上的 35.9 分仍落后于 Opus 4.6 的 40.0 分，仓库级代码生成 NL2Repo-Bench 也不及 DeepSeek-V4-Flash-0731。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-N1:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object states that Qwen3.8-Flash outperforms Claude Opus 4.6 on CoWorkBench and JobBench, and trails Opus 4.6 on HLE, and trails DeepSeek-V4-Flash-0731 on NL2Repo-Bench. The cited evidence supports the CoWorkBench and JobBench comparisons (73.9 vs 68.2, 55.7 vs 36.6) and the HLE comparison (35.9 vs 40.0). However, the evidence does not provide any numeric comparison for NL2Repo-Bench; it only states that Qwen3.8-Flash '不及' (is not as good as) DeepSeek-V4-Flash-0731, without citing scores. Thus, the material claim of trailing on NL2Repo-Bench is not supported by specific evidence.",
+            "unsupported_aspect": "The claim that Qwen3.8-Flash trails DeepSeek-V4-Flash-0731 on NL2Repo-Bench lacks cited numeric scores or sufficient detail."
+          },
+          "model_meta": {
+            "latency_ms": 2840,
+            "prompt_tokens": 1092,
+            "completion_tokens": 296,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-N2:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-N2",
+          "statement": "Qwen3.8-Flash is priced at 1 yuan per million input tokens and 3 yuan per million output tokens, which is 1/12 of Qwen3.8-Max and lower than DeepSeek V4 Flash's off-peak price after August 17.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0012",
+              "support_excerpt": "Qwen3.8-Flash 在千问 AI 平台的定价为每百万 token 输入 1 元、输出 3 元，仅为本月初发布的 Qwen3.8-Max 的十二分之一，也低于 DeepSeek V4 Flash 在 8 月 17 日调价后的闲时价格。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-N2:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states the pricing of Qwen3.8-Flash as 1 yuan per million input tokens and 3 yuan per million output tokens, that it is one-twelfth of Qwen3.8-Max, and that it is lower than DeepSeek V4 Flash's off-peak price after the August 17 adjustment. All material parts of the semantic object are supported.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1872,
+            "prompt_tokens": 929,
+            "completion_tokens": 159,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-N3:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-N3",
+          "statement": "Qwen3.8-Flash uses a new architecture distinct from Qwen3.8-Max, which is based on Qwen3.5; the new architecture is first deployed in a cost-effective Flash model rather than a flagship.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0034",
+              "support_excerpt": "但其架构却与家族内其它模型大不一样：Qwen3.8-Max 是基于前代 Qwen3.5 架构迭代而来的，而这次的 Qwen3.8-Flash 用的是一套全新架构。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0035",
+              "support_excerpt": "也就是说，新架构没有先给到旗舰，而是先上了性价比款。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-N3:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The first excerpt states that Qwen3.8-Flash uses a completely new architecture, distinct from Qwen3.8-Max which is based on the previous Qwen3.5 architecture. The second excerpt explicitly states that the new architecture was not first given to the flagship but to a cost-effective model. Together, these support all material parts of the semantic object.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1791,
+            "prompt_tokens": 943,
+            "completion_tokens": 153,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-N4:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-N4",
+          "statement": "Qwen3.8-Flash is a multimodal MoE model with 125B main parameters, 51B N-gram Embedding parameters, 6B activated parameters per token, native 262,144 token context, and YaRN extension to 1M tokens.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0039",
+              "support_excerpt": "Qwen3.8-Flash 是一个多模态 MoE 模型，主模型参数量 125B，另外配备 51B 的 N-gram Embedding，而每个 token 只激活 6B 参数。它原生支持 262,144 token 上下文，并可通过 YaRN 扩展至 100 万 token。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-N4:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states all material claims: multimodal MoE model, 125B main parameters, 51B N-gram Embedding parameters, 6B activated parameters per token, native 262,144 token context, and YaRN extension to 1M tokens.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1569,
+            "prompt_tokens": 926,
+            "completion_tokens": 134,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-N5:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-N5",
+          "statement": "Qwen3.8-Flash introduces four architectural upgrades: QSA (Qwen Sparse Attention) for efficient long-context attention, Gated Residual (GR) for multi-branch residual streams, N-gram Embedding for low-cost capacity expansion, and Muon optimizer for training efficiency.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0037",
+              "support_excerpt": "据 Qwen 团队介绍，这次的系统升级围绕四个方面展开：Attention、Residual、Embedding 和 Optimization。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0051",
+              "support_excerpt": "本次的新东西是那剩下的一层。Qwen 在全局注意力上引入了自研的 Qwen Sparse Attention（QSA）。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0064",
+              "support_excerpt": "Qwen 引入的 Gated Residual（GR） 是两种思路的结合。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0071",
+              "support_excerpt": "Qwen 这次的做法是在 Transformer 参数之外单开一个维度：普通 Embedding 根据单个 token 查表；N-gram Embedding 则结合当前 token 与前几个 token 组成的局部上下文来查表。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-N5:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object claims four architectural upgrades: QSA, Gated Residual (GR), N-gram Embedding, and Muon optimizer. The cited evidence supports QSA (PARA 0051), GR (PARA 0064), and N-gram Embedding (PARA 0071), but there is no cited evidence for the Muon optimizer. Additionally, the evidence does not explicitly state that these are 'architectural upgrades' or that they are introduced by 'Qwen3.8-Flash' (the model name is not mentioned in the excerpts). The first excerpt mentions four aspects (Attention, Residual, Embedding, Optimization) but does not name the model or the specific components.",
+            "unsupported_aspect": "The Muon optimizer is not mentioned in any cited excerpt; the model name 'Qwen3.8-Flash' is not present in the evidence."
+          },
+          "model_meta": {
+            "latency_ms": 2207,
+            "prompt_tokens": 1078,
+            "completion_tokens": 256,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-N6:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-N6",
+          "statement": "QSA achieves up to 7.6x Prefill and 4.9x Decode kernel speedup at 1M tokens, and with 90% prefix cache hit rate, Qwen3.8-Flash achieves 8.6x Prefill throughput of Qwen3.7-Plus at 1M context.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0057",
+              "support_excerpt": "在 1M token 的设定下，QSA 的 Attention Kernel 在 Prefill 和 Decode 阶段分别实现了最高 7.6 倍和 4.9 倍的加速。在更贴近线上高缓存复用的实验设定下（Prefix Cache 命中率 90%），Qwen3.8-Flash 在 1M 上下文下的 Prefill 吞吐达到 Qwen3.7-Plus 的 8.6 倍。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-N6:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states that under a 1M token setting, QSA's Attention Kernel achieves up to 7.6x and 4.9x speedups in Prefill and Decode phases respectively, and that with a 90% Prefix Cache hit rate, Qwen3.8-Flash's Prefill throughput at 1M context reaches 8.6x that of Qwen3.7-Plus. This matches all material parts of the semantic object.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 2000,
+            "prompt_tokens": 967,
+            "completion_tokens": 176,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-N7:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-N7",
+          "statement": "N-gram Embedding parameters (51B) are deterministically addressed and can be stored in host memory with asynchronous prefetch, avoiding GPU memory usage and per-token matrix multiplication cost.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0073",
+              "support_excerpt": "查询位置可以提前确定。与 MoE 依赖运行时隐状态做动态路由不同，N-gram 的查询索引只取决于输入的 token 序列，在前面几层开始计算之前就已经能算出来。这意味着这 51B 参数可以直接存放在 Host Memory 中，通过异步 Prefetch 与模型计算重叠，无需长期占用 GPU 显存。Qwen 在 Base 模型的评测说明中也点明了这一点：51B 的 N-gram Embedding 参数是确定性寻址的，不进入每 token 的矩阵乘预算。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-N7:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt explicitly states that the 51B parameters can be stored in Host Memory, accessed via asynchronous prefetch overlapping with computation, avoiding long-term GPU memory usage, and that N-gram Embedding parameters are deterministically addressed and do not enter per-token matrix multiplication cost. This directly supports all material parts of the semantic object.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1869,
+            "prompt_tokens": 952,
+            "completion_tokens": 146,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-N8:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-N8",
+          "statement": "Qwen3.8-Flash training cost is about 1/9 of Qwen3.7-Plus, and with 6B activated parameters it matches or exceeds Qwen3.7-Plus-Base on 8 of 14 benchmarks and is close on the rest.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0084",
+              "support_excerpt": "这些创新加起来，让 Qwen3.8-Flash 收获了显著的模型效率优势：相比 Qwen3.7-Plus，它的训练开销仅约九分之一。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0085",
+              "support_excerpt": "在 6B 激活参数下，Qwen3.8-Flash-Next-Base 在 14 个 benchmark 中的 8 个上取得最优，在其它 6 个上也与 Qwen3.7-Plus-Base 接近。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-N8:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "OVERSTRONG_SCOPE",
+            "rationale": "The first excerpt supports the training cost claim, but the second excerpt refers to 'Qwen3.8-Flash-Next-Base' and compares it to 'Qwen3.7-Plus-Base', while the semantic object states 'Qwen3.8-Flash' with 6B activated parameters matches or exceeds 'Qwen3.7-Plus-Base'. The evidence does not explicitly state that 'Qwen3.8-Flash' (without 'Next') is the same as 'Qwen3.8-Flash-Next-Base', nor does it mention 'Qwen3.8-Flash' in the benchmark context. Thus, the scope of the benchmark claim is overstrong relative to the cited evidence.",
+            "unsupported_aspect": "The benchmark performance claim is attributed to 'Qwen3.8-Flash-Next-Base' in the evidence, not to 'Qwen3.8-Flash' as stated in the semantic object."
+          },
+          "model_meta": {
+            "latency_ms": 2663,
+            "prompt_tokens": 982,
+            "completion_tokens": 274,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-N9:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-N9",
+          "statement": "The industry is shifting from per-token pricing to per-task cost as the key metric, with examples: Claude Opus 4.8 at $2.03/task, DeepSeek V4 Pro at $0.25/task, V4 Flash 0731 at $0.11/task, and GPT-5.6 Luna at $0.05/task.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0016",
+              "support_excerpt": "衡量单位不再是每百万 token 多少钱，而是跑完一项真实任务要花多少钱。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0017",
+              "support_excerpt": "按这一口径，Claude Opus 4.8 在最大推理档下能力智能得分 57 分，每任务成本 2.03 美元；DeepSeek V4 Pro 在同档下得 53 分，每任务成本 0.25 美元；V4 Flash 0731 得 52 分，0.11 美元，得分与之相同的 GPT-5.6 Luna 价格还更低，仅有 0.05 美元。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-N9:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The semantic object states that the industry is shifting from per-token pricing to per-task cost as the key metric, and provides specific examples with costs. The cited evidence directly supports the shift (PARA 0016) and lists the exact models and per-task costs (PARA 0017). The object's phrasing 'per-task cost' is a conservative paraphrase of '跑完一项真实任务要花多少钱'. All material parts are supported.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 2226,
+            "prompt_tokens": 1032,
+            "completion_tokens": 168,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-N10:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-N10",
+          "statement": "Agentic workloads amplify cost differences: multi-step task success rate is multiplicative, so a 95% vs 90% per-step success leads to 36% vs 12% after 20 steps, and failed retries incur additional token costs.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0021",
+              "support_excerpt": "多步骤任务的成功率约等于各步成功率的连乘，单步 95% 与 90% 只差五个百分点，二十步之后却是 36% 与 12%，而失败重试还要重新支付一遍 token。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-N10:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states that multi-step task success rate is the product of per-step success rates, gives the example of 95% vs 90% per-step leading to 36% vs 12% after 20 steps, and notes that failed retries incur additional token costs. This supports all material parts of the semantic object.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1463,
+            "prompt_tokens": 899,
+            "completion_tokens": 146,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-N11:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-N11",
+          "statement": "In 2026, hyperscaler inference capex exceeded training capex for the first time, shifting the bottleneck from compute/cluster scale to memory bandwidth and communication latency.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0089",
+              "support_excerpt": "2026 年，超大规模云厂商的推理资本开支历史上第一次超过训练开支，核心矛盾也从算力与集群规模，变成了内存带宽与通信延迟。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-N11:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states that in 2026, hyperscaler inference capex exceeded training capex for the first time, and the core contradiction shifted from compute and cluster scale to memory bandwidth and communication latency. This matches the semantic object's claims about the timing, the first-time occurrence, the shift in bottleneck, and the specific new bottleneck components.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1677,
+            "prompt_tokens": 867,
+            "completion_tokens": 149,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-N12:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-N12",
+          "statement": "The market response to cheaper models has shifted: DeepSeek R1 in Jan 2025 caused Nvidia's largest single-day drop (~17%, $589B), while DeepSeek V4 in Apr 2026 led to a 4.3% gain and $5T market cap, indicating cheaper models may increase inference demand.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0091",
+              "support_excerpt": "2025 年 1 月 DeepSeek R1 发布后，「更便宜的模型意味着更少的算力」一度成为共识，英伟达曾单日暴跌近 17%、市值蒸发约 5890 亿美元，创下美股单只股票的单日跌幅纪录。而 2026 年 4 月 DeepSeek 拿出更强也更省的 V4 时，英伟达当日却收涨 4.3%，市值重返 5 万亿美元。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-N12:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "OVERSTRONG_SCOPE",
+            "rationale": "The cited excerpt supports the factual events (R1 drop ~17%/$589B, V4 gain 4.3%/$5T) but does not support the interpretive claim that this indicates cheaper models may increase inference demand. The excerpt only describes market reactions without linking them to inference demand.",
+            "unsupported_aspect": "The causal interpretation that cheaper models may increase inference demand is not supported by the cited evidence."
+          },
+          "model_meta": {
+            "latency_ms": 1924,
+            "prompt_tokens": 970,
+            "completion_tokens": 160,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        }
+      ],
+      "admitted_units": [
+        {
+          "unit_id": "RS11-N2",
+          "statement": "Qwen3.8-Flash is priced at 1 yuan per million input tokens and 3 yuan per million output tokens, which is 1/12 of Qwen3.8-Max and lower than DeepSeek V4 Flash's off-peak price after August 17.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0012",
+              "support_excerpt": "Qwen3.8-Flash 在千问 AI 平台的定价为每百万 token 输入 1 元、输出 3 元，仅为本月初发布的 Qwen3.8-Max 的十二分之一，也低于 DeepSeek V4 Flash 在 8 月 17 日调价后的闲时价格。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS11-N3",
+          "statement": "Qwen3.8-Flash uses a new architecture distinct from Qwen3.8-Max, which is based on Qwen3.5; the new architecture is first deployed in a cost-effective Flash model rather than a flagship.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0034",
+              "support_excerpt": "但其架构却与家族内其它模型大不一样：Qwen3.8-Max 是基于前代 Qwen3.5 架构迭代而来的，而这次的 Qwen3.8-Flash 用的是一套全新架构。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0035",
+              "support_excerpt": "也就是说，新架构没有先给到旗舰，而是先上了性价比款。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS11-N4",
+          "statement": "Qwen3.8-Flash is a multimodal MoE model with 125B main parameters, 51B N-gram Embedding parameters, 6B activated parameters per token, native 262,144 token context, and YaRN extension to 1M tokens.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0039",
+              "support_excerpt": "Qwen3.8-Flash 是一个多模态 MoE 模型，主模型参数量 125B，另外配备 51B 的 N-gram Embedding，而每个 token 只激活 6B 参数。它原生支持 262,144 token 上下文，并可通过 YaRN 扩展至 100 万 token。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS11-N6",
+          "statement": "QSA achieves up to 7.6x Prefill and 4.9x Decode kernel speedup at 1M tokens, and with 90% prefix cache hit rate, Qwen3.8-Flash achieves 8.6x Prefill throughput of Qwen3.7-Plus at 1M context.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0057",
+              "support_excerpt": "在 1M token 的设定下，QSA 的 Attention Kernel 在 Prefill 和 Decode 阶段分别实现了最高 7.6 倍和 4.9 倍的加速。在更贴近线上高缓存复用的实验设定下（Prefix Cache 命中率 90%），Qwen3.8-Flash 在 1M 上下文下的 Prefill 吞吐达到 Qwen3.7-Plus 的 8.6 倍。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS11-N7",
+          "statement": "N-gram Embedding parameters (51B) are deterministically addressed and can be stored in host memory with asynchronous prefetch, avoiding GPU memory usage and per-token matrix multiplication cost.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0073",
+              "support_excerpt": "查询位置可以提前确定。与 MoE 依赖运行时隐状态做动态路由不同，N-gram 的查询索引只取决于输入的 token 序列，在前面几层开始计算之前就已经能算出来。这意味着这 51B 参数可以直接存放在 Host Memory 中，通过异步 Prefetch 与模型计算重叠，无需长期占用 GPU 显存。Qwen 在 Base 模型的评测说明中也点明了这一点：51B 的 N-gram Embedding 参数是确定性寻址的，不进入每 token 的矩阵乘预算。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS11-N9",
+          "statement": "The industry is shifting from per-token pricing to per-task cost as the key metric, with examples: Claude Opus 4.8 at $2.03/task, DeepSeek V4 Pro at $0.25/task, V4 Flash 0731 at $0.11/task, and GPT-5.6 Luna at $0.05/task.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0016",
+              "support_excerpt": "衡量单位不再是每百万 token 多少钱，而是跑完一项真实任务要花多少钱。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0017",
+              "support_excerpt": "按这一口径，Claude Opus 4.8 在最大推理档下能力智能得分 57 分，每任务成本 2.03 美元；DeepSeek V4 Pro 在同档下得 53 分，每任务成本 0.25 美元；V4 Flash 0731 得 52 分，0.11 美元，得分与之相同的 GPT-5.6 Luna 价格还更低，仅有 0.05 美元。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS11-N10",
+          "statement": "Agentic workloads amplify cost differences: multi-step task success rate is multiplicative, so a 95% vs 90% per-step success leads to 36% vs 12% after 20 steps, and failed retries incur additional token costs.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0021",
+              "support_excerpt": "多步骤任务的成功率约等于各步成功率的连乘，单步 95% 与 90% 只差五个百分点，二十步之后却是 36% 与 12%，而失败重试还要重新支付一遍 token。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS11-N11",
+          "statement": "In 2026, hyperscaler inference capex exceeded training capex for the first time, shifting the bottleneck from compute/cluster scale to memory bandwidth and communication latency.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0089",
+              "support_excerpt": "2026 年，超大规模云厂商的推理资本开支历史上第一次超过训练开支，核心矛盾也从算力与集群规模，变成了内存带宽与通信延迟。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source_id": "RS12",
+      "n_units": 12,
+      "n_scorable": 12,
+      "n_sufficient": 11,
+      "audits": [
+        {
+          "audit_id": "RS12:RS12-N1:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-N1",
+          "statement": "第二届世界人形机器人运动会于2026年8月22日至26日在北京国家速滑馆举行，共有来自六大洲16个国家的666支队伍、2056台机器人参加51个项目、1301场比赛；参赛队伍数量较首届增长138%，机器人数量约为首届的4倍。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0006",
+              "support_excerpt": "8月22日至26日，第二届世界人形机器人运动会在北京国家速滑馆“冰丝带”举行。来自六大洲16个国家的666支队伍、2056台机器人，在5天里参加51个项目、1301场比赛；参赛队伍数量较首届增长138%，机器人数量约为首届的4倍。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-N1:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states all material parts of the semantic object: the event name, dates (8月22日至26日), year (2026), venue (北京国家速滑馆), participation numbers (666支队伍、2056台机器人), scope (六大洲16个国家), number of events and matches (51个项目、1301场比赛), and the growth percentages (138% and about 4 times). The semantic object is a conservative paraphrase of the evidence.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 2149,
+            "prompt_tokens": 928,
+            "completion_tokens": 173,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-N2:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-N2",
+          "statement": "灵巧手专项赛设置8个项目，涵盖积木搭建、粉末称量、镊子夹豆、精细夹取、打螺丝、钉钉、电动工具装配、线缆连接，综合考察负载、精度、力控、手眼协调和工具使用能力。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0007",
+              "support_excerpt": "灵巧手专项赛设置8个项目，从积木搭建、粉末称量、镊子夹豆、精细夹取，到打螺丝、钉钉、电动工具装配、线缆连接，将负载、精度、力控、手眼协调和工具使用放进同一张考卷。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-N2:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt explicitly states that the competition sets 8 projects, lists the same eight items, and mentions that it tests load, precision, force control, hand-eye coordination, and tool use. The semantic object is a conservative paraphrase of the evidence.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1471,
+            "prompt_tokens": 919,
+            "completion_tokens": 128,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-N3:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-N3",
+          "statement": "临界点参赛使用的是同一款OmniHand、同一套核心硬件配置，没有为8个项目准备8套硬件。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0010",
+              "support_excerpt": "临界点没有为8道题准备8套硬件。CEO乔天杰告诉「甲子光年」，参赛使用的是同一款OmniHand、同一套核心硬件配置。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-N3:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states that 临界点 did not prepare 8 sets of hardware for 8 questions, and that the same OmniHand and same core hardware configuration were used in the competition, matching the semantic object.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1355,
+            "prompt_tokens": 859,
+            "completion_tokens": 123,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-N4:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-N4",
+          "statement": "OmniHand在灵巧手专项赛中的使用比例随赛程推进而提高：预赛约27%，决赛约35%，前三名队伍约60%。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0009",
+              "support_excerpt": "灵巧手专项赛预赛实际参赛队伍超过200支，其中约27%使用临界点自研的OmniHand；进入决赛的110余支队伍中，这一比例升至35%；进入前三的队伍中，OmniHand的使用比例约为60%。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-N4:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited evidence directly states the usage proportions of OmniHand in the dexterous hand competition across stages: approximately 27% in preliminaries, 35% in finals, and 60% among top three teams. This matches the semantic object's claims exactly, with no material part unsupported or ambiguous.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1977,
+            "prompt_tokens": 886,
+            "completion_tokens": 142,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-N5:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-N5",
+          "statement": "OmniHand的参数为：10个主动自由度、16个总自由度，整手重量不超过520克，指尖重复定位精度典型值0.3毫米，五指抓握力不低于5公斤；临界点称这是综合考虑功能、成本、量产等因素优化出的参数。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0033",
+              "support_excerpt": "但这次完成8类比赛任务的OmniHand，参数并不算激进：10个主动自由度、16个总自由度，整手重量不超过520克，指尖重复定位精度典型值为0.3毫米，五指抓握力不低于5公斤。这是总体考虑了功能，成本，量产等因素优化出来的一套最优参数。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-N5:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states all material parameters: 10 active DOF, 16 total DOF, weight ≤520g, fingertip repeat positioning accuracy typical 0.3mm, five-finger grip force ≥5kg, and that these are optimized considering function, cost, mass production. The semantic object's attribution to '临界点' is not explicit in the excerpt, but the excerpt is from the source and the object's phrasing '临界点称' is a conservative attribution to the source's claim. All parts are supported.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 2069,
+            "prompt_tokens": 921,
+            "completion_tokens": 187,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-N6:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-N6",
+          "statement": "临界点产品矩阵包括Lite系列（自由度较少，面向简单pick and place）、OmniHand（中间定位，平衡灵巧性、可靠性和成本）和Ultra系列（20个以上自由度，面向复杂手内操作）；乔天杰承认更高自由度在价格、寿命、稳定性和一致性上付出更高代价。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0039",
+              "support_excerpt": "临界点的产品矩阵也没有押注单一路线。Lite系列自由度较少，主要覆盖相对简单的pick and place；OmniHand处在中间，在灵巧性、可靠性和成本之间取平衡；Ultra则做到20个以上自由度，面向更复杂的手内操作。乔天杰也承认，现阶段更高自由度带来更多运动能力的同时，在价格、寿命、稳定性和一致性上也要付出更高代价。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-N6:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states the product matrix includes Lite, OmniHand, and Ultra series with the specified characteristics and positioning, and explicitly attributes the acknowledgment of higher costs in price, lifespan, stability, and consistency to 乔天杰.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1736,
+            "prompt_tokens": 954,
+            "completion_tokens": 126,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-N7:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-N7",
+          "statement": "乔天杰认为，从长期看机器人的手会越来越接近人手，原因包括：现实工具围绕人手设计，接近人手便于继承工具体系；具身智能操作数据以人的动作为源头，超出人手的自由度难以找到对应数据。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0041",
+              "support_excerpt": "乔天杰认为，从更长期看，机器人的手仍会越来越接近人手，背后有两个现实原因：一个来自工具。剪刀、锤子、螺丝刀、杯子、门把手，现实世界绝大多数工具本来就是围绕人的五指设计的。机械手在尺寸、构型和运动方式上越接近人手，就越容易直接继承已经存在的工具体系。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0042",
+              "support_excerpt": "另一个来自数据。今天具身智能能够获得的大量操作数据，无论来自互联网视频，还是人佩戴数据手套采集，本质上仍以人的动作作为源头。如果机械手拥有大量超出人手的运动维度，这些新增自由度反而很难直接找到对应的人类数据。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-N7:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The semantic object states that Qiao Tianjie believes robot hands will increasingly resemble human hands in the long run, with two reasons: tools are designed around human hands, and embodied intelligence data originates from human actions. The cited excerpts directly support both reasons: PARA 0041 explains that most tools are designed around human five fingers, and closer resemblance to human hands facilitates inheriting the tool system; PARA 0042 states that operational data originates from human actions, and extra degrees of freedom beyond human hands would lack corresponding data. The object's wording is a conservative paraphrase of the evidence.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 2298,
+            "prompt_tokens": 1015,
+            "completion_tokens": 194,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-N8:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-N8",
+          "statement": "临界点团队在备赛时不为比赛做一次性方案，赛事开发不打乱原有研发里程碑；在有限人力下，将资源集中到自主方案优势明显的项目，最终夺冠项目实际开发周期约一个月。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0048",
+              "support_excerpt": "临界点首席科学家小可（化名）告诉「甲子光年」，他们团队在立项时，先定了一条原则，不为比赛做一次性方案，赛事开发不能打乱原有研发里程碑。比赛中完成的全链路适配、遥操作映射和软硬件协同优化，不只服务于赛题。在有限的人力下，他们没有追求8个项目全部做自主，而是把资源集中到自主方案相较遥操作优势更明显的项目上，最终夺冠项目的实际开发周期约一个月。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-N8:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states the team's principle of not making one-off solutions for the competition and not disrupting original R&D milestones, focusing resources on projects with clear advantages over teleoperation under limited manpower, and that the winning project's actual development cycle was about one month. All material parts of the semantic object are supported.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 2167,
+            "prompt_tokens": 943,
+            "completion_tokens": 142,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-N9:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-N9",
+          "statement": "武大智元联合赛队在粉末称量项目中采用“一勺通”策略，即只用一把大勺通过连续控制逼近目标重量，而非“大勺+小勺”的保守方案；这要求末端有足够的控制精度和实时性，约100Hz的控制频率提供了较充分的连续调整空间。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0024",
+              "support_excerpt": "武大智元联合赛队队员提到，备赛时，他们有两种策略。一种更保守：先用大勺接近20克，再换小勺一点点补齐；另一种更直接，只用一把大勺，通过连续控制把重量逼近目标。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0025",
+              "support_excerpt": "他们选择了后者。这要求末端有足够的控制精度和实时性。前述队员提到，在这类精细操作中，约100Hz的控制频率，已经能给算法留下较充分的连续调整空间。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-N9:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited evidence directly states the two strategies, that they chose the one-spoon approach, and that this requires sufficient control precision and real-time performance, with ~100Hz control frequency providing adequate continuous adjustment space. All material parts of the semantic object are supported.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 2002,
+            "prompt_tokens": 991,
+            "completion_tokens": 130,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-N10:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-N10",
+          "statement": "武大智元联合赛队在决赛前重新做了视觉管线，使用机器人头部和手部的三个相机同时读取电子秤，通过相互校准和投票排除异常观测；决赛参数调得更保守，牺牲速度以提高一次成功率，最终27秒成绩比训练平均速度更慢。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0055",
+              "support_excerpt": "决赛前，他们重新做了一遍视觉管线，机器人头部和手部的三个相机同时读取电子秤，通过相互校准和投票排除异常观测。最终27秒的成绩，反而比训练时的平均速度更慢。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0056",
+              "support_excerpt": "这是他们团队主动做出的选择。赛场环境和训练环境并不完全相同，他们把决赛参数调得更保守，宁可牺牲一部分速度，也要提高一次成功的概率。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-N10:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The semantic object states that the team rebuilt the vision pipeline before the finals, using three cameras on the head and hands to read the electronic scale simultaneously, with mutual calibration and voting to exclude abnormal observations. It also states that the final parameters were made more conservative, sacrificing speed to improve one-shot success, and that the final 27-second result was slower than the training average. Both cited excerpts directly support these claims: PARA 0055 mentions the vision pipeline rebuild, three cameras, mutual calibration and voting, and the 27-second result being slower than training average; PARA 0056 confirms the team's deliberate choice to make parameters more conservative, sacrificing speed for higher success probability. All material parts are covered.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 2403,
+            "prompt_tokens": 967,
+            "completion_tokens": 220,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-N11:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-N11",
+          "statement": "OmniHand累计交付已接近1万台，预计2026年9月跨过万台门槛；此前公开数据为截至今年一季度单SKU交付超过5500台。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0062",
+              "support_excerpt": "此前公开数据是，截至今年一季度，OmniHand单SKU交付超过5500台。乔天杰此次告诉「甲子光年」，目前累计交付已经接近1万台，预计9月跨过万台门槛。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-N11:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "OVERSTRONG_SCOPE",
+            "rationale": "The cited evidence states cumulative deliveries are '接近1万台' (close to 10,000 units) and expects to cross the 10,000 threshold in September. The semantic object claims '累计交付已接近1万台' which is supported, but also states '预计2026年9月跨过万台门槛' (expected to cross the 10,000 threshold in September 2026). The evidence does not specify the year '2026'; it only says '预计9月跨过万台门槛' (expected to cross in September). The year is not mentioned, so the specific year '2026' is an overstatement not supported by the evidence.",
+            "unsupported_aspect": "The year '2026' in the expected crossing date is not present in the cited evidence."
+          },
+          "model_meta": {
+            "latency_ms": 2310,
+            "prompt_tokens": 882,
+            "completion_tokens": 236,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-N12:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-N12",
+          "statement": "临界点团队从产品研发Day One起试图按汽车行业质量要求做灵巧手，但发现汽车零部件有成熟测试规范而灵巧手没有；因此增加了场景化测试，并采集双足机器人行走/跑步的末端振动曲线加严后用于单体测试。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0065",
+              "support_excerpt": "临界点团队有不少成员来自车厂和Tier 1体系。乔天杰说，从产品研发的“Day One”开始，他们团队就试图按照汽车行业的质量要求做灵巧手。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0066",
+              "support_excerpt": "但真正做下去，他们很快遇到一个差别，汽车零部件已有相对成熟的测试规范，灵巧手却没有现成答案。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0068",
+              "support_excerpt": "他们团队后来增加了更多场景化测试，其中一些特殊工况需要连续运行至少一周、没有出现问题，才能进入下一阶段。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0070",
+              "support_excerpt": "后来，临界点团队把双足机器人真实行走、跑步时末端的振动曲线采集下来，再将这些工况加严，反过来用于灵巧手的单体测试。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-N12:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpts directly support each material part: team from automotive background attempted automotive quality standards from Day One (PARA 0065); discovered lack of mature test specs for dexterous hands vs. auto parts (PARA 0066); added scenario-based tests (PARA 0068); and used vibration curves from bipedal walking/running, intensified, for unit testing (PARA 0070). The object's phrasing is a conservative paraphrase.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1947,
+            "prompt_tokens": 1091,
+            "completion_tokens": 171,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        }
+      ],
+      "admitted_units": [
+        {
+          "unit_id": "RS12-N1",
+          "statement": "第二届世界人形机器人运动会于2026年8月22日至26日在北京国家速滑馆举行，共有来自六大洲16个国家的666支队伍、2056台机器人参加51个项目、1301场比赛；参赛队伍数量较首届增长138%，机器人数量约为首届的4倍。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0006",
+              "support_excerpt": "8月22日至26日，第二届世界人形机器人运动会在北京国家速滑馆“冰丝带”举行。来自六大洲16个国家的666支队伍、2056台机器人，在5天里参加51个项目、1301场比赛；参赛队伍数量较首届增长138%，机器人数量约为首届的4倍。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-N2",
+          "statement": "灵巧手专项赛设置8个项目，涵盖积木搭建、粉末称量、镊子夹豆、精细夹取、打螺丝、钉钉、电动工具装配、线缆连接，综合考察负载、精度、力控、手眼协调和工具使用能力。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0007",
+              "support_excerpt": "灵巧手专项赛设置8个项目，从积木搭建、粉末称量、镊子夹豆、精细夹取，到打螺丝、钉钉、电动工具装配、线缆连接，将负载、精度、力控、手眼协调和工具使用放进同一张考卷。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-N3",
+          "statement": "临界点参赛使用的是同一款OmniHand、同一套核心硬件配置，没有为8个项目准备8套硬件。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0010",
+              "support_excerpt": "临界点没有为8道题准备8套硬件。CEO乔天杰告诉「甲子光年」，参赛使用的是同一款OmniHand、同一套核心硬件配置。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-N4",
+          "statement": "OmniHand在灵巧手专项赛中的使用比例随赛程推进而提高：预赛约27%，决赛约35%，前三名队伍约60%。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0009",
+              "support_excerpt": "灵巧手专项赛预赛实际参赛队伍超过200支，其中约27%使用临界点自研的OmniHand；进入决赛的110余支队伍中，这一比例升至35%；进入前三的队伍中，OmniHand的使用比例约为60%。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-N5",
+          "statement": "OmniHand的参数为：10个主动自由度、16个总自由度，整手重量不超过520克，指尖重复定位精度典型值0.3毫米，五指抓握力不低于5公斤；临界点称这是综合考虑功能、成本、量产等因素优化出的参数。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0033",
+              "support_excerpt": "但这次完成8类比赛任务的OmniHand，参数并不算激进：10个主动自由度、16个总自由度，整手重量不超过520克，指尖重复定位精度典型值为0.3毫米，五指抓握力不低于5公斤。这是总体考虑了功能，成本，量产等因素优化出来的一套最优参数。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-N6",
+          "statement": "临界点产品矩阵包括Lite系列（自由度较少，面向简单pick and place）、OmniHand（中间定位，平衡灵巧性、可靠性和成本）和Ultra系列（20个以上自由度，面向复杂手内操作）；乔天杰承认更高自由度在价格、寿命、稳定性和一致性上付出更高代价。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0039",
+              "support_excerpt": "临界点的产品矩阵也没有押注单一路线。Lite系列自由度较少，主要覆盖相对简单的pick and place；OmniHand处在中间，在灵巧性、可靠性和成本之间取平衡；Ultra则做到20个以上自由度，面向更复杂的手内操作。乔天杰也承认，现阶段更高自由度带来更多运动能力的同时，在价格、寿命、稳定性和一致性上也要付出更高代价。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-N7",
+          "statement": "乔天杰认为，从长期看机器人的手会越来越接近人手，原因包括：现实工具围绕人手设计，接近人手便于继承工具体系；具身智能操作数据以人的动作为源头，超出人手的自由度难以找到对应数据。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0041",
+              "support_excerpt": "乔天杰认为，从更长期看，机器人的手仍会越来越接近人手，背后有两个现实原因：一个来自工具。剪刀、锤子、螺丝刀、杯子、门把手，现实世界绝大多数工具本来就是围绕人的五指设计的。机械手在尺寸、构型和运动方式上越接近人手，就越容易直接继承已经存在的工具体系。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0042",
+              "support_excerpt": "另一个来自数据。今天具身智能能够获得的大量操作数据，无论来自互联网视频，还是人佩戴数据手套采集，本质上仍以人的动作作为源头。如果机械手拥有大量超出人手的运动维度，这些新增自由度反而很难直接找到对应的人类数据。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-N8",
+          "statement": "临界点团队在备赛时不为比赛做一次性方案，赛事开发不打乱原有研发里程碑；在有限人力下，将资源集中到自主方案优势明显的项目，最终夺冠项目实际开发周期约一个月。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0048",
+              "support_excerpt": "临界点首席科学家小可（化名）告诉「甲子光年」，他们团队在立项时，先定了一条原则，不为比赛做一次性方案，赛事开发不能打乱原有研发里程碑。比赛中完成的全链路适配、遥操作映射和软硬件协同优化，不只服务于赛题。在有限的人力下，他们没有追求8个项目全部做自主，而是把资源集中到自主方案相较遥操作优势更明显的项目上，最终夺冠项目的实际开发周期约一个月。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-N9",
+          "statement": "武大智元联合赛队在粉末称量项目中采用“一勺通”策略，即只用一把大勺通过连续控制逼近目标重量，而非“大勺+小勺”的保守方案；这要求末端有足够的控制精度和实时性，约100Hz的控制频率提供了较充分的连续调整空间。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0024",
+              "support_excerpt": "武大智元联合赛队队员提到，备赛时，他们有两种策略。一种更保守：先用大勺接近20克，再换小勺一点点补齐；另一种更直接，只用一把大勺，通过连续控制把重量逼近目标。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0025",
+              "support_excerpt": "他们选择了后者。这要求末端有足够的控制精度和实时性。前述队员提到，在这类精细操作中，约100Hz的控制频率，已经能给算法留下较充分的连续调整空间。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-N10",
+          "statement": "武大智元联合赛队在决赛前重新做了视觉管线，使用机器人头部和手部的三个相机同时读取电子秤，通过相互校准和投票排除异常观测；决赛参数调得更保守，牺牲速度以提高一次成功率，最终27秒成绩比训练平均速度更慢。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0055",
+              "support_excerpt": "决赛前，他们重新做了一遍视觉管线，机器人头部和手部的三个相机同时读取电子秤，通过相互校准和投票排除异常观测。最终27秒的成绩，反而比训练时的平均速度更慢。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0056",
+              "support_excerpt": "这是他们团队主动做出的选择。赛场环境和训练环境并不完全相同，他们把决赛参数调得更保守，宁可牺牲一部分速度，也要提高一次成功的概率。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-N12",
+          "statement": "临界点团队从产品研发Day One起试图按汽车行业质量要求做灵巧手，但发现汽车零部件有成熟测试规范而灵巧手没有；因此增加了场景化测试，并采集双足机器人行走/跑步的末端振动曲线加严后用于单体测试。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0065",
+              "support_excerpt": "临界点团队有不少成员来自车厂和Tier 1体系。乔天杰说，从产品研发的“Day One”开始，他们团队就试图按照汽车行业的质量要求做灵巧手。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0066",
+              "support_excerpt": "但真正做下去，他们很快遇到一个差别，汽车零部件已有相对成熟的测试规范，灵巧手却没有现成答案。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0068",
+              "support_excerpt": "他们团队后来增加了更多场景化测试，其中一些特殊工况需要连续运行至少一周、没有出现问题，才能进入下一阶段。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0070",
+              "support_excerpt": "后来，临界点团队把双足机器人真实行走、跑步时末端的振动曲线采集下来，再将这些工况加严，反过来用于灵巧手的单体测试。"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

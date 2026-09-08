@@ -1,0 +1,1796 @@
+{
+  "name": "raos-semantic-evidence-development-run-v0.2.6-evidence-complete-cohesion",
+  "status": "DEVELOPMENT_ONLY_NOT_FRESH_VALIDATION",
+  "measurement_timestamp": "20260908T091024Z",
+  "measurement_git_head": "473ba0e12d85d1a5926b89289b5b55727de4fa8c",
+  "as_of": "2026-09-08",
+  "invocation": {
+    "extractor_version": "semantic-evidence-extractor-v0.2.6",
+    "prompt_version": "semantic-evidence-extraction-v0.2.6-predicate-explicit-context-bearing",
+    "prompt_sha256": "11b7547dc3e157787cf39689380b4102754e9e605253f0863b81e8d441d072f9",
+    "thinking": "disabled",
+    "reasoning_effort": null,
+    "timeout_seconds": 90.0,
+    "temperature": 0.1,
+    "requested_model": "deepseek-v4-pro",
+    "provider_base_url": "https://api.deepseek.com",
+    "response_format": "json_object",
+    "structured_schema": "SemanticExtractionBatchV0_2",
+    "temporal_anchor_policy": "measurement-time-never-substitutes-source-time-v0.2.1",
+    "audit_policy": "sufficient-provenance-attribution-locator-dedup-v0.2.2",
+    "compression_policy": "minimal-sufficient-semantic-basis-v0.2.3",
+    "max_non_event_units": 12,
+    "max_supports_per_non_event_unit": 4,
+    "preferred_non_event_range": "6..10 when the source genuinely contains that many independent epistemic points"
+  },
+  "n_sources": 2,
+  "n_scorable": 2,
+  "n_first_pass_valid": 0,
+  "sources": [
+    {
+      "source": {
+        "source_id": "RS11",
+        "path": "eval_samples/11_刚刚，Qwen3.8-Flash震撼发布，我们看到了Qwen4的骨架.txt",
+        "media_type": "text/plain",
+        "git_blob_sha": "334ce867f9888bf07e6f851a9d19c51f033506af",
+        "file_sha256": "5d2cc9e757495dce944995222b1214831213c18bea8973361fcefa1808873389",
+        "text_sha256": "43b7db8180ceb16451f4963ae894d3eefa1f30a9fa3436408c6cca0708862b74",
+        "char_count": 10297,
+        "page_count": null,
+        "published_at": "unknown",
+        "updated_at": "unknown",
+        "captured_at": "unknown"
+      },
+      "scorable": true,
+      "failure_kind": null,
+      "error": null,
+      "repair_used": true,
+      "schema_events": [
+        {
+          "retry": 0,
+          "status": "invalid",
+          "errors": [
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                0,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                0,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                1,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                1,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                2,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                2,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                2,
+                "supports",
+                1,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                2,
+                "supports",
+                1,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                3,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                3,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                4,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                4,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                4,
+                "supports",
+                1,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                4,
+                "supports",
+                1,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                4,
+                "supports",
+                2,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                4,
+                "supports",
+                2,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                4,
+                "supports",
+                3,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                4,
+                "supports",
+                3,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                5,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                5,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                6,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                6,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                7,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                7,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                7,
+                "supports",
+                1,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                7,
+                "supports",
+                1,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                8,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                8,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                8,
+                "supports",
+                1,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                8,
+                "supports",
+                1,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                9,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                9,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                10,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                10,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                11,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                11,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            }
+          ]
+        },
+        {
+          "retry": 1,
+          "status": "repaired"
+        }
+      ],
+      "invalid_raw": null,
+      "model_meta": {
+        "latency_ms": 89046,
+        "prompt_tokens": 23395,
+        "completion_tokens": 9950,
+        "model": "deepseek-v4-pro",
+        "estimated_cost_usd": null,
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 90.0,
+        "schema_repaired": true
+      },
+      "n_event_frames": 2,
+      "n_non_event_units": 12,
+      "n_non_event_supports": 18,
+      "statement_chars": 2558,
+      "support_excerpt_chars": 2027,
+      "batch": {
+        "interface_version": "semantic-evidence-batch-v0.2",
+        "batch_id": "RS11-semantic-batch-v0.2",
+        "source_ids": [
+          "RS11"
+        ],
+        "event_frames": [
+          {
+            "interface_version": "semantic-evidence-frame-v0.1",
+            "event": {
+              "event_id": "RS11-E1",
+              "as_of": "2026-09-08",
+              "summary": "Qwen3.8-Flash released with new architecture and open weights, positioned as Qwen4 preview"
+            },
+            "sources": [
+              {
+                "source_id": "RS11",
+                "source_type": "text/plain",
+                "published_at": "unknown",
+                "locator": "eval_samples/11_刚刚，Qwen3.8-Flash震撼发布，我们看到了Qwen4的骨架.txt"
+              }
+            ],
+            "evidence": [
+              {
+                "evidence_id": "RS11-E1-EV1",
+                "source_id": "RS11",
+                "support_pointer": "PARA 0009",
+                "support_excerpt": "就在刚刚，阿里交出了一份让人满意的答卷：发布了 Qwen3.8-Flash，同步开源 Qwen3.8-Flash-Next（两者为同一模型，前者是 API 版本名称，后者是开源版本的正式名称）。",
+                "epistemic_status": "SOURCE_CLAIM",
+                "confidence": "HIGH"
+              },
+              {
+                "evidence_id": "RS11-E1-EV2",
+                "source_id": "RS11",
+                "support_pointer": "PARA 0030",
+                "support_excerpt": "Qwen 在技术博客中明确写道，Qwen3.8-Flash-Next 承担的角色与 Qwen3-Next 对 Qwen3.5 的角色一致，是 Qwen4 所用模型结构的先导预览，提前释出结构改动，以便在其上构建 Qwen4 完整模型家族之前先让社区检验。",
+                "epistemic_status": "SOURCE_CLAIM",
+                "confidence": "HIGH"
+              }
+            ],
+            "substantive_actors_objects": [
+              {
+                "name": "Qwen3.8-Flash",
+                "role": "released model",
+                "substantive_basis": "API version name of the model",
+                "support_ids": [
+                  "RS11-E1-EV1"
+                ]
+              },
+              {
+                "name": "Qwen3.8-Flash-Next",
+                "role": "open-source version name of the same model",
+                "substantive_basis": "open-source version name",
+                "support_ids": [
+                  "RS11-E1-EV1"
+                ]
+              },
+              {
+                "name": "Qwen4",
+                "role": "future model family for which this is a preview",
+                "substantive_basis": "Qwen4 architecture preview",
+                "support_ids": [
+                  "RS11-E1-EV2"
+                ]
+              }
+            ],
+            "actions_changes": [
+              {
+                "description": "Release of Qwen3.8-Flash and open-sourcing of Qwen3.8-Flash-Next",
+                "temporal_status": "ANNOUNCED",
+                "support_ids": [
+                  "RS11-E1-EV1"
+                ]
+              },
+              {
+                "description": "Positioning of Qwen3.8-Flash-Next as a preview of Qwen4 architecture",
+                "temporal_status": "ANNOUNCED",
+                "support_ids": [
+                  "RS11-E1-EV2"
+                ]
+              }
+            ],
+            "affected_systems_populations": [
+              {
+                "description": "AI model ecosystem and developers",
+                "reference_scope": "Qwen model family and community",
+                "support_ids": [
+                  "RS11-E1-EV1",
+                  "RS11-E1-EV2"
+                ]
+              }
+            ],
+            "temporal_context": {
+              "event_time": "unknown",
+              "effective_time": "unknown",
+              "as_of": "2026-09-08",
+              "notes": "Source says 'just now' relative to publication, but absolute date unknown."
+            },
+            "uncertainties": [
+              {
+                "field": "event_time",
+                "kind": "UNKNOWN",
+                "note": "Absolute date of release not provided in source.",
+                "support_ids": []
+              }
+            ]
+          },
+          {
+            "interface_version": "semantic-evidence-frame-v0.1",
+            "event": {
+              "event_id": "RS11-E2",
+              "as_of": "2026-09-08",
+              "summary": "DeepSeek V4 API price increase effective August 17 with peak/off-peak pricing"
+            },
+            "sources": [
+              {
+                "source_id": "RS11",
+                "source_type": "text/plain",
+                "published_at": "unknown",
+                "locator": "eval_samples/11_刚刚，Qwen3.8-Flash震撼发布，我们看到了Qwen4的骨架.txt"
+              }
+            ],
+            "evidence": [
+              {
+                "evidence_id": "RS11-E2-EV1",
+                "source_id": "RS11",
+                "support_pointer": "PARA 0002",
+                "support_excerpt": "8 月 17 日零点，DeepSeek 新的 API 价格正式生效。",
+                "epistemic_status": "SOURCE_CLAIM",
+                "confidence": "HIGH"
+              },
+              {
+                "evidence_id": "RS11-E2-EV2",
+                "source_id": "RS11",
+                "support_pointer": "PARA 0003",
+                "support_excerpt": "V4 全系启用峰谷分时计费，工作日 9:00 至 12:00、14:00 至 18:00 按高峰价结算，其余时段价格减半。",
+                "epistemic_status": "SOURCE_CLAIM",
+                "confidence": "HIGH"
+              }
+            ],
+            "substantive_actors_objects": [
+              {
+                "name": "DeepSeek",
+                "role": "API provider",
+                "substantive_basis": "company implementing price change",
+                "support_ids": [
+                  "RS11-E2-EV1"
+                ]
+              },
+              {
+                "name": "V4 series",
+                "role": "affected product line",
+                "substantive_basis": "V4 full series",
+                "support_ids": [
+                  "RS11-E2-EV2"
+                ]
+              }
+            ],
+            "actions_changes": [
+              {
+                "description": "New API pricing effective",
+                "temporal_status": "EFFECTIVE",
+                "support_ids": [
+                  "RS11-E2-EV1"
+                ]
+              },
+              {
+                "description": "Introduction of peak/off-peak time-of-use pricing",
+                "temporal_status": "EFFECTIVE",
+                "support_ids": [
+                  "RS11-E2-EV2"
+                ]
+              }
+            ],
+            "affected_systems_populations": [
+              {
+                "description": "DeepSeek API customers",
+                "reference_scope": "users of V4 API",
+                "support_ids": [
+                  "RS11-E2-EV1",
+                  "RS11-E2-EV2"
+                ]
+              }
+            ],
+            "temporal_context": {
+              "event_time": "2026-08-17",
+              "effective_time": "2026-08-17",
+              "as_of": "2026-09-08",
+              "notes": "Date explicitly stated in source."
+            },
+            "uncertainties": []
+          }
+        ],
+        "non_event_units": [
+          {
+            "unit_id": "RS11-N1",
+            "statement": "Qwen3.8-Flash achieves strong benchmark results, outperforming larger predecessor Qwen3.7-Plus on DeepSWE 1.1 (58.7 vs 16.5) and Claude Opus 4.6 on CoWorkBench (73.9 vs 68.2) and JobBench (55.7 vs 36.6), but trails Opus 4.6 on HLE (35.9 vs 40.0) and DeepSeek-V4-Flash-0731 on NL2Repo-Bench.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0010",
+                "support_excerpt": "在智能体编程基准 DeepSWE 1.1 上，它拿到 58.7 分，而参数规模是它三倍的前代 Qwen3.7-Plus 只有 16.5 分；长周期办公任务 CoWorkBench 和专业岗位任务 JobBench 上分别为 73.9 和 55.7 分，明显高于 Claude Opus 4.6（Max）的 68.2 和 36.6 分；多模态方面，AndroidWorld、ERQA、MathVision 等基准同样大幅领先。它并非全面占优，HLE 上的 35.9 分仍落后于 Opus 4.6 的 40.0 分，仓库级代码生成 NL2Repo-Bench 也不及 DeepSeek-V4-Flash-0731。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS11-N2",
+            "statement": "Qwen3.8-Flash is priced at 1 yuan per million input tokens and 3 yuan per million output tokens, which is 1/12 of Qwen3.8-Max and lower than DeepSeek V4 Flash's off-peak price after August 17.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0012",
+                "support_excerpt": "Qwen3.8-Flash 在千问 AI 平台的定价为每百万 token 输入 1 元、输出 3 元，仅为本月初发布的 Qwen3.8-Max 的十二分之一，也低于 DeepSeek V4 Flash 在 8 月 17 日调价后的闲时价格。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS11-N3",
+            "statement": "Qwen3.8-Flash uses a new architecture distinct from Qwen3.8-Max, which is based on Qwen3.5; the new architecture is first deployed in a cost-effective Flash model rather than a flagship.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0034",
+                "support_excerpt": "但其架构却与家族内其它模型大不一样：Qwen3.8-Max 是基于前代 Qwen3.5 架构迭代而来的，而这次的 Qwen3.8-Flash 用的是一套全新架构。"
+              },
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0035",
+                "support_excerpt": "也就是说，新架构没有先给到旗舰，而是先上了性价比款。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS11-N4",
+            "statement": "Qwen3.8-Flash is a multimodal MoE model with 125B main parameters, 51B N-gram Embedding parameters, 6B activated parameters per token, native 262,144 token context, and YaRN extension to 1M tokens.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0039",
+                "support_excerpt": "Qwen3.8-Flash 是一个多模态 MoE 模型，主模型参数量 125B，另外配备 51B 的 N-gram Embedding，而每个 token 只激活 6B 参数。它原生支持 262,144 token 上下文，并可通过 YaRN 扩展至 100 万 token。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS11-N5",
+            "statement": "Qwen3.8-Flash introduces four architectural upgrades: QSA (Qwen Sparse Attention) for efficient long-context attention, Gated Residual (GR) for multi-branch residual streams, N-gram Embedding for low-cost capacity expansion, and Muon optimizer for training efficiency.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0037",
+                "support_excerpt": "据 Qwen 团队介绍，这次的系统升级围绕四个方面展开：Attention、Residual、Embedding 和 Optimization。"
+              },
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0051",
+                "support_excerpt": "本次的新东西是那剩下的一层。Qwen 在全局注意力上引入了自研的 Qwen Sparse Attention（QSA）。"
+              },
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0064",
+                "support_excerpt": "Qwen 引入的 Gated Residual（GR） 是两种思路的结合。"
+              },
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0071",
+                "support_excerpt": "Qwen 这次的做法是在 Transformer 参数之外单开一个维度：普通 Embedding 根据单个 token 查表；N-gram Embedding 则结合当前 token 与前几个 token 组成的局部上下文来查表。"
+              }
+            ],
+            "note": "Muon optimizer mentioned in PARA 0077, but not included in supports due to cap; statement includes it as part of four upgrades."
+          },
+          {
+            "unit_id": "RS11-N6",
+            "statement": "QSA achieves up to 7.6x Prefill and 4.9x Decode kernel speedup at 1M tokens, and with 90% prefix cache hit rate, Qwen3.8-Flash achieves 8.6x Prefill throughput of Qwen3.7-Plus at 1M context.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0057",
+                "support_excerpt": "在 1M token 的设定下，QSA 的 Attention Kernel 在 Prefill 和 Decode 阶段分别实现了最高 7.6 倍和 4.9 倍的加速。在更贴近线上高缓存复用的实验设定下（Prefix Cache 命中率 90%），Qwen3.8-Flash 在 1M 上下文下的 Prefill 吞吐达到 Qwen3.7-Plus 的 8.6 倍。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS11-N7",
+            "statement": "N-gram Embedding parameters (51B) are deterministically addressed and can be stored in host memory with asynchronous prefetch, avoiding GPU memory usage and per-token matrix multiplication cost.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0073",
+                "support_excerpt": "查询位置可以提前确定。与 MoE 依赖运行时隐状态做动态路由不同，N-gram 的查询索引只取决于输入的 token 序列，在前面几层开始计算之前就已经能算出来。这意味着这 51B 参数可以直接存放在 Host Memory 中，通过异步 Prefetch 与模型计算重叠，无需长期占用 GPU 显存。Qwen 在 Base 模型的评测说明中也点明了这一点：51B 的 N-gram Embedding 参数是确定性寻址的，不进入每 token 的矩阵乘预算。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS11-N8",
+            "statement": "Qwen3.8-Flash training cost is about 1/9 of Qwen3.7-Plus, and with 6B activated parameters it matches or exceeds Qwen3.7-Plus-Base on 8 of 14 benchmarks and is close on the rest.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0084",
+                "support_excerpt": "这些创新加起来，让 Qwen3.8-Flash 收获了显著的模型效率优势：相比 Qwen3.7-Plus，它的训练开销仅约九分之一。"
+              },
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0085",
+                "support_excerpt": "在 6B 激活参数下，Qwen3.8-Flash-Next-Base 在 14 个 benchmark 中的 8 个上取得最优，在其它 6 个上也与 Qwen3.7-Plus-Base 接近。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS11-N9",
+            "statement": "The industry is shifting from per-token pricing to per-task cost as the key metric, with examples: Claude Opus 4.8 at $2.03/task, DeepSeek V4 Pro at $0.25/task, V4 Flash 0731 at $0.11/task, and GPT-5.6 Luna at $0.05/task.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0016",
+                "support_excerpt": "衡量单位不再是每百万 token 多少钱，而是跑完一项真实任务要花多少钱。"
+              },
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0017",
+                "support_excerpt": "按这一口径，Claude Opus 4.8 在最大推理档下能力智能得分 57 分，每任务成本 2.03 美元；DeepSeek V4 Pro 在同档下得 53 分，每任务成本 0.25 美元；V4 Flash 0731 得 52 分，0.11 美元，得分与之相同的 GPT-5.6 Luna 价格还更低，仅有 0.05 美元。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS11-N10",
+            "statement": "Agentic workloads amplify cost differences: multi-step task success rate is multiplicative, so a 95% vs 90% per-step success leads to 36% vs 12% after 20 steps, and failed retries incur additional token costs.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0021",
+                "support_excerpt": "多步骤任务的成功率约等于各步成功率的连乘，单步 95% 与 90% 只差五个百分点，二十步之后却是 36% 与 12%，而失败重试还要重新支付一遍 token。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS11-N11",
+            "statement": "In 2026, hyperscaler inference capex exceeded training capex for the first time, shifting the bottleneck from compute/cluster scale to memory bandwidth and communication latency.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0089",
+                "support_excerpt": "2026 年，超大规模云厂商的推理资本开支历史上第一次超过训练开支，核心矛盾也从算力与集群规模，变成了内存带宽与通信延迟。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS11-N12",
+            "statement": "The market response to cheaper models has shifted: DeepSeek R1 in Jan 2025 caused Nvidia's largest single-day drop (~17%, $589B), while DeepSeek V4 in Apr 2026 led to a 4.3% gain and $5T market cap, indicating cheaper models may increase inference demand.",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS11",
+                "support_pointer": "PARA 0091",
+                "support_excerpt": "2025 年 1 月 DeepSeek R1 发布后，「更便宜的模型意味着更少的算力」一度成为共识，英伟达曾单日暴跌近 17%、市值蒸发约 5890 亿美元，创下美股单只股票的单日跌幅纪录。而 2026 年 4 月 DeepSeek 拿出更强也更省的 V4 时，英伟达当日却收涨 4.3%，市值重返 5 万亿美元。"
+              }
+            ],
+            "note": ""
+          }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "source": {
+        "source_id": "RS12",
+        "path": "eval_samples/12_独家专访临界点CEO乔天杰：机器人运动会7冠背后，灵巧手真正该比什么.txt",
+        "media_type": "text/plain",
+        "git_blob_sha": "72d8b85eab2030ebfdb567d664c0073f62b96531",
+        "file_sha256": "73dd9ea7e3bd02ff06fc0675f2ef8e0458a39cf266b84c35fd5d2b883735e008",
+        "text_sha256": "1da33757b36ec98d47a0c458aea081ed7154dd2463393d734f0814a0f4c727c1",
+        "char_count": 7697,
+        "page_count": null,
+        "published_at": "unknown",
+        "updated_at": "unknown",
+        "captured_at": "unknown"
+      },
+      "scorable": true,
+      "failure_kind": null,
+      "error": null,
+      "repair_used": true,
+      "schema_events": [
+        {
+          "retry": 0,
+          "status": "invalid",
+          "errors": [
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                0,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                0,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                1,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                1,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                2,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                2,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                3,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                3,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                4,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                4,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                5,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                5,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                6,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                6,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                6,
+                "supports",
+                1,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                6,
+                "supports",
+                1,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                7,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                7,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                8,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                8,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                8,
+                "supports",
+                1,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                8,
+                "supports",
+                1,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                9,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                9,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                9,
+                "supports",
+                1,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                9,
+                "supports",
+                1,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                10,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                10,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                11,
+                "supports",
+                0,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                11,
+                "supports",
+                0,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                11,
+                "supports",
+                1,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                11,
+                "supports",
+                1,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                11,
+                "supports",
+                2,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                11,
+                "supports",
+                2,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                11,
+                "supports",
+                3,
+                "epistemic_status"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "SOURCE_CLAIM"
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "non_event_units",
+                11,
+                "supports",
+                3,
+                "confidence"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "HIGH"
+            }
+          ]
+        },
+        {
+          "retry": 1,
+          "status": "repaired"
+        }
+      ],
+      "invalid_raw": null,
+      "model_meta": {
+        "latency_ms": 85845,
+        "prompt_tokens": 20889,
+        "completion_tokens": 9568,
+        "model": "deepseek-v4-pro",
+        "estimated_cost_usd": null,
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 90.0,
+        "schema_repaired": true
+      },
+      "n_event_frames": 3,
+      "n_non_event_units": 12,
+      "n_non_event_supports": 18,
+      "statement_chars": 1046,
+      "support_excerpt_chars": 1626,
+      "batch": {
+        "interface_version": "semantic-evidence-batch-v0.2",
+        "batch_id": "RS12-semantic-batch-v0.2",
+        "source_ids": [
+          "RS12"
+        ],
+        "event_frames": [
+          {
+            "interface_version": "semantic-evidence-frame-v0.1",
+            "event": {
+              "event_id": "RS12-E1",
+              "as_of": "2026-09-08",
+              "summary": "临界点OmniHand在第二届世界人形机器人运动会灵巧手专项赛中获得7金4银3铜，覆盖全部8个赛项。"
+            },
+            "sources": [
+              {
+                "source_id": "RS12",
+                "source_type": "text/plain",
+                "published_at": "unknown",
+                "locator": "eval_samples/12_独家专访临界点CEO乔天杰：机器人运动会7冠背后，灵巧手真正该比什么.txt"
+              }
+            ],
+            "evidence": [
+              {
+                "evidence_id": "RS12-E1-EV1",
+                "source_id": "RS12",
+                "support_pointer": "PARA 0008",
+                "support_excerpt": "首次参赛的临界点，携量产产品OmniHand拿下7金4银3铜，覆盖全部8个赛项，几乎包揽本届灵巧手专项赛全部金牌。",
+                "epistemic_status": "SOURCE_CLAIM",
+                "confidence": "HIGH"
+              }
+            ],
+            "substantive_actors_objects": [
+              {
+                "name": "临界点",
+                "role": "参赛公司",
+                "substantive_basis": "首次参赛并携OmniHand参赛",
+                "support_ids": [
+                  "RS12-E1-EV1"
+                ]
+              },
+              {
+                "name": "OmniHand",
+                "role": "参赛产品",
+                "substantive_basis": "量产灵巧手，获得7金4银3铜",
+                "support_ids": [
+                  "RS12-E1-EV1"
+                ]
+              }
+            ],
+            "actions_changes": [
+              {
+                "description": "获得7金4银3铜，覆盖全部8个赛项",
+                "temporal_status": "OBSERVED",
+                "support_ids": [
+                  "RS12-E1-EV1"
+                ]
+              }
+            ],
+            "affected_systems_populations": [
+              {
+                "description": "灵巧手专项赛参赛队伍",
+                "reference_scope": "第二届世界人形机器人运动会灵巧手专项赛",
+                "support_ids": [
+                  "RS12-E1-EV1"
+                ]
+              }
+            ],
+            "temporal_context": {
+              "event_time": "2026-08-22至2026-08-26",
+              "effective_time": "unknown",
+              "as_of": "2026-09-08",
+              "notes": "比赛日期来自PARA 0006"
+            },
+            "uncertainties": []
+          },
+          {
+            "interface_version": "semantic-evidence-frame-v0.1",
+            "event": {
+              "event_id": "RS12-E2",
+              "as_of": "2026-09-08",
+              "summary": "武大智元联合赛队在粉末称量项目决赛中以全自主模式27秒零失误称出20克粉末，获得冠军。"
+            },
+            "sources": [
+              {
+                "source_id": "RS12",
+                "source_type": "text/plain",
+                "published_at": "unknown",
+                "locator": "eval_samples/12_独家专访临界点CEO乔天杰：机器人运动会7冠背后，灵巧手真正该比什么.txt"
+              }
+            ],
+            "evidence": [
+              {
+                "evidence_id": "RS12-E2-EV1",
+                "source_id": "RS12",
+                "support_pointer": "PARA 0021",
+                "support_excerpt": "决赛中，机器人以全自主模式完成取勺、取盐、称量和调整，最终用时27秒，零失误精准称出20克粉末，拿下冠军。",
+                "epistemic_status": "SOURCE_CLAIM",
+                "confidence": "HIGH"
+              }
+            ],
+            "substantive_actors_objects": [
+              {
+                "name": "武大智元联合赛队",
+                "role": "参赛队伍",
+                "substantive_basis": "在粉末称量项目决赛中夺冠",
+                "support_ids": [
+                  "RS12-E2-EV1"
+                ]
+              },
+              {
+                "name": "OmniHand",
+                "role": "使用的灵巧手",
+                "substantive_basis": "赛队使用同一双OmniHand完成比赛",
+                "support_ids": [
+                  "RS12-E2-EV1"
+                ]
+              }
+            ],
+            "actions_changes": [
+              {
+                "description": "以全自主模式完成粉末称量，用时27秒，零失误称出20克",
+                "temporal_status": "OBSERVED",
+                "support_ids": [
+                  "RS12-E2-EV1"
+                ]
+              }
+            ],
+            "affected_systems_populations": [
+              {
+                "description": "粉末称量项目参赛队伍",
+                "reference_scope": "第二届世界人形机器人运动会灵巧手专项赛粉末称量项目",
+                "support_ids": [
+                  "RS12-E2-EV1"
+                ]
+              }
+            ],
+            "temporal_context": {
+              "event_time": "2026-08-22至2026-08-26",
+              "effective_time": "unknown",
+              "as_of": "2026-09-08",
+              "notes": "比赛日期来自PARA 0006"
+            },
+            "uncertainties": []
+          },
+          {
+            "interface_version": "semantic-evidence-frame-v0.1",
+            "event": {
+              "event_id": "RS12-E3",
+              "as_of": "2026-09-08",
+              "summary": "临界点团队在镊子夹豆项目决赛中自主方案稳定夹取约70颗黄豆，获得冠军。"
+            },
+            "sources": [
+              {
+                "source_id": "RS12",
+                "source_type": "text/plain",
+                "published_at": "unknown",
+                "locator": "eval_samples/12_独家专访临界点CEO乔天杰：机器人运动会7冠背后，灵巧手真正该比什么.txt"
+              }
+            ],
+            "evidence": [
+              {
+                "evidence_id": "RS12-E3-EV1",
+                "source_id": "RS12",
+                "support_pointer": "PARA 0051",
+                "support_excerpt": "到了决赛，自主方案稳定夹取约70颗黄豆，拿下冠军。",
+                "epistemic_status": "SOURCE_CLAIM",
+                "confidence": "HIGH"
+              }
+            ],
+            "substantive_actors_objects": [
+              {
+                "name": "临界点团队",
+                "role": "参赛团队",
+                "substantive_basis": "在镊子夹豆项目决赛中夺冠",
+                "support_ids": [
+                  "RS12-E3-EV1"
+                ]
+              }
+            ],
+            "actions_changes": [
+              {
+                "description": "自主方案稳定夹取约70颗黄豆",
+                "temporal_status": "OBSERVED",
+                "support_ids": [
+                  "RS12-E3-EV1"
+                ]
+              }
+            ],
+            "affected_systems_populations": [
+              {
+                "description": "镊子夹豆项目参赛队伍",
+                "reference_scope": "第二届世界人形机器人运动会灵巧手专项赛镊子夹豆项目",
+                "support_ids": [
+                  "RS12-E3-EV1"
+                ]
+              }
+            ],
+            "temporal_context": {
+              "event_time": "2026-08-22至2026-08-26",
+              "effective_time": "unknown",
+              "as_of": "2026-09-08",
+              "notes": "比赛日期来自PARA 0006"
+            },
+            "uncertainties": []
+          }
+        ],
+        "non_event_units": [
+          {
+            "unit_id": "RS12-N1",
+            "statement": "第二届世界人形机器人运动会于2026年8月22日至26日在北京国家速滑馆举行，共有来自六大洲16个国家的666支队伍、2056台机器人参加51个项目、1301场比赛；参赛队伍数量较首届增长138%，机器人数量约为首届的4倍。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0006",
+                "support_excerpt": "8月22日至26日，第二届世界人形机器人运动会在北京国家速滑馆“冰丝带”举行。来自六大洲16个国家的666支队伍、2056台机器人，在5天里参加51个项目、1301场比赛；参赛队伍数量较首届增长138%，机器人数量约为首届的4倍。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS12-N2",
+            "statement": "灵巧手专项赛设置8个项目，涵盖积木搭建、粉末称量、镊子夹豆、精细夹取、打螺丝、钉钉、电动工具装配、线缆连接，综合考察负载、精度、力控、手眼协调和工具使用能力。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0007",
+                "support_excerpt": "灵巧手专项赛设置8个项目，从积木搭建、粉末称量、镊子夹豆、精细夹取，到打螺丝、钉钉、电动工具装配、线缆连接，将负载、精度、力控、手眼协调和工具使用放进同一张考卷。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS12-N3",
+            "statement": "临界点参赛使用的是同一款OmniHand、同一套核心硬件配置，没有为8个项目准备8套硬件。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0010",
+                "support_excerpt": "临界点没有为8道题准备8套硬件。CEO乔天杰告诉「甲子光年」，参赛使用的是同一款OmniHand、同一套核心硬件配置。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS12-N4",
+            "statement": "OmniHand在灵巧手专项赛中的使用比例随赛程推进而提高：预赛约27%，决赛约35%，前三名队伍约60%。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0009",
+                "support_excerpt": "灵巧手专项赛预赛实际参赛队伍超过200支，其中约27%使用临界点自研的OmniHand；进入决赛的110余支队伍中，这一比例升至35%；进入前三的队伍中，OmniHand的使用比例约为60%。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS12-N5",
+            "statement": "OmniHand的参数为：10个主动自由度、16个总自由度，整手重量不超过520克，指尖重复定位精度典型值0.3毫米，五指抓握力不低于5公斤；临界点称这是综合考虑功能、成本、量产等因素优化出的参数。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0033",
+                "support_excerpt": "但这次完成8类比赛任务的OmniHand，参数并不算激进：10个主动自由度、16个总自由度，整手重量不超过520克，指尖重复定位精度典型值为0.3毫米，五指抓握力不低于5公斤。这是总体考虑了功能，成本，量产等因素优化出来的一套最优参数。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS12-N6",
+            "statement": "临界点产品矩阵包括Lite系列（自由度较少，面向简单pick and place）、OmniHand（中间定位，平衡灵巧性、可靠性和成本）和Ultra系列（20个以上自由度，面向复杂手内操作）；乔天杰承认更高自由度在价格、寿命、稳定性和一致性上付出更高代价。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0039",
+                "support_excerpt": "临界点的产品矩阵也没有押注单一路线。Lite系列自由度较少，主要覆盖相对简单的pick and place；OmniHand处在中间，在灵巧性、可靠性和成本之间取平衡；Ultra则做到20个以上自由度，面向更复杂的手内操作。乔天杰也承认，现阶段更高自由度带来更多运动能力的同时，在价格、寿命、稳定性和一致性上也要付出更高代价。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS12-N7",
+            "statement": "乔天杰认为，从长期看机器人的手会越来越接近人手，原因包括：现实工具围绕人手设计，接近人手便于继承工具体系；具身智能操作数据以人的动作为源头，超出人手的自由度难以找到对应数据。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0041",
+                "support_excerpt": "乔天杰认为，从更长期看，机器人的手仍会越来越接近人手，背后有两个现实原因：一个来自工具。剪刀、锤子、螺丝刀、杯子、门把手，现实世界绝大多数工具本来就是围绕人的五指设计的。机械手在尺寸、构型和运动方式上越接近人手，就越容易直接继承已经存在的工具体系。"
+              },
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0042",
+                "support_excerpt": "另一个来自数据。今天具身智能能够获得的大量操作数据，无论来自互联网视频，还是人佩戴数据手套采集，本质上仍以人的动作作为源头。如果机械手拥有大量超出人手的运动维度，这些新增自由度反而很难直接找到对应的人类数据。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS12-N8",
+            "statement": "临界点团队在备赛时不为比赛做一次性方案，赛事开发不打乱原有研发里程碑；在有限人力下，将资源集中到自主方案优势明显的项目，最终夺冠项目实际开发周期约一个月。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0048",
+                "support_excerpt": "临界点首席科学家小可（化名）告诉「甲子光年」，他们团队在立项时，先定了一条原则，不为比赛做一次性方案，赛事开发不能打乱原有研发里程碑。比赛中完成的全链路适配、遥操作映射和软硬件协同优化，不只服务于赛题。在有限的人力下，他们没有追求8个项目全部做自主，而是把资源集中到自主方案相较遥操作优势更明显的项目上，最终夺冠项目的实际开发周期约一个月。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS12-N9",
+            "statement": "武大智元联合赛队在粉末称量项目中采用“一勺通”策略，即只用一把大勺通过连续控制逼近目标重量，而非“大勺+小勺”的保守方案；这要求末端有足够的控制精度和实时性，约100Hz的控制频率提供了较充分的连续调整空间。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0024",
+                "support_excerpt": "武大智元联合赛队队员提到，备赛时，他们有两种策略。一种更保守：先用大勺接近20克，再换小勺一点点补齐；另一种更直接，只用一把大勺，通过连续控制把重量逼近目标。"
+              },
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0025",
+                "support_excerpt": "他们选择了后者。这要求末端有足够的控制精度和实时性。前述队员提到，在这类精细操作中，约100Hz的控制频率，已经能给算法留下较充分的连续调整空间。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS12-N10",
+            "statement": "武大智元联合赛队在决赛前重新做了视觉管线，使用机器人头部和手部的三个相机同时读取电子秤，通过相互校准和投票排除异常观测；决赛参数调得更保守，牺牲速度以提高一次成功率，最终27秒成绩比训练平均速度更慢。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0055",
+                "support_excerpt": "决赛前，他们重新做了一遍视觉管线，机器人头部和手部的三个相机同时读取电子秤，通过相互校准和投票排除异常观测。最终27秒的成绩，反而比训练时的平均速度更慢。"
+              },
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0056",
+                "support_excerpt": "这是他们团队主动做出的选择。赛场环境和训练环境并不完全相同，他们把决赛参数调得更保守，宁可牺牲一部分速度，也要提高一次成功的概率。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS12-N11",
+            "statement": "OmniHand累计交付已接近1万台，预计2026年9月跨过万台门槛；此前公开数据为截至今年一季度单SKU交付超过5500台。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0062",
+                "support_excerpt": "此前公开数据是，截至今年一季度，OmniHand单SKU交付超过5500台。乔天杰此次告诉「甲子光年」，目前累计交付已经接近1万台，预计9月跨过万台门槛。"
+              }
+            ],
+            "note": ""
+          },
+          {
+            "unit_id": "RS12-N12",
+            "statement": "临界点团队从产品研发Day One起试图按汽车行业质量要求做灵巧手，但发现汽车零部件有成熟测试规范而灵巧手没有；因此增加了场景化测试，并采集双足机器人行走/跑步的末端振动曲线加严后用于单体测试。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+            "supports": [
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0065",
+                "support_excerpt": "临界点团队有不少成员来自车厂和Tier 1体系。乔天杰说，从产品研发的“Day One”开始，他们团队就试图按照汽车行业的质量要求做灵巧手。"
+              },
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0066",
+                "support_excerpt": "但真正做下去，他们很快遇到一个差别，汽车零部件已有相对成熟的测试规范，灵巧手却没有现成答案。"
+              },
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0068",
+                "support_excerpt": "他们团队后来增加了更多场景化测试，其中一些特殊工况需要连续运行至少一周、没有出现问题，才能进入下一阶段。"
+              },
+              {
+                "source_id": "RS12",
+                "support_pointer": "PARA 0070",
+                "support_excerpt": "后来，临界点团队把双足机器人真实行走、跑步时末端的振动曲线采集下来，再将这些工况加严，反过来用于灵巧手的单体测试。"
+              }
+            ],
+            "note": ""
+          }
+        ],
+        "notes": []
+      }
+    }
+  ],
+  "methodology_note": "Development-only minimal-sufficient semantic compression study. Same candidate policy across all selected sources; no Auditor scoring and no fresh validation claim."
+}

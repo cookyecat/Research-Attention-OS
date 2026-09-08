@@ -955,3 +955,44 @@ Research memory:
 > **Reasoning quality is downstream of world-model quality.**
 
 > **Cognitive judgment cannot be more reliable than the semantic world it is given.**
+---
+
+# 21. Phase 7A — Decision-Sufficient Semantic Precision
+
+Phase 7A end-to-end attribution established that Semantic Sensor quality is not well represented by raw unit count or single-run Auditor admission rate.
+
+Working engineering decomposition:
+
+```text
+Decision-Sufficient Semantic Precision
+=
+Evidence Fidelity
++ Scope Fidelity
++ Relational Fidelity
+```
+
+This is an engineering decomposition, not a new mathematical state variable.
+
+Evidence Fidelity: the cited evidence supports the semantic object as written.
+Scope Fidelity: setup, conditions, population/workload, time, and other truth-condition context travel with the conclusion they delimit.
+Relational Fidelity: explicit source relations such as cause, dominance, comparison, negation, mechanism, and before/after change remain explicit rather than being replaced only by labels.
+Research memory:
+
+> **Sensor 真正需要的不是“多”，而是“在正确的语义位置上精准”。**
+
+> **A semantic label is not a substitute for the relation it summarizes.**
+
+> **语义标签不能替代它所概括的关系本身。**
+
+> **A good Sensor does not flood the downstream system with facts. It delivers the right semantic state at the point where the decision depends on it.**
+
+> **好的 Sensor 不是把事实灌满下游，而是在决策真正依赖的地方，精准交付正确的语义状态。**
+
+Current working implementation baseline after Phase 7A:
+
+```text
+semantic-evidence-extractor-v0.2.6
+predicate-explicit + context-bearing + evidence-complete cohesion
+```
+
+See `72_PHASE7A_EXTERNAL_WORLD_MODEL_FIDELITY_RESULT.md` for the causal experiments and boundary conditions.
