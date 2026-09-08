@@ -79,3 +79,17 @@ def test_mvp_kernel_is_deterministic_and_contains_update_targets():
     assert [n.id for n in a] == [n.id for n in b]
     assert {n.node_type for n in a} >= {"BELIEF", "MODEL", "QUESTION", "BOTTLENECK"}
     assert len(a) == 10
+
+
+def test_counterfactual_kernel_fixtures_preserve_location_target_boundary():
+    from eval.live.phase6b_cognitive_semantics_v0_1 import (
+        build_phase6b_collective_location_only_nodes,
+        build_phase6b_perf_challenge_nodes,
+    )
+    location_only = build_phase6b_collective_location_only_nodes()
+    assert {n.node_type for n in location_only} == {"GOAL", "PROJECT"}
+
+    challenge = build_phase6b_perf_challenge_nodes()
+    belief = next(n for n in challenge if n.node_type == "BELIEF")
+    assert belief.payload["importance"] == 0.9
+    assert "rather than kernel preparation" in belief.payload["proposition"]

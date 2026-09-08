@@ -170,3 +170,62 @@ def build_phase6b_mvp_kernel_nodes():
             current_version=1,
         ))
     return nodes
+
+
+def _fixture_node(code: str, node_type: str, title: str, status: str, payload: dict[str, Any]):
+    from uuid import NAMESPACE_URL, uuid5
+    from app.models.kernel import KernelNode
+    return KernelNode(
+        id=uuid5(NAMESPACE_URL, f"raos.phase6b.counterfactual.{code}"),
+        node_type=node_type,
+        title=title,
+        status=status,
+        payload={**payload, "phase6b_fixture_code": code},
+        current_version=1,
+    )
+
+
+def build_phase6b_collective_location_only_nodes():
+    """Counterfactual K_t: relevant location exists, but no eligible cognitive target."""
+    return [
+        _fixture_node(
+            "CF-G-COLLECTIVE", "GOAL",
+            "Build better embodied and multi-agent intelligence systems.", "ACTIVE",
+            {"description": "Build better embodied and multi-agent intelligence systems."},
+        ),
+        _fixture_node(
+            "CF-P-COLLECTIVE", "PROJECT", "Collective Intelligence", "ACTIVE",
+            {"description": "Collective Intelligence", "scope": "multi-agent embodied systems"},
+        ),
+    ]
+
+
+def build_phase6b_perf_challenge_nodes():
+    """Counterfactual K_t with a deliberately opposing performance belief."""
+    return [
+        _fixture_node(
+            "CF-G-PERF", "GOAL", "Understand and optimize PyTorch GPU performance.", "ACTIVE",
+            {"description": "Understand and optimize PyTorch GPU performance."},
+        ),
+        _fixture_node(
+            "CF-P-PERF", "PROJECT", "PyTorch Performance Profiling", "ACTIVE",
+            {"description": "PyTorch Performance Profiling"},
+        ),
+        _fixture_node(
+            "CF-B-PERF", "BELIEF",
+            "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+            "ACTIVE",
+            {
+                "proposition": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+                "scope": "small PyTorch GPU matrix multiplication workloads",
+                "importance": 0.9,
+            },
+        ),
+    ]
+
+
+def fixture_code_by_id(nodes) -> dict[str, str]:
+    return {
+        str(node.id): str((node.payload or {}).get("phase6b_fixture_code") or "")
+        for node in nodes
+    }

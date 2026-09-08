@@ -1,0 +1,43 @@
+name: raos-phase6b-cognitive-attention-vertical-slice-v0.1
+status: DEVELOPMENT_ONLY_NOT_FRESH_VALIDATION
+purpose: >-
+  Exercise the frozen cognitive-transition path from audited real-source semantics
+  through explicit Kernel state into production Attention Policy.
+
+cases:
+  - id: C1-NONE-AWARE
+    source_id: RS11
+    kernel_fixture: MVP
+    awareness_event_id: RS11-E1
+    provenance: NATURAL_DEVELOPMENT
+
+  - id: C2-NONE-DROP
+    source_id: RS12
+    kernel_fixture: MVP
+    awareness_event_id: RS12-E1
+    provenance: NATURAL_DEVELOPMENT
+
+  - id: C3-REINFORCE-WATCH
+    source_id: RS15
+    kernel_fixture: MVP
+    awareness_event_id: RS15-E1
+    provenance: NATURAL_DEVELOPMENT
+
+  - id: C4-CHALLENGE-ENGAGE
+    source_id: RS05
+    kernel_fixture: PERF_CHALLENGE
+    awareness_event_id: null
+    provenance: DEVELOPMENT_COUNTERFACTUAL_KERNEL
+
+  - id: C5-OPEN-NEW
+    source_id: RS15
+    kernel_fixture: COLLECTIVE_LOCATION_ONLY
+    awareness_event_id: RS15-E1
+    provenance: DEVELOPMENT_COUNTERFACTUAL_KERNEL
+
+methodology:
+  - Audited cognitive units are fixed from the Phase 6B epistemic-unit audit artifact.
+  - D/S/P awareness labels are fixed from the canonical Phase 6A context-envelope artifact.
+  - Counterfactual Kernel fixtures change K_t only; source semantics remain unchanged.
+  - No case is fresh validation and no disposition is Human Gold.
+  - Positive Delta may produce patch proposals, but no Kernel mutation is authorized.
