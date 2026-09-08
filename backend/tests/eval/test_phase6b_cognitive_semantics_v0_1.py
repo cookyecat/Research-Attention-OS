@@ -60,3 +60,22 @@ def test_no_support_fails_closed_without_model_call():
     assert row["scorable"] is False
     assert row["failure_kind"] == "no_cited_evidence"
     assert admitted_epistemic_units([row]) == []
+
+
+def test_adapter_preserves_source_claim_as_claim_not_world_observation():
+    from eval.live.phase6b_cognitive_semantics_v0_1 import audited_units_to_extraction
+    extraction = audited_units_to_extraction([sample_unit()])
+    assert len(extraction.claims) == 1
+    assert len(extraction.observations) == 0
+    assert extraction.claims[0].attributed_to == "source"
+    assert "A supported statement." in extraction.claims[0].text
+    assert "A supported statement." in extraction.claims[0].source_span_text
+
+
+def test_mvp_kernel_is_deterministic_and_contains_update_targets():
+    from eval.live.phase6b_cognitive_semantics_v0_1 import build_phase6b_mvp_kernel_nodes
+    a = build_phase6b_mvp_kernel_nodes()
+    b = build_phase6b_mvp_kernel_nodes()
+    assert [n.id for n in a] == [n.id for n in b]
+    assert {n.node_type for n in a} >= {"BELIEF", "MODEL", "QUESTION", "BOTTLENECK"}
+    assert len(a) == 10
