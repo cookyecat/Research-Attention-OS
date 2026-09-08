@@ -1,0 +1,2500 @@
+{
+  "name": "raos-raw-source-event-audit-v0.1",
+  "status": "DEVELOPMENT_ONLY_NOT_FRESH_VALIDATION",
+  "measurement_timestamp": "20260907T205418Z",
+  "measurement_git_head": "f428fef69bd9275ae7a8c0649de040f051b5a228",
+  "vertical_slice_version": "raw-source-attention-vertical-slice-v0.1",
+  "input_sensor_artifact": {
+    "path": "/Users/liyang/Developer/Research-Attention-OS/eval/live/results/semantic_evidence_dev_v0_2_3/semantic_evidence_dev_v0_2_3_20260907T204332Z.json",
+    "measurement_timestamp": "20260907T204332Z",
+    "measurement_git_head": "f428fef69bd9275ae7a8c0649de040f051b5a228",
+    "prompt_sha256": "76bfa2c0286392db2ea010fbf6136ecd6517524ae7bbb4d76194e7c24c10afaa"
+  },
+  "auditor_invocation": {
+    "auditor_version": "semantic-evidence-auditor-v0.1.1",
+    "prompt_version": "semantic-evidence-audit-v0.1.1",
+    "prompt_sha256": "d22540217a0bec35468e327c6b6df8041eee7fb1c79dd676cfa38935774b81bb",
+    "thinking": "disabled",
+    "reasoning_effort": null,
+    "timeout_seconds": 45.0,
+    "temperature": 0.1,
+    "requested_model": "deepseek-v4-flash",
+    "provider_base_url": "https://api.deepseek.com",
+    "response_format": "json_object",
+    "structured_schema": "SemanticEvidenceAuditResultV0_1_1",
+    "audit_scope": "one-semantic-object-vs-cited-evidence-only",
+    "decision_policy": "binary-sufficiency-v0.1.1"
+  },
+  "actual_models": [
+    "deepseek-v4-flash"
+  ],
+  "n_events": 8,
+  "n_edges": 36,
+  "n_scorable_edges": 32,
+  "n_sufficient": 17,
+  "n_insufficient": 15,
+  "reason_counts": {
+    "MISSING_SUPPORT": 14,
+    "OVERSTRONG_SCOPE": 1,
+    "SUPPORTED": 17
+  },
+  "n_routable_events": 8,
+  "events": [
+    {
+      "source_id": "RS11",
+      "event_id": "RS11-E1",
+      "sensor_frame": {
+        "interface_version": "semantic-evidence-frame-v0.1",
+        "event": {
+          "event_id": "RS11-E1",
+          "as_of": "2026-09-08",
+          "summary": "Qwen3.8-Flash released with new architecture and low pricing, positioned as Qwen4 preview."
+        },
+        "sources": [
+          {
+            "source_id": "RS11",
+            "source_type": "text/plain",
+            "published_at": "unknown",
+            "locator": "eval_samples/11_刚刚，Qwen3.8-Flash震撼发布，我们看到了Qwen4的骨架.txt"
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "RS11-E1-EV1",
+            "source_id": "RS11",
+            "support_pointer": "PARA 0009",
+            "support_excerpt": "就在刚刚，阿里交出了一份让人满意的答卷：发布了 Qwen3.8-Flash，同步开源 Qwen3.8-Flash-Next（两者为同一模型，前者是 API 版本名称，后者是开源版本的正式名称）。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH"
+          },
+          {
+            "evidence_id": "RS11-E1-EV2",
+            "source_id": "RS11",
+            "support_pointer": "PARA 0012",
+            "support_excerpt": "Qwen3.8-Flash 在千问 AI 平台的定价为每百万 token 输入 1 元、输出 3 元，仅为本月初发布的 Qwen3.8-Max 的十二分之一，也低于 DeepSeek V4 Flash 在 8 月 17 日调价后的闲时价格。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH"
+          },
+          {
+            "evidence_id": "RS11-E1-EV3",
+            "source_id": "RS11",
+            "support_pointer": "PARA 0030",
+            "support_excerpt": "Qwen 在技术博客中明确写道，Qwen3.8-Flash-Next 承担的角色与 Qwen3-Next 对 Qwen3.5 的角色一致，是 Qwen4 所用模型结构的先导预览，提前释出结构改动，以便在其上构建 Qwen4 完整模型家族之前先让社区检验。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH"
+          }
+        ],
+        "substantive_actors_objects": [
+          {
+            "name": "Qwen3.8-Flash",
+            "role": "released model",
+            "substantive_basis": "new architecture, low pricing, Qwen4 preview",
+            "support_ids": [
+              "RS11-E1-EV1",
+              "RS11-E1-EV2",
+              "RS11-E1-EV3"
+            ]
+          },
+          {
+            "name": "阿里",
+            "role": "releasing organization",
+            "substantive_basis": "released Qwen3.8-Flash",
+            "support_ids": [
+              "RS11-E1-EV1"
+            ]
+          }
+        ],
+        "actions_changes": [
+          {
+            "description": "Release of Qwen3.8-Flash and open-sourcing of Qwen3.8-Flash-Next",
+            "temporal_status": "ANNOUNCED",
+            "support_ids": [
+              "RS11-E1-EV1"
+            ]
+          },
+          {
+            "description": "Pricing set at 1 yuan input / 3 yuan output per million tokens",
+            "temporal_status": "ANNOUNCED",
+            "support_ids": [
+              "RS11-E1-EV2"
+            ]
+          }
+        ],
+        "affected_systems_populations": [
+          {
+            "description": "AI model market / developers",
+            "reference_scope": "industry-wide",
+            "support_ids": [
+              "RS11-E1-EV1",
+              "RS11-E1-EV2"
+            ]
+          }
+        ],
+        "temporal_context": {
+          "event_time": "unknown",
+          "effective_time": "unknown",
+          "as_of": "2026-09-08",
+          "notes": "Source uses '刚刚' (just now) relative to publication; no absolute date given."
+        },
+        "uncertainties": [
+          {
+            "field": "event_time",
+            "kind": "UNKNOWN",
+            "note": "No absolute date for release; only relative 'just now'.",
+            "support_ids": []
+          }
+        ]
+      },
+      "audit_edges": [
+        {
+          "audit_id": "RS11:RS11-E1:actor_object:1",
+          "source_id": "RS11",
+          "event_id": "RS11-E1",
+          "group": "actor_object",
+          "index": 0,
+          "semantic_object": "name=Qwen3.8-Flash; role=released model; substantive_basis=new architecture, low pricing, Qwen4 preview",
+          "support_ids": [
+            "RS11-E1-EV1",
+            "RS11-E1-EV2",
+            "RS11-E1-EV3"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0009",
+              "support_excerpt": "就在刚刚，阿里交出了一份让人满意的答卷：发布了 Qwen3.8-Flash，同步开源 Qwen3.8-Flash-Next（两者为同一模型，前者是 API 版本名称，后者是开源版本的正式名称）。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0012",
+              "support_excerpt": "Qwen3.8-Flash 在千问 AI 平台的定价为每百万 token 输入 1 元、输出 3 元，仅为本月初发布的 Qwen3.8-Max 的十二分之一，也低于 DeepSeek V4 Flash 在 8 月 17 日调价后的闲时价格。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0030",
+              "support_excerpt": "Qwen 在技术博客中明确写道，Qwen3.8-Flash-Next 承担的角色与 Qwen3-Next 对 Qwen3.5 的角色一致，是 Qwen4 所用模型结构的先导预览，提前释出结构改动，以便在其上构建 Qwen4 完整模型家族之前先让社区检验。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-E1:actor_object:1",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object claims Qwen3.8-Flash has a 'new architecture', but the cited evidence only mentions that Qwen3.8-Flash-Next is a preview of the structure for Qwen4, and does not explicitly state that Qwen3.8-Flash itself has a new architecture. The evidence supports the release, low pricing, and Qwen4 preview aspects, but not the 'new architecture' claim.",
+            "unsupported_aspect": "new architecture"
+          },
+          "model_meta": {
+            "latency_ms": 1229,
+            "prompt_tokens": 1093,
+            "completion_tokens": 172,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-E1:actor_object:2",
+          "source_id": "RS11",
+          "event_id": "RS11-E1",
+          "group": "actor_object",
+          "index": 1,
+          "semantic_object": "name=阿里; role=releasing organization; substantive_basis=released Qwen3.8-Flash",
+          "support_ids": [
+            "RS11-E1-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0009",
+              "support_excerpt": "就在刚刚，阿里交出了一份让人满意的答卷：发布了 Qwen3.8-Flash，同步开源 Qwen3.8-Flash-Next（两者为同一模型，前者是 API 版本名称，后者是开源版本的正式名称）。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-E1:actor_object:2",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt explicitly states that Alibaba ('阿里') released Qwen3.8-Flash, directly supporting the semantic object's claim that Alibaba is the releasing organization with substantive basis of releasing Qwen3.8-Flash.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 876,
+            "prompt_tokens": 872,
+            "completion_tokens": 125,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-E1:action_change:1",
+          "source_id": "RS11",
+          "event_id": "RS11-E1",
+          "group": "action_change",
+          "index": 0,
+          "semantic_object": "description=Release of Qwen3.8-Flash and open-sourcing of Qwen3.8-Flash-Next; temporal_status=ANNOUNCED",
+          "support_ids": [
+            "RS11-E1-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0009",
+              "support_excerpt": "就在刚刚，阿里交出了一份让人满意的答卷：发布了 Qwen3.8-Flash，同步开源 Qwen3.8-Flash-Next（两者为同一模型，前者是 API 版本名称，后者是开源版本的正式名称）。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-E1:action_change:1",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt explicitly states that Alibaba released Qwen3.8-Flash and open-sourced Qwen3.8-Flash-Next, and clarifies they are the same model with different names. The temporal status 'ANNOUNCED' is supported by the phrase '就在刚刚' indicating a recent announcement.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1081,
+            "prompt_tokens": 882,
+            "completion_tokens": 142,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-E1:action_change:2",
+          "source_id": "RS11",
+          "event_id": "RS11-E1",
+          "group": "action_change",
+          "index": 1,
+          "semantic_object": "description=Pricing set at 1 yuan input / 3 yuan output per million tokens; temporal_status=ANNOUNCED",
+          "support_ids": [
+            "RS11-E1-EV2"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0012",
+              "support_excerpt": "Qwen3.8-Flash 在千问 AI 平台的定价为每百万 token 输入 1 元、输出 3 元，仅为本月初发布的 Qwen3.8-Max 的十二分之一，也低于 DeepSeek V4 Flash 在 8 月 17 日调价后的闲时价格。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-E1:action_change:2",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt explicitly states the pricing for Qwen3.8-Flash on the Qianwen AI platform as 1 yuan per million tokens input and 3 yuan per million tokens output, matching the semantic object's description. The temporal status 'ANNOUNCED' is supported by the present-tense description of the pricing in the evidence, which indicates an announced pricing scheme.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1164,
+            "prompt_tokens": 896,
+            "completion_tokens": 154,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-E1:affected_system_population:1",
+          "source_id": "RS11",
+          "event_id": "RS11-E1",
+          "group": "affected_system_population",
+          "index": 0,
+          "semantic_object": "description=AI model market / developers; reference_scope=industry-wide",
+          "support_ids": [
+            "RS11-E1-EV1",
+            "RS11-E1-EV2"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0009",
+              "support_excerpt": "就在刚刚，阿里交出了一份让人满意的答卷：发布了 Qwen3.8-Flash，同步开源 Qwen3.8-Flash-Next（两者为同一模型，前者是 API 版本名称，后者是开源版本的正式名称）。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0012",
+              "support_excerpt": "Qwen3.8-Flash 在千问 AI 平台的定价为每百万 token 输入 1 元、输出 3 元，仅为本月初发布的 Qwen3.8-Max 的十二分之一，也低于 DeepSeek V4 Flash 在 8 月 17 日调价后的闲时价格。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-E1:affected_system_population:1",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "OVERSTRONG_SCOPE",
+            "rationale": "The semantic object claims an industry-wide scope ('AI model market / developers; reference_scope=industry-wide'), but the cited evidence only describes a single company's (Alibaba's) release and pricing of a specific model (Qwen3.8-Flash). It does not mention the broader AI model market or developers as a population, nor does it support an industry-wide reference scope.",
+            "unsupported_aspect": "The industry-wide scope and the population of 'AI model market / developers' are not supported by the cited evidence, which is limited to a single model release and pricing."
+          },
+          "model_meta": {
+            "latency_ms": 1388,
+            "prompt_tokens": 976,
+            "completion_tokens": 197,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-E1:uncertainty:1",
+          "source_id": "RS11",
+          "event_id": "RS11-E1",
+          "group": "uncertainty",
+          "index": 0,
+          "semantic_object": "field=event_time; kind=UNKNOWN; note=No absolute date for release; only relative 'just now'.",
+          "support_ids": [],
+          "evidence": [],
+          "scorable": false,
+          "failure_kind": "no_cited_evidence",
+          "audit_result": null,
+          "model_meta": null
+        }
+      ],
+      "audited_projection": {
+        "event_id": "RS11-E1",
+        "sensor_event_summary_diagnostic_only": "Qwen3.8-Flash released with new architecture and low pricing, positioned as Qwen4 preview.",
+        "routing_status": "ROUTABLE",
+        "actor_objects": [
+          {
+            "name": "阿里",
+            "role": "releasing organization",
+            "substantive_basis": "released Qwen3.8-Flash",
+            "support_ids": [
+              "RS11-E1-EV1"
+            ]
+          }
+        ],
+        "actions_changes": [
+          {
+            "description": "Release of Qwen3.8-Flash and open-sourcing of Qwen3.8-Flash-Next",
+            "temporal_status": "ANNOUNCED",
+            "support_ids": [
+              "RS11-E1-EV1"
+            ]
+          },
+          {
+            "description": "Pricing set at 1 yuan input / 3 yuan output per million tokens",
+            "temporal_status": "ANNOUNCED",
+            "support_ids": [
+              "RS11-E1-EV2"
+            ]
+          }
+        ],
+        "affected_systems_populations": [],
+        "uncertainties": [],
+        "rejected_or_unscorable_objects": [
+          {
+            "group": "actor_object",
+            "index": 0,
+            "semantic_object": "name=Qwen3.8-Flash; role=released model; substantive_basis=new architecture, low pricing, Qwen4 preview",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "failure_kind": null
+          },
+          {
+            "group": "affected_system_population",
+            "index": 0,
+            "semantic_object": "description=AI model market / developers; reference_scope=industry-wide",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "OVERSTRONG_SCOPE",
+            "failure_kind": null
+          },
+          {
+            "group": "uncertainty",
+            "index": 0,
+            "semantic_object": "field=event_time; kind=UNKNOWN; note=No absolute date for release; only relative 'just now'.",
+            "verdict": null,
+            "reason_code": null,
+            "failure_kind": "no_cited_evidence"
+          }
+        ],
+        "rendered_event_text": "Audited event representation:\nActions / changes:\n- [ANNOUNCED] Release of Qwen3.8-Flash and open-sourcing of Qwen3.8-Flash-Next\n- [ANNOUNCED] Pricing set at 1 yuan input / 3 yuan output per million tokens\nSubstantive actors / objects:\n- 阿里: releasing organization — released Qwen3.8-Flash"
+      }
+    },
+    {
+      "source_id": "RS11",
+      "event_id": "RS11-E2",
+      "sensor_frame": {
+        "interface_version": "semantic-evidence-frame-v0.1",
+        "event": {
+          "event_id": "RS11-E2",
+          "as_of": "2026-09-08",
+          "summary": "DeepSeek V4 API price increase effective August 17 with peak/off-peak pricing."
+        },
+        "sources": [
+          {
+            "source_id": "RS11",
+            "source_type": "text/plain",
+            "published_at": "unknown",
+            "locator": "eval_samples/11_刚刚，Qwen3.8-Flash震撼发布，我们看到了Qwen4的骨架.txt"
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "RS11-E2-EV1",
+            "source_id": "RS11",
+            "support_pointer": "PARA 0002",
+            "support_excerpt": "8 月 17 日零点，DeepSeek 新的 API 价格正式生效。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH"
+          },
+          {
+            "evidence_id": "RS11-E2-EV2",
+            "source_id": "RS11",
+            "support_pointer": "PARA 0003",
+            "support_excerpt": "V4 全系启用峰谷分时计费，工作日 9:00 至 12:00、14:00 至 18:00 按高峰价结算，其余时段价格减半。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH"
+          },
+          {
+            "evidence_id": "RS11-E2-EV3",
+            "source_id": "RS11",
+            "support_pointer": "PARA 0004",
+            "support_excerpt": "第三方核算显示，V4 Flash 闲时缓存未命中输入价格上涨约 57%，闲时输出上涨约 136%，高峰时段的输出价格则接近旧价的 4.7 倍。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH"
+          }
+        ],
+        "substantive_actors_objects": [
+          {
+            "name": "DeepSeek",
+            "role": "API provider",
+            "substantive_basis": "implemented new pricing",
+            "support_ids": [
+              "RS11-E2-EV1",
+              "RS11-E2-EV2"
+            ]
+          }
+        ],
+        "actions_changes": [
+          {
+            "description": "New API pricing effective with peak/off-peak rates",
+            "temporal_status": "EFFECTIVE",
+            "support_ids": [
+              "RS11-E2-EV1",
+              "RS11-E2-EV2"
+            ]
+          },
+          {
+            "description": "V4 Flash off-peak input price up ~57%, output up ~136%, peak output ~4.7x old price",
+            "temporal_status": "EFFECTIVE",
+            "support_ids": [
+              "RS11-E2-EV3"
+            ]
+          }
+        ],
+        "affected_systems_populations": [
+          {
+            "description": "DeepSeek API users",
+            "reference_scope": "all V4 series users",
+            "support_ids": [
+              "RS11-E2-EV1",
+              "RS11-E2-EV2"
+            ]
+          }
+        ],
+        "temporal_context": {
+          "event_time": "2025-08-17",
+          "effective_time": "2025-08-17",
+          "as_of": "2026-09-08",
+          "notes": "Date given as 8月17日; year not specified but context suggests 2025 or 2026. Source says '8 月 17 日零点'."
+        },
+        "uncertainties": [
+          {
+            "field": "event_time",
+            "kind": "UNKNOWN",
+            "note": "Year not explicitly stated; likely 2025 or 2026 based on context.",
+            "support_ids": []
+          }
+        ]
+      },
+      "audit_edges": [
+        {
+          "audit_id": "RS11:RS11-E2:actor_object:1",
+          "source_id": "RS11",
+          "event_id": "RS11-E2",
+          "group": "actor_object",
+          "index": 0,
+          "semantic_object": "name=DeepSeek; role=API provider; substantive_basis=implemented new pricing",
+          "support_ids": [
+            "RS11-E2-EV1",
+            "RS11-E2-EV2"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0002",
+              "support_excerpt": "8 月 17 日零点，DeepSeek 新的 API 价格正式生效。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0003",
+              "support_excerpt": "V4 全系启用峰谷分时计费，工作日 9:00 至 12:00、14:00 至 18:00 按高峰价结算，其余时段价格减半。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-E2:actor_object:1",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object states that DeepSeek's role is 'API provider' and that its substantive basis is 'implemented new pricing'. The cited evidence confirms that DeepSeek implemented new API pricing, but it does not establish that DeepSeek is an API provider. The role of API provider is not supported by the excerpts.",
+            "unsupported_aspect": "role=API provider"
+          },
+          "model_meta": {
+            "latency_ms": 1280,
+            "prompt_tokens": 917,
+            "completion_tokens": 152,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-E2:action_change:1",
+          "source_id": "RS11",
+          "event_id": "RS11-E2",
+          "group": "action_change",
+          "index": 0,
+          "semantic_object": "description=New API pricing effective with peak/off-peak rates; temporal_status=EFFECTIVE",
+          "support_ids": [
+            "RS11-E2-EV1",
+            "RS11-E2-EV2"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0002",
+              "support_excerpt": "8 月 17 日零点，DeepSeek 新的 API 价格正式生效。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0003",
+              "support_excerpt": "V4 全系启用峰谷分时计费，工作日 9:00 至 12:00、14:00 至 18:00 按高峰价结算，其余时段价格减半。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-E2:action_change:1",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The first excerpt states that the new API pricing took effect on August 17 at midnight, supporting the temporal status EFFECTIVE. The second excerpt specifies that V4 models use peak/off-peak billing with peak hours on weekdays 9:00-12:00 and 14:00-18:00 at peak price and other times at half price, supporting the description of peak/off-peak rates. Together, the evidence supports the semantic object.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1344,
+            "prompt_tokens": 917,
+            "completion_tokens": 171,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-E2:action_change:2",
+          "source_id": "RS11",
+          "event_id": "RS11-E2",
+          "group": "action_change",
+          "index": 1,
+          "semantic_object": "description=V4 Flash off-peak input price up ~57%, output up ~136%, peak output ~4.7x old price; temporal_status=EFFECTIVE",
+          "support_ids": [
+            "RS11-E2-EV3"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0004",
+              "support_excerpt": "第三方核算显示，V4 Flash 闲时缓存未命中输入价格上涨约 57%，闲时输出上涨约 136%，高峰时段的输出价格则接近旧价的 4.7 倍。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-E2:action_change:2",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states the price changes: off-peak cache miss input price up ~57%, off-peak output up ~136%, and peak output price close to 4.7 times the old price. These match the semantic object's description. The temporal status 'EFFECTIVE' is not contradicted by the evidence, and the excerpt implies the changes are in effect as of the third-party calculation.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1322,
+            "prompt_tokens": 874,
+            "completion_tokens": 161,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-E2:affected_system_population:1",
+          "source_id": "RS11",
+          "event_id": "RS11-E2",
+          "group": "affected_system_population",
+          "index": 0,
+          "semantic_object": "description=DeepSeek API users; reference_scope=all V4 series users",
+          "support_ids": [
+            "RS11-E2-EV1",
+            "RS11-E2-EV2"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0002",
+              "support_excerpt": "8 月 17 日零点，DeepSeek 新的 API 价格正式生效。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0003",
+              "support_excerpt": "V4 全系启用峰谷分时计费，工作日 9:00 至 12:00、14:00 至 18:00 按高峰价结算，其余时段价格减半。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-E2:affected_system_population:1",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object claims the affected population is 'DeepSeek API users' with reference scope 'all V4 series users'. The cited evidence mentions 'DeepSeek 新的 API 价格' and 'V4 全系启用峰谷分时计费', but does not explicitly state that the affected population is all V4 series users or that the pricing applies to all DeepSeek API users. The evidence does not specify the scope of users affected by the new pricing.",
+            "unsupported_aspect": "The claim that the affected population is 'all V4 series users' is not directly supported; the evidence only mentions V4 series pricing without specifying that it applies to all users of the V4 series."
+          },
+          "model_meta": {
+            "latency_ms": 1930,
+            "prompt_tokens": 921,
+            "completion_tokens": 222,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-E2:uncertainty:1",
+          "source_id": "RS11",
+          "event_id": "RS11-E2",
+          "group": "uncertainty",
+          "index": 0,
+          "semantic_object": "field=event_time; kind=UNKNOWN; note=Year not explicitly stated; likely 2025 or 2026 based on context.",
+          "support_ids": [],
+          "evidence": [],
+          "scorable": false,
+          "failure_kind": "no_cited_evidence",
+          "audit_result": null,
+          "model_meta": null
+        }
+      ],
+      "audited_projection": {
+        "event_id": "RS11-E2",
+        "sensor_event_summary_diagnostic_only": "DeepSeek V4 API price increase effective August 17 with peak/off-peak pricing.",
+        "routing_status": "ROUTABLE",
+        "actor_objects": [],
+        "actions_changes": [
+          {
+            "description": "New API pricing effective with peak/off-peak rates",
+            "temporal_status": "EFFECTIVE",
+            "support_ids": [
+              "RS11-E2-EV1",
+              "RS11-E2-EV2"
+            ]
+          },
+          {
+            "description": "V4 Flash off-peak input price up ~57%, output up ~136%, peak output ~4.7x old price",
+            "temporal_status": "EFFECTIVE",
+            "support_ids": [
+              "RS11-E2-EV3"
+            ]
+          }
+        ],
+        "affected_systems_populations": [],
+        "uncertainties": [],
+        "rejected_or_unscorable_objects": [
+          {
+            "group": "actor_object",
+            "index": 0,
+            "semantic_object": "name=DeepSeek; role=API provider; substantive_basis=implemented new pricing",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "failure_kind": null
+          },
+          {
+            "group": "affected_system_population",
+            "index": 0,
+            "semantic_object": "description=DeepSeek API users; reference_scope=all V4 series users",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "failure_kind": null
+          },
+          {
+            "group": "uncertainty",
+            "index": 0,
+            "semantic_object": "field=event_time; kind=UNKNOWN; note=Year not explicitly stated; likely 2025 or 2026 based on context.",
+            "verdict": null,
+            "reason_code": null,
+            "failure_kind": "no_cited_evidence"
+          }
+        ],
+        "rendered_event_text": "Audited event representation:\nActions / changes:\n- [EFFECTIVE] New API pricing effective with peak/off-peak rates\n- [EFFECTIVE] V4 Flash off-peak input price up ~57%, output up ~136%, peak output ~4.7x old price"
+      }
+    },
+    {
+      "source_id": "RS12",
+      "event_id": "RS12-E1",
+      "sensor_frame": {
+        "interface_version": "semantic-evidence-frame-v0.1",
+        "event": {
+          "event_id": "RS12-E1",
+          "as_of": "2026-09-08",
+          "summary": "临界点OmniHand在第二届世界人形机器人运动会灵巧手专项赛中获得7金4银3铜，覆盖全部8个赛项。"
+        },
+        "sources": [
+          {
+            "source_id": "RS12",
+            "source_type": "text/plain",
+            "published_at": "unknown",
+            "locator": "eval_samples/12_独家专访临界点CEO乔天杰：机器人运动会7冠背后，灵巧手真正该比什么.txt"
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "RS12-E1-EV1",
+            "source_id": "RS12",
+            "support_pointer": "PARA 0008",
+            "support_excerpt": "首次参赛的临界点，携量产产品OmniHand拿下7金4银3铜，覆盖全部8个赛项，几乎包揽本届灵巧手专项赛全部金牌。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH"
+          }
+        ],
+        "substantive_actors_objects": [
+          {
+            "name": "临界点",
+            "role": "参赛公司",
+            "substantive_basis": "首次参赛并携OmniHand参赛",
+            "support_ids": [
+              "RS12-E1-EV1"
+            ]
+          },
+          {
+            "name": "OmniHand",
+            "role": "灵巧手产品",
+            "substantive_basis": "用于参赛并获得奖牌",
+            "support_ids": [
+              "RS12-E1-EV1"
+            ]
+          }
+        ],
+        "actions_changes": [
+          {
+            "description": "获得7金4银3铜，覆盖全部8个赛项",
+            "temporal_status": "OBSERVED",
+            "support_ids": [
+              "RS12-E1-EV1"
+            ]
+          }
+        ],
+        "affected_systems_populations": [
+          {
+            "description": "灵巧手专项赛参赛队伍",
+            "reference_scope": "本届灵巧手专项赛",
+            "support_ids": [
+              "RS12-E1-EV1"
+            ]
+          }
+        ],
+        "temporal_context": {
+          "event_time": "2025-08-22至2025-08-26（第二届世界人形机器人运动会期间）",
+          "effective_time": "unknown",
+          "as_of": "2026-09-08",
+          "notes": "赛事日期来自PARA 0006"
+        },
+        "uncertainties": []
+      },
+      "audit_edges": [
+        {
+          "audit_id": "RS12:RS12-E1:actor_object:1",
+          "source_id": "RS12",
+          "event_id": "RS12-E1",
+          "group": "actor_object",
+          "index": 0,
+          "semantic_object": "name=临界点; role=参赛公司; substantive_basis=首次参赛并携OmniHand参赛",
+          "support_ids": [
+            "RS12-E1-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0008",
+              "support_excerpt": "首次参赛的临界点，携量产产品OmniHand拿下7金4银3铜，覆盖全部8个赛项，几乎包揽本届灵巧手专项赛全部金牌。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E1:actor_object:1",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt explicitly states that '首次参赛的临界点' (first-time participant 临界点) participated with the product OmniHand, which directly supports the semantic object's claims of name, role as participating company, and substantive basis of first participation with OmniHand.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1202,
+            "prompt_tokens": 859,
+            "completion_tokens": 134,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-E1:actor_object:2",
+          "source_id": "RS12",
+          "event_id": "RS12-E1",
+          "group": "actor_object",
+          "index": 1,
+          "semantic_object": "name=OmniHand; role=灵巧手产品; substantive_basis=用于参赛并获得奖牌",
+          "support_ids": [
+            "RS12-E1-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0008",
+              "support_excerpt": "首次参赛的临界点，携量产产品OmniHand拿下7金4银3铜，覆盖全部8个赛项，几乎包揽本届灵巧手专项赛全部金牌。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E1:actor_object:2",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The excerpt states that OmniHand is a mass-produced product and that it won medals in a competition, but it does not explicitly state that OmniHand is a '灵巧手产品' (dexterous hand product). The term '灵巧手' appears only in the context of the competition name, not as a description of OmniHand. Therefore, the role attribute is not directly supported.",
+            "unsupported_aspect": "role=灵巧手产品"
+          },
+          "model_meta": {
+            "latency_ms": 1352,
+            "prompt_tokens": 859,
+            "completion_tokens": 170,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-E1:action_change:1",
+          "source_id": "RS12",
+          "event_id": "RS12-E1",
+          "group": "action_change",
+          "index": 0,
+          "semantic_object": "description=获得7金4银3铜，覆盖全部8个赛项; temporal_status=OBSERVED",
+          "support_ids": [
+            "RS12-E1-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0008",
+              "support_excerpt": "首次参赛的临界点，携量产产品OmniHand拿下7金4银3铜，覆盖全部8个赛项，几乎包揽本届灵巧手专项赛全部金牌。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E1:action_change:1",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states '拿下7金4银3铜，覆盖全部8个赛项', which matches the semantic object's description of obtaining 7 gold, 4 silver, 3 bronze medals covering all 8 events. The temporal status OBSERVED is consistent with the past tense '拿下' in the evidence.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1021,
+            "prompt_tokens": 861,
+            "completion_tokens": 146,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-E1:affected_system_population:1",
+          "source_id": "RS12",
+          "event_id": "RS12-E1",
+          "group": "affected_system_population",
+          "index": 0,
+          "semantic_object": "description=灵巧手专项赛参赛队伍; reference_scope=本届灵巧手专项赛",
+          "support_ids": [
+            "RS12-E1-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0008",
+              "support_excerpt": "首次参赛的临界点，携量产产品OmniHand拿下7金4银3铜，覆盖全部8个赛项，几乎包揽本届灵巧手专项赛全部金牌。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E1:affected_system_population:1",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object claims that the affected system population is '灵巧手专项赛参赛队伍' (teams participating in the dexterous hand special competition). The cited evidence mentions '本届灵巧手专项赛' and that a team won medals covering all 8 events, but it does not explicitly state that the affected population is the participating teams. The evidence only implies the existence of the competition and a specific team's performance, not the population of all participating teams.",
+            "unsupported_aspect": "The claim that the affected system population is '灵巧手专项赛参赛队伍' is not directly supported; the evidence does not describe the population of participating teams."
+          },
+          "model_meta": {
+            "latency_ms": 1635,
+            "prompt_tokens": 863,
+            "completion_tokens": 212,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        }
+      ],
+      "audited_projection": {
+        "event_id": "RS12-E1",
+        "sensor_event_summary_diagnostic_only": "临界点OmniHand在第二届世界人形机器人运动会灵巧手专项赛中获得7金4银3铜，覆盖全部8个赛项。",
+        "routing_status": "ROUTABLE",
+        "actor_objects": [
+          {
+            "name": "临界点",
+            "role": "参赛公司",
+            "substantive_basis": "首次参赛并携OmniHand参赛",
+            "support_ids": [
+              "RS12-E1-EV1"
+            ]
+          }
+        ],
+        "actions_changes": [
+          {
+            "description": "获得7金4银3铜，覆盖全部8个赛项",
+            "temporal_status": "OBSERVED",
+            "support_ids": [
+              "RS12-E1-EV1"
+            ]
+          }
+        ],
+        "affected_systems_populations": [],
+        "uncertainties": [],
+        "rejected_or_unscorable_objects": [
+          {
+            "group": "actor_object",
+            "index": 1,
+            "semantic_object": "name=OmniHand; role=灵巧手产品; substantive_basis=用于参赛并获得奖牌",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "failure_kind": null
+          },
+          {
+            "group": "affected_system_population",
+            "index": 0,
+            "semantic_object": "description=灵巧手专项赛参赛队伍; reference_scope=本届灵巧手专项赛",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "failure_kind": null
+          }
+        ],
+        "rendered_event_text": "Audited event representation:\nActions / changes:\n- [OBSERVED] 获得7金4银3铜，覆盖全部8个赛项\nSubstantive actors / objects:\n- 临界点: 参赛公司 — 首次参赛并携OmniHand参赛"
+      }
+    },
+    {
+      "source_id": "RS12",
+      "event_id": "RS12-E2",
+      "sensor_frame": {
+        "interface_version": "semantic-evidence-frame-v0.1",
+        "event": {
+          "event_id": "RS12-E2",
+          "as_of": "2026-09-08",
+          "summary": "武大智元联合赛队在粉末称量项目决赛中以全自主模式27秒零失误称出20克粉末，获得冠军。"
+        },
+        "sources": [
+          {
+            "source_id": "RS12",
+            "source_type": "text/plain",
+            "published_at": "unknown",
+            "locator": "eval_samples/12_独家专访临界点CEO乔天杰：机器人运动会7冠背后，灵巧手真正该比什么.txt"
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "RS12-E2-EV1",
+            "source_id": "RS12",
+            "support_pointer": "PARA 0021",
+            "support_excerpt": "决赛中，机器人以全自主模式完成取勺、取盐、称量和调整，最终用时27秒，零失误精准称出20克粉末，拿下冠军。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH"
+          }
+        ],
+        "substantive_actors_objects": [
+          {
+            "name": "武汉大学与智元机器人联合赛队",
+            "role": "参赛队伍",
+            "substantive_basis": "参加粉末称量项目并夺冠",
+            "support_ids": [
+              "RS12-E2-EV1"
+            ]
+          },
+          {
+            "name": "OmniHand",
+            "role": "使用的灵巧手",
+            "substantive_basis": "该赛队使用同一双OmniHand完成比赛",
+            "support_ids": [
+              "RS12-E2-EV1"
+            ]
+          }
+        ],
+        "actions_changes": [
+          {
+            "description": "以全自主模式完成粉末称量任务，用时27秒，零失误称出20克",
+            "temporal_status": "OBSERVED",
+            "support_ids": [
+              "RS12-E2-EV1"
+            ]
+          }
+        ],
+        "affected_systems_populations": [
+          {
+            "description": "粉末称量项目决赛",
+            "reference_scope": "该项目决赛",
+            "support_ids": [
+              "RS12-E2-EV1"
+            ]
+          }
+        ],
+        "temporal_context": {
+          "event_time": "2025-08-22至2025-08-26（第二届世界人形机器人运动会期间）",
+          "effective_time": "unknown",
+          "as_of": "2026-09-08",
+          "notes": "赛事日期来自PARA 0006"
+        },
+        "uncertainties": []
+      },
+      "audit_edges": [
+        {
+          "audit_id": "RS12:RS12-E2:actor_object:1",
+          "source_id": "RS12",
+          "event_id": "RS12-E2",
+          "group": "actor_object",
+          "index": 0,
+          "semantic_object": "name=武汉大学与智元机器人联合赛队; role=参赛队伍; substantive_basis=参加粉末称量项目并夺冠",
+          "support_ids": [
+            "RS12-E2-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0021",
+              "support_excerpt": "决赛中，机器人以全自主模式完成取勺、取盐、称量和调整，最终用时27秒，零失误精准称出20克粉末，拿下冠军。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E2:actor_object:1",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The cited excerpt mentions a robot winning a championship in a powder weighing task, but it does not identify the team as '武汉大学与智元机器人联合赛队' or state that the robot is from that team. The semantic object attributes the win to a specific team, which is not supported by the evidence.",
+            "unsupported_aspect": "The identity of the team (武汉大学与智元机器人联合赛队) as the participant and winner is not mentioned in the cited evidence."
+          },
+          "model_meta": {
+            "latency_ms": 1567,
+            "prompt_tokens": 862,
+            "completion_tokens": 173,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-E2:actor_object:2",
+          "source_id": "RS12",
+          "event_id": "RS12-E2",
+          "group": "actor_object",
+          "index": 1,
+          "semantic_object": "name=OmniHand; role=使用的灵巧手; substantive_basis=该赛队使用同一双OmniHand完成比赛",
+          "support_ids": [
+            "RS12-E2-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0021",
+              "support_excerpt": "决赛中，机器人以全自主模式完成取勺、取盐、称量和调整，最终用时27秒，零失误精准称出20克粉末，拿下冠军。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E2:actor_object:2",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The cited excerpt describes a robot completing a task in the final, but does not mention OmniHand, the team's use of it, or that the same pair was used throughout the competition. Therefore, the semantic object's claims about the team using OmniHand and using the same pair are unsupported.",
+            "unsupported_aspect": "The semantic object claims the team used OmniHand and used the same pair; the evidence does not mention OmniHand or the team's use of it."
+          },
+          "model_meta": {
+            "latency_ms": 1397,
+            "prompt_tokens": 862,
+            "completion_tokens": 175,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-E2:action_change:1",
+          "source_id": "RS12",
+          "event_id": "RS12-E2",
+          "group": "action_change",
+          "index": 0,
+          "semantic_object": "description=以全自主模式完成粉末称量任务，用时27秒，零失误称出20克; temporal_status=OBSERVED",
+          "support_ids": [
+            "RS12-E2-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0021",
+              "support_excerpt": "决赛中，机器人以全自主模式完成取勺、取盐、称量和调整，最终用时27秒，零失误精准称出20克粉末，拿下冠军。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E2:action_change:1",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited evidence directly states that the robot completed the task in fully autonomous mode, took 27 seconds, and accurately weighed 20 grams of powder with zero errors, matching all material parts of the semantic object.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1017,
+            "prompt_tokens": 864,
+            "completion_tokens": 120,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-E2:affected_system_population:1",
+          "source_id": "RS12",
+          "event_id": "RS12-E2",
+          "group": "affected_system_population",
+          "index": 0,
+          "semantic_object": "description=粉末称量项目决赛; reference_scope=该项目决赛",
+          "support_ids": [
+            "RS12-E2-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0021",
+              "support_excerpt": "决赛中，机器人以全自主模式完成取勺、取盐、称量和调整，最终用时27秒，零失误精准称出20克粉末，拿下冠军。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E2:affected_system_population:1",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The semantic object states that the affected system population is the final of a powder weighing project. The cited evidence explicitly mentions '决赛中' (in the final) and describes the robot completing the task of weighing powder, which directly supports the reference scope being the final of that project.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1380,
+            "prompt_tokens": 854,
+            "completion_tokens": 137,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        }
+      ],
+      "audited_projection": {
+        "event_id": "RS12-E2",
+        "sensor_event_summary_diagnostic_only": "武大智元联合赛队在粉末称量项目决赛中以全自主模式27秒零失误称出20克粉末，获得冠军。",
+        "routing_status": "ROUTABLE",
+        "actor_objects": [],
+        "actions_changes": [
+          {
+            "description": "以全自主模式完成粉末称量任务，用时27秒，零失误称出20克",
+            "temporal_status": "OBSERVED",
+            "support_ids": [
+              "RS12-E2-EV1"
+            ]
+          }
+        ],
+        "affected_systems_populations": [
+          {
+            "description": "粉末称量项目决赛",
+            "reference_scope": "该项目决赛",
+            "support_ids": [
+              "RS12-E2-EV1"
+            ]
+          }
+        ],
+        "uncertainties": [],
+        "rejected_or_unscorable_objects": [
+          {
+            "group": "actor_object",
+            "index": 0,
+            "semantic_object": "name=武汉大学与智元机器人联合赛队; role=参赛队伍; substantive_basis=参加粉末称量项目并夺冠",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "failure_kind": null
+          },
+          {
+            "group": "actor_object",
+            "index": 1,
+            "semantic_object": "name=OmniHand; role=使用的灵巧手; substantive_basis=该赛队使用同一双OmniHand完成比赛",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "failure_kind": null
+          }
+        ],
+        "rendered_event_text": "Audited event representation:\nActions / changes:\n- [OBSERVED] 以全自主模式完成粉末称量任务，用时27秒，零失误称出20克\nAffected systems / populations:\n- 粉末称量项目决赛 (scope: 该项目决赛)"
+      }
+    },
+    {
+      "source_id": "RS12",
+      "event_id": "RS12-E3",
+      "sensor_frame": {
+        "interface_version": "semantic-evidence-frame-v0.1",
+        "event": {
+          "event_id": "RS12-E3",
+          "as_of": "2026-09-08",
+          "summary": "临界点团队在镊子夹豆项目决赛中自主方案稳定夹取约70颗黄豆，获得冠军。"
+        },
+        "sources": [
+          {
+            "source_id": "RS12",
+            "source_type": "text/plain",
+            "published_at": "unknown",
+            "locator": "eval_samples/12_独家专访临界点CEO乔天杰：机器人运动会7冠背后，灵巧手真正该比什么.txt"
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "RS12-E3-EV1",
+            "source_id": "RS12",
+            "support_pointer": "PARA 0051",
+            "support_excerpt": "到了决赛，自主方案稳定夹取约70颗黄豆，拿下冠军。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH"
+          }
+        ],
+        "substantive_actors_objects": [
+          {
+            "name": "临界点团队",
+            "role": "参赛团队",
+            "substantive_basis": "参加镊子夹豆项目并夺冠",
+            "support_ids": [
+              "RS12-E3-EV1"
+            ]
+          }
+        ],
+        "actions_changes": [
+          {
+            "description": "自主方案稳定夹取约70颗黄豆，获得冠军",
+            "temporal_status": "OBSERVED",
+            "support_ids": [
+              "RS12-E3-EV1"
+            ]
+          }
+        ],
+        "affected_systems_populations": [
+          {
+            "description": "镊子夹豆项目决赛",
+            "reference_scope": "该项目决赛",
+            "support_ids": [
+              "RS12-E3-EV1"
+            ]
+          }
+        ],
+        "temporal_context": {
+          "event_time": "2025-08-22至2025-08-26（第二届世界人形机器人运动会期间）",
+          "effective_time": "unknown",
+          "as_of": "2026-09-08",
+          "notes": "赛事日期来自PARA 0006"
+        },
+        "uncertainties": []
+      },
+      "audit_edges": [
+        {
+          "audit_id": "RS12:RS12-E3:actor_object:1",
+          "source_id": "RS12",
+          "event_id": "RS12-E3",
+          "group": "actor_object",
+          "index": 0,
+          "semantic_object": "name=临界点团队; role=参赛团队; substantive_basis=参加镊子夹豆项目并夺冠",
+          "support_ids": [
+            "RS12-E3-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0051",
+              "support_excerpt": "到了决赛，自主方案稳定夹取约70颗黄豆，拿下冠军。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E3:actor_object:1",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The cited excerpt mentions a final round and winning a championship, but does not identify the team name '临界点团队' or explicitly state that the team participated in the '镊子夹豆' project. The excerpt lacks the necessary attribution and project context.",
+            "unsupported_aspect": "Team name '临界点团队' and participation in '镊子夹豆' project are not supported by the cited evidence."
+          },
+          "model_meta": {
+            "latency_ms": 1277,
+            "prompt_tokens": 838,
+            "completion_tokens": 159,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-E3:action_change:1",
+          "source_id": "RS12",
+          "event_id": "RS12-E3",
+          "group": "action_change",
+          "index": 0,
+          "semantic_object": "description=自主方案稳定夹取约70颗黄豆，获得冠军; temporal_status=OBSERVED",
+          "support_ids": [
+            "RS12-E3-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0051",
+              "support_excerpt": "到了决赛，自主方案稳定夹取约70颗黄豆，拿下冠军。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E3:action_change:1",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states that in the finals, the autonomous solution stably clamped about 70 soybeans and won the championship, matching the semantic object's description and temporal status.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 915,
+            "prompt_tokens": 836,
+            "completion_tokens": 114,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-E3:affected_system_population:1",
+          "source_id": "RS12",
+          "event_id": "RS12-E3",
+          "group": "affected_system_population",
+          "index": 0,
+          "semantic_object": "description=镊子夹豆项目决赛; reference_scope=该项目决赛",
+          "support_ids": [
+            "RS12-E3-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0051",
+              "support_excerpt": "到了决赛，自主方案稳定夹取约70颗黄豆，拿下冠军。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E3:affected_system_population:1",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object describes the affected system population as '镊子夹豆项目决赛' (the finals of the tweezers-bean project). The cited evidence mentions '到了决赛' (when it came to the finals) and '拿下冠军' (won the championship), but does not explicitly state that the affected system population is the finals of the tweezers-bean project. The evidence does not provide sufficient support for the specific description and reference scope.",
+            "unsupported_aspect": "The identification of the affected system population as '镊子夹豆项目决赛' and its reference scope '该项目决赛' are not explicitly supported by the cited evidence."
+          },
+          "model_meta": {
+            "latency_ms": 1529,
+            "prompt_tokens": 836,
+            "completion_tokens": 211,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        }
+      ],
+      "audited_projection": {
+        "event_id": "RS12-E3",
+        "sensor_event_summary_diagnostic_only": "临界点团队在镊子夹豆项目决赛中自主方案稳定夹取约70颗黄豆，获得冠军。",
+        "routing_status": "ROUTABLE",
+        "actor_objects": [],
+        "actions_changes": [
+          {
+            "description": "自主方案稳定夹取约70颗黄豆，获得冠军",
+            "temporal_status": "OBSERVED",
+            "support_ids": [
+              "RS12-E3-EV1"
+            ]
+          }
+        ],
+        "affected_systems_populations": [],
+        "uncertainties": [],
+        "rejected_or_unscorable_objects": [
+          {
+            "group": "actor_object",
+            "index": 0,
+            "semantic_object": "name=临界点团队; role=参赛团队; substantive_basis=参加镊子夹豆项目并夺冠",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "failure_kind": null
+          },
+          {
+            "group": "affected_system_population",
+            "index": 0,
+            "semantic_object": "description=镊子夹豆项目决赛; reference_scope=该项目决赛",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "failure_kind": null
+          }
+        ],
+        "rendered_event_text": "Audited event representation:\nActions / changes:\n- [OBSERVED] 自主方案稳定夹取约70颗黄豆，获得冠军"
+      }
+    },
+    {
+      "source_id": "RS12",
+      "event_id": "RS12-E4",
+      "sensor_frame": {
+        "interface_version": "semantic-evidence-frame-v0.1",
+        "event": {
+          "event_id": "RS12-E4",
+          "as_of": "2026-09-08",
+          "summary": "“北京人形-北邮”飞雁队在钉钉固定项目预赛排名第八，决赛更换为OmniHand后获得第三名。"
+        },
+        "sources": [
+          {
+            "source_id": "RS12",
+            "source_type": "text/plain",
+            "published_at": "unknown",
+            "locator": "eval_samples/12_独家专访临界点CEO乔天杰：机器人运动会7冠背后，灵巧手真正该比什么.txt"
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "RS12-E4-EV1",
+            "source_id": "RS12",
+            "support_pointer": "PARA 0019",
+            "support_excerpt": "“北京人形-北邮”飞雁队在钉钉固定项目预赛中排名第八。进入决赛后，赛队将机器人左手更换为临界点OmniHand，最终拿下第三名。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH"
+          }
+        ],
+        "substantive_actors_objects": [
+          {
+            "name": "“北京人形-北邮”飞雁队",
+            "role": "参赛队伍",
+            "substantive_basis": "参加钉钉固定项目",
+            "support_ids": [
+              "RS12-E4-EV1"
+            ]
+          },
+          {
+            "name": "OmniHand",
+            "role": "更换的灵巧手",
+            "substantive_basis": "决赛中更换为OmniHand",
+            "support_ids": [
+              "RS12-E4-EV1"
+            ]
+          }
+        ],
+        "actions_changes": [
+          {
+            "description": "预赛排名第八，决赛更换OmniHand后获得第三名",
+            "temporal_status": "OBSERVED",
+            "support_ids": [
+              "RS12-E4-EV1"
+            ]
+          }
+        ],
+        "affected_systems_populations": [
+          {
+            "description": "钉钉固定项目",
+            "reference_scope": "该项目预赛和决赛",
+            "support_ids": [
+              "RS12-E4-EV1"
+            ]
+          }
+        ],
+        "temporal_context": {
+          "event_time": "2025-08-22至2025-08-26（第二届世界人形机器人运动会期间）",
+          "effective_time": "unknown",
+          "as_of": "2026-09-08",
+          "notes": "赛事日期来自PARA 0006"
+        },
+        "uncertainties": []
+      },
+      "audit_edges": [
+        {
+          "audit_id": "RS12:RS12-E4:actor_object:1",
+          "source_id": "RS12",
+          "event_id": "RS12-E4",
+          "group": "actor_object",
+          "index": 0,
+          "semantic_object": "name=“北京人形-北邮”飞雁队; role=参赛队伍; substantive_basis=参加钉钉固定项目",
+          "support_ids": [
+            "RS12-E4-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0019",
+              "support_excerpt": "“北京人形-北邮”飞雁队在钉钉固定项目预赛中排名第八。进入决赛后，赛队将机器人左手更换为临界点OmniHand，最终拿下第三名。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E4:actor_object:1",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt explicitly names the team '北京人形-北邮'飞雁队' and states it participated in the 钉钉固定项目, ranking eighth in the preliminaries and third in the finals. This directly supports the semantic object's name, role as a participating team, and substantive basis of participating in the 钉钉固定项目.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1212,
+            "prompt_tokens": 868,
+            "completion_tokens": 150,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-E4:actor_object:2",
+          "source_id": "RS12",
+          "event_id": "RS12-E4",
+          "group": "actor_object",
+          "index": 1,
+          "semantic_object": "name=OmniHand; role=更换的灵巧手; substantive_basis=决赛中更换为OmniHand",
+          "support_ids": [
+            "RS12-E4-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0019",
+              "support_excerpt": "“北京人形-北邮”飞雁队在钉钉固定项目预赛中排名第八。进入决赛后，赛队将机器人左手更换为临界点OmniHand，最终拿下第三名。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E4:actor_object:2",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt explicitly states that after entering the finals, the team replaced the robot's left hand with '临界点OmniHand' and ultimately achieved third place. This directly supports the semantic object's claims that the replaced dexterous hand is named 'OmniHand' and that the replacement occurred in the finals.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1181,
+            "prompt_tokens": 865,
+            "completion_tokens": 142,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-E4:action_change:1",
+          "source_id": "RS12",
+          "event_id": "RS12-E4",
+          "group": "action_change",
+          "index": 0,
+          "semantic_object": "description=预赛排名第八，决赛更换OmniHand后获得第三名; temporal_status=OBSERVED",
+          "support_ids": [
+            "RS12-E4-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0019",
+              "support_excerpt": "“北京人形-北邮”飞雁队在钉钉固定项目预赛中排名第八。进入决赛后，赛队将机器人左手更换为临界点OmniHand，最终拿下第三名。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E4:action_change:1",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited evidence directly states that the team ranked eighth in the preliminary round, changed the robot's left hand to OmniHand in the final, and ultimately achieved third place. This supports all material parts of the semantic object.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1064,
+            "prompt_tokens": 864,
+            "completion_tokens": 123,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-E4:affected_system_population:1",
+          "source_id": "RS12",
+          "event_id": "RS12-E4",
+          "group": "affected_system_population",
+          "index": 0,
+          "semantic_object": "description=钉钉固定项目; reference_scope=该项目预赛和决赛",
+          "support_ids": [
+            "RS12-E4-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0019",
+              "support_excerpt": "“北京人形-北邮”飞雁队在钉钉固定项目预赛中排名第八。进入决赛后，赛队将机器人左手更换为临界点OmniHand，最终拿下第三名。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E4:affected_system_population:1",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object claims that the affected system population is '钉钉固定项目' with a reference scope of '该项目预赛和决赛'. The cited evidence mentions the team's participation in the '钉钉固定项目预赛' and later in the '决赛', but it does not explicitly state that the project is a fixed project or that the scope includes both preliminary and final rounds. The evidence only describes the team's performance in the preliminary and final of the '钉钉固定项目', but does not define the project as '固定项目' or explicitly state the scope as '预赛和决赛' for the project itself.",
+            "unsupported_aspect": "The characterization of the project as '钉钉固定项目' and the explicit scope '该项目预赛和决赛' are not fully supported; the evidence only mentions the team's participation in the preliminary and final of the '钉钉固定项目' without defining the project type or explicitly stating the scope."
+          },
+          "model_meta": {
+            "latency_ms": 2078,
+            "prompt_tokens": 862,
+            "completion_tokens": 270,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        }
+      ],
+      "audited_projection": {
+        "event_id": "RS12-E4",
+        "sensor_event_summary_diagnostic_only": "“北京人形-北邮”飞雁队在钉钉固定项目预赛排名第八，决赛更换为OmniHand后获得第三名。",
+        "routing_status": "ROUTABLE",
+        "actor_objects": [
+          {
+            "name": "“北京人形-北邮”飞雁队",
+            "role": "参赛队伍",
+            "substantive_basis": "参加钉钉固定项目",
+            "support_ids": [
+              "RS12-E4-EV1"
+            ]
+          },
+          {
+            "name": "OmniHand",
+            "role": "更换的灵巧手",
+            "substantive_basis": "决赛中更换为OmniHand",
+            "support_ids": [
+              "RS12-E4-EV1"
+            ]
+          }
+        ],
+        "actions_changes": [
+          {
+            "description": "预赛排名第八，决赛更换OmniHand后获得第三名",
+            "temporal_status": "OBSERVED",
+            "support_ids": [
+              "RS12-E4-EV1"
+            ]
+          }
+        ],
+        "affected_systems_populations": [],
+        "uncertainties": [],
+        "rejected_or_unscorable_objects": [
+          {
+            "group": "affected_system_population",
+            "index": 0,
+            "semantic_object": "description=钉钉固定项目; reference_scope=该项目预赛和决赛",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "failure_kind": null
+          }
+        ],
+        "rendered_event_text": "Audited event representation:\nActions / changes:\n- [OBSERVED] 预赛排名第八，决赛更换OmniHand后获得第三名\nSubstantive actors / objects:\n- “北京人形-北邮”飞雁队: 参赛队伍 — 参加钉钉固定项目\n- OmniHand: 更换的灵巧手 — 决赛中更换为OmniHand"
+      }
+    },
+    {
+      "source_id": "RS12",
+      "event_id": "RS12-E5",
+      "sensor_frame": {
+        "interface_version": "semantic-evidence-frame-v0.1",
+        "event": {
+          "event_id": "RS12-E5",
+          "as_of": "2026-09-08",
+          "summary": "OmniHand累计交付接近1万台，预计2025年9月跨过万台门槛。"
+        },
+        "sources": [
+          {
+            "source_id": "RS12",
+            "source_type": "text/plain",
+            "published_at": "unknown",
+            "locator": "eval_samples/12_独家专访临界点CEO乔天杰：机器人运动会7冠背后，灵巧手真正该比什么.txt"
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "RS12-E5-EV1",
+            "source_id": "RS12",
+            "support_pointer": "PARA 0062",
+            "support_excerpt": "乔天杰此次告诉「甲子光年」，目前累计交付已经接近1万台，预计9月跨过万台门槛。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH"
+          }
+        ],
+        "substantive_actors_objects": [
+          {
+            "name": "OmniHand",
+            "role": "产品",
+            "substantive_basis": "累计交付量",
+            "support_ids": [
+              "RS12-E5-EV1"
+            ]
+          },
+          {
+            "name": "临界点",
+            "role": "制造商",
+            "substantive_basis": "交付OmniHand",
+            "support_ids": [
+              "RS12-E5-EV1"
+            ]
+          }
+        ],
+        "actions_changes": [
+          {
+            "description": "累计交付接近1万台，预计9月跨过万台门槛",
+            "temporal_status": "ANNOUNCED",
+            "support_ids": [
+              "RS12-E5-EV1"
+            ]
+          }
+        ],
+        "affected_systems_populations": [
+          {
+            "description": "OmniHand用户/客户",
+            "reference_scope": "全球范围",
+            "support_ids": [
+              "RS12-E5-EV1"
+            ]
+          }
+        ],
+        "temporal_context": {
+          "event_time": "2025年（采访时间）",
+          "effective_time": "2025-09（预计）",
+          "as_of": "2026-09-08",
+          "notes": "采访时间未明确，但提及预计9月跨过万台门槛，结合赛事时间推断为2025年"
+        },
+        "uncertainties": [
+          {
+            "field": "event_time",
+            "kind": "UNKNOWN",
+            "note": "采访具体日期未提供，仅知在赛事后",
+            "support_ids": []
+          }
+        ]
+      },
+      "audit_edges": [
+        {
+          "audit_id": "RS12:RS12-E5:actor_object:1",
+          "source_id": "RS12",
+          "event_id": "RS12-E5",
+          "group": "actor_object",
+          "index": 0,
+          "semantic_object": "name=OmniHand; role=产品; substantive_basis=累计交付量",
+          "support_ids": [
+            "RS12-E5-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0062",
+              "support_excerpt": "乔天杰此次告诉「甲子光年」，目前累计交付已经接近1万台，预计9月跨过万台门槛。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E5:actor_object:1",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object identifies the actor as 'OmniHand' with role '产品' and substantive basis '累计交付量'. The cited evidence mentions cumulative deliveries approaching 10,000 units, but does not name 'OmniHand' or explicitly link the delivery figure to that product. The evidence is insufficient to support the attribution of the delivery metric to the named actor.",
+            "unsupported_aspect": "The link between the cumulative delivery figure and the named actor 'OmniHand' is not established by the cited evidence."
+          },
+          "model_meta": {
+            "latency_ms": 1416,
+            "prompt_tokens": 842,
+            "completion_tokens": 179,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-E5:actor_object:2",
+          "source_id": "RS12",
+          "event_id": "RS12-E5",
+          "group": "actor_object",
+          "index": 1,
+          "semantic_object": "name=临界点; role=制造商; substantive_basis=交付OmniHand",
+          "support_ids": [
+            "RS12-E5-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0062",
+              "support_excerpt": "乔天杰此次告诉「甲子光年」，目前累计交付已经接近1万台，预计9月跨过万台门槛。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E5:actor_object:2",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object asserts that '临界点' is a manufacturer whose substantive basis is delivering 'OmniHand'. The cited evidence mentions cumulative deliveries approaching 10,000 units and crossing the 10,000 threshold in September, but does not identify the product as 'OmniHand', nor does it state that '临界点' is the manufacturer. The evidence lacks any mention of 'OmniHand' or the role of '临界点' as a manufacturer.",
+            "unsupported_aspect": "The identity of the delivered product as 'OmniHand' and the role of '临界点' as manufacturer."
+          },
+          "model_meta": {
+            "latency_ms": 1428,
+            "prompt_tokens": 842,
+            "completion_tokens": 197,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-E5:action_change:1",
+          "source_id": "RS12",
+          "event_id": "RS12-E5",
+          "group": "action_change",
+          "index": 0,
+          "semantic_object": "description=累计交付接近1万台，预计9月跨过万台门槛; temporal_status=ANNOUNCED",
+          "support_ids": [
+            "RS12-E5-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0062",
+              "support_excerpt": "乔天杰此次告诉「甲子光年」，目前累计交付已经接近1万台，预计9月跨过万台门槛。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E5:action_change:1",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states that cumulative deliveries are close to 10,000 units and that it is expected to cross the 10,000-unit threshold in September, matching the semantic object's description and temporal status.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 952,
+            "prompt_tokens": 848,
+            "completion_tokens": 121,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-E5:affected_system_population:1",
+          "source_id": "RS12",
+          "event_id": "RS12-E5",
+          "group": "affected_system_population",
+          "index": 0,
+          "semantic_object": "description=OmniHand用户/客户; reference_scope=全球范围",
+          "support_ids": [
+            "RS12-E5-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0062",
+              "support_excerpt": "乔天杰此次告诉「甲子光年」，目前累计交付已经接近1万台，预计9月跨过万台门槛。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-E5:affected_system_population:1",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object claims the affected system population is 'OmniHand用户/客户' with a global scope. The cited evidence only mentions cumulative deliveries approaching 10,000 units and a projected crossing of the 10,000 threshold in September. It does not specify that these deliveries are to users/customers of OmniHand, nor does it indicate a global scope. The evidence does not support the population description or the reference scope.",
+            "unsupported_aspect": "The identification of the population as 'OmniHand用户/客户' and the '全球范围' scope are not supported by the cited evidence."
+          },
+          "model_meta": {
+            "latency_ms": 1502,
+            "prompt_tokens": 846,
+            "completion_tokens": 201,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-E5:uncertainty:1",
+          "source_id": "RS12",
+          "event_id": "RS12-E5",
+          "group": "uncertainty",
+          "index": 0,
+          "semantic_object": "field=event_time; kind=UNKNOWN; note=采访具体日期未提供，仅知在赛事后",
+          "support_ids": [],
+          "evidence": [],
+          "scorable": false,
+          "failure_kind": "no_cited_evidence",
+          "audit_result": null,
+          "model_meta": null
+        }
+      ],
+      "audited_projection": {
+        "event_id": "RS12-E5",
+        "sensor_event_summary_diagnostic_only": "OmniHand累计交付接近1万台，预计2025年9月跨过万台门槛。",
+        "routing_status": "ROUTABLE",
+        "actor_objects": [],
+        "actions_changes": [
+          {
+            "description": "累计交付接近1万台，预计9月跨过万台门槛",
+            "temporal_status": "ANNOUNCED",
+            "support_ids": [
+              "RS12-E5-EV1"
+            ]
+          }
+        ],
+        "affected_systems_populations": [],
+        "uncertainties": [],
+        "rejected_or_unscorable_objects": [
+          {
+            "group": "actor_object",
+            "index": 0,
+            "semantic_object": "name=OmniHand; role=产品; substantive_basis=累计交付量",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "failure_kind": null
+          },
+          {
+            "group": "actor_object",
+            "index": 1,
+            "semantic_object": "name=临界点; role=制造商; substantive_basis=交付OmniHand",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "failure_kind": null
+          },
+          {
+            "group": "affected_system_population",
+            "index": 0,
+            "semantic_object": "description=OmniHand用户/客户; reference_scope=全球范围",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "failure_kind": null
+          },
+          {
+            "group": "uncertainty",
+            "index": 0,
+            "semantic_object": "field=event_time; kind=UNKNOWN; note=采访具体日期未提供，仅知在赛事后",
+            "verdict": null,
+            "reason_code": null,
+            "failure_kind": "no_cited_evidence"
+          }
+        ],
+        "rendered_event_text": "Audited event representation:\nActions / changes:\n- [ANNOUNCED] 累计交付接近1万台，预计9月跨过万台门槛"
+      }
+    },
+    {
+      "source_id": "RS15",
+      "event_id": "RS15-E1",
+      "sensor_frame": {
+        "interface_version": "semantic-evidence-frame-v0.1",
+        "event": {
+          "event_id": "RS15-E1",
+          "as_of": "2026-09-08",
+          "summary": "芝诺机器人发布 Zeno-1，全球首个专为去中心化多机器人协作设计的物理智能基础模型，3B 参数，本地 30 Hz 闭环视觉-运动推理。"
+        },
+        "sources": [
+          {
+            "source_id": "RS15",
+            "source_type": "text/plain",
+            "published_at": "unknown",
+            "locator": "eval_samples/15_机器人基础模型的「协作时代」来了！芝诺机器人发布全球首个协作具身智能基础模型.txt"
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "RS15-E1-EV1",
+            "source_id": "RS15",
+            "support_pointer": "PARA 0012",
+            "support_excerpt": "芝诺机器人发布了 Zeno-1，一个 3B 参数的基础模型，是第一个专为去中心化多机器人协作设计的物理智能基础模型，能在本地以 30 Hz 的频率进行闭环视觉 — 运动推理。",
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH"
+          }
+        ],
+        "substantive_actors_objects": [
+          {
+            "name": "芝诺机器人",
+            "role": "发布者",
+            "substantive_basis": "发布 Zeno-1 模型",
+            "support_ids": [
+              "RS15-E1-EV1"
+            ]
+          },
+          {
+            "name": "Zeno-1",
+            "role": "被发布的基础模型",
+            "substantive_basis": "3B 参数，去中心化多机器人协作物理智能基础模型",
+            "support_ids": [
+              "RS15-E1-EV1"
+            ]
+          }
+        ],
+        "actions_changes": [
+          {
+            "description": "发布 Zeno-1 模型",
+            "temporal_status": "ANNOUNCED",
+            "support_ids": [
+              "RS15-E1-EV1"
+            ]
+          }
+        ],
+        "affected_systems_populations": [
+          {
+            "description": "多机器人协作系统",
+            "reference_scope": "去中心化多机器人协作",
+            "support_ids": [
+              "RS15-E1-EV1"
+            ]
+          }
+        ],
+        "temporal_context": {
+          "event_time": "unknown",
+          "effective_time": "unknown",
+          "as_of": "2026-09-08",
+          "notes": "来源未提供具体发布日期。"
+        },
+        "uncertainties": [
+          {
+            "field": "event_time",
+            "kind": "UNKNOWN",
+            "note": "来源未提供具体发布日期。",
+            "support_ids": []
+          }
+        ]
+      },
+      "audit_edges": [
+        {
+          "audit_id": "RS15:RS15-E1:actor_object:1",
+          "source_id": "RS15",
+          "event_id": "RS15-E1",
+          "group": "actor_object",
+          "index": 0,
+          "semantic_object": "name=芝诺机器人; role=发布者; substantive_basis=发布 Zeno-1 模型",
+          "support_ids": [
+            "RS15-E1-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0012",
+              "support_excerpt": "芝诺机器人发布了 Zeno-1，一个 3B 参数的基础模型，是第一个专为去中心化多机器人协作设计的物理智能基础模型，能在本地以 30 Hz 的频率进行闭环视觉 — 运动推理。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS15:RS15-E1:actor_object:1",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited evidence explicitly states that '芝诺机器人发布了 Zeno-1' (Zeno Robot released Zeno-1), directly supporting the actor's role as publisher and the substantive basis of releasing the Zeno-1 model.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 970,
+            "prompt_tokens": 870,
+            "completion_tokens": 125,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS15:RS15-E1:actor_object:2",
+          "source_id": "RS15",
+          "event_id": "RS15-E1",
+          "group": "actor_object",
+          "index": 1,
+          "semantic_object": "name=Zeno-1; role=被发布的基础模型; substantive_basis=3B 参数，去中心化多机器人协作物理智能基础模型",
+          "support_ids": [
+            "RS15-E1-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0012",
+              "support_excerpt": "芝诺机器人发布了 Zeno-1，一个 3B 参数的基础模型，是第一个专为去中心化多机器人协作设计的物理智能基础模型，能在本地以 30 Hz 的频率进行闭环视觉 — 运动推理。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS15:RS15-E1:actor_object:2",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states that Zeno-1 is a 3B parameter foundation model released by Zeno Robotics, and describes it as the first physical intelligence foundation model designed for decentralized multi-robot collaboration. This supports all material parts of the semantic object: the name, the role as a released foundation model, and the substantive basis of 3B parameters and decentralized multi-robot collaboration.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1216,
+            "prompt_tokens": 881,
+            "completion_tokens": 157,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS15:RS15-E1:action_change:1",
+          "source_id": "RS15",
+          "event_id": "RS15-E1",
+          "group": "action_change",
+          "index": 0,
+          "semantic_object": "description=发布 Zeno-1 模型; temporal_status=ANNOUNCED",
+          "support_ids": [
+            "RS15-E1-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0012",
+              "support_excerpt": "芝诺机器人发布了 Zeno-1，一个 3B 参数的基础模型，是第一个专为去中心化多机器人协作设计的物理智能基础模型，能在本地以 30 Hz 的频率进行闭环视觉 — 运动推理。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS15:RS15-E1:action_change:1",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited evidence explicitly states that '芝诺机器人发布了 Zeno-1' (Zeno Robotics released Zeno-1), which directly supports the semantic object's description '发布 Zeno-1 模型' (release Zeno-1 model). The temporal status 'ANNOUNCED' is consistent with the past tense '发布了' (released), indicating the action has been announced or occurred. No material part is unsupported.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1129,
+            "prompt_tokens": 865,
+            "completion_tokens": 167,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS15:RS15-E1:affected_system_population:1",
+          "source_id": "RS15",
+          "event_id": "RS15-E1",
+          "group": "affected_system_population",
+          "index": 0,
+          "semantic_object": "description=多机器人协作系统; reference_scope=去中心化多机器人协作",
+          "support_ids": [
+            "RS15-E1-EV1"
+          ],
+          "evidence": [
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0012",
+              "support_excerpt": "芝诺机器人发布了 Zeno-1，一个 3B 参数的基础模型，是第一个专为去中心化多机器人协作设计的物理智能基础模型，能在本地以 30 Hz 的频率进行闭环视觉 — 运动推理。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS15:RS15-E1:affected_system_population:1",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object claims that the affected system population is a '多机器人协作系统' (multi-robot collaboration system) with reference scope '去中心化多机器人协作' (decentralized multi-robot collaboration). The cited evidence describes a specific model (Zeno-1) designed for decentralized multi-robot collaboration, but does not state that the affected system population is a multi-robot collaboration system. The evidence does not mention any system population or that the system itself is a multi-robot collaboration system.",
+            "unsupported_aspect": "The claim that the affected system population is a multi-robot collaboration system."
+          },
+          "model_meta": {
+            "latency_ms": 1516,
+            "prompt_tokens": 871,
+            "completion_tokens": 202,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS15:RS15-E1:uncertainty:1",
+          "source_id": "RS15",
+          "event_id": "RS15-E1",
+          "group": "uncertainty",
+          "index": 0,
+          "semantic_object": "field=event_time; kind=UNKNOWN; note=来源未提供具体发布日期。",
+          "support_ids": [],
+          "evidence": [],
+          "scorable": false,
+          "failure_kind": "no_cited_evidence",
+          "audit_result": null,
+          "model_meta": null
+        }
+      ],
+      "audited_projection": {
+        "event_id": "RS15-E1",
+        "sensor_event_summary_diagnostic_only": "芝诺机器人发布 Zeno-1，全球首个专为去中心化多机器人协作设计的物理智能基础模型，3B 参数，本地 30 Hz 闭环视觉-运动推理。",
+        "routing_status": "ROUTABLE",
+        "actor_objects": [
+          {
+            "name": "芝诺机器人",
+            "role": "发布者",
+            "substantive_basis": "发布 Zeno-1 模型",
+            "support_ids": [
+              "RS15-E1-EV1"
+            ]
+          },
+          {
+            "name": "Zeno-1",
+            "role": "被发布的基础模型",
+            "substantive_basis": "3B 参数，去中心化多机器人协作物理智能基础模型",
+            "support_ids": [
+              "RS15-E1-EV1"
+            ]
+          }
+        ],
+        "actions_changes": [
+          {
+            "description": "发布 Zeno-1 模型",
+            "temporal_status": "ANNOUNCED",
+            "support_ids": [
+              "RS15-E1-EV1"
+            ]
+          }
+        ],
+        "affected_systems_populations": [],
+        "uncertainties": [],
+        "rejected_or_unscorable_objects": [
+          {
+            "group": "affected_system_population",
+            "index": 0,
+            "semantic_object": "description=多机器人协作系统; reference_scope=去中心化多机器人协作",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "failure_kind": null
+          },
+          {
+            "group": "uncertainty",
+            "index": 0,
+            "semantic_object": "field=event_time; kind=UNKNOWN; note=来源未提供具体发布日期。",
+            "verdict": null,
+            "reason_code": null,
+            "failure_kind": "no_cited_evidence"
+          }
+        ],
+        "rendered_event_text": "Audited event representation:\nActions / changes:\n- [ANNOUNCED] 发布 Zeno-1 模型\nSubstantive actors / objects:\n- 芝诺机器人: 发布者 — 发布 Zeno-1 模型\n- Zeno-1: 被发布的基础模型 — 3B 参数，去中心化多机器人协作物理智能基础模型"
+      }
+    }
+  ],
+  "methodology_note": "Development-only audit of Sensor v0.2.3 Event Frame provenance edges. Downstream projections contain only SUFFICIENT semantic subobjects; event.summary is diagnostic-only and never bypasses the Auditor."
+}
