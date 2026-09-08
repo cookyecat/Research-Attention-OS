@@ -243,3 +243,32 @@ def test_galaxy_style_no_spurious_decision_or_conflict(client: TestClient, monke
     evidence_rec = prov.get("evidence") or {}
     assert evidence_rec.get("llm_called") is False
     assert evidence_rec.get("evidence_stage_skipped") is True
+
+
+def test_model_cannot_invent_active_work_threat_without_trusted_signal():
+    provider = ModelBackedCognitiveProvider(chat_fn=SemanticFakeChat())
+    extraction = ExtractionResult(
+        claims=[_claim("This novelty overlaps the active submission.")],
+    )
+    assessment = provider.assess_cognitive_impact(
+        "ignored raw text",
+        extraction,
+        [],
+        nodes=[],
+    )
+    assert assessment.features.threatens_active_work is False
+
+
+def test_explicit_active_work_threat_signal_remains_authoritative():
+    provider = ModelBackedCognitiveProvider(chat_fn=SemanticFakeChat())
+    extraction = ExtractionResult(
+        claims=[_claim("This novelty overlaps the active submission.")],
+    )
+    assessment = provider.assess_cognitive_impact(
+        "ignored raw text",
+        extraction,
+        [],
+        threatens_active_work=True,
+        nodes=[],
+    )
+    assert assessment.features.threatens_active_work is True

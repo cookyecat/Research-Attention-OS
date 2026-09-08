@@ -455,9 +455,10 @@ class ModelBackedCognitiveProvider:
         effects = ground_effects(
             effects, matches, extraction, independent_source_count=independent_source_count
         )
-        threatened = threatens_active_work
-        if threatened is None:
-            threatened = parsed.threatens_active_work
+        # Runtime/Brain state is authoritative for active-work overlap.
+        # The Impact LLM may estimate cognitive effects, but it must not invent
+        # a user runtime fact when the caller supplied no trusted signal.
+        threatened = bool(threatens_active_work) if threatens_active_work is not None else False
         maturity = parsed.evidence_maturity
         if extraction.evidence_stage_skipped:
             maturity = min(maturity, extraction.evidence_maturity, 0.4)
