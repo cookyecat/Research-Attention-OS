@@ -1,8 +1,8 @@
 # Research Attention OS — Roadmap and Progress
 
 Status: **ACTIVE PROJECT ROADMAP**  
-Date: 2026-09-07  
-Production/eval baseline referenced: `354d2b5011a868f0295e2ac2750822275c83db51`  
+Date: 2026-09-08
+Current integrated baseline referenced: `0eb54a29208c44757317caf192b55232e586b397`
 Semantic baseline: `08_COGNITIVE_TRANSITION_MODEL_V2.1.md` + Phase II-B AWARE semantics in `10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md`  
 D semantic baseline: `16_STANDING_ATTENTION_JURISDICTION.md`  
 D final validation: `17_STANDING_RADAR_FIT_V3_FINAL_VALIDATION.md`  
@@ -91,16 +91,21 @@ Core invariants:
 |---|---|---|
 | Phase I — Constitutional Vertical Slice | Information objects, cognitive transition, AttentionPlan, KernelPatch, provenance, human commit boundary | **CLOSED** |
 | Phase II-A — Cognitive Transition Model | Reliable `Extract -> Locate -> Impact -> Delta`; freeze cognitive semantics | **FROZEN / CLOSED BASELINE** |
-| Phase II-B — Attention Policy Calibration | Determine how frozen cognitive judgment plus legitimate non-cognitive signals allocate DROP/AWARE/WATCH/ENGAGE | **ACTIVE — CURRENT PHASE** |
-| Phase III — Continuous Attention OS | Continuous discover/ingest/dedup/cluster/route plus real WATCH re-check responsibility | **NOT STARTED** |
-| Phase IV — Longitudinal Cognitive Alignment | Keep Kernel and policy aligned as user cognition changes | **NOT STARTED** |
-| Phase V — Personalization at Scale | Questionnaire prior + trajectory residuals + multi-user validation | **NOT STARTED** |
+| Phase II-B — Attention Policy Calibration | Determine how frozen cognitive judgment plus legitimate non-cognitive signals allocate DROP/AWARE/WATCH/ENGAGE | **CLOSED / INTEGRATED BASELINE** |
+| Phase 6 — Integrated Cognitive Attention Loop | Raw Source → Sensor/Auditor → D/S/P + Δ → four Attention Actions → human-gated Kernel proposal | **CLOSED** |
+| Phase 7 — Perception Fidelity | External World Model fidelity, dynamic P evidence, minimal trusted Brain World Model | **ACTIVE — CURRENT PHASE** |
+| Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **NEXT** |
+| Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **NOT STARTED** |
+| Phase 10 — Uncertainty / Boundary Calibration | Probabilistic treatment of weak-Δ and policy-boundary jitter | **DEFERRED** |
+| Phase 11 — Personalization / Scale | Questionnaire prior + trajectory residuals + multi-user/product validation | **NOT STARTED** |
 
 Current strategic position:
 
 $$
-\boxed{Phase\ II\text{-}B:\ P\ estimator\ modeling\ NOW}
+\boxed{Phase\ 7:\ Perception\ Fidelity\ NOW}
 $$
+
+Immediate order: `7A External World Model Fidelity → 7B Dynamic P Evidence → 7C Minimal Trusted Brain World Model → Phase 8 Narrow Continuous Attention Loop`.
 
 D semantic research is closed. The v3 D estimator has attributable implementation residuals and is not certified as a passed estimator; do not expand D into another offline synthetic benchmark now.
 
@@ -583,42 +588,20 @@ First scored P measurement             NOT RUN
 Execute in this order:
 
 ```text
-NOW
+Phase 7A — External World Model Fidelity
   ↓
-Define the smallest reproducible observable-attention evidence interface for P estimator v1
+Measure whether Sensor/Auditor representation preserves downstream decision-sufficient meaning
   ↓
-Decide constituency-prior / lookup representation
+Attribute causal representation failures before tuning Sensor
   ↓
-Implement and freeze P estimator/profile v1
+Phase 7B — Dynamic P evidence interface using controlled/simulated time-varying evidence first
   ↓
-Create fresh P validation set AFTER estimator freeze
+Phase 7C — Minimal Trusted Brain World Model with explicit value/source/authority boundaries
   ↓
-Elicit and freeze fresh P Human Gold
-  ↓
-Run first scored P measurement exactly once
-  ↓
-Attribute residuals before changing estimator
-  ↓
-Evaluate complete no-Delta AWARE gate: S ∧ (D ∨ P)
-  ↓
-Fresh real-world end-to-end dogfooding
-  ↓
-Phase II exit decision
+Phase 8 — Narrow Continuous Attention Loop / real WATCH re-check dogfooding
 ```
 
-Estimator sequence remains:
-
-$$
-\boxed{D\rightarrow S\rightarrow P}
-$$
-
-D and S are no longer active semantic research questions.
-
-The immediate P design question is:
-
-> **What evidence object can RAOS realistically provide to P estimator v1 such that the model can approximate current genuine collective attention without pretending to have platform-internal telemetry?**
-
----
+Do not wait for perception perfection. Move to Phase 8 once remaining errors are bounded, observable, and attributable.
 
 ## 10. Phase II-B exit condition
 
