@@ -1,0 +1,29 @@
+name: semantic-sensor-v0.2.4-evidence-complete-cohesion
+status: DEVELOPMENT_CANDIDATE
+parent: semantic-evidence-extractor-v0.2.3
+change_scope: prompt-only semantic/provenance alignment
+hypothesis: >
+  A cohesive high-level semantic unit should remain compact while every materially distinct
+  clause in its statement is explicitly covered by its attached support excerpts.
+kept_fixed:
+  - SemanticExtractionBatchV0_2 schema
+  - max 12 non-event units
+  - max 4 supports per non-event unit
+  - temporal anchoring rules
+  - Auditor v0.1.1 contract
+  - frozen Delta and Attention Policy
+targeted_development_sources:
+  - RS15
+  - RS05
+success_signals:
+  - RS15 high-value action-conditioned world-model meaning becomes Auditor-admissible without adding unsupported wording
+  - RS15 downstream cognitive judgment no longer depends on pre-audit-only semantics for that meaning
+  - RS05 CHALLENGE decision-sufficiency remains preserved
+  - no unit/support cap regression
+failure_signals:
+  - semantic atomization / large unit-count increase
+  - unsupported clauses remain the dominant Auditor failure
+  - critical supported meanings are still lost after Auditor
+  - downstream decision regression on RS05
+methodology_note: >
+  This candidate is justified by Phase 7A causal evidence, not by a desire to maximize admission rate.
