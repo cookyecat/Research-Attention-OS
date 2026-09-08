@@ -124,3 +124,41 @@ OPEN_NEW full raw-source path     NOT YET EXERCISED; NOT REQUIRED TO CLOSE FOUR-
 ```
 
 Next: Phase 6C — Human Feedback / Kernel authorization boundary.
+## Post-fix stability addendum — boundary stochasticity
+
+After the Brain/Runtime authority fix, five exact-SHA runs at `695e39ad1fbbdd2c6b4fcb6468233a86eb5d2604` show a useful distinction between strong-state stability and weak-boundary variability.
+
+Stable cases:
+
+```text
+C1  NONE → AWARE                 5/5
+C4  CHALLENGE → ENGAGE           5/5
+C5  NONE → DROP                  5/5
+```
+
+Boundary cases:
+
+```text
+C2  weak REINFORCE → WATCH       4/5
+    NONE → DROP                  1/5
+
+C3  REINFORCE → WATCH            3/5
+    OPEN_NEW → WATCH             1/5
+    REINFORCE → AWARE            1/5
+```
+
+This is recorded as a boundary-stochasticity residual, not evidence that the frozen Δ semantics are wrong.Interpretation:
+
+> **A discrete label may oscillate when an underlying continuous cognitive signal sits near a decision boundary.**
+
+This is analogous to threshold jitter in noisy sensing or classification: a small change in model estimate can move the observed label across `NONE ↔ weak positive Δ` or `AWARE ↔ WATCH` without implying that the underlying cognitive-transition law has changed.
+
+Engineering consequence:
+
+```text
+Do not rewrite Δ semantics to eliminate boundary jitter.
+Record repeated distributions first.
+Later optimize calibration, uncertainty representation, hysteresis, or confidence-aware routing only if the residual becomes causally important.
+```
+
+This phenomenon should be studied probabilistically rather than treated automatically as a deterministic correctness failure.

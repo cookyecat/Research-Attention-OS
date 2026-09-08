@@ -1,0 +1,208 @@
+{
+  "name": "raos-phase6c-challenge-patch-proposal-v0.1",
+  "status": "DEVELOPMENT_ONLY_NOT_FRESH_VALIDATION",
+  "run_version": "phase6c-challenge-patch-proposal-v0.1",
+  "measurement_timestamp": "20260908T064321Z",
+  "measurement_git_head": "695e39ad1fbbdd2c6b4fcb6468233a86eb5d2604",
+  "source_id": "RS05",
+  "kernel_fixture": "PERF_CHALLENGE",
+  "n_admitted_units": 2,
+  "primary_delta": {
+    "operation": "CHALLENGE",
+    "target_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+    "target_fixture_code": "CF-B-PERF",
+    "delta_content": "The profiler data directly contradicts the existing belief that computation dominates runtime for a small 64x64 bf16 matmul with bias. The claims show that GPU compute time is only ~23-26 microseconds while CPU-side overhead (kernel prep, launch, sync) accounts for ~2.3-1.8 ms, indicating overhead-bound behavior. This is direct evidence at matching scope."
+  },
+  "attention_policy": {
+    "disposition": "ENGAGE",
+    "expected_output": "KERNEL_PATCH",
+    "reason": "Material cognitive effect with meaningful change magnitude on an important Kernel target. CHALLENGE / conflicting evidence raises verification value; disagreement is not low relevance. Integrate against an existing Model, Belief, Question, Bottleneck, or Decision."
+  },
+  "model_delta": {
+    "summary": "The profiler data directly contradicts the existing belief that computation dominates runtime for a small 64x64 bf16 matmul with bias. The claims show that GPU compute time is only ~23-26 microseconds while CPU-side overhead (kernel prep, launch, sync) accounts for ~2.3-1.8 ms, indicating overhead-bound behavior. This is direct evidence at matching scope.",
+    "what_could_change": [
+      "The profiler data directly contradicts the existing belief that computation dominates runtime for a small 64x64 bf16 matmul with bias. The claims show that GPU compute time is only ~23-26 microseconds while CPU-side overhead (kernel prep, launch, sync) accounts for ~2.3-1.8 ms, indicating overhead-bound behavior. This is direct evidence at matching scope."
+    ],
+    "distinctions": [],
+    "questions": [],
+    "admission_allowed": true,
+    "epistemic_risk": "",
+    "evidence_maturity": 0.35,
+    "rationale": "Prose for Δ_t=CHALLENGE. Not an independent cognitive update."
+  },
+  "patch_drafts": [
+    {
+      "target_object_type": "BELIEF",
+      "target_object_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+      "change_type": "REVISE",
+      "current_state": {
+        "id": "173ae936-51be-52bb-929d-4703c8371bbd",
+        "node_type": "BELIEF",
+        "title": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+        "status": "ACTIVE",
+        "payload": {
+          "proposition": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+          "scope": "small PyTorch GPU matrix multiplication workloads",
+          "importance": 0.9,
+          "phase6b_fixture_code": "CF-B-PERF"
+        },
+        "current_version": 1
+      },
+      "proposed_state": {
+        "title": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+        "status": "CONTESTED",
+        "payload": {
+          "proposition": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+          "scope": "small PyTorch GPU matrix multiplication workloads",
+          "importance": 0.9,
+          "phase6b_fixture_code": "CF-B-PERF"
+        }
+      },
+      "reasoning": "CHALLENGE: existing Belief/Model should be marked CONTESTED. The profiler data directly contradicts the existing belief that computation dominates runtime for a small 64x64 bf16 matmul with bias. The claims show that GPU compute time is only ~23-26 microseconds while CPU-side overhead (kernel prep, launch, sync) accounts for ~2.3-1.8 ms, indicating overhead-bound behavior. This is direct evidence at matching scope. Patch stays PROPOSED until human Accept/Modify.",
+      "suggested_confidence_change": null,
+      "evidence_link_ids": [
+        "RS05:RS05-U4:PARA 0035",
+        "RS05:RS05-U4:PARA 0036",
+        "RS05:RS05-U10:PARA 0080",
+        "RS05:RS05-U10:PARA 0081"
+      ]
+    }
+  ],
+  "n_patch_drafts": 1,
+  "kernel_unchanged_after_proposal": true,
+  "persisted_kernel_patch_count": 0,
+  "stage_provenance": {
+    "matching": {
+      "provider": "model",
+      "model": "deepseek-v4-flash",
+      "status": "success",
+      "retry": 0,
+      "latency_ms": 2433,
+      "prompt_tokens": 1209,
+      "completion_tokens": 235,
+      "estimated_cost_usd": null,
+      "validation_events": [],
+      "thinking": "disabled",
+      "reasoning_effort": null,
+      "timeout": 60.0,
+      "llm_called": true,
+      "evidence_stage_skipped": null,
+      "evidence_skip_reason": null,
+      "attempts": [
+        {
+          "status": "success",
+          "provider": "model"
+        }
+      ]
+    },
+    "impact": {
+      "provider": "model",
+      "model": "deepseek-v4-flash",
+      "status": "success",
+      "retry": 0,
+      "latency_ms": 2647,
+      "prompt_tokens": 1829,
+      "completion_tokens": 252,
+      "estimated_cost_usd": null,
+      "validation_events": [],
+      "thinking": "disabled",
+      "reasoning_effort": null,
+      "timeout": 60.0,
+      "llm_called": true,
+      "evidence_stage_skipped": null,
+      "evidence_skip_reason": null,
+      "attempts": [
+        {
+          "status": "success",
+          "provider": "model"
+        }
+      ]
+    },
+    "delta": {
+      "provider": "rule",
+      "model": null,
+      "status": "fallback",
+      "fallback_from": "model",
+      "error": "ModelDeltaResponse invalid after repair",
+      "error_type": "schema",
+      "retry": 1,
+      "latency_ms": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "thinking": "enabled",
+      "reasoning_effort": "low",
+      "timeout": 120.0,
+      "llm_called": true,
+      "evidence_stage_skipped": null,
+      "evidence_skip_reason": null,
+      "validation_error": [
+        {
+          "type": "missing",
+          "loc": [
+            "affected_kernel_nodes",
+            0,
+            "id"
+          ],
+          "msg": "Field required",
+          "input": {
+            "node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "node_type": "BELIEF"
+          }
+        },
+        {
+          "type": "extra_forbidden",
+          "loc": [
+            "affected_kernel_nodes",
+            0,
+            "node_id"
+          ],
+          "msg": "Extra inputs are not permitted",
+          "input": "173ae936-51be-52bb-929d-4703c8371bbd"
+        },
+        {
+          "type": "extra_forbidden",
+          "loc": [
+            "affected_kernel_nodes",
+            0,
+            "node_type"
+          ],
+          "msg": "Extra inputs are not permitted",
+          "input": "BELIEF"
+        }
+      ],
+      "attempts": [
+        {
+          "status": "fallback",
+          "provider": "rule",
+          "error": "ModelDeltaResponse invalid after repair",
+          "error_type": "schema",
+          "fallback_from": "model"
+        }
+      ]
+    },
+    "patches": {
+      "provider": "model",
+      "model": "deepseek-v4-flash",
+      "status": "success",
+      "retry": 0,
+      "latency_ms": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "estimated_cost_usd": null,
+      "validation_events": [],
+      "thinking": null,
+      "reasoning_effort": null,
+      "timeout": null,
+      "llm_called": false,
+      "evidence_stage_skipped": null,
+      "evidence_skip_reason": null,
+      "attempts": [
+        {
+          "status": "success",
+          "provider": "model"
+        }
+      ]
+    }
+  },
+  "methodology_note": "PatchDraft generation is proposal-only. This runner never opens a DB session and therefore cannot commit cognition. Human accept/modify/reject is tested separately in an isolated test DB."
+}

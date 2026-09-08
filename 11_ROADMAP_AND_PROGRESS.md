@@ -770,3 +770,24 @@ Current next step:
 Phase 6C
 Human Feedback / Kernel authorization boundary
 ```
+## Phase 6C — Human authorization boundary and Brain/Runtime authority
+
+Status: CLOSED / canonical development result.
+
+Validated:
+
+```text
+CHALLENGE → ENGAGE → KERNEL_PATCH proposal
+PROPOSED → no Kernel mutation
+REJECT → no Kernel mutation
+ACCEPT/MODIFY → KernelVersion committed_by USER
+protected direct AI write → blocked
+```
+
+Integration also found and fixed a Brain World Model authority bug: LLM-inferred `threatens_active_work` could previously trigger PREEMPT without trusted runtime evidence.
+
+New engineering rule:
+
+> **A model inference about the user is not automatically an authoritative user/runtime state.**
+
+Phase 6B weak-Δ boundary jitter is recorded as a probabilistic calibration residual and does not reopen frozen Δ semantics.

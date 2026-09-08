@@ -224,4 +224,23 @@ Delta semantics                   frozen / performing well under clean input
 Attention Policy                  downstream allocator, not perception repair
 ```
 
-The immediate implication is not to redesign Delta. It is to improve and measure the fidelity of the worlds Delta is shown.
+The immediate implication is not to redesign Delta. It is to improve and measure the fidelity of the worlds Delta is shown.## Observed Brain World Model authority failure — Phase 6C
+
+Phase 6C produced a concrete example of why Brain World Model authority must be explicit.
+
+The cognitive-impact LLM inferred `threatens_active_work=true` without receiving trusted information about the user's actual current work. The Scheduler then correctly converted that input into PREEMPT urgency.
+
+Causal chain:
+
+```text
+Untrusted model inference about user state
+→ authoritative-looking Brain/Runtime state
+→ correct Attention Policy
+→ wrong PREEMPT behavior
+```
+
+The fix is architectural, not a Scheduler-policy change:
+
+> **A model inference about the user is not automatically an authoritative user state.**
+
+Only trusted upstream Brain/Runtime sensing may assert runtime facts such as `threatens_active_work`.
