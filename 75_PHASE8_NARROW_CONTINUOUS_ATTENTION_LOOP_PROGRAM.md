@@ -42,3 +42,8 @@ no duplicate Watch is created
 ```
 
 After 8A, Phase 8 should add narrow ingestion/dogfooding rather than expanding synthetic lifecycle cases indefinitely.
+## 4. Phase 8A result — 2026-09-08
+
+Phase 8A is **CLOSED / sufficient**. The canonical controlled loop passed all preregistered lifecycle conditions, including cumulative evidence continuity, KEEP_ACTIVE, PROMOTED, WatchCheck history, and duplicate-Watch suppression.
+
+Current subphase: **8B — Narrow Continuous Ingestion / Dogfooding.**

@@ -221,3 +221,12 @@ so kernel preparation / launch dominates useful computation.
 > **Semantic precision means preserving the decision-bearing relation with sufficient evidence, not maximizing numerical detail.**
 
 This also refines the earlier packaging failure: Sensor factual correctness and Auditor correctness can coexist when statement granularity, support granularity, and audit granularity are misaligned.
+## Research memory — Decision bandwidth
+
+A final semantic representation has limited **decision bandwidth**. A detail deserves first-class semantic state only when it materially helps downstream judgment.
+
+Example: `23.104 μs` is useful quantitative evidence for the relation `kernel preparation / launch dominates useful computation`, but the decimal-level timing value does not itself deserve an independent semantic unit.
+
+> **Semantic precision means preserving the decision-bearing relation with sufficient evidence, not maximizing numerical detail.**
+
+> **A unit earns decision bandwidth by the state or relation it preserves for downstream judgment, not by how many digits or facts it contains.**

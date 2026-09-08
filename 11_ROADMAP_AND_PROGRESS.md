@@ -821,3 +821,8 @@ Controlled authority probes passed 4/4 and relevant exact-SHA regression passed 
 Current phase is now **Phase 8 — Narrow Continuous Attention Loop**.
 
 Do not expand Brain World Model inference breadth before live dogfooding reveals repeated attributable gaps. Likewise, probabilistic Decision Fidelity / uncertainty calibration remains a later Phase 10 research track; Phase 8 should run with the current 7A/7B/7C working models first.
+## Phase 8A WATCH responsibility loop — CLOSED 2026-09-08
+
+WATCH now has a cumulative responsibility loop with auditable `WatchCheck` history. Existing WATCH obligations re-evaluate prior plus new evidence, remain ACTIVE when evidence is still insufficient, and become PROMOTED when AWARE/ENGAGE is reached. Rechecks do not create duplicate Watch obligations.
+
+Current work moves to **Phase 8B — Narrow Continuous Ingestion / Dogfooding**.

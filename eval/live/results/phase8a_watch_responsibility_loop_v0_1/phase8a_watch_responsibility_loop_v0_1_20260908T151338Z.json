@@ -1,0 +1,44 @@
+{
+  "artifact_id": "raos-phase8a-watch-responsibility-loop-v0.1",
+  "measurement_git_head": "93b6b94fefe602f28ecef43645055fcb7fc99fc9",
+  "timestamp_utc": "2026-09-08T15:13:38.030226+00:00",
+  "evidence_type": "CONTROLLED_DEVELOPMENT_SIMULATION",
+  "sources": {
+    "A": "b3e4beeb-f0f3-4649-b27c-d224aaec07a5",
+    "B": "e10be8b0-1fc5-42b9-87d2-055c4e4adf94",
+    "C": "7b444266-df81-4cbc-823d-85bd4d0bfc3a"
+  },
+  "initial_analysis_run_id": "3b7e914f-e39f-4873-afe2-d860d498b43c",
+  "first_recheck": {
+    "outcome": "KEEP_ACTIVE",
+    "disposition": "WATCH",
+    "analysis_run_id": "2bd9f0c0-b961-410d-a102-072bffef8033",
+    "cumulative_extra_source_ids": [
+      "e10be8b0-1fc5-42b9-87d2-055c4e4adf94"
+    ]
+  },
+  "second_recheck": {
+    "outcome": "PROMOTED",
+    "disposition": "AWARE",
+    "analysis_run_id": "0059e824-976a-4cc6-a617-09483f823ec6",
+    "cumulative_extra_source_ids": [
+      "7b444266-df81-4cbc-823d-85bd4d0bfc3a",
+      "e10be8b0-1fc5-42b9-87d2-055c4e4adf94"
+    ]
+  },
+  "watch_check_outcomes": [
+    "KEEP_ACTIVE",
+    "PROMOTED"
+  ],
+  "conditions": {
+    "first_keep_active": true,
+    "second_promoted": true,
+    "first_includes_B": true,
+    "second_includes_B_and_C": true,
+    "two_watch_checks": true,
+    "no_duplicate_watch": true,
+    "final_watch_promoted": true,
+    "watch_creation_suppressed": true
+  },
+  "all_conditions_pass": true
+}
