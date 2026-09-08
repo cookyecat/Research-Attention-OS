@@ -837,3 +837,10 @@ Research memory:
 > **Article count is not evidence count.**
 
 Current work moves to **Phase 8C — Narrow Real Dogfood Loop** using a small auditable source inbox/feed. Broad crawling and open-world semantic clustering remain deferred until repeated real failures justify them.
+## Phase 8C.1 real-web acquisition — CLOSED 2026-09-09
+
+A narrow real public-web dogfood sequence has now exercised URL fetch, readable-text extraction, Source persistence, supervised event relations, continuous arrival routing, WATCH recheck, and promotion.
+
+Current integration gap: production `run_pipeline()` still uses legacy provider extraction rather than the Phase 7A v0.2.6 Semantic Sensor working baseline.
+
+Current work therefore moves to **Phase 8C.2 — Production Sensor Bridge** before broader dogfooding.

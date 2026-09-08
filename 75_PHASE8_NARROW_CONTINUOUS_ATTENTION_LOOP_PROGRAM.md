@@ -61,3 +61,12 @@ independent same-event evidence -> independence increment and WATCH promotion
 ```
 
 Current subphase: **8C — Narrow Real Dogfood Loop.**
+## 6. Phase 8C.1 result — 2026-09-09
+
+Real-web acquisition is **CLOSED / sufficient**. A supervised four-source dogfood run used real public pages and preserved the expected secondary / unrelated / independent routing behavior.
+
+The run also exposed realistic acquisition residuals (HTTP blocking, parser-empty success, slow fetch), which are now treated as perception/ingestion diagnostics rather than policy failures.
+
+Current subphase: **8C.2 — Production Sensor Bridge.**
+
+Do not call Phase 8 dogfood complete while production `run_pipeline()` still bypasses the Phase 7A v0.2.6 Semantic Sensor working baseline.

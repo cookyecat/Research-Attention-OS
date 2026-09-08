@@ -1,0 +1,129 @@
+{
+  "artifact_id": "raos-phase8c-real-dogfood-v0.1",
+  "measurement_git_head": "e5093cd8592c4c05bfb67e7c7acf9dceb0f329ad",
+  "timestamp_utc": "2026-09-08T17:13:07.268447+00:00",
+  "evidence_type": "REAL_PUBLIC_WEB_DEVELOPMENT_DOGFOOD",
+  "manifest_version": "phase8c-real-dogfood-v0.1",
+  "fetched_sources": {
+    "A": {
+      "label": "A",
+      "url": "https://azure.microsoft.com/en-us/blog/gpt-6-astra-frontier-intelligence-for-work-now-generally-available-in-microsoft-foundry/",
+      "source_id": "7b8bce14-110b-4749-bf74-d2830ee4618d",
+      "title": "GPT-6 Astra: Frontier intelligence for work, now available in Microsoft Foundry | Microsoft Azure Blog",
+      "canonical_url": "https://azure.microsoft.com/en-us/blog/gpt-6-astra-frontier-intelligence-for-work-now-generally-available-in-microsoft-foundry/",
+      "content_chars": 6614,
+      "fingerprint": "fp-v1:url:https://azure.microsoft.com/en-us/blog/gpt-6-astra-frontier-intelligence-for-work-now-generally-available-in-microsoft-foundry",
+      "content_hash": "4ed8f2d62837c877408b960cf8e7a4adaa475d90599885c3b2729cf1eae27853",
+      "ingestion_method": "URL_FETCH",
+      "fetch_elapsed_s": 12.142
+    },
+    "C": {
+      "label": "C",
+      "url": "https://deploymentsafety.openai.com/gpt-6-astra/vision",
+      "source_id": "752f0e57-c285-4908-a89a-af3b35567a62",
+      "title": "GPT-6 Astra System Card - OpenAI Deployment Safety Hub",
+      "canonical_url": "https://deploymentsafety.openai.com/gpt-6-astra/vision",
+      "content_chars": 5950,
+      "fingerprint": "fp-v1:url:https://deploymentsafety.openai.com/gpt-6-astra/vision",
+      "content_hash": "5eee6de6c46c3a4a7130ea5ea96fce04438678be75cd5b622e3bf787d0993fac",
+      "ingestion_method": "URL_FETCH",
+      "fetch_elapsed_s": 2.52
+    },
+    "X": {
+      "label": "X",
+      "url": "https://research.google/blog/agenthands-generating-interactive-hand-gestures-for-spatially-grounded-agent-conversations-in-xr/",
+      "source_id": "7561ec5b-4340-4459-9d82-54daad619c7f",
+      "title": "AgentHands: Generating interactive hand gestures for spatially grounded agent conversations in XR",
+      "canonical_url": "https://research.google/blog/agenthands-generating-interactive-hand-gestures-for-spatially-grounded-agent-conversations-in-xr/",
+      "content_chars": 6064,
+      "fingerprint": "fp-v1:url:https://research.google/blog/agenthands-generating-interactive-hand-gestures-for-spatially-grounded-agent-conversations-in-xr",
+      "content_hash": "054ff33bf2c0e802e7ec912d50ba90155174d402fd596d94ed349076e8183147",
+      "ingestion_method": "URL_FETCH",
+      "fetch_elapsed_s": 0.687
+    },
+    "D": {
+      "label": "D",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/989601/openai-gpt-6-astra-release",
+      "source_id": "f5ebc676-d7b4-481d-8cf4-59be8c6de97e",
+      "title": "OpenAI’s next big AI model has ‘entered the AGI era’ | The Verge",
+      "canonical_url": "https://www.theverge.com/ai-artificial-intelligence/989601/openai-gpt-6-astra-release",
+      "content_chars": 6375,
+      "fingerprint": "fp-v1:url:https://www.theverge.com/ai-artificial-intelligence/989601/openai-gpt-6-astra-release",
+      "content_hash": "942a9a81ba359fa18ce0a9650c7771f8ccdf3b50ab8f4ea4d6a20857a7008328",
+      "ingestion_method": "URL_FETCH",
+      "fetch_elapsed_s": 0.622
+    }
+  },
+  "decisions": {
+    "C_secondary": [
+      {
+        "watch_id": "5412983b-2a33-4e26-bbb7-73b363e185da",
+        "relevant": true,
+        "evidence_class": "SECONDARY",
+        "action": "RECHECK",
+        "check_id": "44b14292-c70a-4f93-83d0-90b7a5de9b41",
+        "disposition": "WATCH",
+        "outcome": "KEEP_ACTIVE"
+      }
+    ],
+    "X_unrelated": {
+      "matched_watch": false,
+      "ordinary_analysis": true
+    },
+    "D_independent": [
+      {
+        "watch_id": "5412983b-2a33-4e26-bbb7-73b363e185da",
+        "relevant": true,
+        "evidence_class": "INDEPENDENT",
+        "action": "RECHECK",
+        "check_id": "49850a7c-31c5-48d6-9e26-ace1883c16aa",
+        "disposition": "AWARE",
+        "outcome": "PROMOTED"
+      }
+    ]
+  },
+  "relational_context": {
+    "C_secondary": {
+      "independent_sources": 1,
+      "secondary_reports": 1,
+      "independent_source_ids": [
+        "7b8bce14-110b-4749-bf74-d2830ee4618d"
+      ],
+      "secondary_source_ids": [
+        "752f0e57-c285-4908-a89a-af3b35567a62"
+      ],
+      "is_duplicate": false
+    },
+    "D_independent": {
+      "independent_sources": 2,
+      "secondary_reports": 1,
+      "independent_source_ids": [
+        "7b8bce14-110b-4749-bf74-d2830ee4618d",
+        "f5ebc676-d7b4-481d-8cf4-59be8c6de97e"
+      ],
+      "secondary_source_ids": [
+        "752f0e57-c285-4908-a89a-af3b35567a62"
+      ],
+      "is_duplicate": false
+    }
+  },
+  "watch_check_outcomes": [
+    "KEEP_ACTIVE",
+    "PROMOTED"
+  ],
+  "conditions": {
+    "all_real_fetches_nonempty": true,
+    "secondary_rechecked": true,
+    "secondary_kept_active": true,
+    "secondary_not_independent": true,
+    "secondary_counted_as_secondary": true,
+    "unrelated_ordinary_route": true,
+    "independent_promoted": true,
+    "independent_count_incremented": true,
+    "secondary_count_preserved": true,
+    "single_watch_obligation": true,
+    "watch_history_complete": true,
+    "final_watch_promoted": true
+  },
+  "all_conditions_pass": true
+}
