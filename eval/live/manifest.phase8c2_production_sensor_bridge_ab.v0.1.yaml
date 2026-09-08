@@ -1,0 +1,29 @@
+name: raos-phase8c2-production-sensor-bridge-ab-v0.1
+status: PREREGISTERED_DEVELOPMENT_AB
+created_at: 2026-09-09
+baseline_sha: 00150412912d24135a7e2ea492c40ce9835f0eb0
+
+procedure:
+  first_pass_repeats: 1
+  divergence_confirmation_repeats: 2
+  stable_divergence_rule: same qualitative divergence in at least 2 of 3 paired runs
+  database_isolation: one fresh base world per case; A/B each run inside rollback SAVEPOINT
+  default_path: legacy remains production default during experiment
+
+cases:
+  RS05:
+    kernel_fixture: phase6b-perf-challenge-counterfactual
+    expected_candidate_update: {operation: CHALLENGE, target: CF-B-PERF}
+    expected_candidate_attention: ENGAGE
+  RS15:
+    kernel_fixture: phase6b-mvp-in-memory-copy
+    expected_candidate_update: {operation: REINFORCE, target: Q2}
+    expected_candidate_attention: null
+  RS11:
+    kernel_fixture: phase6b-mvp-in-memory-copy
+    expected_candidate_update: {operation: null, target: null}
+    expected_candidate_attention: DROP
+  RS12:
+    kernel_fixture: phase6b-mvp-in-memory-copy
+    expected_candidate_update: null
+    expected_candidate_attention: null

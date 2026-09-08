@@ -176,7 +176,10 @@ def extract_source(
     provider=None,
     analysis_run_id: UUID | None = None,
     independent_source_count: int | None = None,
-) -> tuple[ExtractionResult, list[Claim], list[Observation], list[Inference], list[EvidenceLink]]:
+    extraction_bridge=None,
+) -> tuple[
+    ExtractionResult, list[Claim], list[Observation], list[Inference], list[EvidenceLink], dict
+]:
     from app.cognitive.factory import get_provider
     from app.services.chunking import split_source
     from app.services.extraction import dedup_extraction
@@ -194,24 +197,33 @@ def extract_source(
         merged = merge_extractions(*parts) if len(parts) > 1 else parts[0]
         return dedup_extraction(merged)
 
-    primary = _extract_one(source)
-    parts = [primary]
-    extras = extra_sources or []
-    extras = sorted(extras, key=lambda s: str(s.id))
-    for extra in extras:
-        parts.append(_extract_one(extra))
-    merged = merge_extractions(*parts) if len(parts) > 1 else primary
-    evidence_source_count = (
-        independent_source_count if independent_source_count is not None else 1 + len(extras)
-    )
-    merged = provider.reason_evidence(merged, independent_source_count=evidence_source_count)
+    extras = sorted(extra_sources or [], key=lambda s: str(s.id))
+    if extraction_bridge is None:
+        primary = _extract_one(source)
+        parts = [primary]
+        for extra in extras:
+            parts.append(_extract_one(extra))
+        merged = merge_extractions(*parts) if len(parts) > 1 else primary
+        evidence_source_count = (
+            independent_source_count if independent_source_count is not None else 1 + len(extras)
+        )
+        merged = provider.reason_evidence(merged, independent_source_count=evidence_source_count)
+        extraction_diagnostics = {"mode": "legacy"}
+    else:
+        from app.services.extraction_bridge import ExtractionBridgeResult
+
+        bridged = extraction_bridge.extract(source, extras)
+        if not isinstance(bridged, ExtractionBridgeResult):
+            raise TypeError("extraction_bridge.extract() must return ExtractionBridgeResult")
+        merged = bridged.extraction
+        extraction_diagnostics = {"mode": "bridge", **dict(bridged.diagnostics or {})}
     event = attach_or_create_event(db, source, merged.event_title or source.title, merged.event_summary)
     claims, observations, inferences, links = persist_extraction(
         db, source, merged, event.id, analysis_run_id=analysis_run_id
     )
     for extra in extras:
         attach_or_create_event(db, extra, merged.event_title or extra.title, merged.event_summary)
-    return merged, claims, observations, inferences, links
+    return merged, claims, observations, inferences, links, extraction_diagnostics
 
 
 def _stamp_chunk_provenance(part: ExtractionResult, chunk, full_text: str) -> None:
@@ -445,6 +457,7 @@ def run_pipeline(
     reprocess: bool = False,
     allow_watch_creation: bool = True,
     provider=None,
+    extraction_bridge=None,
 ) -> dict:
     from app.cognitive.factory import get_provider
     from app.cognitive.versions import IMPACT_ASSESSOR_VERSION, PIPELINE_VERSION
@@ -477,6 +490,12 @@ def run_pipeline(
     event_source_ids = [source.id] + [e.id for e in extras]
     rel_ctx = freeze_analysis_relational_context(db, event_source_ids)
     exec_snapshot = analysis_execution_snapshot(provider)
+    bridge_execution = None
+    if extraction_bridge is not None:
+        bridge_execution = dict(extraction_bridge.execution_snapshot() or {})
+        if not bridge_execution:
+            raise ValueError("extraction_bridge.execution_snapshot() must be non-empty")
+        exec_snapshot["extraction_bridge"] = bridge_execution
     exec_digest = analysis_execution_digest(provider, snapshot=exec_snapshot)
     provider_type = getattr(provider, "provider_type", "rule")
     model_name = settings.llm_model if str(provider_type).startswith("model") else None
@@ -535,13 +554,14 @@ def run_pipeline(
             raise RuntimeError("AnalysisRun already in progress for this identity")
 
     try:
-        extraction, claims, observations, inferences, links = extract_source(
+        extraction, claims, observations, inferences, links, extraction_diagnostics = extract_source(
             db,
             source,
             extras,
             provider=provider,
             analysis_run_id=run.id,
             independent_source_count=rel_ctx.independent_sources,
+            extraction_bridge=extraction_bridge,
         )
         blob = " ".join(
             [source.content_text or "", source.title or ""] + [e.content_text or "" for e in extras]
@@ -724,6 +744,11 @@ def run_pipeline(
         payload["relational_context"] = rel_ctx.as_dict()
         payload["execution_digest"] = exec_digest
         payload["execution_snapshot"] = exec_snapshot
+        payload["extraction_path"] = {
+            "mode": "bridge" if extraction_bridge is not None else "legacy",
+            "bridge_execution": bridge_execution,
+            "diagnostics": extraction_diagnostics,
+        }
         payload["analysis_run"] = {
             "id": str(run.id),
             "identity_key": ident,

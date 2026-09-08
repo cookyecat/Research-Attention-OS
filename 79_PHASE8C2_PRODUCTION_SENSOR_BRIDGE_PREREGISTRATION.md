@@ -126,3 +126,29 @@ Canonical reminder:
 And for this integration specifically:
 
 > **A production bridge is correct only if it transports validated semantics without silently changing what the downstream system is allowed to know.**
+
+## 9. Pre-measurement execution addendum
+
+This addendum was fixed before any live Phase 8C.2 A/B result was observed.
+
+To eliminate persistent-state cross-arm contamination, every paired comparison starts from one exact base world and runs both arms in rollback SAVEPOINTs:
+
+```text
+same Source UUID / same Kernel UUIDs / same relational context
+    ├─ SAVEPOINT A -> legacy extraction -> capture -> rollback
+    └─ SAVEPOINT B -> Sensor bridge     -> capture -> rollback
+```
+
+This is stricter than merely using two separately seeded databases because identity-bearing source and Kernel objects are shared by the pair.
+Auditor/model stochasticity is handled adaptively rather than by mechanically tripling every case:
+
+```text
+first paired pass for all four cases
+if a pair diverges, errors, misses a preregistered relation,
+or loses event-frame observability:
+    run two additional paired confirmations
+
+stable qualitative divergence = same A/B direction in >= 2 of 3 pairs
+```
+
+The candidate path does not call legacy `provider.reason_evidence()`: Sensor + Auditor are the replacement provenance/evidence gate for this arm. This fact is recorded in bridge diagnostics only. The existing `evidence_stage_skipped` field is intentionally not repurposed because it is decision-active downstream and would contaminate the controlled comparison.

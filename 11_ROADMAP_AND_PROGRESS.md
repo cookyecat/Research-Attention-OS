@@ -844,3 +844,28 @@ A narrow real public-web dogfood sequence has now exercised URL fetch, readable-
 Current integration gap: production `run_pipeline()` still uses legacy provider extraction rather than the Phase 7A v0.2.6 Semantic Sensor working baseline.
 
 Current work therefore moves to **Phase 8C.2 — Production Sensor Bridge** before broader dogfooding.
+## Phase 8C.2 production Sensor bridge — ACTIVE / PREREGISTERED 2026-09-09
+
+Production now has a narrow injectable `ExtractionResult` bridge seam while the default path remains legacy. `backend/app` does not import the research Sensor implementation.
+
+Candidate composition reuses validated interfaces rather than inventing new semantics:
+
+```text
+event_frames     -> Phase 6A audited event projection
+non_event_units  -> Phase 6B audited epistemic-unit admission
+both             -> existing production ExtractionResult
+```
+
+The bridge execution fingerprint enters `AnalysisRun` execution identity so legacy and candidate arms cannot collide in cache.
+Controlled A/B is preregistered on RS05 / RS15 / RS11 / RS12. Each pair uses the same Source UUID, Kernel UUIDs, relational context, and initial persistence state; A and B execute inside rollback SAVEPOINTs.
+
+Established decision-bearing sentinels remain:
+
+```text
+RS05 -> CHALLENGE(CF-B-PERF) -> ENGAGE
+RS15 -> REINFORCE(Q2)
+RS11 -> NONE / DROP control
+RS12 -> weak-positive boundary control; require repeated bridge-driven divergence before attribution
+```
+
+No live Phase 8C.2 result has yet been used to tune Sensor, Auditor, Delta, or Attention Policy. Current next step is exact-SHA live controlled A/B followed by regression and default-path decision.
