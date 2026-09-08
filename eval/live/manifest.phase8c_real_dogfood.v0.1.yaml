@@ -1,0 +1,26 @@
+version: phase8c-real-dogfood-v0.1
+status: DEVELOPMENT_PREREGISTERED
+purpose: >-
+  Exercise real public-web acquisition through the existing URLConnector and continuous-attention router,
+  while keeping event/relevance relations supervised and auditable.
+controls:
+  provider: rule
+  relation_assignment: supervised_manifest
+  semantic_event_clustering: deferred
+  production_sensor_v0_2_6: not_yet_integrated
+  evidence_type: REAL_PUBLIC_WEB_DEVELOPMENT_DOGFOOD
+sources:
+  A:
+    role: initial_watch_source
+    url: https://azure.microsoft.com/en-us/blog/gpt-6-astra-frontier-intelligence-for-work-now-generally-available-in-microsoft-foundry/
+  C:
+    role: supervised_secondary_same_event
+    url: https://deploymentsafety.openai.com/gpt-6-astra/vision
+    relation_to: A
+    relationship: REPORTS_ON
+  D:
+    role: supervised_independent_same_event
+    url: https://www.theverge.com/ai-artificial-intelligence/989601/openai-gpt-6-astra-release
+  X:
+    role: unrelated_control
+    url: https://research.google/blog/agenthands-generating-interactive-hand-gestures-for-spatially-grounded-agent-conversations-in-xr/
