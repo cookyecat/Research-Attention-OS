@@ -23,6 +23,11 @@ BACKEND = ROOT / "backend"
 if str(BACKEND) not in sys.path:
     sys.path.insert(0, str(BACKEND))
 
+from eval.live.run_standing_radar_fit_eval import load_repo_env
+
+# Settings is instantiated during production-module import, so bootstrap repo env first.
+load_repo_env()
+
 from app import models as _models  # noqa: F401
 from app.db import Base
 from app.models.source import Source
@@ -32,7 +37,6 @@ from eval.live.phase6b_cognitive_semantics_v0_1 import (
     build_phase6b_perf_challenge_nodes,
 )
 from eval.live.phase8c2_production_sensor_bridge_v0_1 import SemanticSensorProductionBridgeV0_1
-from eval.live.run_standing_radar_fit_eval import load_repo_env
 from eval.live.semantic_source_loader_v0_1 import load_dev_manifest, load_manifest_source
 
 MANIFEST = ROOT / "eval/live/manifest.phase8c2_production_sensor_bridge_ab.v0.1.yaml"
