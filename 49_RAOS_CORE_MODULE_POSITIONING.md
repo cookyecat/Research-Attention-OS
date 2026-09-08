@@ -675,3 +675,23 @@ Rejected object != restored object
 Reason: removing already-admitted evidence context can erase domain, causal, quantitative, or attribution information needed by D/S/Delta and can change final Attention Policy output even though each local Auditor verdict is individually reasonable.
 
 The Auditor still has one job: evidence sufficiency. The context envelope is an interface property of its output, not a new Auditor responsibility or theoretical variable.
+
+---
+
+# 15. Dual World Model interpretation
+
+Phase 6 integration makes an architectural fact explicit: RAOS reasons over two represented worlds, not directly over reality or directly over the user's mind.
+
+```text
+External World
+  → Semantic Sensor + Auditor
+  → External World Model available to downstream judgment
+
+User Cognitive World
+  → protected K_t + legitimate current-state context
+  → Brain / Cognitive World Model available to Delta / policy
+```
+
+`Brain World Model != Cognitive Kernel`. The Kernel remains the human-authorized durable core; an operational model of user cognition may use it as an anchor but may not silently rewrite it.
+
+Canonical architectural note: `68_RAOS_DUAL_WORLD_MODEL_AND_PERCEPTION_DISCIPLINE.md`.

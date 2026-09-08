@@ -915,3 +915,43 @@ Attention-proportional multilevel cache  PREFERRED architecture direction
 Current central question:
 
 > **Can RAOS read real information well enough that downstream D/S/P/Delta decisions behave as if a careful Human reader had prepared the semantic evidence?**
+
+---
+
+# 20. Semantic Sensor as External World Model construction
+
+Phase 6 end-to-end work clarifies that the Semantic Sensor is not ordinary preprocessing. Together with the Evidence Auditor, it constructs the semantic world that downstream RAOS is allowed to reason over.
+
+```text
+Raw Source
+  ↓
+Semantic Sensor
+  ↓
+Evidence Auditor
+  ↓
+Audited Semantic Representation
+  ↓
+External World Model available to D / S / P / Delta
+```
+
+Engineering objective:
+
+> **在不丢失关键语义、不制造额外含义的情况下，形成最有决策价值的态势表示。**
+This reframes the central quality target:
+
+```text
+not maximum detail
+not minimum unit count
+not elegant summarization alone
+
+but:
+Compression + Hierarchical Abstraction + Evidence Fidelity + Decision Sufficiency
+```
+
+Research memory:
+
+> **先保证“看见的世界”足够准确，再要求系统对这个世界聪明。**
+
+> **Reasoning quality is downstream of world-model quality.**
+
+> **Cognitive judgment cannot be more reliable than the semantic world it is given.**

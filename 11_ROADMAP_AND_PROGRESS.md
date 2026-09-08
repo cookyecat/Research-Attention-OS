@@ -724,3 +724,24 @@ Rules:
 5. Prefer residual evidence over a cosmetically perfect score.
 6. When a phase exit condition is met, move forward rather than overfitting the current benchmark.
 7. Do not redefine a frozen theoretical variable merely because the current system cannot observe it directly.
+
+---
+
+## 15. Perception-before-decision discipline
+
+Phase 6 integration exposed a useful system-level framing: RAOS depends on both an External World Model and a Brain / Cognitive World Model. See `68_RAOS_DUAL_WORLD_MODEL_AND_PERCEPTION_DISCIPLINE.md`.
+
+Add these permanent debugging rules:
+
+1. **不能因为传感器差，就修改物理定律。**
+2. **在质疑决策之前，先检查系统看到的是不是同一个世界。**
+3. Attribute end-to-end failures from the earliest causal layer before changing downstream policy.
+4. Treat memorable language that faithfully compresses a hard-won insight as research memory, not decoration.
+
+Operational implication:
+
+```text
+Raw source → Sensor → Auditor → represented world → Delta / D/S/P → Attention Policy
+```
+
+A surprising final action is not, by itself, evidence that the policy or Delta semantics are wrong.

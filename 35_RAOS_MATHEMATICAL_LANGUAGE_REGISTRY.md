@@ -767,3 +767,37 @@ And for the engineering philosophy:
 $$
 \boxed{\text{不能因为传感器差，就修改物理定律。}}
 $$
+
+---
+
+# 16. Dual World Model — architectural note, not a new symbol
+
+RAOS currently benefits from distinguishing two represented worlds:
+
+```text
+External World Model
+= the audited semantic representation made available from raw information
+
+Brain / Cognitive World Model
+= the operational representation of the user's current cognitive world,
+  anchored by protected K_t and legitimate current-state context
+```
+
+No new canonical mathematical variable is introduced here. The distinction is architectural until repeated evidence justifies a stable formal state variable.
+
+Preserve:
+
+```text
+Brain World Model != K_t
+Estimated cognition != committed cognition
+External semantic representation != reality itself
+```
+Perception / decision discipline:
+
+> **不能因为传感器差，就修改物理定律。**
+
+> **在质疑决策之前，先检查系统看到的是不是同一个世界。**
+
+> **Before blaming the decision layer, inspect the world it was shown.**
+
+Canonical discussion: `68_RAOS_DUAL_WORLD_MODEL_AND_PERCEPTION_DISCIPLINE.md`.
