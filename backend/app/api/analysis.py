@@ -183,6 +183,7 @@ def plan(body: PlanIn, db: Session = Depends(get_db)):
             interruptibility=body.runtime_context.interruptibility,
             cognitive_capacity=body.runtime_context.cognitive_capacity,
             deadline_at=body.runtime_context.deadline_at,
+            threatens_active_work=body.runtime_context.threatens_active_work,
             captured_at=datetime.now(timezone.utc),
         )
         db.add(ctx)
@@ -198,6 +199,7 @@ def plan(body: PlanIn, db: Session = Depends(get_db)):
             interruptibility=ctx.interruptibility,
             cognitive_capacity=ctx.cognitive_capacity,
             deadline_minutes=deadline_minutes,
+            threatens_active_work=ctx.threatens_active_work,
         )
     try:
         return run_pipeline(

@@ -241,6 +241,7 @@ def _runtime_view(ctx: RuntimeContext | None) -> RuntimeView:
         interruptibility=ctx.interruptibility,
         cognitive_capacity=ctx.cognitive_capacity,
         deadline_minutes=deadline_minutes,
+        threatens_active_work=ctx.threatens_active_work,
     )
 
 
@@ -590,6 +591,20 @@ def run_pipeline(
         retrieval.setdefault("query_instruct_applied", query_instruct_enabled())
         independence = rel_ctx.report()
         is_duplicate = rel_ctx.is_duplicate
+        from app.services.brain_world_model import (
+            build_brain_world_snapshot,
+            runtime_view_from_brain_snapshot,
+            trusted_bool,
+        )
+
+        ctx = db.get(RuntimeContext, runtime_context_id) if runtime_context_id else None
+        brain_snapshot = build_brain_world_snapshot(
+            runtime_context=ctx,
+            runtime_view=runtime,
+            db=db,
+            kernel_snapshot_hash=k_hash,
+        )
+        view = runtime_view_from_brain_snapshot(brain_snapshot)
         assessment = provider.assess_cognitive_impact(
             blob,
             extraction,
@@ -597,12 +612,11 @@ def run_pipeline(
             is_duplicate=is_duplicate,
             independent_source_count=rel_ctx.independent_sources,
             secondary_report_count=rel_ctx.secondary_reports,
+            threatens_active_work=trusted_bool(brain_snapshot, "threatens_active_work"),
             nodes=nodes,
         )
         features = assessment.features
         features = ground_features_to_matches(features, matches)
-        ctx = db.get(RuntimeContext, runtime_context_id) if runtime_context_id else None
-        view = runtime or _runtime_view(ctx)
         draft = validate_plan(route(features, view, assessment=assessment, matches=matches))
         plan = AttentionPlan(
             candidate_type=CandidateType.SOURCE,
@@ -638,6 +652,7 @@ def run_pipeline(
                     for m in matches
                 ],
                 "independence": independence,
+                "brain_world_model": brain_snapshot.as_dict(),
             },
         )
         db.add(plan)
@@ -738,6 +753,7 @@ def _snapshot_runtime(view: RuntimeView) -> dict:
         "interruptibility": view.interruptibility,
         "cognitive_capacity": view.cognitive_capacity,
         "deadline_minutes": view.deadline_minutes,
+        "threatens_active_work": view.threatens_active_work,
     }
 
 
@@ -750,7 +766,8 @@ def _reschedule(
     runtime_context_id: UUID | None = None,
 ) -> dict:
     from app.cognitive.factory import get_provider
-    from app.services.analysis_runs import hydrate_run, plan_public
+    from app.services.analysis_runs import fresh_kernel_snapshot_hash, hydrate_run, plan_public
+    from app.services.brain_world_model import build_brain_world_snapshot
     from app.services.cognitive_impact import assessment_from_dict
     from app.services.impact_input import (
         extraction_from_snapshot,
@@ -789,7 +806,17 @@ def _reschedule(
     evidence_link_ids = [
         str(item["id"]) for item in (stored_payload.get("evidence_links") or []) if isinstance(item, dict) and item.get("id")
     ]
+    brain_snapshot = build_brain_world_snapshot(
+        runtime_view=runtime,
+        db=db,
+        kernel_snapshot_hash=fresh_kernel_snapshot_hash(db),
+    )
+    features.threatens_active_work = bool(
+        brain_snapshot.authoritative_value("threatens_active_work", default=False)
+    )
     draft = validate_plan(route(features, runtime, assessment=assessment or impact, matches=matches))
+    score_debug = dict(orig_debug or (payload.get("attention_plan") or {}).get("score_debug") or {})
+    score_debug["brain_world_model"] = brain_snapshot.as_dict()
     plan = AttentionPlan(
         candidate_type=CandidateType.SOURCE,
         candidate_id=source.id,
@@ -807,7 +834,7 @@ def _reschedule(
         runtime_snapshot=_snapshot_runtime(runtime),
         analysis_run_id=run.id,
         created_at=datetime.now(timezone.utc),
-        score_debug=dict(orig_debug or (payload.get("attention_plan") or {}).get("score_debug") or {}),
+        score_debug=score_debug,
     )
     db.add(plan)
     db.flush()

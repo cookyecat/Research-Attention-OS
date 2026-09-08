@@ -18,6 +18,7 @@ class RuntimeContext(UUIDPrimaryKeyMixin, Base):
     interruptibility: Mapped[str | None] = mapped_column(String, nullable=True)
     cognitive_capacity: Mapped[str | None] = mapped_column(String, nullable=True)
     deadline_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    threatens_active_work: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
     captured_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 

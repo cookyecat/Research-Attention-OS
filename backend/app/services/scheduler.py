@@ -74,6 +74,7 @@ class RuntimeView:
     interruptibility: str | None = "MEDIUM"
     cognitive_capacity: str | None = "NORMAL"
     deadline_minutes: float | None = None
+    threatens_active_work: bool | None = None
 
 
 @dataclass
