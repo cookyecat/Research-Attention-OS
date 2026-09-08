@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import DateTime, ForeignKey, String, Text, Uuid
+from sqlalchemy import DateTime, ForeignKey, String, Text, Uuid, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import JSON
 
@@ -21,6 +21,7 @@ class Watch(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     attention_plan_id: Mapped[UUID | None] = mapped_column(Uuid, ForeignKey("attention_plans.id"), nullable=True, index=True)
 
     triggers: Mapped[list["WatchTrigger"]] = relationship(back_populates="watch", cascade="all, delete-orphan")
+    checks: Mapped[list["WatchCheck"]] = relationship(cascade="all, delete-orphan")
 
 
 class WatchTrigger(UUIDPrimaryKeyMixin, TimestampMixin, Base):
@@ -33,3 +34,15 @@ class WatchTrigger(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     last_triggered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     watch: Mapped[Watch] = relationship(back_populates="triggers")
+
+class WatchCheck(UUIDPrimaryKeyMixin, Base):
+    __tablename__ = "watch_checks"
+
+    watch_id: Mapped[UUID] = mapped_column(Uuid, ForeignKey("watches.id"), nullable=False, index=True)
+    trigger_id: Mapped[UUID | None] = mapped_column(Uuid, ForeignKey("watch_triggers.id"), nullable=True)
+    new_source_id: Mapped[UUID | None] = mapped_column(Uuid, ForeignKey("sources.id"), nullable=True)
+    analysis_run_id: Mapped[UUID | None] = mapped_column(Uuid, ForeignKey("analysis_runs.id"), nullable=True, index=True)
+    attention_plan_id: Mapped[UUID | None] = mapped_column(Uuid, ForeignKey("attention_plans.id"), nullable=True, index=True)
+    disposition: Mapped[str] = mapped_column(String, nullable=False)
+    outcome: Mapped[str] = mapped_column(String, nullable=False)
+    checked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

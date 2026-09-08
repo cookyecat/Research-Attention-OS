@@ -383,6 +383,7 @@ def _persist_authorized_artifacts(
     analysis_run_id,
     persist_suggested_watches: bool,
     watch_suggestions: list[dict],
+    allow_watch_creation: bool = True,
 ) -> tuple[list[KernelPatch], list[Watch]]:
     patches: list[KernelPatch] = []
     if authorized == ExpectedOutput.KERNEL_PATCH:
@@ -404,7 +405,7 @@ def _persist_authorized_artifacts(
             )
     created_watches: list[Watch] = []
     assume_future = bool(getattr(draft, "watch_after_processing", False))
-    if assume_future:
+    if assume_future and allow_watch_creation:
         created_watches = _fulfill_watch_obligation(
             db, draft=draft, source=source, matches=matches, plan=plan, analysis_run_id=analysis_run_id
         )
@@ -424,6 +425,7 @@ def _persist_authorized_artifacts(
         "explicit_watch_override": bool(persist_suggested_watches and not assume_future),
         "policy_authorized_watch": assume_future,
         "watch_after_processing": assume_future,
+        "watch_creation_suppressed": bool(assume_future and not allow_watch_creation),
     }
     plan.score_debug = debug
     from sqlalchemy.orm.attributes import flag_modified
@@ -441,6 +443,7 @@ def run_pipeline(
     runtime: RuntimeView | None = None,
     persist_suggested_watches: bool = False,
     reprocess: bool = False,
+    allow_watch_creation: bool = True,
     provider=None,
 ) -> dict:
     from app.cognitive.factory import get_provider
@@ -681,6 +684,7 @@ def run_pipeline(
             analysis_run_id=run.id,
             persist_suggested_watches=persist_suggested_watches,
             watch_suggestions=watch_suggestions,
+            allow_watch_creation=allow_watch_creation,
         )
         db.flush()
         fallback_used = bool(getattr(provider, "fallback_used", False))

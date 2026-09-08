@@ -9,7 +9,7 @@ from app.models.kernel import KernelEdge, KernelEmbedding, KernelNode, KernelPat
 from app.models.observation import Observation
 from app.models.scheduler import AttentionFeedback, AttentionPlan, RuntimeContext
 from app.models.source import Source, SourceAuthor, SourceEdge
-from app.models.watch import Watch, WatchTrigger
+from app.models.watch import Watch, WatchCheck, WatchTrigger
 
 __all__ = [
     "Source",
@@ -33,6 +33,7 @@ __all__ = [
     "AttentionPlan",
     "AttentionFeedback",
     "Watch",
+    "WatchCheck",
     "WatchTrigger",
     "IngestionJob",
     "ParserRun",

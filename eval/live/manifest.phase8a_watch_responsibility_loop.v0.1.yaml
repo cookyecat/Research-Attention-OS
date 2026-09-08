@@ -1,0 +1,11 @@
+artifact_id: raos-phase8a-watch-responsibility-loop-v0.1
+status: preregistered-development
+purpose: controlled continuous WATCH lifecycle integration
+
+invariants:
+  - WATCH assumes future attention responsibility.
+  - Recheck uses cumulative evidence, not only the newest source.
+  - DROP or WATCH during recheck keeps the existing obligation ACTIVE.
+  - AWARE or ENGAGE fulfills the obligation as PROMOTED.
+  - Existing WATCH rechecks must not create duplicate WATCH obligations.
+  - Every recheck emits an auditable WatchCheck.
