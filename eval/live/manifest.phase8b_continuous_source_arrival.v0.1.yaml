@@ -1,0 +1,18 @@
+version: phase8b-continuous-source-arrival-v0.1
+status: DEVELOPMENT_PREREGISTERED
+purpose: >-
+  Validate that a continuous Source arrival is routed by explicit SourceGraph/Event relations,
+  and that a new article is not automatically treated as new independent evidence.
+controls:
+  provider: rule
+  semantic_event_clustering: deferred
+  watch_relevance: explicit_relation_or_shared_event_only
+  duplicate_repost: suppress_recheck
+  secondary_report: recheck_without_independent_count_increment
+  independent_same_event: recheck_with_independent_count_increment
+expected_sequence:
+  - A: initial WATCH obligation
+  - B: exact repost -> DUPLICATE_SUPPRESSED
+  - C: REPORTS_ON A -> SECONDARY -> KEEP_ACTIVE
+  - D: independent same-event evidence -> INDEPENDENT -> PROMOTED
+  - X: unrelated source -> ordinary analysis, not injected into WATCH

@@ -36,6 +36,13 @@ def _origin_input(db: Session, watch: Watch) -> tuple[UUID | None, list[UUID]]:
     return None, []
 
 
+def watch_cumulative_source_ids(db: Session, watch: Watch) -> list[UUID]:
+    primary_source_id, prior_extra_ids = _origin_input(db, watch)
+    if primary_source_id is None:
+        return []
+    return [primary_source_id, *[sid for sid in prior_extra_ids if sid != primary_source_id]]
+
+
 def _recheck_outcome(disposition: str) -> str:
     if disposition in {Disposition.AWARE.value, Disposition.ENGAGE.value}:
         return "PROMOTED"
@@ -48,6 +55,7 @@ def recheck_watch(
     watch: Watch,
     trigger: WatchTrigger,
     new_source_id: UUID,
+    provider=None,
 ) -> tuple[WatchCheck, dict]:
     if watch.status != "ACTIVE":
         raise ValueError(f"Watch is not ACTIVE: {watch.status}")
@@ -68,6 +76,7 @@ def recheck_watch(
         extra_source_ids=extra_ids,
         reprocess=True,
         allow_watch_creation=False,
+        provider=provider,
     )
     plan = result.get("attention_plan") or {}
     disposition = str(plan.get("disposition") or "DROP")
