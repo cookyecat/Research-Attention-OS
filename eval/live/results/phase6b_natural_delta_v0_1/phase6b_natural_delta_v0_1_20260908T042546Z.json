@@ -1,0 +1,973 @@
+{
+  "name": "raos-phase6b-natural-delta-v0.1",
+  "status": "DEVELOPMENT_ONLY_NOT_FRESH_VALIDATION",
+  "measurement_timestamp": "20260908T042546Z",
+  "measurement_git_head": "79bc1444812cf0b4748dde3bf6947de9676cb0a9",
+  "cognitive_slice_version": "phase6b-cognitive-semantics-v0.1",
+  "input_audit_artifact": "/Users/liyang/Developer/Research-Attention-OS/eval/live/results/phase6b_epistemic_unit_audit_v0_1/phase6b_epistemic_unit_audit_v0_1_20260908T041732Z.json",
+  "kernel_fixture": "phase6b-mvp-in-memory-copy",
+  "kernel_nodes": [
+    {
+      "id": "de327c12-7a91-5725-9c0e-b09230668d19",
+      "fixture_code": "G1",
+      "node_type": "GOAL",
+      "title": "Build better embodied and multi-agent intelligence systems."
+    },
+    {
+      "id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+      "fixture_code": "P1",
+      "node_type": "PROJECT",
+      "title": "Motor Intelligence"
+    },
+    {
+      "id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+      "fixture_code": "BT1",
+      "node_type": "BOTTLENECK",
+      "title": "Lack of latency × energy × task-success evaluation for high-frequency embodied control."
+    },
+    {
+      "id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+      "fixture_code": "Q1",
+      "node_type": "QUESTION",
+      "title": "Should high-frequency motor control depend on a large unified model?"
+    },
+    {
+      "id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+      "fixture_code": "B1",
+      "node_type": "BELIEF",
+      "title": "Large unified models may be unsuitable for the fastest embodied-control loop."
+    },
+    {
+      "id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+      "fixture_code": "M1",
+      "node_type": "MODEL",
+      "title": "Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence."
+    },
+    {
+      "id": "94bfb767-4c16-5421-b517-d4759dba279c",
+      "fixture_code": "P2",
+      "node_type": "PROJECT",
+      "title": "Collective Intelligence"
+    },
+    {
+      "id": "e4479777-8d47-5c24-aaed-0d085a985598",
+      "fixture_code": "Q2",
+      "node_type": "QUESTION",
+      "title": "Can shared world models reduce explicit multi-agent communication?"
+    },
+    {
+      "id": "a91c0106-c9d1-5421-806b-931885718e2a",
+      "fixture_code": "B2",
+      "node_type": "BELIEF",
+      "title": "True swarm-style collective intelligence requires meaningful decentralized local intelligence."
+    },
+    {
+      "id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+      "fixture_code": "D1",
+      "node_type": "DECISION",
+      "title": "Evaluate startup equity terms independently from employment obligations."
+    }
+  ],
+  "n_sources": 4,
+  "n_positive_delta": 1,
+  "rows": [
+    {
+      "source_id": "RS11",
+      "n_admitted_units": 7,
+      "audited_context": "Semantic unit: Qwen3.8-Flash achieves strong benchmark results, outperforming larger models on several tasks but not all.\nEvidence context [PARA 0010]: 在智能体编程基准 DeepSWE 1.1 上，它拿到 58.7 分，而参数规模是它三倍的前代 Qwen3.7-Plus 只有 16.5 分；长周期办公任务 CoWorkBench 和专业岗位任务 JobBench 上分别为 73.9 和 55.7 分，明显高于 Claude Opus 4.6（Max）的 68.2 和 36.6 分；多模态方面，AndroidWorld、ERQA、MathVision 等基准同样大幅领先。它并非全面占优，HLE 上的 35.9 分仍落后于 Opus 4.6 的 40.0 分，仓库级代码生成 NL2Repo-Bench 也不及 DeepSeek-V4-Flash-0731。\nSemantic unit: Qwen3.8-Flash uses a new architecture distinct from Qwen3.8-Max, which is based on Qwen3.5.\nEvidence context [PARA 0034]: 但其架构却与家族内其它模型大不一样：Qwen3.8-Max 是基于前代 Qwen3.5 架构迭代而来的，而这次的 Qwen3.8-Flash 用的是一套全新架构。\nSemantic unit: Qwen3.8-Flash is a multimodal MoE model with 125B main parameters, 51B N-gram Embedding, 6B active parameters per token, and 262,144 token context (extendable to 1M via YaRN).\nEvidence context [PARA 0039]: Qwen3.8-Flash 是一个多模态 MoE 模型，主模型参数量 125B，另外配备 51B 的 N-gram Embedding，而每个 token 只激活 6B 参数。它原生支持 262,144 token 上下文，并可通过 YaRN 扩展至 100 万 token。\nSemantic unit: N-gram Embedding adds 51B parameters stored in host memory via deterministic addressing, not entering per-token matrix multiplication budget.\nEvidence context [PARA 0073]: 这意味着这 51B 参数可以直接存放在 Host Memory 中，通过异步 Prefetch 与模型计算重叠，无需长期占用 GPU 显存。Qwen 在 Base 模型的评测说明中也点明了这一点：51B 的 N-gram Embedding 参数是确定性寻址的，不进入每 token 的矩阵乘预算。\nSemantic unit: Qwen3.8-Flash uses Muon optimizer with orthogonalization, applied to 2D linear mapping parameters, while AdamW handles embeddings, routers, and low-rank parameters.\nEvidence context [PARA 0077]: Qwen3.8-Flash 使用 Muon 优化器训练。Muon 通过对动量矩阵做正交化来加速收敛。\nEvidence context [PARA 0078]: 分工上的原则是，真正作为二维线性映射的参数用 Muon，例如 Attention、GDN 和 MoE Expert 中的主要权重；而 Embedding、MoE Router、GR 的低秩参数等则继续交给 AdamW。\nSemantic unit: Industry context: multiple providers (OpenAI, Google, Anthropic) have raised API prices or reduced free quotas, reversing the previous downward price trend.\nEvidence context [PARA 0006]: 涨价的不止一家。此前 OpenAI、谷歌和 Anthropic 已相继上调 API 价格或收缩免费额度。过去两年，大模型厂商一路把价格往下打，在 2026 年下半年，这条价格曲线却开始集体掉头。\nSemantic unit: Reason for price increases: inference demand outpaces compute supply, and agents multiply calls, making subsidized low prices unsustainable.\nEvidence context [PARA 0007]: 原因并不复杂。推理需求的增长跑赢了算力供给的增长，而 Agent 把单次调用变成了几十次调用。当账单从「一问一答」变成「一个任务跑几小时」，此前靠补贴维持的低价就撑不住了。",
+      "matches": [
+        {
+          "node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+          "fixture_code": "Q1",
+          "node_type": "QUESTION",
+          "title": "Should high-frequency motor control depend on a large unified model?",
+          "score": 0.6,
+          "reason": "The question about whether high-frequency motor control should depend on a large unified model is structurally analogous to the trade-off between large model capability and efficiency in Qwen3.8-Flash (large MoE with sparse activation, N-gram embedding offloading). The candidate discusses architectural choices for large models, which informs the question of when a large unified model is appropriate.",
+          "structural": true,
+          "relevance_type": "STRUCTURAL"
+        },
+        {
+          "node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+          "fixture_code": "B1",
+          "node_type": "BELIEF",
+          "title": "Large unified models may be unsuitable for the fastest embodied-control loop.",
+          "score": 0.6,
+          "reason": "The belief that large unified models may be unsuitable for the fastest embodied-control loop is structurally related to the candidate's discussion of Qwen3.8-Flash's architecture (MoE, sparse activation, N-gram embedding in host memory) which aims to make large models more efficient. This provides evidence about how large models can be optimized for latency-sensitive tasks.",
+          "structural": true,
+          "relevance_type": "STRUCTURAL"
+        },
+        {
+          "node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+          "fixture_code": "BT1",
+          "node_type": "BOTTLENECK",
+          "title": "Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+          "score": 0.7,
+          "reason": "The bottleneck about lack of latency × energy × task-success evaluation for high-frequency embodied control is directly relevant to the candidate's benchmark results and architectural details (e.g., active parameters, context length, N-gram embedding offloading). These metrics are exactly the kind of evaluation data needed to assess large models for high-frequency control.",
+          "structural": false,
+          "relevance_type": "BOTTLENECK"
+        },
+        {
+          "node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+          "fixture_code": "M1",
+          "node_type": "MODEL",
+          "title": "Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+          "score": 0.5,
+          "reason": "The model that embodied intelligence contains partially separable cognitive and temporal motor intelligence is structurally analogous to the candidate's separation of parameters (main model vs N-gram embedding) and the use of different optimizers for different parameter types. This suggests a design pattern of separating components for efficiency.",
+          "structural": true,
+          "relevance_type": "STRUCTURAL"
+        },
+        {
+          "node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+          "fixture_code": "G1",
+          "node_type": "GOAL",
+          "title": "Build better embodied and multi-agent intelligence systems.",
+          "score": 0.4,
+          "reason": "The goal to build better embodied and multi-agent intelligence systems is broadly related to the candidate's discussion of a new large model architecture and its benchmark performance. While not directly about embodied systems, the architectural innovations (MoE, N-gram embedding, Muon optimizer) could inform future embodied AI models.",
+          "structural": false,
+          "relevance_type": "TOPIC"
+        }
+      ],
+      "assessment": {
+        "effects": [],
+        "primary_effect": null,
+        "attention_cost": 0.2,
+        "exploration_candidate": false
+      },
+      "primary_delta": {
+        "operation": null,
+        "target_node_id": null,
+        "target_fixture_code": null,
+        "delta_content": "No material cognitive change relative to the current Kernel."
+      },
+      "policy_without_awareness": {
+        "disposition": "DROP",
+        "reason": "No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
+        "expected_output": "NONE"
+      },
+      "positive_delta_policy_complete": false,
+      "stage_provenance": {
+        "matching": {
+          "provider": "model",
+          "model": "deepseek-v4-pro",
+          "status": "success",
+          "retry": 0,
+          "latency_ms": 8882,
+          "prompt_tokens": 2494,
+          "completion_tokens": 633,
+          "estimated_cost_usd": null,
+          "validation_events": [],
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "llm_called": true,
+          "evidence_stage_skipped": null,
+          "evidence_skip_reason": null,
+          "attempts": [
+            {
+              "status": "success",
+              "provider": "model"
+            }
+          ]
+        },
+        "impact": {
+          "provider": "model",
+          "model": "deepseek-v4-pro",
+          "status": "success",
+          "retry": 0,
+          "latency_ms": 1392,
+          "prompt_tokens": 2493,
+          "completion_tokens": 76,
+          "estimated_cost_usd": null,
+          "validation_events": [],
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "llm_called": true,
+          "evidence_stage_skipped": null,
+          "evidence_skip_reason": null,
+          "attempts": [
+            {
+              "status": "success",
+              "provider": "model"
+            }
+          ]
+        }
+      },
+      "retrieval": {
+        "embedding_used": false,
+        "lexical_fallback": true,
+        "method": "lexical",
+        "embedding_model": "none",
+        "query_instruct_applied": true,
+        "candidates": [
+          {
+            "node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+            "title": "Should high-frequency motor control depend on a large unified model?",
+            "node_type": "QUESTION",
+            "rank": 1,
+            "score": 0.1111,
+            "method": "lexical"
+          },
+          {
+            "node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+            "title": "Large unified models may be unsuitable for the fastest embodied-control loop.",
+            "node_type": "BELIEF",
+            "rank": 2,
+            "score": 0.1,
+            "method": "lexical"
+          },
+          {
+            "node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+            "title": "Can shared world models reduce explicit multi-agent communication?",
+            "node_type": "QUESTION",
+            "rank": 3,
+            "score": 0.0909,
+            "method": "lexical"
+          },
+          {
+            "node_id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+            "title": "Evaluate startup equity terms independently from employment obligations.",
+            "node_type": "DECISION",
+            "rank": 4,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+            "title": "Motor Intelligence",
+            "node_type": "PROJECT",
+            "rank": 5,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+            "title": "Collective Intelligence",
+            "node_type": "PROJECT",
+            "rank": 6,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "title": "True swarm-style collective intelligence requires meaningful decentralized local intelligence.",
+            "node_type": "BELIEF",
+            "rank": 7,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+            "title": "Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+            "node_type": "MODEL",
+            "rank": 8,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+            "title": "Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+            "node_type": "BOTTLENECK",
+            "rank": 9,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+            "title": "Build better embodied and multi-agent intelligence systems.",
+            "node_type": "GOAL",
+            "rank": 10,
+            "score": 0.0,
+            "method": "lexical"
+          }
+        ]
+      }
+    },
+    {
+      "source_id": "RS12",
+      "n_admitted_units": 11,
+      "audited_context": "Semantic unit: 第二届世界人形机器人运动会于2025年8月22日至26日在北京国家速滑馆举行，共有来自六大洲16个国家的666支队伍、2056台机器人参加51个项目、1301场比赛；参赛队伍数量较首届增长138%，机器人数量约为首届的4倍。\nEvidence context [PARA 0006]: 8月22日至26日，第二届世界人形机器人运动会在北京国家速滑馆“冰丝带”举行。来自六大洲16个国家的666支队伍、2056台机器人，在5天里参加51个项目、1301场比赛；参赛队伍数量较首届增长138%，机器人数量约为首届的4倍。\nSemantic unit: 灵巧手专项赛设置8个项目，包括积木搭建、粉末称量、镊子夹豆、精细夹取、打螺丝、钉钉、电动工具装配、线缆连接，考察负载、精度、力控、手眼协调和工具使用能力。\nEvidence context [PARA 0007]: 灵巧手专项赛设置8个项目，从积木搭建、粉末称量、镊子夹豆、精细夹取，到打螺丝、钉钉、电动工具装配、线缆连接，将负载、精度、力控、手眼协调和工具使用放进同一张考卷。\nSemantic unit: 临界点OmniHand在灵巧手专项赛中的使用比例随赛程提高：预赛约27%，决赛约35%，前三名队伍约60%。\nEvidence context [PARA 0009]: 灵巧手专项赛预赛实际参赛队伍超过200支，其中约27%使用临界点自研的OmniHand；进入决赛的110余支队伍中，这一比例升至35%；进入前三的队伍中，OmniHand的使用比例约为60%。\nSemantic unit: 临界点参赛使用同一款OmniHand和同一套核心硬件配置，未为8个项目准备8套硬件。\nEvidence context [PARA 0010]: 临界点没有为8道题准备8套硬件。CEO乔天杰告诉「甲子光年」，参赛使用的是同一款OmniHand、同一套核心硬件配置。\nSemantic unit: OmniHand可实现Feix人手抓取分类中33种标准抓取形态中的27种，覆盖率超80%。\nEvidence context [PARA 0016]: 按照学术界普遍接受的Feix人手抓取分类方法，其中有33种标准抓取形态，临界点称OmniHand可以实现其中27种，覆盖率超80%。\nSemantic unit: OmniHand参数：10个主动自由度、16个总自由度，整手重量不超过520克，指尖重复定位精度典型值0.3毫米，五指抓握力不低于5公斤。\nEvidence context [PARA 0033]: 10个主动自由度、16个总自由度，整手重量不超过520克，指尖重复定位精度典型值为0.3毫米，五指抓握力不低于5公斤。\nSemantic unit: 临界点产品矩阵包括Lite系列（自由度较少，面向简单pick and place）、OmniHand（中间定位，平衡灵巧性、可靠性和成本）和Ultra系列（20个以上自由度，面向复杂手内操作）。\nEvidence context [PARA 0039]: Lite系列自由度较少，主要覆盖相对简单的pick and place；OmniHand处在中间，在灵巧性、可靠性和成本之间取平衡；Ultra则做到20个以上自由度，面向更复杂的手内操作。\nSemantic unit: 临界点团队在镊子夹豆项目中采用螺旋搜索方案（从碗中心向外沿螺旋路径寻找豆子，同时通过搅动增加可夹取目标），决赛自主方案稳定夹取约70颗黄豆。\nEvidence context [PARA 0050]: 最后改成螺旋搜索：从碗中心向外沿螺旋路径寻找豆子，同时通过搅动增加可夹取目标。\nEvidence context [PARA 0051]: 到了决赛，自主方案稳定夹取约70颗黄豆，拿下冠军。\nSemantic unit: 武大智元联合赛队在决赛前重新构建视觉管线，使用机器人头部和手部三个相机同时读取电子秤，通过相互校准和投票排除异常观测；决赛参数调得更保守，牺牲速度以提高一次成功概率。\nEvidence context [PARA 0055]: 决赛前，他们重新做了一遍视觉管线，机器人头部和手部的三个相机同时读取电子秤，通过相互校准和投票排除异常观测。\nEvidence context [PARA 0056]: 他们把决赛参数调得更保守，宁可牺牲一部分速度，也要提高一次成功的概率。\nSemantic unit: 临界点团队在灵巧手可靠性测试中增加了场景化测试，包括采集双足机器人行走/跑步时末端振动曲线并加严后用于单体测试；部分特殊工况需连续运行至少一周无问题才能进入下一阶段。\nEvidence context [PARA 0068]: 他们团队后来增加了更多场景化测试，其中一些特殊工况需要连续运行至少一周、没有出现问题，才能进入下一阶段。\nEvidence context [PARA 0070]: 后来，临界点团队把双足机器人真实行走、跑步时末端的振动曲线采集下来，再将这些工况加严，反过来用于灵巧手的单体测试。\nSemantic unit: 乔天杰认为灵巧手长期会越来越接近人手，原因包括工具设计围绕人手五指以及操作数据以人动作为源头；同时强调每增加机械复杂度需评估能换来多少可被算法稳定调用的任务能力。\nEvidence context [PARA 0041]: 乔天杰认为，从更长期看，机器人的手仍会越来越接近人手，背后有两个现实原因：一个来自工具。剪刀、锤子、螺丝刀、杯子、门把手，现实世界绝大多数工具本来就是围绕人的五指设计的。\nEvidence context [PARA 0042]: 另一个来自数据。今天具身智能能够获得的大量操作数据，无论来自互联网视频，还是人佩戴数据手套采集，本质上仍以人的动作作为源头。\nEvidence context [PARA 0043]: 真正需要重新计算的是，每增加一份机械复杂度，究竟能换来多少可以被算法稳定调用、最终进入真实任务的能力。",
+      "matches": [
+        {
+          "node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+          "fixture_code": "Q1",
+          "node_type": "QUESTION",
+          "title": "Should high-frequency motor control depend on a large unified model?",
+          "score": 0.7,
+          "reason": "The question about high-frequency motor control depending on a large unified model is directly relevant to the detailed discussion of dexterous hand control, including specific hardware parameters and competition performance, which informs the trade-offs in motor control architecture.",
+          "structural": false,
+          "relevance_type": "TOPIC"
+        },
+        {
+          "node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+          "fixture_code": "B1",
+          "node_type": "BELIEF",
+          "title": "Large unified models may be unsuitable for the fastest embodied-control loop.",
+          "score": 0.7,
+          "reason": "The belief that large unified models may be unsuitable for the fastest embodied-control loop is supported by evidence of specialized dexterous hand hardware and task-specific strategies, suggesting a separation between high-frequency control and higher-level cognition.",
+          "structural": false,
+          "relevance_type": "TOPIC"
+        },
+        {
+          "node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+          "fixture_code": "P1",
+          "node_type": "PROJECT",
+          "title": "Motor Intelligence",
+          "score": 0.6,
+          "reason": "The Motor Intelligence project is directly related to the content about dexterous hand manipulation, motor control, and hardware design, as the extracted claims focus on robotic hand capabilities and competition performance.",
+          "structural": false,
+          "relevance_type": "TOPIC"
+        },
+        {
+          "node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+          "fixture_code": "M1",
+          "node_type": "MODEL",
+          "title": "Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+          "score": 0.8,
+          "reason": "The model of embodied intelligence as partially separable cognitive and temporal motor intelligence is strongly supported by the detailed discussion of dexterous hand hardware, task-specific algorithms, and the emphasis on mechanical complexity versus algorithmic capability.",
+          "structural": false,
+          "relevance_type": "TOPIC"
+        },
+        {
+          "node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+          "fixture_code": "BT1",
+          "node_type": "BOTTLENECK",
+          "title": "Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+          "score": 0.6,
+          "reason": "The bottleneck of lacking latency × energy × task-success evaluation for high-frequency embodied control is addressed by the competition results and hardware specifications, which provide concrete metrics for evaluating dexterous manipulation performance.",
+          "structural": false,
+          "relevance_type": "BOTTLENECK"
+        },
+        {
+          "node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+          "fixture_code": "G1",
+          "node_type": "GOAL",
+          "title": "Build better embodied and multi-agent intelligence systems.",
+          "score": 0.5,
+          "reason": "The goal of building better embodied and multi-agent intelligence systems is relevant as the extracted claims provide empirical data and design insights for improving dexterous robotic hands, a key component of embodied intelligence.",
+          "structural": false,
+          "relevance_type": "TOPIC"
+        }
+      ],
+      "assessment": {
+        "effects": [],
+        "primary_effect": null,
+        "attention_cost": 0.3,
+        "exploration_candidate": false
+      },
+      "primary_delta": {
+        "operation": null,
+        "target_node_id": null,
+        "target_fixture_code": null,
+        "delta_content": "No material cognitive change relative to the current Kernel."
+      },
+      "policy_without_awareness": {
+        "disposition": "DROP",
+        "reason": "No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
+        "expected_output": "NONE"
+      },
+      "positive_delta_policy_complete": false,
+      "stage_provenance": {
+        "matching": {
+          "provider": "model",
+          "model": "deepseek-v4-pro",
+          "status": "success",
+          "retry": 0,
+          "latency_ms": 8788,
+          "prompt_tokens": 5481,
+          "completion_tokens": 609,
+          "estimated_cost_usd": null,
+          "validation_events": [],
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "llm_called": true,
+          "evidence_stage_skipped": null,
+          "evidence_skip_reason": null,
+          "attempts": [
+            {
+              "status": "success",
+              "provider": "model"
+            }
+          ]
+        },
+        "impact": {
+          "provider": "model",
+          "model": "deepseek-v4-pro",
+          "status": "success",
+          "retry": 0,
+          "latency_ms": 1975,
+          "prompt_tokens": 2912,
+          "completion_tokens": 76,
+          "estimated_cost_usd": null,
+          "validation_events": [],
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "llm_called": true,
+          "evidence_stage_skipped": null,
+          "evidence_skip_reason": null,
+          "attempts": [
+            {
+              "status": "success",
+              "provider": "model"
+            }
+          ]
+        }
+      },
+      "retrieval": {
+        "embedding_used": false,
+        "lexical_fallback": true,
+        "method": "lexical",
+        "embedding_model": "none",
+        "query_instruct_applied": true,
+        "candidates": [
+          {
+            "node_id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+            "title": "Evaluate startup equity terms independently from employment obligations.",
+            "node_type": "DECISION",
+            "rank": 1,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+            "title": "Should high-frequency motor control depend on a large unified model?",
+            "node_type": "QUESTION",
+            "rank": 2,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+            "title": "Large unified models may be unsuitable for the fastest embodied-control loop.",
+            "node_type": "BELIEF",
+            "rank": 3,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+            "title": "Motor Intelligence",
+            "node_type": "PROJECT",
+            "rank": 4,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+            "title": "Collective Intelligence",
+            "node_type": "PROJECT",
+            "rank": 5,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "title": "True swarm-style collective intelligence requires meaningful decentralized local intelligence.",
+            "node_type": "BELIEF",
+            "rank": 6,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+            "title": "Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+            "node_type": "MODEL",
+            "rank": 7,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+            "title": "Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+            "node_type": "BOTTLENECK",
+            "rank": 8,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+            "title": "Build better embodied and multi-agent intelligence systems.",
+            "node_type": "GOAL",
+            "rank": 9,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+            "title": "Can shared world models reduce explicit multi-agent communication?",
+            "node_type": "QUESTION",
+            "rank": 10,
+            "score": 0.0,
+            "method": "lexical"
+          }
+        ]
+      }
+    },
+    {
+      "source_id": "RS15",
+      "n_admitted_units": 2,
+      "audited_context": "Semantic unit: 去中心化架构相比中心化控制具有扩展性和鲁棒性优势：联合动作空间随机器人数量指数膨胀，而去中心化下增加机器人只需加载同一策略副本，计算量线性增长；中心化存在单点故障，去中心化单节点故障不会传播。\nEvidence context [PARA 0077]: 扩展性。 中心化控制器的联合动作空间随机器人数量指数膨胀。假设每台机器人的动作空间维度为 d，N 台机器人的联合空间为 d^N。Zeno-1 的去中心化架构下，增加一台机器人只需要加载同一个策略副本，无需重新设计控制器或重新划分联合动作空间，计算量线性增长。\nEvidence context [PARA 0078]: 鲁棒性。 中心化系统存在单点故障。中央控制器如果出现延迟或故障，所有机器人同时失效。去中心化系统中，每台机器人独立决策，单个节点的故障不会传播到整个团队。\nSemantic unit: 产业界和学术界正将多机器人协作视为机器人基础模型下一阶段的重要能力：斯坦福 CHORUS 方法提出基于单一 VLA policy 的去中心化多机器人协作；Figure Helix 02 和 Google DeepMind Gemini Robotics 2 已展示或强调 multi-robot collaboration。\nEvidence context [PARA 0083]: 今年 6 月，斯坦福的 Chelsea Finn、Jeannette Bohg 的课题组提出一篇名为 CHORUS 的方法，提出了基于单一 VLA policy 的去中心化多机器人协作。\nEvidence context [PARA 0084]: Figure 的 Helix 02 和 Google DeepMind 的 Gemini Robotics 2 都已经明确展示或强调 multi-robot collaboration，说明协作正在逐渐进入机器人基础模型的核心能力定义。",
+      "matches": [
+        {
+          "node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+          "fixture_code": "B2",
+          "node_type": "BELIEF",
+          "title": "True swarm-style collective intelligence requires meaningful decentralized local intelligence.",
+          "score": 0.9,
+          "reason": "Directly supports the belief that decentralized local intelligence is required for swarm-style collective intelligence, with evidence on scalability and robustness advantages of decentralization.",
+          "structural": false,
+          "relevance_type": "TOPIC"
+        },
+        {
+          "node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+          "fixture_code": "P2",
+          "node_type": "PROJECT",
+          "title": "Collective Intelligence",
+          "score": 0.8,
+          "reason": "The candidate discusses multi-robot collaboration as a core capability for robot foundation models, which is central to the Collective Intelligence project.",
+          "structural": false,
+          "relevance_type": "TOPIC"
+        },
+        {
+          "node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+          "fixture_code": "G1",
+          "node_type": "GOAL",
+          "title": "Build better embodied and multi-agent intelligence systems.",
+          "score": 0.7,
+          "reason": "The candidate's focus on multi-robot collaboration and decentralized architectures aligns with the goal of building better embodied and multi-agent intelligence systems.",
+          "structural": false,
+          "relevance_type": "TOPIC"
+        },
+        {
+          "node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+          "fixture_code": "Q2",
+          "node_type": "QUESTION",
+          "title": "Can shared world models reduce explicit multi-agent communication?",
+          "score": 0.6,
+          "reason": "The candidate's discussion of decentralized control and single policy copies for multiple robots is structurally analogous to the question of whether shared world models can reduce explicit communication in multi-agent systems.",
+          "structural": true,
+          "relevance_type": "STRUCTURAL"
+        },
+        {
+          "node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+          "fixture_code": "Q1",
+          "node_type": "QUESTION",
+          "title": "Should high-frequency motor control depend on a large unified model?",
+          "score": 0.5,
+          "reason": "The candidate's mention of a single VLA policy for decentralized multi-robot collaboration relates to the question of whether high-frequency motor control should depend on a large unified model, though the candidate focuses on collaboration rather than motor control.",
+          "structural": true,
+          "relevance_type": "STRUCTURAL"
+        },
+        {
+          "node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+          "fixture_code": "B1",
+          "node_type": "BELIEF",
+          "title": "Large unified models may be unsuitable for the fastest embodied-control loop.",
+          "score": 0.5,
+          "reason": "The candidate's evidence on scalability and robustness of decentralized architectures could inform the belief about large unified models being unsuitable for fast control loops, as decentralization may avoid single points of failure.",
+          "structural": true,
+          "relevance_type": "STRUCTURAL"
+        },
+        {
+          "node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+          "fixture_code": "M1",
+          "node_type": "MODEL",
+          "title": "Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+          "score": 0.4,
+          "reason": "The candidate's distinction between centralized and decentralized control may relate to the separation of cognitive and temporal motor intelligence, but the connection is indirect.",
+          "structural": true,
+          "relevance_type": "STRUCTURAL"
+        },
+        {
+          "node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+          "fixture_code": "BT1",
+          "node_type": "BOTTLENECK",
+          "title": "Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+          "score": 0.3,
+          "reason": "The candidate provides evidence on scalability and robustness, which could be relevant to evaluating high-frequency embodied control, but it does not directly address latency, energy, or task-success evaluation.",
+          "structural": false,
+          "relevance_type": "BOTTLENECK"
+        }
+      ],
+      "assessment": {
+        "effects": [
+          {
+            "target_kernel_node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "operation": "REINFORCE",
+            "change_magnitude": 0.35,
+            "epistemic_strength": 0.35,
+            "target_importance": 0.75,
+            "reason": "The claim that decentralized architectures offer scalability and robustness advantages over centralized control, and that industry/academia are moving toward decentralized multi-robot collaboration via single VLA policies, aligns with and strengthens the belief that true swarm-style collective intelligence requires meaningful decentralized local intelligence. However, the evidence is largely directional and self-reported, without detailed comparative benchmarks, so the reinforcement is moderate.",
+            "exploration_candidate": false,
+            "target_node_type": "BELIEF"
+          }
+        ],
+        "primary_effect": {
+          "target_kernel_node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+          "operation": "REINFORCE",
+          "change_magnitude": 0.35,
+          "epistemic_strength": 0.35,
+          "target_importance": 0.75,
+          "reason": "The claim that decentralized architectures offer scalability and robustness advantages over centralized control, and that industry/academia are moving toward decentralized multi-robot collaboration via single VLA policies, aligns with and strengthens the belief that true swarm-style collective intelligence requires meaningful decentralized local intelligence. However, the evidence is largely directional and self-reported, without detailed comparative benchmarks, so the reinforcement is moderate.",
+          "exploration_candidate": false,
+          "target_node_type": "BELIEF"
+        },
+        "attention_cost": 0.3,
+        "exploration_candidate": false
+      },
+      "primary_delta": {
+        "operation": "REINFORCE",
+        "target_node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+        "target_fixture_code": "B2",
+        "delta_content": "The claim that decentralized architectures offer scalability and robustness advantages over centralized control, and that industry/academia are moving toward decentralized multi-robot collaboration via single VLA policies, aligns with and strengthens the belief that true swarm-style collective intelligence requires meaningful decentralized local intelligence. However, the evidence is largely directional and self-reported, without detailed comparative benchmarks, so the reinforcement is moderate."
+      },
+      "policy_without_awareness": {
+        "disposition": "WATCH",
+        "reason": "Potentially important cognitive effect with insufficient current evidence; transfer future attention to the system.",
+        "expected_output": "WATCH"
+      },
+      "positive_delta_policy_complete": true,
+      "stage_provenance": {
+        "matching": {
+          "provider": "model",
+          "model": "deepseek-v4-pro",
+          "status": "success",
+          "retry": 0,
+          "latency_ms": 9518,
+          "prompt_tokens": 2240,
+          "completion_tokens": 734,
+          "estimated_cost_usd": null,
+          "validation_events": [],
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "llm_called": true,
+          "evidence_stage_skipped": null,
+          "evidence_skip_reason": null,
+          "attempts": [
+            {
+              "status": "success",
+              "provider": "model"
+            }
+          ]
+        },
+        "impact": {
+          "provider": "model",
+          "model": "deepseek-v4-pro",
+          "status": "success",
+          "retry": 0,
+          "latency_ms": 3639,
+          "prompt_tokens": 2694,
+          "completion_tokens": 248,
+          "estimated_cost_usd": null,
+          "validation_events": [],
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "llm_called": true,
+          "evidence_stage_skipped": null,
+          "evidence_skip_reason": null,
+          "attempts": [
+            {
+              "status": "success",
+              "provider": "model"
+            }
+          ]
+        }
+      },
+      "retrieval": {
+        "embedding_used": false,
+        "lexical_fallback": true,
+        "method": "lexical",
+        "embedding_model": "none",
+        "query_instruct_applied": true,
+        "candidates": [
+          {
+            "node_id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+            "title": "Evaluate startup equity terms independently from employment obligations.",
+            "node_type": "DECISION",
+            "rank": 1,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+            "title": "Should high-frequency motor control depend on a large unified model?",
+            "node_type": "QUESTION",
+            "rank": 2,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+            "title": "Large unified models may be unsuitable for the fastest embodied-control loop.",
+            "node_type": "BELIEF",
+            "rank": 3,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+            "title": "Motor Intelligence",
+            "node_type": "PROJECT",
+            "rank": 4,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+            "title": "Collective Intelligence",
+            "node_type": "PROJECT",
+            "rank": 5,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "title": "True swarm-style collective intelligence requires meaningful decentralized local intelligence.",
+            "node_type": "BELIEF",
+            "rank": 6,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+            "title": "Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+            "node_type": "MODEL",
+            "rank": 7,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+            "title": "Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+            "node_type": "BOTTLENECK",
+            "rank": 8,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+            "title": "Build better embodied and multi-agent intelligence systems.",
+            "node_type": "GOAL",
+            "rank": 9,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+            "title": "Can shared world models reduce explicit multi-agent communication?",
+            "node_type": "QUESTION",
+            "rank": 10,
+            "score": 0.0,
+            "method": "lexical"
+          }
+        ]
+      }
+    },
+    {
+      "source_id": "RS05",
+      "n_admitted_units": 2,
+      "audited_context": "Semantic unit: For a 64x64 bf16 matrix multiplication with bias addition, the profiler shows Self CPU time total of 2.314ms and Self CUDA time total of 23.104us, indicating that GPU time is less than 1% of CPU time, which is characteristic of an overhead-bound algorithm where most time is spent on kernel preparation and launch rather than computation.\nEvidence context [PARA 0035]: Self CPU time total: 2.314ms\nSelf CUDA time total: 23.104us\nEvidence context [PARA 0036]: GPU 上花费的时间（内核 ampere_bf16_s16816gemm...）不到 CPU 上花费时间（matmul_add 操作）的 1%。... 这类受调度开销制约的算法被称作 开销受限型（overhead-bound） 算法。\nSemantic unit: The cudaDeviceSynchronize call at the end of an active profiling window takes about 1.78 ms while the actual GPU computation is only 26 microseconds, indicating that the program is idle about 98% of the time, a typical overhead-bound symptom.\nEvidence context [PARA 0080]: cudaDeviceSynchronize 会阻塞 CPU 线程，直至当前 GPU 上所有计算任务全部执行完毕。剖析器会在有效采样窗口末尾执行该同步操作，目的是刷新缓存的性能事件，缺少这一步就会丢失内核耗时统计数据。\nEvidence context [PARA 0081]: 一次仅 26 微秒 GPU 有效运算，却伴随 1.78 毫秒同步耗时，说明程序空闲占比高达 98%，是典型的开销受限型性能特征。",
+      "matches": [
+        {
+          "node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+          "fixture_code": "BT1",
+          "node_type": "BOTTLENECK",
+          "title": "Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+          "score": 0.9,
+          "reason": "The candidate provides concrete profiling evidence of overhead-bound behavior (CPU time >> GPU time, idle 98%) which directly relates to the bottleneck of evaluating latency and efficiency for high-frequency embodied control. It offers measurement data that could inform the lack of latency × energy × task-success evaluation.",
+          "structural": false,
+          "relevance_type": "BOTTLENECK"
+        },
+        {
+          "node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+          "fixture_code": "Q1",
+          "node_type": "QUESTION",
+          "title": "Should high-frequency motor control depend on a large unified model?",
+          "score": 0.7,
+          "reason": "The question about high-frequency motor control depending on a large unified model is topically related to overhead-bound algorithms, as such control loops require low latency and minimal overhead. The profiling data illustrates the kind of overhead that could make large models unsuitable.",
+          "structural": false,
+          "relevance_type": "TOPIC"
+        },
+        {
+          "node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+          "fixture_code": "B1",
+          "node_type": "BELIEF",
+          "title": "Large unified models may be unsuitable for the fastest embodied-control loop.",
+          "score": 0.7,
+          "reason": "The belief that large unified models may be unsuitable for the fastest embodied-control loop is supported by evidence of overhead-bound behavior. The candidate shows that even small operations can be dominated by CPU overhead, which is relevant to the suitability of large models in high-frequency control.",
+          "structural": false,
+          "relevance_type": "TOPIC"
+        },
+        {
+          "node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+          "fixture_code": "M1",
+          "node_type": "MODEL",
+          "title": "Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+          "score": 0.6,
+          "reason": "The model of embodied intelligence separating cognitive and temporal motor intelligence is related to the need for efficient low-latency computation in the temporal motor part. Overhead-bound profiling is relevant to understanding the computational constraints of that component.",
+          "structural": false,
+          "relevance_type": "TOPIC"
+        }
+      ],
+      "assessment": {
+        "effects": [],
+        "primary_effect": null,
+        "attention_cost": 0.1,
+        "exploration_candidate": false
+      },
+      "primary_delta": {
+        "operation": null,
+        "target_node_id": null,
+        "target_fixture_code": null,
+        "delta_content": "No material cognitive change relative to the current Kernel."
+      },
+      "policy_without_awareness": {
+        "disposition": "DROP",
+        "reason": "No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
+        "expected_output": "NONE"
+      },
+      "positive_delta_policy_complete": false,
+      "stage_provenance": {
+        "matching": {
+          "provider": "model",
+          "model": "deepseek-v4-pro",
+          "status": "success",
+          "retry": 0,
+          "latency_ms": 7007,
+          "prompt_tokens": 1755,
+          "completion_tokens": 450,
+          "estimated_cost_usd": null,
+          "validation_events": [],
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "llm_called": true,
+          "evidence_stage_skipped": null,
+          "evidence_skip_reason": null,
+          "attempts": [
+            {
+              "status": "success",
+              "provider": "model"
+            }
+          ]
+        },
+        "impact": {
+          "provider": "model",
+          "model": "deepseek-v4-pro",
+          "status": "success",
+          "retry": 0,
+          "latency_ms": 1443,
+          "prompt_tokens": 2223,
+          "completion_tokens": 76,
+          "estimated_cost_usd": null,
+          "validation_events": [],
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "llm_called": true,
+          "evidence_stage_skipped": null,
+          "evidence_skip_reason": null,
+          "attempts": [
+            {
+              "status": "success",
+              "provider": "model"
+            }
+          ]
+        }
+      },
+      "retrieval": {
+        "embedding_used": false,
+        "lexical_fallback": true,
+        "method": "lexical",
+        "embedding_model": "none",
+        "query_instruct_applied": true,
+        "candidates": [
+          {
+            "node_id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+            "title": "Evaluate startup equity terms independently from employment obligations.",
+            "node_type": "DECISION",
+            "rank": 1,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+            "title": "Should high-frequency motor control depend on a large unified model?",
+            "node_type": "QUESTION",
+            "rank": 2,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+            "title": "Large unified models may be unsuitable for the fastest embodied-control loop.",
+            "node_type": "BELIEF",
+            "rank": 3,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+            "title": "Motor Intelligence",
+            "node_type": "PROJECT",
+            "rank": 4,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+            "title": "Collective Intelligence",
+            "node_type": "PROJECT",
+            "rank": 5,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "title": "True swarm-style collective intelligence requires meaningful decentralized local intelligence.",
+            "node_type": "BELIEF",
+            "rank": 6,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+            "title": "Embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+            "node_type": "MODEL",
+            "rank": 7,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+            "title": "Lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+            "node_type": "BOTTLENECK",
+            "rank": 8,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+            "title": "Build better embodied and multi-agent intelligence systems.",
+            "node_type": "GOAL",
+            "rank": 9,
+            "score": 0.0,
+            "method": "lexical"
+          },
+          {
+            "node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+            "title": "Can shared world models reduce explicit multi-agent communication?",
+            "node_type": "QUESTION",
+            "rank": 10,
+            "score": 0.0,
+            "method": "lexical"
+          }
+        ]
+      }
+    }
+  ]
+}
