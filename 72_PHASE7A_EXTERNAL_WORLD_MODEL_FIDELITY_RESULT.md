@@ -203,3 +203,21 @@ then Phase 8 — Narrow Continuous Attention Loop
 ```
 
 Phase 7A exit rule is satisfied because remaining errors are observable and attributable rather than silent and mysterious.
+## 11. Precision does not mean decimal maximalism
+
+The RS05 `23.104 us` case exposed a useful distinction.
+Keeping an exact measurement can be correct, but the number is not automatically a first-class semantic unit.
+
+For the downstream decision, the important state was the scoped relation:
+
+```text
+64x64 bf16 matmul+add under the measured setup:
+GPU kernel time is tiny relative to CPU wall time,
+so kernel preparation / launch dominates useful computation.
+```
+
+`23.104 us` is valuable as quantitative support for that relation. It is not valuable merely because it has three decimal places.
+
+> **Semantic precision means preserving the decision-bearing relation with sufficient evidence, not maximizing numerical detail.**
+
+This also refines the earlier packaging failure: Sensor factual correctness and Auditor correctness can coexist when statement granularity, support granularity, and audit granularity are misaligned.

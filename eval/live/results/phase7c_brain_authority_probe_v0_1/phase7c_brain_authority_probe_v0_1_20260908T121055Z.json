@@ -1,0 +1,170 @@
+{
+  "name": "raos-phase7c-brain-authority-probe-v0.1",
+  "status": "DEVELOPMENT_CONTROLLED_BRAIN_STATE_PROBE",
+  "measurement_timestamp": "20260908T121055Z",
+  "measurement_git_head": "7575263f55d7face2088509d9b6dafdecbefc262",
+  "probe_version": "phase7c-brain-authority-probe-v0.1",
+  "n_cases": 4,
+  "n_match": 4,
+  "rows": [
+    {
+      "case_id": "A_MODEL_GUESS_ONLY",
+      "expected_preempt": false,
+      "actual_preempt": false,
+      "match": true,
+      "trusted_threat": false,
+      "disposition": "ENGAGE",
+      "urgency": "NORMAL",
+      "expected_output": "KERNEL_PATCH",
+      "note": "Model inference alone cannot authorize PREEMPT.",
+      "brain_snapshot": {
+        "version": "brain-world-model-v0.1",
+        "captured_at": "2026-09-08T12:00:00+00:00",
+        "runtime_facts": [],
+        "advisory_facts": [
+          {
+            "key": "threatens_active_work",
+            "value": true,
+            "source": "MODEL_INFERENCE",
+            "authority": "DERIVED",
+            "observed_at": "2026-09-08T12:00:00+00:00",
+            "valid_until": null,
+            "provenance": "model guessed active-work overlap",
+            "confidence": 0.95
+          }
+        ],
+        "kernel_snapshot_hash": null,
+        "active_watch_ids": [],
+        "standing_radar_anchor": null
+      },
+      "plan_reason": "Material cognitive effect with meaningful change magnitude on an important Kernel target. Evidence maturity is low; attributed claims need care before belief update. Integrate against an existing Model, Belief, Question, Bottleneck, or Decision."
+    },
+    {
+      "case_id": "B_TASK_WITH_MODEL_GUESS",
+      "expected_preempt": false,
+      "actual_preempt": false,
+      "match": true,
+      "trusted_threat": false,
+      "disposition": "ENGAGE",
+      "urgency": "NORMAL",
+      "expected_output": "KERNEL_PATCH",
+      "note": "Knowing the current task does not make a guessed overlap authoritative.",
+      "brain_snapshot": {
+        "version": "brain-world-model-v0.1",
+        "captured_at": "2026-09-08T12:00:00+00:00",
+        "runtime_facts": [
+          {
+            "key": "current_task",
+            "value": "Write current paper",
+            "source": "USER_EXPLICIT_RUNTIME",
+            "authority": "AUTHORITATIVE",
+            "observed_at": "2026-09-08T12:00:00+00:00",
+            "valid_until": null,
+            "provenance": "explicit user runtime",
+            "confidence": 1.0
+          }
+        ],
+        "advisory_facts": [
+          {
+            "key": "threatens_active_work",
+            "value": true,
+            "source": "MODEL_INFERENCE",
+            "authority": "DERIVED",
+            "observed_at": "2026-09-08T12:00:00+00:00",
+            "valid_until": null,
+            "provenance": "model guessed active-work overlap",
+            "confidence": 0.95
+          }
+        ],
+        "kernel_snapshot_hash": null,
+        "active_watch_ids": [],
+        "standing_radar_anchor": null
+      },
+      "plan_reason": "Material cognitive effect with meaningful change magnitude on an important Kernel target. Evidence maturity is low; attributed claims need care before belief update. Integrate against an existing Model, Belief, Question, Bottleneck, or Decision."
+    },
+    {
+      "case_id": "C_AUTHORITATIVE_THREAT",
+      "expected_preempt": true,
+      "actual_preempt": true,
+      "match": true,
+      "trusted_threat": true,
+      "disposition": "ENGAGE",
+      "urgency": "PREEMPT",
+      "expected_output": "KERNEL_PATCH",
+      "note": "Explicit trusted overlap may authorize PREEMPT.",
+      "brain_snapshot": {
+        "version": "brain-world-model-v0.1",
+        "captured_at": "2026-09-08T12:00:00+00:00",
+        "runtime_facts": [
+          {
+            "key": "current_task",
+            "value": "Write current paper",
+            "source": "USER_EXPLICIT_RUNTIME",
+            "authority": "AUTHORITATIVE",
+            "observed_at": "2026-09-08T12:00:00+00:00",
+            "valid_until": null,
+            "provenance": "explicit user runtime",
+            "confidence": 1.0
+          },
+          {
+            "key": "threatens_active_work",
+            "value": true,
+            "source": "USER_EXPLICIT_RUNTIME",
+            "authority": "AUTHORITATIVE",
+            "observed_at": "2026-09-08T12:00:00+00:00",
+            "valid_until": null,
+            "provenance": "explicit trusted runtime signal",
+            "confidence": 1.0
+          }
+        ],
+        "advisory_facts": [],
+        "kernel_snapshot_hash": null,
+        "active_watch_ids": [],
+        "standing_radar_anchor": null
+      },
+      "plan_reason": "Material cognitive effect with meaningful change magnitude on an important Kernel target. Evidence maturity is low; attributed claims need care before belief update. Integrate against an existing Model, Belief, Question, Bottleneck, or Decision. PREEMPT is justified: interrupting current work is cheaper than discovering a novelty collision after submission."
+    },
+    {
+      "case_id": "D_EXPIRED_THREAT",
+      "expected_preempt": false,
+      "actual_preempt": false,
+      "match": true,
+      "trusted_threat": false,
+      "disposition": "ENGAGE",
+      "urgency": "NORMAL",
+      "expected_output": "KERNEL_PATCH",
+      "note": "Expired authority cannot remain current state.",
+      "brain_snapshot": {
+        "version": "brain-world-model-v0.1",
+        "captured_at": "2026-09-08T12:00:00+00:00",
+        "runtime_facts": [
+          {
+            "key": "current_task",
+            "value": "Write current paper",
+            "source": "USER_EXPLICIT_RUNTIME",
+            "authority": "AUTHORITATIVE",
+            "observed_at": "2026-09-08T12:00:00+00:00",
+            "valid_until": null,
+            "provenance": "explicit user runtime",
+            "confidence": 1.0
+          },
+          {
+            "key": "threatens_active_work",
+            "value": true,
+            "source": "USER_EXPLICIT_RUNTIME",
+            "authority": "AUTHORITATIVE",
+            "observed_at": "2026-09-08T10:00:00+00:00",
+            "valid_until": "2026-09-08T11:59:00+00:00",
+            "provenance": "expired trusted runtime signal",
+            "confidence": 1.0
+          }
+        ],
+        "advisory_facts": [],
+        "kernel_snapshot_hash": null,
+        "active_watch_ids": [],
+        "standing_radar_anchor": null
+      },
+      "plan_reason": "Material cognitive effect with meaningful change magnitude on an important Kernel target. Evidence maturity is low; attributed claims need care before belief update. Integrate against an existing Model, Belief, Question, Bottleneck, or Decision."
+    }
+  ]
+}

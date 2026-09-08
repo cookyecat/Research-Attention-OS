@@ -159,3 +159,19 @@ This is development evidence for dynamic state-estimation and interface wiring o
 Do not continue adding synthetic P cases merely to increase confidence. Open-world collector uncertainty is deferred to Phase 8 dogfooding.
 
 Current subphase: **7C — Minimal Trusted Brain World Model.**
+## 10. Phase 7C result — 2026-09-08
+
+Phase 7C is **CLOSED / sufficient** with `brain-world-model-v0.1` as the minimal trusted starting point.
+
+The Brain World Model currently prioritizes authority and provenance over rich inference. It records explicit runtime facts, Kernel identity, active WATCH obligations, source, authority, freshness, and provenance.
+
+Controlled integration verified:
+
+```text
+model guess only -> no PREEMPT
+current task + model guess -> no PREEMPT
+explicit authoritative threat -> PREEMPT
+expired authoritative threat -> no PREEMPT
+```
+
+Current phase: **Phase 8 — Narrow Continuous Attention Loop.**

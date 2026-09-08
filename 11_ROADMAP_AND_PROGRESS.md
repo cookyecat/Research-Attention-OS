@@ -812,3 +812,12 @@ organic attention can enter SALIENT and drive AWARE
 ```
 
 Current work moves to **Phase 7C — Minimal Trusted Brain World Model**. Do not reopen P semantics or extend synthetic P benchmarking absent a repeated attributable failure.
+## Phase 7C minimal trusted Brain World Model — CLOSED 2026-09-08
+
+`brain-world-model-v0.1` is sufficient to move forward. Production AttentionPlan decisions now record an auditable Brain snapshot with trusted runtime facts, Kernel identity, active WATCH obligations, authority, provenance, and freshness.
+
+Controlled authority probes passed 4/4 and relevant exact-SHA regression passed 131 tests.
+
+Current phase is now **Phase 8 — Narrow Continuous Attention Loop**.
+
+Do not expand Brain World Model inference breadth before live dogfooding reveals repeated attributable gaps. Likewise, probabilistic Decision Fidelity / uncertainty calibration remains a later Phase 10 research track; Phase 8 should run with the current 7A/7B/7C working models first.

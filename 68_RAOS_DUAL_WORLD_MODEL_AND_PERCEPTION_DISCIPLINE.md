@@ -243,4 +243,17 @@ The fix is architectural, not a Scheduler-policy change:
 
 > **A model inference about the user is not automatically an authoritative user state.**
 
-Only trusted upstream Brain/Runtime sensing may assert runtime facts such as `threatens_active_work`.
+Only trusted upstream Brain/Runtime sensing may assert runtime facts such as `threatens_active_work`.## Brain World Model authority refinement — 2026-09-08
+
+Phase 7C adds an operational distinction that should remain explicit:
+
+```text
+State Value != State Authority != State Freshness
+Confidence != Authority
+```
+
+A model may infer a plausible user-state relation, but inference confidence does not authorize it to become current user state.
+
+Authoritative runtime facts require a trusted source; expired facts lose current-state authority. Derived/advisory facts may still be retained for reasoning or review without acquiring policy power.
+
+This turns the Brain World Model into an auditable state-estimation boundary before it becomes a richer user model.
