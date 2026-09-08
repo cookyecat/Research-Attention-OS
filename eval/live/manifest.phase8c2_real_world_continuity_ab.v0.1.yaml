@@ -1,0 +1,41 @@
+version: phase8c2-real-world-continuity-ab-v0.1
+status: PREREGISTERED_REAL_WORLD_CONTINUITY
+purpose: >-
+  Verify that the Phase 8C.2 extraction bridge propagates through the full Phase 8C.1
+  real-web arrival/WATCH path without changing frozen relational or Attention semantics.
+controls:
+  evidence_type: REAL_PUBLIC_WEB_DEVELOPMENT_CONTINUITY
+  downstream_provider: rule
+  relation_assignment: supervised_phase8c1_replay
+  normalized_hash_and_char_count_gate: required_before_any_ab_or_model_call
+  default_path: legacy
+  sensor_candidate: semantic-sensor-v0.2.6-plus-auditor-v0.1.1
+procedure:
+  - reacquire all four URLs through production URLConnector
+  - abort before A/B if any production-normalized content_hash or extracted character count differs from Phase 8C.1
+  - create one shared base world with supervised A/C/D event relations
+  - run legacy and Sensor arms in rollback SAVEPOINTs
+  - require bridge propagation through initial analysis, WATCH rechecks, and ordinary arrival
+  - compare WATCH continuity and relational context; cognitive differences are diagnostic, not gold-labelled
+  - if the first pair fails a structural gate, run two confirmation pairs; otherwise do not mechanically repeat
+sources:
+  A:
+    role: initial_watch_source
+    url: https://azure.microsoft.com/en-us/blog/gpt-6-astra-frontier-intelligence-for-work-now-generally-available-in-microsoft-foundry/
+    content_chars: 6614
+    content_hash: 4ed8f2d62837c877408b960cf8e7a4adaa475d90599885c3b2729cf1eae27853
+  C:
+    role: supervised_secondary_same_event
+    url: https://deploymentsafety.openai.com/gpt-6-astra/vision
+    content_chars: 5950
+    content_hash: 5eee6de6c46c3a4a7130ea5ea96fce04438678be75cd5b622e3bf787d0993fac
+  D:
+    role: supervised_independent_same_event
+    url: https://www.theverge.com/ai-artificial-intelligence/989601/openai-gpt-6-astra-release
+    content_chars: 6375
+    content_hash: 942a9a81ba359fa18ce0a9650c7771f8ccdf3b50ab8f4ea4d6a20857a7008328
+  X:
+    role: unrelated_control
+    url: https://research.google/blog/agenthands-generating-interactive-hand-gestures-for-spatially-grounded-agent-conversations-in-xr/
+    content_chars: 6064
+    content_hash: 054ff33bf2c0e802e7ec912d50ba90155174d402fd596d94ed349076e8183147

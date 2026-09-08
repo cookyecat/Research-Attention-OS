@@ -128,3 +128,17 @@ and the anti-overfitting rule:
 ```text
 Do not turn one development residual into a universal mechanism.
 ```
+
+# 5. Decision-bearing precision
+
+Production evidence should not reward a Sensor for maximizing fact volume. The target is precise delivery of the semantic state that downstream judgment actually depends on.
+
+> **好的 Sensor 不是把事实灌满下游，而是在决策真正依赖的地方，精准交付正确的语义状态。**
+
+> **A good Sensor does not flood the downstream system with facts. It delivers the correct semantic state precisely where the decision depends on it.**
+
+A useful engineering analogy is precise input timing rather than button-mashing: extra inputs that do not preserve a decision-bearing state or relation consume bandwidth without improving judgment.
+
+> **A smaller representation is sufficient when it preserves the relation that the downstream decision actually depends on.**
+
+Therefore, information that is not useful to downstream judgment should not be delivered merely to make the representation look complete. This is a production design principle, not a license to omit uncertain decision-bearing evidence.

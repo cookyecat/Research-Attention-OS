@@ -4,14 +4,42 @@ from uuid import UUID
 
 from sqlalchemy import func, select
 
-from app.enums import Disposition, ExpectedOutput, SourceEdgeRelationship
+from app.enums import AttributionType, ClaimType, Disposition, ExpectedOutput, SourceEdgeRelationship
 from app.models.analysis import AnalysisRun
 from app.models.event import EventSource
 from app.models.watch import Watch, WatchCheck, WatchTrigger
 from app.services.continuous_attention import process_source_arrival
+from app.services.extraction import ExtractedClaim, ExtractionResult
+from app.services.extraction_bridge import ExtractionBridgeResult
 from app.services.scheduler import PlanDraft, validate_plan
 from app.services.source_graph import persist_source_edge
 from tests.conftest import add_text, analyze
+
+
+class _ArrivalFixedBridge:
+    def execution_snapshot(self):
+        return {"bridge_version": "test-arrival-bridge-v1", "sensor": "fixture"}
+
+    def extract(self, source, extra_sources):
+        extraction = ExtractionResult(
+            claims=[
+                ExtractedClaim(
+                    text="Audited arrival evidence for bridge propagation.",
+                    claim_type=ClaimType.FACTUAL,
+                    attributed_to="source",
+                    attribution_type=AttributionType.UNKNOWN,
+                    confidence_extraction=0.9,
+                    temporal_status="CURRENT",
+                    source_span_text="audited arrival evidence",
+                )
+            ],
+            event_summary="Audited arrival evidence.",
+            evidence_maturity=0.35,
+        )
+        return ExtractionBridgeResult(
+            extraction=extraction,
+            diagnostics={"fixture": True, "n_extra_sources": len(extra_sources)},
+        )
 
 
 def _make_watch(db, initial_result):
@@ -140,3 +168,38 @@ def test_unrelated_arrival_uses_ordinary_analysis(client, db):
     assert result["ordinary_analysis"] is not None
     assert result["ordinary_analysis"]["analysis_run"]["source_id"] == unrelated["id"]
     assert watch.status == "ACTIVE"
+
+def test_unrelated_arrival_propagates_extraction_bridge(client, db):
+    a = add_text(client, "Initial watched evidence for bridge propagation.", title="arrival-bridge-A")
+    initial = analyze(client, a["id"])
+    _make_watch(db, initial)
+
+    unrelated = add_text(client, "Unrelated bridge-propagation note.", title="arrival-bridge-X")
+    result = process_source_arrival(
+        db, UUID(unrelated["id"]), extraction_bridge=_ArrivalFixedBridge()
+    )
+    assert result["matched_watch"] is False
+    assert result["ordinary_analysis"]["extraction_path"]["mode"] == "bridge"
+    assert result["ordinary_analysis"]["execution_snapshot"]["extraction_bridge"]["bridge_version"] == "test-arrival-bridge-v1"
+
+
+def test_watch_recheck_propagates_extraction_bridge(client, db, monkeypatch):
+    import app.services.pipeline as pipeline_mod
+
+    a = add_text(client, "Initial evidence for watched bridge propagation.", title="arrival-watch-bridge-A")
+    initial = analyze(client, a["id"])
+    watch = _make_watch(db, initial)
+    monkeypatch.setattr(pipeline_mod, "route", _maturity_route)
+
+    c = add_text(client, "Secondary evidence for watched bridge propagation.", title="arrival-watch-bridge-C")
+    persist_source_edge(db, UUID(c["id"]), UUID(a["id"]), SourceEdgeRelationship.REPORTS_ON)
+    result = process_source_arrival(
+        db, UUID(c["id"]), extraction_bridge=_ArrivalFixedBridge()
+    )
+    decision = result["watch_decisions"][0]
+    assert decision["action"] == "RECHECK"
+    check = db.get(WatchCheck, UUID(decision["check_id"]))
+    payload, _run = _run_payload(db, check.analysis_run_id)
+    assert payload["extraction_path"]["mode"] == "bridge"
+    assert payload["execution_snapshot"]["extraction_bridge"]["bridge_version"] == "test-arrival-bridge-v1"
+    assert watch.status in {"ACTIVE", "PROMOTED"}

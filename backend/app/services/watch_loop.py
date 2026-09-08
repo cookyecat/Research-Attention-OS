@@ -56,6 +56,7 @@ def recheck_watch(
     trigger: WatchTrigger,
     new_source_id: UUID,
     provider=None,
+    extraction_bridge=None,
 ) -> tuple[WatchCheck, dict]:
     if watch.status != "ACTIVE":
         raise ValueError(f"Watch is not ACTIVE: {watch.status}")
@@ -77,6 +78,7 @@ def recheck_watch(
         reprocess=True,
         allow_watch_creation=False,
         provider=provider,
+        extraction_bridge=extraction_bridge,
     )
     plan = result.get("attention_plan") or {}
     disposition = str(plan.get("disposition") or "DROP")

@@ -152,3 +152,20 @@ stable qualitative divergence = same A/B direction in >= 2 of 3 pairs
 ```
 
 The candidate path does not call legacy `provider.reason_evidence()`: Sensor + Auditor are the replacement provenance/evidence gate for this arm. This fact is recorded in bridge diagnostics only. The existing `evidence_stage_skipped` field is intentionally not repurposed because it is decision-active downstream and would contaminate the controlled comparison.
+
+## 10. Tier-2 real-world continuity addendum
+
+This extension was proposed before the Tier-1 live A/B was run and is formalized here before any Tier-2 reacquisition or Tier-2 Sensor/legacy result is observed. Tier 2 reuses the Phase 8C.1 real-web continuity set: A (Microsoft Azure), C (OpenAI Deployment Safety Hub), D (The Verge), and X (Google Research unrelated control).
+
+Phase 8C.1 persisted canonical content hashes but used an in-memory database, so the exact acquired text bytes were not archived. Tier 2 must therefore reacquire through the same production URLConnector and **must abort before A/B** unless each production-normalized `content_hash` exactly equals its Phase 8C.1 canonical value **and** the raw extracted `content_chars` count also matches the canonical run:
+
+```text
+A  4ed8f2d62837c877408b960cf8e7a4adaa475d90599885c3b2729cf1eae27853
+C  5eee6de6c46c3a4a7130ea5ea96fce04438678be75cd5b622e3bf787d0993fac
+D  942a9a81ba359fa18ce0a9650c7771f8ccdf3b50ab8f4ea4d6a20857a7008328
+X  054ff33bf2c0e802e7ec912d50ba90155174d402fd596d94ed349076e8183147
+```
+
+Hash or character-count mismatch is `REAL_WEB_CONTENT_DRIFT`, not Sensor regression evidence. The production `content_hash` normalizes whitespace and lowercases text before hashing, so this gate establishes production-normalized text continuity, **not byte identity**. No current webpage may be treated as the same `I_t` merely because its URL and title are unchanged.
+
+Tier 2 must exercise the full Phase 8C.1 arrival/WATCH path, not only direct `run_pipeline()`. Therefore `extraction_bridge` must be propagated as an optional pass-through parameter through `process_source_arrival()` and `recheck_watch()`, with `None` preserving the exact legacy default. This is bridge-completeness plumbing only; relevance classification, WATCH accumulation, promotion logic, Delta, D/S/P, and Attention Policy remain frozen.

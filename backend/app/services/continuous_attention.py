@@ -129,7 +129,9 @@ def _record_duplicate_suppressed(
     db.flush()
     return check
 
-def process_source_arrival(db: Session, new_source_id: UUID, *, provider=None) -> dict:
+def process_source_arrival(
+    db: Session, new_source_id: UUID, *, provider=None, extraction_bridge=None
+) -> dict:
     new_source = db.get(Source, new_source_id)
     if new_source is None:
         raise ValueError("Source not found")
@@ -171,7 +173,8 @@ def process_source_arrival(db: Session, new_source_id: UUID, *, provider=None) -
             continue
 
         check, _result = recheck_watch(
-            db, watch=watch, trigger=trigger, new_source_id=new_source_id, provider=provider
+            db, watch=watch, trigger=trigger, new_source_id=new_source_id, provider=provider,
+            extraction_bridge=extraction_bridge,
         )
         decisions.append(
             ArrivalDecision(
@@ -183,7 +186,9 @@ def process_source_arrival(db: Session, new_source_id: UUID, *, provider=None) -
 
     ordinary = None
     if not matched_any:
-        ordinary = run_pipeline(db, new_source_id, provider=provider)
+        ordinary = run_pipeline(
+            db, new_source_id, provider=provider, extraction_bridge=extraction_bridge
+        )
 
     return {
         "version": CONTINUOUS_ATTENTION_VERSION,
