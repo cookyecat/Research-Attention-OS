@@ -1,0 +1,25 @@
+name: semantic-sensor-v0.2.6-predicate-explicit-development
+status: DEVELOPMENT_ONLY_NOT_FRESH_VALIDATION
+parent: semantic-evidence-extractor-v0.2.5
+question: >-
+  Can the Sensor preserve explicit relational predicates needed for downstream cognitive judgment
+  while retaining evidence-complete context-bearing support?
+controlled_change:
+  - preserve explicit causal/comparative/dominance/conditional predicates
+  - do not replace source relations with shorthand semantic labels alone
+unchanged:
+  - SemanticExtractionBatchV0_2
+  - max 12 non-event units
+  - max 4 supports per non-event unit
+  - temporal/source-binding rules
+  - Auditor v0.1.1
+  - frozen Delta semantics
+  - Attention Policy
+initial_development_sources: [RS15, RS05]
+success_conditions:
+  RS15: audited representation preserves Q2 shared-world-model meaning
+  RS05: audited representation preserves explicit overhead-dominates-compute predicate and restores CHALLENGE(CF-B-PERF) -> ENGAGE
+  no_atomization: unit count remains bounded and semantically clustered
+stop_rule: >-
+  If this controlled revision still cannot preserve both RS15 and RS05 downstream meaning,
+  stop prompt tuning and treat remaining gap as model-capability/front-end architecture frontier before Phase 7B/7C.
