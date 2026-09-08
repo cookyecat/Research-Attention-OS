@@ -798,3 +798,17 @@ Current execution frontier:
 ```text
 Phase 7B — Dynamic P / simulated collective-attention evidence
 ```
+## Phase 7B dynamic P — CLOSED 2026-09-08
+
+Dynamic P simulation is now sufficient for Phase 7. Same-SHA repeated runs preserved the expected time-varying P state and final DROP/AWARE action at all 30 measured time points.
+
+Key validated behaviors:
+
+```text
+formation / establishment / inertia / sustained decay / rebound
+paid exposure != genuine attention
+synthetic trend volume != genuine attention
+organic attention can enter SALIENT and drive AWARE
+```
+
+Current work moves to **Phase 7C — Minimal Trusted Brain World Model**. Do not reopen P semantics or extend synthetic P benchmarking absent a repeated attributable failure.

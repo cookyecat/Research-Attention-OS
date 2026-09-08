@@ -148,3 +148,14 @@ Current Phase 7 frontier:
 ```
 
 Do not reopen v0.2.6 tuning from saturated RS05/RS15 unless a new cross-source or downstream-causal failure justifies it.
+## 9. Phase 7B result — 2026-09-08
+
+Phase 7B is **CLOSED / sufficient**. Dynamic simulated attention evidence was evaluated through frozen P v1 and the production no-Delta Attention Policy.
+
+Three same-SHA repetitions produced 30/30 expected P(t) states and 30/30 expected DROP/AWARE actions across formation, established salience, short decline with inertia, sustained decay, rebound, paid exposure, synthetic trend volume, and organic attention formation.
+
+This is development evidence for dynamic state-estimation and interface wiring only. It is not evidence about current real-world salience.
+
+Do not continue adding synthetic P cases merely to increase confidence. Open-world collector uncertainty is deferred to Phase 8 dogfooding.
+
+Current subphase: **7C — Minimal Trusted Brain World Model.**

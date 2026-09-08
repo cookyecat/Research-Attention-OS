@@ -1,0 +1,1080 @@
+{
+  "name": "raos-phase7b-dynamic-p-simulation-v0.1",
+  "status": "DEVELOPMENT_SIMULATION_NOT_REAL_WORLD_SALIENCE",
+  "measurement_timestamp": "20260908T103427Z",
+  "measurement_git_head": "eea6e96b0a077fdb09f3ab8ede7f4fa8f4bf32ca",
+  "simulation_version": "phase7b-dynamic-p-simulation-v0.1",
+  "p_estimator_version": "collective-attention-estimator-v1",
+  "p_prompt_version": "collective-attention-v1",
+  "p_prompt_sha256": "0fbc1c9c935e5cf31a98b77a0a6a9f5b99ff7473906a7e438e834f278d193b67",
+  "p_evidence_interface": "collective-attention-evidence-packet-v1",
+  "actual_models": [
+    "deepseek-v4-flash"
+  ],
+  "controlled_awareness": {
+    "D": "OUT",
+    "S": "MATERIAL",
+    "P": "dynamic estimator output"
+  },
+  "n_steps": 10,
+  "n_scorable": 10,
+  "n_p_match": 10,
+  "n_action_match": 10,
+  "scenario_paths": {
+    "specialist_cycle": [
+      {
+        "step_id": "T0_QUIET",
+        "p": "NOT_SALIENT",
+        "action": "DROP"
+      },
+      {
+        "step_id": "T1_FORMING",
+        "p": "SALIENT",
+        "action": "AWARE"
+      },
+      {
+        "step_id": "T2_ESTABLISHED",
+        "p": "SALIENT",
+        "action": "AWARE"
+      },
+      {
+        "step_id": "T3_SHORT_DECLINE",
+        "p": "SALIENT",
+        "action": "AWARE"
+      },
+      {
+        "step_id": "T4_SUSTAINED_DECAY",
+        "p": "NOT_SALIENT",
+        "action": "DROP"
+      },
+      {
+        "step_id": "T5_ORGANIC_REBOUND",
+        "p": "SALIENT",
+        "action": "AWARE"
+      }
+    ],
+    "manipulated_to_organic": [
+      {
+        "step_id": "T0_PAID_EXPOSURE",
+        "p": "NOT_SALIENT",
+        "action": "DROP"
+      },
+      {
+        "step_id": "T1_SYNTHETIC_TREND",
+        "p": "NOT_SALIENT",
+        "action": "DROP"
+      },
+      {
+        "step_id": "T2_ORGANIC_FORMATION",
+        "p": "SALIENT",
+        "action": "AWARE"
+      },
+      {
+        "step_id": "T3_ORGANIC_SUSTAINED",
+        "p": "SALIENT",
+        "action": "AWARE"
+      }
+    ]
+  },
+  "rows": [
+    {
+      "scenario_id": "specialist_cycle",
+      "step_id": "T0_QUIET",
+      "event_as_of": "2026-09-08T00:00:00Z",
+      "expected_p": "NOT_SALIENT",
+      "actual_p": "NOT_SALIENT",
+      "p_match": true,
+      "expected_action": "DROP",
+      "actual_action": "DROP",
+      "action_match": true,
+      "p_result": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "NOT_SALIENT",
+        "objective_constituency": "active embodied-agent and multi-agent benchmark researchers and engineers",
+        "attention_state_summary": "Current evidence shows only two isolated forum mentions, baseline search interest, and no independent lab follow-up within the specialist constituency.",
+        "inertia_summary": "No prior salient attention state; history indicates comparable announcements typically remain at low baseline attention.",
+        "reason": "Genuine collective attention is not forming; observations are minimal and do not indicate meaningful engagement relative to the specialist constituency.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1495,
+          "prompt_tokens": 1915,
+          "completion_tokens": 134,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "action_reason": "No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
+      "packet": {
+        "event": {
+          "event_id": "SIM-P-SPECIALIST-01",
+          "as_of": "2026-09-08T00:00:00Z",
+          "semantic_summary": "A new embodied-agent benchmark is released for multi-agent long-horizon task execution."
+        },
+        "constituency_prior": {
+          "description": "active embodied-agent and multi-agent benchmark researchers and engineers",
+          "scope": "domain",
+          "reference_scale": "10^4",
+          "reference_size_hint": "unknown",
+          "basis": "explicit_event_scope",
+          "provenance": "simulated scenario definition fixed before attention observations"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "specialist_forum",
+            "field_search",
+            "independent_labs"
+          ],
+          "channels_unavailable": [],
+          "notes": "SIMULATED DEVELOPMENT EVIDENCE ONLY; not a claim about current real-world salience."
+        },
+        "current_attention_evidence": [
+          {
+            "kind": "discussion",
+            "window": "6h",
+            "observation": "Two isolated forum mentions; no sustained thread participation.",
+            "source": "sim-forum",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "forum",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "search",
+            "window": "6h",
+            "observation": "Field-specific search interest remains near ordinary baseline.",
+            "source": "sim-search",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "search",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "institutional_followup",
+            "window": "6h",
+            "observation": "No independent lab follow-up detected in checked channels.",
+            "source": "sim-labs",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "labs",
+            "quality": "structural",
+            "contamination": []
+          }
+        ],
+        "recent_attention_history": [
+          {
+            "window": "previous 7d",
+            "observation": "Comparable benchmark announcements usually remained at low baseline attention.",
+            "source": "sim-history"
+          }
+        ]
+      }
+    },
+    {
+      "scenario_id": "specialist_cycle",
+      "step_id": "T1_FORMING",
+      "event_as_of": "2026-09-08T06:00:00Z",
+      "expected_p": "SALIENT",
+      "actual_p": "SALIENT",
+      "p_match": true,
+      "expected_action": "AWARE",
+      "actual_action": "AWARE",
+      "action_match": true,
+      "p_result": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "SALIENT",
+        "objective_constituency": "active embodied-agent and multi-agent benchmark researchers and engineers",
+        "attention_state_summary": "Sustained technical discussion across specialist subcommunities, field-specific search activity at six times baseline and rising, and eight independent labs publicly inspecting or reproducing the benchmark.",
+        "inertia_summary": "Attention moved from isolated mentions to multi-channel specialist uptake within the previous 6h, indicating formation of a salient state.",
+        "reason": "Multiple independent, high-quality signals show genuine collective attention forming within the specialist constituency, well above baseline and with structural uptake.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1562,
+          "prompt_tokens": 1927,
+          "completion_tokens": 149,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "action_reason": "Δ=NONE with situational awareness: worth knowing, no cognitive write or watch obligation.",
+      "packet": {
+        "event": {
+          "event_id": "SIM-P-SPECIALIST-01",
+          "as_of": "2026-09-08T06:00:00Z",
+          "semantic_summary": "A new embodied-agent benchmark is released for multi-agent long-horizon task execution."
+        },
+        "constituency_prior": {
+          "description": "active embodied-agent and multi-agent benchmark researchers and engineers",
+          "scope": "domain",
+          "reference_scale": "10^4",
+          "reference_size_hint": "unknown",
+          "basis": "explicit_event_scope",
+          "provenance": "simulated scenario definition fixed before attention observations"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "specialist_forum",
+            "field_search",
+            "independent_labs"
+          ],
+          "channels_unavailable": [],
+          "notes": "SIMULATED DEVELOPMENT EVIDENCE ONLY; not a claim about current real-world salience."
+        },
+        "current_attention_evidence": [
+          {
+            "kind": "discussion",
+            "window": "6h",
+            "observation": "Independent specialist threads show sustained technical discussion across multiple subcommunities.",
+            "source": "sim-forum",
+            "observed_at": "2026-09-08T06:00:00Z",
+            "independence_group": "forum",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "search",
+            "window": "6h",
+            "observation": "Field-specific search activity is about six times the ordinary baseline and still rising.",
+            "source": "sim-search",
+            "observed_at": "2026-09-08T06:00:00Z",
+            "independence_group": "search",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "institutional_followup",
+            "window": "6h",
+            "observation": "Eight independent labs publicly inspect, reproduce, or reference the benchmark.",
+            "source": "sim-labs",
+            "observed_at": "2026-09-08T06:00:00Z",
+            "independence_group": "labs",
+            "quality": "structural",
+            "contamination": []
+          }
+        ],
+        "recent_attention_history": [
+          {
+            "window": "previous 6h",
+            "observation": "Attention moved from isolated mentions to multi-channel specialist uptake.",
+            "source": "sim-history"
+          }
+        ]
+      }
+    },
+    {
+      "scenario_id": "specialist_cycle",
+      "step_id": "T2_ESTABLISHED",
+      "event_as_of": "2026-09-09T06:00:00Z",
+      "expected_p": "SALIENT",
+      "actual_p": "SALIENT",
+      "p_match": true,
+      "expected_action": "AWARE",
+      "actual_action": "AWARE",
+      "action_match": true,
+      "p_result": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "SALIENT",
+        "objective_constituency": "active embodied-agent and multi-agent benchmark researchers and engineers",
+        "attention_state_summary": "Sustained technical discussion, elevated search activity, and independent lab analyses indicate genuine collective attention within the specialist community.",
+        "inertia_summary": "Rapid formation followed by sustained high attention over the previous 24 hours; current evidence shows no decay.",
+        "reason": "Evidence shows genuine engagement from multiple independent sources within the relevant specialist constituency, consistent with a salient state of collective attention.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1270,
+          "prompt_tokens": 1922,
+          "completion_tokens": 135,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "action_reason": "Δ=NONE with situational awareness: worth knowing, no cognitive write or watch obligation.",
+      "packet": {
+        "event": {
+          "event_id": "SIM-P-SPECIALIST-01",
+          "as_of": "2026-09-09T06:00:00Z",
+          "semantic_summary": "A new embodied-agent benchmark is released for multi-agent long-horizon task execution."
+        },
+        "constituency_prior": {
+          "description": "active embodied-agent and multi-agent benchmark researchers and engineers",
+          "scope": "domain",
+          "reference_scale": "10^4",
+          "reference_size_hint": "unknown",
+          "basis": "explicit_event_scope",
+          "provenance": "simulated scenario definition fixed before attention observations"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "specialist_forum",
+            "field_search",
+            "independent_labs"
+          ],
+          "channels_unavailable": [],
+          "notes": "SIMULATED DEVELOPMENT EVIDENCE ONLY; not a claim about current real-world salience."
+        },
+        "current_attention_evidence": [
+          {
+            "kind": "discussion",
+            "window": "24h",
+            "observation": "Technical discussion is broad and sustained across the active specialist community.",
+            "source": "sim-forum",
+            "observed_at": "2026-09-09T06:00:00Z",
+            "independence_group": "forum",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "search",
+            "window": "24h",
+            "observation": "Search remains about five times baseline with repeated return visits.",
+            "source": "sim-search",
+            "observed_at": "2026-09-09T06:00:00Z",
+            "independence_group": "search",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "institutional_followup",
+            "window": "24h",
+            "observation": "Twenty independent labs or research groups have posted analyses or reproductions.",
+            "source": "sim-labs",
+            "observed_at": "2026-09-09T06:00:00Z",
+            "independence_group": "labs",
+            "quality": "structural",
+            "contamination": []
+          }
+        ],
+        "recent_attention_history": [
+          {
+            "window": "previous 24h",
+            "observation": "Rapid formation was followed by sustained high specialist attention.",
+            "source": "sim-history"
+          }
+        ]
+      }
+    },
+    {
+      "scenario_id": "specialist_cycle",
+      "step_id": "T3_SHORT_DECLINE",
+      "event_as_of": "2026-09-10T06:00:00Z",
+      "expected_p": "SALIENT",
+      "actual_p": "SALIENT",
+      "p_match": true,
+      "expected_action": "AWARE",
+      "actual_action": "AWARE",
+      "action_match": true,
+      "p_result": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "SALIENT",
+        "objective_constituency": "active embodied-agent and multi-agent benchmark researchers and engineers",
+        "attention_state_summary": "Discussion is down 25% from yesterday but remains broad and technically active; search is down from peak but still ~3x baseline; independent lab analyses continue, though slower. All checked channels show genuine engagement relative to the specialist constituency.",
+        "inertia_summary": "The event had established high specialist attention in the prior 48h; the current decline is a short-term fluctuation, not sustained decay, as attention remains materially above baseline.",
+        "reason": "Genuine collective attention is present and remains salient relative to the specialist constituency, despite a short-term decline; temporal inertia supports continued salience.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1680,
+          "prompt_tokens": 1966,
+          "completion_tokens": 178,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "action_reason": "Δ=NONE with situational awareness: worth knowing, no cognitive write or watch obligation.",
+      "packet": {
+        "event": {
+          "event_id": "SIM-P-SPECIALIST-01",
+          "as_of": "2026-09-10T06:00:00Z",
+          "semantic_summary": "A new embodied-agent benchmark is released for multi-agent long-horizon task execution."
+        },
+        "constituency_prior": {
+          "description": "active embodied-agent and multi-agent benchmark researchers and engineers",
+          "scope": "domain",
+          "reference_scale": "10^4",
+          "reference_size_hint": "unknown",
+          "basis": "explicit_event_scope",
+          "provenance": "simulated scenario definition fixed before attention observations"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "specialist_forum",
+            "field_search",
+            "independent_labs"
+          ],
+          "channels_unavailable": [],
+          "notes": "SIMULATED DEVELOPMENT EVIDENCE ONLY; not a claim about current real-world salience."
+        },
+        "current_attention_evidence": [
+          {
+            "kind": "discussion",
+            "window": "24h",
+            "observation": "Discussion volume is down roughly 25% from yesterday but remains broad and technically active.",
+            "source": "sim-forum",
+            "observed_at": "2026-09-10T06:00:00Z",
+            "independence_group": "forum",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "search",
+            "window": "24h",
+            "observation": "Search is down from peak but remains about three times ordinary baseline.",
+            "source": "sim-search",
+            "observed_at": "2026-09-10T06:00:00Z",
+            "independence_group": "search",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "institutional_followup",
+            "window": "24h",
+            "observation": "Independent analyses continue to appear, though more slowly.",
+            "source": "sim-labs",
+            "observed_at": "2026-09-10T06:00:00Z",
+            "independence_group": "labs",
+            "quality": "structural",
+            "contamination": []
+          }
+        ],
+        "recent_attention_history": [
+          {
+            "window": "previous 48h",
+            "observation": "The event reached established high specialist attention before the current short decline.",
+            "source": "sim-history"
+          },
+          {
+            "window": "last 24h",
+            "observation": "Current attention remains materially above ordinary baseline despite negative velocity.",
+            "source": "sim-history"
+          }
+        ]
+      }
+    },
+    {
+      "scenario_id": "specialist_cycle",
+      "step_id": "T4_SUSTAINED_DECAY",
+      "event_as_of": "2026-09-22T06:00:00Z",
+      "expected_p": "NOT_SALIENT",
+      "actual_p": "NOT_SALIENT",
+      "p_match": true,
+      "expected_action": "DROP",
+      "actual_action": "DROP",
+      "action_match": true,
+      "p_result": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "NOT_SALIENT",
+        "objective_constituency": "active embodied-agent and multi-agent benchmark researchers and engineers",
+        "attention_state_summary": "Current evidence shows only isolated references, baseline search volume, and no new institutional follow-up within the specialist constituency.",
+        "inertia_summary": "History indicates steady decay from an earlier peak to ordinary baseline over the past 10 days, with no recent reversal.",
+        "reason": "Genuine collective attention has faded to baseline across all checked channels; the decline is sustained, not a short-term fluctuation.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1478,
+          "prompt_tokens": 1927,
+          "completion_tokens": 139,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "action_reason": "No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
+      "packet": {
+        "event": {
+          "event_id": "SIM-P-SPECIALIST-01",
+          "as_of": "2026-09-22T06:00:00Z",
+          "semantic_summary": "A new embodied-agent benchmark is released for multi-agent long-horizon task execution."
+        },
+        "constituency_prior": {
+          "description": "active embodied-agent and multi-agent benchmark researchers and engineers",
+          "scope": "domain",
+          "reference_scale": "10^4",
+          "reference_size_hint": "unknown",
+          "basis": "explicit_event_scope",
+          "provenance": "simulated scenario definition fixed before attention observations"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "specialist_forum",
+            "field_search",
+            "independent_labs"
+          ],
+          "channels_unavailable": [],
+          "notes": "SIMULATED DEVELOPMENT EVIDENCE ONLY; not a claim about current real-world salience."
+        },
+        "current_attention_evidence": [
+          {
+            "kind": "discussion",
+            "window": "72h",
+            "observation": "Checked specialist channels show only isolated references and no active discussion threads.",
+            "source": "sim-forum",
+            "observed_at": "2026-09-22T06:00:00Z",
+            "independence_group": "forum",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "search",
+            "window": "72h",
+            "observation": "Field-specific search has returned close to ordinary baseline.",
+            "source": "sim-search",
+            "observed_at": "2026-09-22T06:00:00Z",
+            "independence_group": "search",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "institutional_followup",
+            "window": "72h",
+            "observation": "No new independent lab follow-up appeared in the last three days.",
+            "source": "sim-labs",
+            "observed_at": "2026-09-22T06:00:00Z",
+            "independence_group": "labs",
+            "quality": "structural",
+            "contamination": []
+          }
+        ],
+        "recent_attention_history": [
+          {
+            "window": "previous 10d",
+            "observation": "Attention decayed steadily from the earlier peak toward ordinary baseline across all checked channels.",
+            "source": "sim-history"
+          }
+        ]
+      }
+    },
+    {
+      "scenario_id": "specialist_cycle",
+      "step_id": "T5_ORGANIC_REBOUND",
+      "event_as_of": "2026-09-29T06:00:00Z",
+      "expected_p": "SALIENT",
+      "actual_p": "SALIENT",
+      "p_match": true,
+      "expected_action": "AWARE",
+      "actual_action": "AWARE",
+      "action_match": true,
+      "p_result": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "SALIENT",
+        "objective_constituency": "active embodied-agent and multi-agent benchmark researchers and engineers",
+        "attention_state_summary": "A new benchmark result has triggered independent technical discussions, a fivefold increase in field-specific search, and follow-up analyses from twelve independent labs within the specialist community.",
+        "inertia_summary": "Prior attention had decayed to baseline, but the current rebound is independently visible across multiple channels, indicating a new forming attention state rather than a fluctuation.",
+        "reason": "The evidence shows genuine collective attention forming within the specialist constituency, with multiple independent indicators of engagement and institutional follow-up, relative to the small scale of the community.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1638,
+          "prompt_tokens": 1974,
+          "completion_tokens": 162,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "action_reason": "Δ=NONE with situational awareness: worth knowing, no cognitive write or watch obligation.",
+      "packet": {
+        "event": {
+          "event_id": "SIM-P-SPECIALIST-01",
+          "as_of": "2026-09-29T06:00:00Z",
+          "semantic_summary": "A new embodied-agent benchmark is released for multi-agent long-horizon task execution."
+        },
+        "constituency_prior": {
+          "description": "active embodied-agent and multi-agent benchmark researchers and engineers",
+          "scope": "domain",
+          "reference_scale": "10^4",
+          "reference_size_hint": "unknown",
+          "basis": "explicit_event_scope",
+          "provenance": "simulated scenario definition fixed before attention observations"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "specialist_forum",
+            "field_search",
+            "independent_labs"
+          ],
+          "channels_unavailable": [],
+          "notes": "SIMULATED DEVELOPMENT EVIDENCE ONLY; not a claim about current real-world salience."
+        },
+        "current_attention_evidence": [
+          {
+            "kind": "discussion",
+            "window": "12h",
+            "observation": "A new benchmark result triggers renewed independent technical threads across the specialist community.",
+            "source": "sim-forum",
+            "observed_at": "2026-09-29T06:00:00Z",
+            "independence_group": "forum",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "search",
+            "window": "12h",
+            "observation": "Field-specific search rises to about five times baseline after the new result.",
+            "source": "sim-search",
+            "observed_at": "2026-09-29T06:00:00Z",
+            "independence_group": "search",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "institutional_followup",
+            "window": "12h",
+            "observation": "Twelve independent labs publish follow-up analyses or reproduction notes.",
+            "source": "sim-labs",
+            "observed_at": "2026-09-29T06:00:00Z",
+            "independence_group": "labs",
+            "quality": "structural",
+            "contamination": []
+          }
+        ],
+        "recent_attention_history": [
+          {
+            "window": "previous 10d",
+            "observation": "The original attention state had decayed back toward baseline before the current rebound.",
+            "source": "sim-history"
+          },
+          {
+            "window": "last 12h",
+            "observation": "Renewed attention is independently visible across discussion, search, and institutional follow-up.",
+            "source": "sim-history"
+          }
+        ]
+      }
+    },
+    {
+      "scenario_id": "manipulated_to_organic",
+      "step_id": "T0_PAID_EXPOSURE",
+      "event_as_of": "2026-09-08T00:00:00Z",
+      "expected_p": "NOT_SALIENT",
+      "actual_p": "NOT_SALIENT",
+      "p_match": true,
+      "expected_action": "DROP",
+      "actual_action": "DROP",
+      "action_match": true,
+      "p_result": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "NOT_SALIENT",
+        "objective_constituency": "active users and evaluators of a newly launched AI application",
+        "attention_state_summary": "Campaign reach is high but contaminated by paid and forced exposure; voluntary engagement and search remain near baseline, indicating no genuine collective attention.",
+        "inertia_summary": "No prior organic attention state existed; current evidence shows only promotional exposure, not sustained genuine attention.",
+        "reason": "Genuine attention is absent: meaningful engagement and search are low despite high reach, and the only strong signals are paid/forced exposure.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1720,
+          "prompt_tokens": 1926,
+          "completion_tokens": 144,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "action_reason": "No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
+      "packet": {
+        "event": {
+          "event_id": "SIM-P-PRODUCT-01",
+          "as_of": "2026-09-08T00:00:00Z",
+          "semantic_summary": "A newly launched AI application begins a large promotional campaign."
+        },
+        "constituency_prior": {
+          "description": "active users and evaluators of a newly launched AI application",
+          "scope": "product",
+          "reference_scale": "10^5",
+          "reference_size_hint": "unknown",
+          "basis": "explicit_event_scope",
+          "provenance": "simulated scenario definition fixed before attention observations"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "campaign_telemetry",
+            "product_search",
+            "independent_user_communities"
+          ],
+          "channels_unavailable": [],
+          "notes": "SIMULATED DEVELOPMENT EVIDENCE ONLY; not a claim about current real-world salience."
+        },
+        "current_attention_evidence": [
+          {
+            "kind": "reach",
+            "window": "12h",
+            "observation": "Two million paid impressions and 500,000 autoplay starts were delivered.",
+            "source": "sim-campaign",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "campaign",
+            "quality": "contaminated",
+            "contamination": [
+              "paid",
+              "forced_exposure"
+            ]
+          },
+          {
+            "kind": "engagement",
+            "window": "12h",
+            "observation": "Meaningful voluntary interactions remain very low relative to campaign reach.",
+            "source": "sim-community",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "community",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "search",
+            "window": "12h",
+            "observation": "Product search remains near baseline despite promotional reach.",
+            "source": "sim-search",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "search",
+            "quality": "direct",
+            "contamination": []
+          }
+        ],
+        "recent_attention_history": [
+          {
+            "window": "previous 7d",
+            "observation": "No established organic attention state existed before the campaign.",
+            "source": "sim-history"
+          }
+        ]
+      }
+    },
+    {
+      "scenario_id": "manipulated_to_organic",
+      "step_id": "T1_SYNTHETIC_TREND",
+      "event_as_of": "2026-09-08T12:00:00Z",
+      "expected_p": "NOT_SALIENT",
+      "actual_p": "NOT_SALIENT",
+      "p_match": true,
+      "expected_action": "DROP",
+      "actual_action": "DROP",
+      "action_match": true,
+      "p_result": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "NOT_SALIENT",
+        "objective_constituency": "active users and evaluators of a newly launched AI application",
+        "attention_state_summary": "Promotional reach is high but contaminated by paid and bot/duplicate activity; independent search is only slightly above baseline, indicating no genuine collective attention.",
+        "inertia_summary": "No prior salience established; recent history shows high exposure has not converted into broad voluntary attention.",
+        "reason": "Genuine attention is absent: contaminated reach and trend volume do not indicate real engagement, and independent search remains near baseline.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1461,
+          "prompt_tokens": 1929,
+          "completion_tokens": 144,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "action_reason": "No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
+      "packet": {
+        "event": {
+          "event_id": "SIM-P-PRODUCT-01",
+          "as_of": "2026-09-08T12:00:00Z",
+          "semantic_summary": "A newly launched AI application begins a large promotional campaign."
+        },
+        "constituency_prior": {
+          "description": "active users and evaluators of a newly launched AI application",
+          "scope": "product",
+          "reference_scale": "10^5",
+          "reference_size_hint": "unknown",
+          "basis": "explicit_event_scope",
+          "provenance": "simulated scenario definition fixed before attention observations"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "campaign_telemetry",
+            "product_search",
+            "independent_user_communities"
+          ],
+          "channels_unavailable": [],
+          "notes": "SIMULATED DEVELOPMENT EVIDENCE ONLY; not a claim about current real-world salience."
+        },
+        "current_attention_evidence": [
+          {
+            "kind": "reach",
+            "window": "12h",
+            "observation": "Promotional reach remains very high.",
+            "source": "sim-campaign",
+            "observed_at": "2026-09-08T12:00:00Z",
+            "independence_group": "campaign",
+            "quality": "contaminated",
+            "contamination": [
+              "paid"
+            ]
+          },
+          {
+            "kind": "trend_volume",
+            "window": "12h",
+            "observation": "A large fraction of trend mentions are duplicated or bot-amplified.",
+            "source": "sim-trend",
+            "observed_at": "2026-09-08T12:00:00Z",
+            "independence_group": "trend",
+            "quality": "contaminated",
+            "contamination": [
+              "bot",
+              "duplicate"
+            ]
+          },
+          {
+            "kind": "search",
+            "window": "12h",
+            "observation": "Independent product search remains only slightly above baseline.",
+            "source": "sim-search",
+            "observed_at": "2026-09-08T12:00:00Z",
+            "independence_group": "search",
+            "quality": "direct",
+            "contamination": []
+          }
+        ],
+        "recent_attention_history": [
+          {
+            "window": "previous 12h",
+            "observation": "High exposure has not converted into broad voluntary attention.",
+            "source": "sim-history"
+          }
+        ]
+      }
+    },
+    {
+      "scenario_id": "manipulated_to_organic",
+      "step_id": "T2_ORGANIC_FORMATION",
+      "event_as_of": "2026-09-09T12:00:00Z",
+      "expected_p": "SALIENT",
+      "actual_p": "SALIENT",
+      "p_match": true,
+      "expected_action": "AWARE",
+      "actual_action": "AWARE",
+      "action_match": true,
+      "p_result": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "SALIENT",
+        "objective_constituency": "active users and evaluators of a newly launched AI application",
+        "attention_state_summary": "Independent search at 8x baseline, substantive voluntary discussion in 20 communities, and sharp rise in meaningful use indicate genuine collective attention forming within the product's constituency.",
+        "inertia_summary": "Recent history shows attention shifting from paid exposure to organic engagement, supporting an emerging salient state with positive momentum.",
+        "reason": "Multiple independent channels show genuine, voluntary attention relative to the product-scale constituency, clearly forming collective salience.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1947,
+          "prompt_tokens": 1918,
+          "completion_tokens": 144,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "action_reason": "Δ=NONE with situational awareness: worth knowing, no cognitive write or watch obligation.",
+      "packet": {
+        "event": {
+          "event_id": "SIM-P-PRODUCT-01",
+          "as_of": "2026-09-09T12:00:00Z",
+          "semantic_summary": "A newly launched AI application begins a large promotional campaign."
+        },
+        "constituency_prior": {
+          "description": "active users and evaluators of a newly launched AI application",
+          "scope": "product",
+          "reference_scale": "10^5",
+          "reference_size_hint": "unknown",
+          "basis": "explicit_event_scope",
+          "provenance": "simulated scenario definition fixed before attention observations"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "campaign_telemetry",
+            "product_search",
+            "independent_user_communities"
+          ],
+          "channels_unavailable": [],
+          "notes": "SIMULATED DEVELOPMENT EVIDENCE ONLY; not a claim about current real-world salience."
+        },
+        "current_attention_evidence": [
+          {
+            "kind": "search",
+            "window": "24h",
+            "observation": "Independent product search rises to about eight times baseline.",
+            "source": "sim-search",
+            "observed_at": "2026-09-09T12:00:00Z",
+            "independence_group": "search",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "discussion",
+            "window": "24h",
+            "observation": "Twenty independent user communities sustain substantive voluntary discussion.",
+            "source": "sim-community",
+            "observed_at": "2026-09-09T12:00:00Z",
+            "independence_group": "community",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "meaningful_use",
+            "window": "24h",
+            "observation": "Voluntary long-session use and repeat visits rise sharply independent of paid impressions.",
+            "source": "sim-product",
+            "observed_at": "2026-09-09T12:00:00Z",
+            "independence_group": "product",
+            "quality": "structural",
+            "contamination": []
+          }
+        ],
+        "recent_attention_history": [
+          {
+            "window": "previous 24h",
+            "observation": "Attention shifted from paid exposure toward independent search, discussion, and meaningful use.",
+            "source": "sim-history"
+          }
+        ]
+      }
+    },
+    {
+      "scenario_id": "manipulated_to_organic",
+      "step_id": "T3_ORGANIC_SUSTAINED",
+      "event_as_of": "2026-09-11T12:00:00Z",
+      "expected_p": "SALIENT",
+      "actual_p": "SALIENT",
+      "p_match": true,
+      "expected_action": "AWARE",
+      "actual_action": "AWARE",
+      "action_match": true,
+      "p_result": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "SALIENT",
+        "objective_constituency": "active users and evaluators of the newly launched AI application",
+        "attention_state_summary": "Independent search remains elevated, substantive discussion persists across independent communities, and repeat voluntary use stays high even as paid promotion declines.",
+        "inertia_summary": "Attention was previously established and organic; current observations show sustained engagement rather than decay.",
+        "reason": "Genuine collective attention is evident through active search, community discussion, and meaningful product use, all relative to the product's constituency, and temporal inertia supports continued salience.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1525,
+          "prompt_tokens": 1915,
+          "completion_tokens": 144,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "action_reason": "Δ=NONE with situational awareness: worth knowing, no cognitive write or watch obligation.",
+      "packet": {
+        "event": {
+          "event_id": "SIM-P-PRODUCT-01",
+          "as_of": "2026-09-11T12:00:00Z",
+          "semantic_summary": "A newly launched AI application begins a large promotional campaign."
+        },
+        "constituency_prior": {
+          "description": "active users and evaluators of a newly launched AI application",
+          "scope": "product",
+          "reference_scale": "10^5",
+          "reference_size_hint": "unknown",
+          "basis": "explicit_event_scope",
+          "provenance": "simulated scenario definition fixed before attention observations"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "campaign_telemetry",
+            "product_search",
+            "independent_user_communities"
+          ],
+          "channels_unavailable": [],
+          "notes": "SIMULATED DEVELOPMENT EVIDENCE ONLY; not a claim about current real-world salience."
+        },
+        "current_attention_evidence": [
+          {
+            "kind": "search",
+            "window": "48h",
+            "observation": "Independent search remains about six times baseline while paid spend declines.",
+            "source": "sim-search",
+            "observed_at": "2026-09-11T12:00:00Z",
+            "independence_group": "search",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "discussion",
+            "window": "48h",
+            "observation": "Substantive user discussion remains broad across independent communities.",
+            "source": "sim-community",
+            "observed_at": "2026-09-11T12:00:00Z",
+            "independence_group": "community",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "meaningful_use",
+            "window": "48h",
+            "observation": "Repeat voluntary use remains elevated after promotional reach declines.",
+            "source": "sim-product",
+            "observed_at": "2026-09-11T12:00:00Z",
+            "independence_group": "product",
+            "quality": "structural",
+            "contamination": []
+          }
+        ],
+        "recent_attention_history": [
+          {
+            "window": "previous 48h",
+            "observation": "Organic attention remained established after formation and no longer depended on paid exposure.",
+            "source": "sim-history"
+          }
+        ]
+      }
+    }
+  ],
+  "methodology_note": "All attention evidence is simulated development evidence. The run tests dynamic state-estimation and P→frozen no-Delta AWARE wiring only; it does not claim any current real-world salience and does not retune P v1."
+}
