@@ -1,0 +1,30 @@
+name: phase7a-external-world-model-fidelity-ab-v0.1
+status: DEVELOPMENT_ATTRIBUTION_NOT_FRESH_VALIDATION
+question: >
+  Does production-valid Auditor admission preserve the downstream cognitive judgment
+  available from the Sensor's pre-audit semantic representation?
+conditions:
+  A: production-valid Auditor-admitted epistemic units with admitted evidence context
+  B: diagnostic pre-audit Sensor epistemic units; attribution only, never production truth
+invariants:
+  - same downstream Locate / Impact / Attention Policy
+  - same Kernel fixture within each source A/B
+  - no Delta semantic changes
+  - no Auditor relaxation
+  - B is not an oracle and cannot be used in production
+sources:
+  RS11:
+    kernel_fixture: phase6b-mvp-in-memory-copy
+  RS12:
+    kernel_fixture: phase6b-mvp-in-memory-copy
+  RS15:
+    kernel_fixture: phase6b-mvp-in-memory-copy
+  RS05:
+    kernel_fixture: phase6b-perf-challenge-counterfactual
+    rationale: >
+      Decision-sufficiency stress probe: the natural MVP Kernel is weakly related to
+      PyTorch profiling, so use the already-established development-only opposite belief
+      to test whether representation loss can hide a real CHALLENGE.
+expected_interpretation:
+  - A_equals_B: no causal downstream loss observed under this probe; not proof of completeness
+  - A_not_equals_B: external-world representation/admission is causally decision-relevant
