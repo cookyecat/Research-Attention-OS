@@ -1,0 +1,2222 @@
+{
+  "name": "raos-phase6b-epistemic-unit-audit-v0.1",
+  "status": "DEVELOPMENT_ONLY_NOT_FRESH_VALIDATION",
+  "measurement_timestamp": "20260908T041732Z",
+  "measurement_git_head": "b86906184eeaedfca3da646a7b15e0fe03f89d2d",
+  "cognitive_slice_version": "phase6b-cognitive-semantics-v0.1",
+  "input_sensor_artifact": "/Users/liyang/Developer/Research-Attention-OS/eval/live/results/semantic_evidence_dev_v0_2_3/semantic_evidence_dev_v0_2_3_20260907T204332Z.json",
+  "auditor": {
+    "version": "semantic-evidence-auditor-v0.1.1",
+    "prompt_version": "semantic-evidence-audit-v0.1.1",
+    "prompt_sha256": "d22540217a0bec35468e327c6b6df8041eee7fb1c79dd676cfa38935774b81bb"
+  },
+  "actual_models": [
+    "deepseek-v4-flash"
+  ],
+  "n_sources": 4,
+  "n_units": 43,
+  "n_scorable": 43,
+  "n_sufficient": 22,
+  "reason_counts": {
+    "ATTRIBUTION_UNRESOLVED": 1,
+    "MISSING_SUPPORT": 20,
+    "SUPPORTED": 22
+  },
+  "sources": [
+    {
+      "source_id": "RS11",
+      "n_units": 12,
+      "n_scorable": 12,
+      "n_sufficient": 7,
+      "audits": [
+        {
+          "audit_id": "RS11:RS11-NU1:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-NU1",
+          "statement": "Qwen3.8-Flash achieves strong benchmark results, outperforming larger models on several tasks but not all.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0010",
+              "support_excerpt": "在智能体编程基准 DeepSWE 1.1 上，它拿到 58.7 分，而参数规模是它三倍的前代 Qwen3.7-Plus 只有 16.5 分；长周期办公任务 CoWorkBench 和专业岗位任务 JobBench 上分别为 73.9 和 55.7 分，明显高于 Claude Opus 4.6（Max）的 68.2 和 36.6 分；多模态方面，AndroidWorld、ERQA、MathVision 等基准同样大幅领先。它并非全面占优，HLE 上的 35.9 分仍落后于 Opus 4.6 的 40.0 分，仓库级代码生成 NL2Repo-Bench 也不及 DeepSeek-V4-Flash-0731。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-NU1:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly supports the semantic object. It states that the model achieves strong benchmark results, outperforming larger models on several tasks (e.g., DeepSWE 1.1, CoWorkBench, JobBench, AndroidWorld, ERQA, MathVision) but not all (e.g., HLE, NL2Repo-Bench). The evidence covers both the outperformance and the limitations, matching the object's claim.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1260,
+            "prompt_tokens": 1001,
+            "completion_tokens": 166,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-NU2:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-NU2",
+          "statement": "Qwen3.8-Flash uses a new architecture distinct from Qwen3.8-Max, which is based on Qwen3.5.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0034",
+              "support_excerpt": "但其架构却与家族内其它模型大不一样：Qwen3.8-Max 是基于前代 Qwen3.5 架构迭代而来的，而这次的 Qwen3.8-Flash 用的是一套全新架构。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-NU2:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states that Qwen3.8-Flash uses a completely new architecture, while Qwen3.8-Max is based on the previous generation Qwen3.5 architecture. This supports the semantic object's claim that Qwen3.8-Flash uses a new architecture distinct from Qwen3.8-Max, which is based on Qwen3.5.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1268,
+            "prompt_tokens": 877,
+            "completion_tokens": 158,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-NU3:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-NU3",
+          "statement": "Qwen3.8-Flash is a multimodal MoE model with 125B main parameters, 51B N-gram Embedding, 6B active parameters per token, and 262,144 token context (extendable to 1M via YaRN).",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0039",
+              "support_excerpt": "Qwen3.8-Flash 是一个多模态 MoE 模型，主模型参数量 125B，另外配备 51B 的 N-gram Embedding，而每个 token 只激活 6B 参数。它原生支持 262,144 token 上下文，并可通过 YaRN 扩展至 100 万 token。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-NU3:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states all material parts: multimodal MoE model, 125B main parameters, 51B N-gram Embedding, 6B active parameters per token, native 262,144 token context, and extension to 1M via YaRN. The semantic object is a conservative paraphrase of the evidence.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1408,
+            "prompt_tokens": 927,
+            "completion_tokens": 145,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-NU4:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-NU4",
+          "statement": "Qwen3.8-Flash introduces architectural innovations: QSA (sparse attention), Gated Residual, and N-gram Embedding.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0037",
+              "support_excerpt": "据 Qwen 团队介绍，这次的系统升级围绕四个方面展开：Attention、Residual、Embedding 和 Optimization。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0051",
+              "support_excerpt": "本次的新东西是那剩下的一层。Qwen 在全局注意力上引入了自研的 Qwen Sparse Attention（QSA）。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0064",
+              "support_excerpt": "Qwen 引入的 Gated Residual（GR） 是两种思路的结合。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0071",
+              "support_excerpt": "Qwen 这次的做法是在 Transformer 参数之外单开一个维度：普通 Embedding 根据单个 token 查表；N-gram Embedding 则结合当前 token 与前几个 token 组成的局部上下文来查表。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-NU4:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object attributes the innovations to 'Qwen3.8-Flash', but the cited evidence refers only to 'Qwen' and does not mention 'Qwen3.8-Flash' or any specific model version. Additionally, the evidence does not explicitly state that these are 'architectural innovations' or that they are 'introduced' by the model; it describes system upgrades and new features without linking them to a specific model. The evidence supports the existence of QSA, Gated Residual, and N-gram Embedding in Qwen, but not the specific attribution to Qwen3.8-Flash.",
+            "unsupported_aspect": "The attribution of the innovations to 'Qwen3.8-Flash' and the characterization as 'architectural innovations' introduced by that model."
+          },
+          "model_meta": {
+            "latency_ms": 1791,
+            "prompt_tokens": 1048,
+            "completion_tokens": 239,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-NU5:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-NU5",
+          "statement": "QSA accelerates attention in long contexts: up to 7.6x Prefill and 4.9x Decode speedup at 1M tokens, and 8.6x Prefill throughput vs Qwen3.7-Plus with 90% prefix cache hit.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0057",
+              "support_excerpt": "在 1M token 的设定下，QSA 的 Attention Kernel 在 Prefill 和 Decode 阶段分别实现了最高 7.6 倍和 4.9 倍的加速。在更贴近线上高缓存复用的实验设定下（Prefix Cache 命中率 90%），Qwen3.8-Flash 在 1M 上下文下的 Prefill 吞吐达到 Qwen3.7-Plus 的 8.6 倍。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-NU5:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object states 'QSA accelerates attention in long contexts' and attributes the speedups to QSA. The cited evidence mentions QSA's Attention Kernel achieving speedups, but it does not explicitly state that QSA accelerates attention in long contexts; it only reports kernel-level speedups. Additionally, the evidence attributes the 8.6x throughput to 'Qwen3.8-Flash' not to QSA, and does not mention 'Qwen3.7-Plus' as the comparison for the 7.6x and 4.9x speedups. The object's claim that QSA accelerates attention is not directly supported; the evidence only describes kernel speedups without explicitly linking them to attention acceleration in long contexts.",
+            "unsupported_aspect": "The claim that QSA accelerates attention in long contexts is not explicitly supported; the evidence only reports kernel speedups. Also, the attribution of the 8.6x throughput to QSA is missing, as the evidence attributes it to Qwen3.8-Flash."
+          },
+          "model_meta": {
+            "latency_ms": 2063,
+            "prompt_tokens": 957,
+            "completion_tokens": 286,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-NU6:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-NU6",
+          "statement": "Gated Residual expands the residual stream into 4 parallel branches with dynamic gating, and one branch forms a long-distance channel from first attention to deep layers.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0064",
+              "support_excerpt": "最终，原本单一的 residual stream 被扩展成 4 条并行分支，模型可以根据当前内容动态决定从哪条分支读多少、往哪条分支写多少。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0065",
+              "support_excerpt": "Qwen 团队观察到，其中一条 branch 会自然形成一条连接第一层 Attention 和大部分中后层的长距离通道。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-NU6:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object claims that Gated Residual expands the residual stream into 4 parallel branches with dynamic gating, and that one branch forms a long-distance channel from first attention to deep layers. The cited evidence supports the expansion into 4 branches and dynamic gating, and supports that one branch forms a long-distance channel connecting first-layer attention and most middle-to-late layers. However, the evidence does not explicitly state that the expansion is performed by 'Gated Residual' or that the mechanism is named 'Gated Residual'. The evidence refers to '原本单一的 residual stream' and 'Qwen 团队观察到', but does not attribute the expansion to a specific component named 'Gated Residual'. Therefore, the attribution of the mechanism to 'Gated Residual' is unsupported by the cited evidence.",
+            "unsupported_aspect": "The attribution of the expansion and long-distance channel to a component specifically named 'Gated Residual' is not supported by the cited evidence."
+          },
+          "model_meta": {
+            "latency_ms": 2081,
+            "prompt_tokens": 929,
+            "completion_tokens": 269,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-NU7:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-NU7",
+          "statement": "N-gram Embedding adds 51B parameters stored in host memory via deterministic addressing, not entering per-token matrix multiplication budget.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0073",
+              "support_excerpt": "这意味着这 51B 参数可以直接存放在 Host Memory 中，通过异步 Prefetch 与模型计算重叠，无需长期占用 GPU 显存。Qwen 在 Base 模型的评测说明中也点明了这一点：51B 的 N-gram Embedding 参数是确定性寻址的，不进入每 token 的矩阵乘预算。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-NU7:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt explicitly states that the 51B N-gram Embedding parameters can be stored in Host Memory, are deterministically addressed, and do not enter the per-token matrix multiplication budget. This directly supports all material parts of the semantic object.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1064,
+            "prompt_tokens": 898,
+            "completion_tokens": 130,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-NU8:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-NU8",
+          "statement": "Qwen3.8-Flash uses Muon optimizer with orthogonalization, applied to 2D linear mapping parameters, while AdamW handles embeddings, routers, and low-rank parameters.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0077",
+              "support_excerpt": "Qwen3.8-Flash 使用 Muon 优化器训练。Muon 通过对动量矩阵做正交化来加速收敛。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0078",
+              "support_excerpt": "分工上的原则是，真正作为二维线性映射的参数用 Muon，例如 Attention、GDN 和 MoE Expert 中的主要权重；而 Embedding、MoE Router、GR 的低秩参数等则继续交给 AdamW。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-NU8:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The semantic object states that Qwen3.8-Flash uses Muon with orthogonalization for 2D linear mapping parameters, and AdamW for embeddings, routers, and low-rank parameters. The first excerpt confirms Muon is used and that it orthogonalizes the momentum matrix. The second excerpt explicitly states that parameters that are true 2D linear mappings (e.g., Attention, GDN, MoE Expert main weights) use Muon, while Embedding, MoE Router, and GR low-rank parameters are handled by AdamW. This directly supports all material parts of the object.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1559,
+            "prompt_tokens": 948,
+            "completion_tokens": 198,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-NU9:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-NU9",
+          "statement": "Training efficiency: Qwen3.8-Flash training cost is about 1/9 of Qwen3.7-Plus, and batch size warmup is unnecessary, saving 18.8% optimizer steps.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0084",
+              "support_excerpt": "这些创新加起来，让 Qwen3.8-Flash 收获了显著的模型效率优势：相比 Qwen3.7-Plus，它的训练开销仅约九分之一。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0082",
+              "support_excerpt": "过去大模型训练中常见的 Batch Size Warmup 已经不再必要。实验显示，从小 Batch 逐渐增加到目标 Batch 并没有改善最终效果，反而要额外执行 18.8% 的 optimizer steps。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-NU9:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The first excerpt supports that Qwen3.8-Flash training cost is about one-ninth of Qwen3.7-Plus. The second excerpt states that Batch Size Warmup is no longer necessary and that it would require an extra 18.8% optimizer steps, but it does not explicitly state that omitting warmup saves 18.8% optimizer steps. The semantic object claims a saving of 18.8% optimizer steps, which is not directly supported; the evidence only mentions the extra steps required when warmup is used.",
+            "unsupported_aspect": "The claim that batch size warmup is unnecessary, saving 18.8% optimizer steps, is not fully supported; the evidence indicates warmup would require extra steps but does not explicitly state that omitting it saves that amount."
+          },
+          "model_meta": {
+            "latency_ms": 1708,
+            "prompt_tokens": 957,
+            "completion_tokens": 239,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-NU10:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-NU10",
+          "statement": "Industry context: multiple providers (OpenAI, Google, Anthropic) have raised API prices or reduced free quotas, reversing the previous downward price trend.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0006",
+              "support_excerpt": "涨价的不止一家。此前 OpenAI、谷歌和 Anthropic 已相继上调 API 价格或收缩免费额度。过去两年，大模型厂商一路把价格往下打，在 2026 年下半年，这条价格曲线却开始集体掉头。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-NU10:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt explicitly states that OpenAI, Google, and Anthropic have raised API prices or reduced free quotas, and that the price trend reversed in the second half of 2026, matching the semantic object's claim of multiple providers reversing the previous downward trend.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1013,
+            "prompt_tokens": 880,
+            "completion_tokens": 131,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-NU11:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-NU11",
+          "statement": "Reason for price increases: inference demand outpaces compute supply, and agents multiply calls, making subsidized low prices unsustainable.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0007",
+              "support_excerpt": "原因并不复杂。推理需求的增长跑赢了算力供给的增长，而 Agent 把单次调用变成了几十次调用。当账单从「一问一答」变成「一个任务跑几小时」，此前靠补贴维持的低价就撑不住了。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-NU11:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states that the reason is not complex: inference demand growth outpaces compute supply growth, and agents turn single calls into dozens of calls, making subsidized low prices unsustainable. This supports the semantic object's claims about demand outpacing supply, agents multiplying calls, and the unsustainability of subsidized low prices.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1254,
+            "prompt_tokens": 874,
+            "completion_tokens": 144,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS11:RS11-NU12:epistemic_unit",
+          "source_id": "RS11",
+          "unit_id": "RS11-NU12",
+          "statement": "Qwen3.8-Flash's low pricing is not subsidy-based but achieved through architectural efficiency, aiming to lower per-token production cost.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0013",
+              "support_excerpt": "在一个几乎所有模型都在涨价的月份里逆势压价，补贴显然不是可持续的答案。Qwen 给出的答案是：向模型架构要空间，重写每一个 token 的生产账单。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS11:RS11-NU12:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The cited excerpt states that subsidies are not a sustainable answer and that Qwen's answer is to seek space from model architecture and rewrite the production bill for each token. However, it does not explicitly state that Qwen3.8-Flash's low pricing is not subsidy-based, nor does it mention 'architectural efficiency' or 'lower per-token production cost' as the mechanism. The excerpt implies a contrast with subsidies and mentions architecture, but the specific claims about Qwen3.8-Flash's pricing not being subsidy-based and achieving low pricing through architectural efficiency to lower per-token production cost are not directly supported.",
+            "unsupported_aspect": "The claims that Qwen3.8-Flash's low pricing is not subsidy-based and that it is achieved through architectural efficiency to lower per-token production cost."
+          },
+          "model_meta": {
+            "latency_ms": 1761,
+            "prompt_tokens": 867,
+            "completion_tokens": 242,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        }
+      ],
+      "admitted_units": [
+        {
+          "unit_id": "RS11-NU1",
+          "statement": "Qwen3.8-Flash achieves strong benchmark results, outperforming larger models on several tasks but not all.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0010",
+              "support_excerpt": "在智能体编程基准 DeepSWE 1.1 上，它拿到 58.7 分，而参数规模是它三倍的前代 Qwen3.7-Plus 只有 16.5 分；长周期办公任务 CoWorkBench 和专业岗位任务 JobBench 上分别为 73.9 和 55.7 分，明显高于 Claude Opus 4.6（Max）的 68.2 和 36.6 分；多模态方面，AndroidWorld、ERQA、MathVision 等基准同样大幅领先。它并非全面占优，HLE 上的 35.9 分仍落后于 Opus 4.6 的 40.0 分，仓库级代码生成 NL2Repo-Bench 也不及 DeepSeek-V4-Flash-0731。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS11-NU2",
+          "statement": "Qwen3.8-Flash uses a new architecture distinct from Qwen3.8-Max, which is based on Qwen3.5.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0034",
+              "support_excerpt": "但其架构却与家族内其它模型大不一样：Qwen3.8-Max 是基于前代 Qwen3.5 架构迭代而来的，而这次的 Qwen3.8-Flash 用的是一套全新架构。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS11-NU3",
+          "statement": "Qwen3.8-Flash is a multimodal MoE model with 125B main parameters, 51B N-gram Embedding, 6B active parameters per token, and 262,144 token context (extendable to 1M via YaRN).",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0039",
+              "support_excerpt": "Qwen3.8-Flash 是一个多模态 MoE 模型，主模型参数量 125B，另外配备 51B 的 N-gram Embedding，而每个 token 只激活 6B 参数。它原生支持 262,144 token 上下文，并可通过 YaRN 扩展至 100 万 token。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS11-NU7",
+          "statement": "N-gram Embedding adds 51B parameters stored in host memory via deterministic addressing, not entering per-token matrix multiplication budget.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0073",
+              "support_excerpt": "这意味着这 51B 参数可以直接存放在 Host Memory 中，通过异步 Prefetch 与模型计算重叠，无需长期占用 GPU 显存。Qwen 在 Base 模型的评测说明中也点明了这一点：51B 的 N-gram Embedding 参数是确定性寻址的，不进入每 token 的矩阵乘预算。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS11-NU8",
+          "statement": "Qwen3.8-Flash uses Muon optimizer with orthogonalization, applied to 2D linear mapping parameters, while AdamW handles embeddings, routers, and low-rank parameters.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0077",
+              "support_excerpt": "Qwen3.8-Flash 使用 Muon 优化器训练。Muon 通过对动量矩阵做正交化来加速收敛。"
+            },
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0078",
+              "support_excerpt": "分工上的原则是，真正作为二维线性映射的参数用 Muon，例如 Attention、GDN 和 MoE Expert 中的主要权重；而 Embedding、MoE Router、GR 的低秩参数等则继续交给 AdamW。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS11-NU10",
+          "statement": "Industry context: multiple providers (OpenAI, Google, Anthropic) have raised API prices or reduced free quotas, reversing the previous downward price trend.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0006",
+              "support_excerpt": "涨价的不止一家。此前 OpenAI、谷歌和 Anthropic 已相继上调 API 价格或收缩免费额度。过去两年，大模型厂商一路把价格往下打，在 2026 年下半年，这条价格曲线却开始集体掉头。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS11-NU11",
+          "statement": "Reason for price increases: inference demand outpaces compute supply, and agents multiply calls, making subsidized low prices unsustainable.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS11",
+              "support_pointer": "PARA 0007",
+              "support_excerpt": "原因并不复杂。推理需求的增长跑赢了算力供给的增长，而 Agent 把单次调用变成了几十次调用。当账单从「一问一答」变成「一个任务跑几小时」，此前靠补贴维持的低价就撑不住了。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source_id": "RS12",
+      "n_units": 12,
+      "n_scorable": 12,
+      "n_sufficient": 11,
+      "audits": [
+        {
+          "audit_id": "RS12:RS12-NU1:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-NU1",
+          "statement": "第二届世界人形机器人运动会于2025年8月22日至26日在北京国家速滑馆举行，共有来自六大洲16个国家的666支队伍、2056台机器人参加51个项目、1301场比赛；参赛队伍数量较首届增长138%，机器人数量约为首届的4倍。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0006",
+              "support_excerpt": "8月22日至26日，第二届世界人形机器人运动会在北京国家速滑馆“冰丝带”举行。来自六大洲16个国家的666支队伍、2056台机器人，在5天里参加51个项目、1301场比赛；参赛队伍数量较首届增长138%，机器人数量约为首届的4倍。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-NU1:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states all material parts of the semantic object: the event name, dates (8月22日至26日), year (2025), venue (北京国家速滑馆), participation (六大洲16个国家, 666支队伍, 2056台机器人), events (51个项目, 1301场比赛), and the comparisons to the first edition (参赛队伍数量较首届增长138%，机器人数量约为首届的4倍). The semantic object is a conservative paraphrase of the excerpt.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1708,
+            "prompt_tokens": 929,
+            "completion_tokens": 181,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-NU2:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-NU2",
+          "statement": "灵巧手专项赛设置8个项目，包括积木搭建、粉末称量、镊子夹豆、精细夹取、打螺丝、钉钉、电动工具装配、线缆连接，考察负载、精度、力控、手眼协调和工具使用能力。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0007",
+              "support_excerpt": "灵巧手专项赛设置8个项目，从积木搭建、粉末称量、镊子夹豆、精细夹取，到打螺丝、钉钉、电动工具装配、线缆连接，将负载、精度、力控、手眼协调和工具使用放进同一张考卷。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-NU2:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt explicitly states that the competition sets 8 projects, lists the same eight items, and mentions the same abilities (load, precision, force control, hand-eye coordination, tool use). The semantic object is a conservative paraphrase of the evidence.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1169,
+            "prompt_tokens": 919,
+            "completion_tokens": 129,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-NU3:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-NU3",
+          "statement": "临界点OmniHand在灵巧手专项赛中的使用比例随赛程提高：预赛约27%，决赛约35%，前三名队伍约60%。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0009",
+              "support_excerpt": "灵巧手专项赛预赛实际参赛队伍超过200支，其中约27%使用临界点自研的OmniHand；进入决赛的110余支队伍中，这一比例升至35%；进入前三的队伍中，OmniHand的使用比例约为60%。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-NU3:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited evidence directly states the percentages of OmniHand usage in the dexterous hand competition: about 27% in preliminaries, rising to 35% among finalists, and about 60% among the top three teams. This matches the semantic object's claims exactly.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1176,
+            "prompt_tokens": 887,
+            "completion_tokens": 137,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-NU4:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-NU4",
+          "statement": "临界点参赛使用同一款OmniHand和同一套核心硬件配置，未为8个项目准备8套硬件。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0010",
+              "support_excerpt": "临界点没有为8道题准备8套硬件。CEO乔天杰告诉「甲子光年」，参赛使用的是同一款OmniHand、同一套核心硬件配置。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-NU4:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states that 临界点 did not prepare 8 sets of hardware for 8 questions, and that the competition used the same OmniHand and the same core hardware configuration, matching the semantic object.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 907,
+            "prompt_tokens": 860,
+            "completion_tokens": 123,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-NU5:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-NU5",
+          "statement": "OmniHand可实现Feix人手抓取分类中33种标准抓取形态中的27种，覆盖率超80%。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0016",
+              "support_excerpt": "按照学术界普遍接受的Feix人手抓取分类方法，其中有33种标准抓取形态，临界点称OmniHand可以实现其中27种，覆盖率超80%。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-NU5:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states that according to the Feix taxonomy, there are 33 standard grasp types, and OmniHand can achieve 27 of them, with coverage over 80%. This matches the semantic object's claim exactly.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1069,
+            "prompt_tokens": 858,
+            "completion_tokens": 126,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-NU6:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-NU6",
+          "statement": "OmniHand参数：10个主动自由度、16个总自由度，整手重量不超过520克，指尖重复定位精度典型值0.3毫米，五指抓握力不低于5公斤。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0033",
+              "support_excerpt": "10个主动自由度、16个总自由度，整手重量不超过520克，指尖重复定位精度典型值为0.3毫米，五指抓握力不低于5公斤。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-NU6:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly states all material parameters: 10 active DOF, 16 total DOF, hand weight ≤520g, fingertip repeat positioning accuracy typical 0.3mm, and five-finger grip force ≥5kg. The semantic object is a conservative paraphrase of the evidence.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1148,
+            "prompt_tokens": 875,
+            "completion_tokens": 139,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-NU7:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-NU7",
+          "statement": "临界点产品矩阵包括Lite系列（自由度较少，面向简单pick and place）、OmniHand（中间定位，平衡灵巧性、可靠性和成本）和Ultra系列（20个以上自由度，面向复杂手内操作）。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0039",
+              "support_excerpt": "Lite系列自由度较少，主要覆盖相对简单的pick and place；OmniHand处在中间，在灵巧性、可靠性和成本之间取平衡；Ultra则做到20个以上自由度，面向更复杂的手内操作。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-NU7:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited excerpt directly describes the Lite series as having fewer degrees of freedom and covering simple pick and place, OmniHand as intermediate balancing dexterity, reliability, and cost, and Ultra as having over 20 degrees of freedom for complex in-hand manipulation. This matches all material parts of the semantic object.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1325,
+            "prompt_tokens": 896,
+            "completion_tokens": 141,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-NU8:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-NU8",
+          "statement": "临界点团队在镊子夹豆项目中采用螺旋搜索方案（从碗中心向外沿螺旋路径寻找豆子，同时通过搅动增加可夹取目标），决赛自主方案稳定夹取约70颗黄豆。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0050",
+              "support_excerpt": "最后改成螺旋搜索：从碗中心向外沿螺旋路径寻找豆子，同时通过搅动增加可夹取目标。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0051",
+              "support_excerpt": "到了决赛，自主方案稳定夹取约70颗黄豆，拿下冠军。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-NU8:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The semantic object states that the team adopted a spiral search approach (searching from the center outward along a spiral path while stirring to increase accessible targets) and that in the finals the autonomous solution stably picked about 70 soybeans. The first excerpt directly describes the spiral search method, and the second excerpt confirms the final performance of about 70 soybeans. Both material parts are supported by the cited evidence.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1870,
+            "prompt_tokens": 921,
+            "completion_tokens": 161,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-NU9:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-NU9",
+          "statement": "武大智元联合赛队在粉末称量项目中采用“一勺通”策略（只用一把大勺通过连续控制逼近目标重量），而非保守的“大勺+小勺”方案；该策略要求末端约100Hz控制频率。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0024",
+              "support_excerpt": "一种更保守：先用大勺接近20克，再换小勺一点点补齐；另一种更直接，只用一把大勺，通过连续控制把重量逼近目标。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0025",
+              "support_excerpt": "他们选择了后者。这要求末端有足够的控制精度和实时性。前述队员提到，在这类精细操作中，约100Hz的控制频率，已经能给算法留下较充分的连续调整空间。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-NU9:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "ATTRIBUTION_UNRESOLVED",
+            "rationale": "The evidence describes two strategies and states the team chose the latter (the direct one-勺 approach), but it does not explicitly identify the team as '武大智元联合赛队'. The attribution of the choice to that specific team is not resolved by the cited excerpts.",
+            "unsupported_aspect": "The identity of the team (武大智元联合赛队) as the one adopting the '一勺通' strategy."
+          },
+          "model_meta": {
+            "latency_ms": 1320,
+            "prompt_tokens": 960,
+            "completion_tokens": 165,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-NU10:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-NU10",
+          "statement": "武大智元联合赛队在决赛前重新构建视觉管线，使用机器人头部和手部三个相机同时读取电子秤，通过相互校准和投票排除异常观测；决赛参数调得更保守，牺牲速度以提高一次成功概率。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0055",
+              "support_excerpt": "决赛前，他们重新做了一遍视觉管线，机器人头部和手部的三个相机同时读取电子秤，通过相互校准和投票排除异常观测。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0056",
+              "support_excerpt": "他们把决赛参数调得更保守，宁可牺牲一部分速度，也要提高一次成功的概率。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-NU10:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The semantic object states that the team rebuilt the visual pipeline before the finals, used three cameras on the robot's head and hands to simultaneously read the electronic scale, and used mutual calibration and voting to exclude abnormal observations. It also states that final parameters were made more conservative, sacrificing speed to increase the probability of one-shot success. Both cited excerpts directly support these claims: the first describes the rebuild and the three-camera method with calibration and voting, and the second describes the conservative parameter adjustment and the trade-off between speed and success probability. The object's wording is a conservative paraphrase of the evidence.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1670,
+            "prompt_tokens": 930,
+            "completion_tokens": 198,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-NU11:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-NU11",
+          "statement": "临界点团队在灵巧手可靠性测试中增加了场景化测试，包括采集双足机器人行走/跑步时末端振动曲线并加严后用于单体测试；部分特殊工况需连续运行至少一周无问题才能进入下一阶段。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0068",
+              "support_excerpt": "他们团队后来增加了更多场景化测试，其中一些特殊工况需要连续运行至少一周、没有出现问题，才能进入下一阶段。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0070",
+              "support_excerpt": "后来，临界点团队把双足机器人真实行走、跑步时末端的振动曲线采集下来，再将这些工况加严，反过来用于灵巧手的单体测试。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-NU11:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The semantic object states that the critical point team added scenario-based tests in dexterous hand reliability testing, including collecting vibration curves from bipedal robot walking/running and applying them after tightening for single-unit tests, and that some special conditions require continuous operation for at least one week without problems before proceeding. Evidence PARA 0070 directly supports the collection and tightening of vibration curves for single-unit tests. Evidence PARA 0068 supports the addition of scenario-based tests and the requirement of continuous operation for at least one week without problems before advancing. The object's phrasing '增加了场景化测试' is supported by '增加了更多场景化测试', and the attribution to the team is clear. All material parts are covered.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 2178,
+            "prompt_tokens": 944,
+            "completion_tokens": 222,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS12:RS12-NU12:epistemic_unit",
+          "source_id": "RS12",
+          "unit_id": "RS12-NU12",
+          "statement": "乔天杰认为灵巧手长期会越来越接近人手，原因包括工具设计围绕人手五指以及操作数据以人动作为源头；同时强调每增加机械复杂度需评估能换来多少可被算法稳定调用的任务能力。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0041",
+              "support_excerpt": "乔天杰认为，从更长期看，机器人的手仍会越来越接近人手，背后有两个现实原因：一个来自工具。剪刀、锤子、螺丝刀、杯子、门把手，现实世界绝大多数工具本来就是围绕人的五指设计的。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0042",
+              "support_excerpt": "另一个来自数据。今天具身智能能够获得的大量操作数据，无论来自互联网视频，还是人佩戴数据手套采集，本质上仍以人的动作作为源头。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0043",
+              "support_excerpt": "真正需要重新计算的是，每增加一份机械复杂度，究竟能换来多少可以被算法稳定调用、最终进入真实任务的能力。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS12:RS12-NU12:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The semantic object attributes to 乔天杰 the view that hands will increasingly approach human hands in the long term, with two reasons: tools are designed around five fingers and operational data originates from human actions. It also states he emphasizes evaluating mechanical complexity against task capabilities. The cited excerpts directly support each material part: PARA 0041 states 乔天杰's view and the tool reason; PARA 0042 provides the data reason; PARA 0043 supports the emphasis on evaluating mechanical complexity against stable algorithmic task capabilities. The wording is a conservative paraphrase of the evidence.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 2007,
+            "prompt_tokens": 1027,
+            "completion_tokens": 193,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        }
+      ],
+      "admitted_units": [
+        {
+          "unit_id": "RS12-NU1",
+          "statement": "第二届世界人形机器人运动会于2025年8月22日至26日在北京国家速滑馆举行，共有来自六大洲16个国家的666支队伍、2056台机器人参加51个项目、1301场比赛；参赛队伍数量较首届增长138%，机器人数量约为首届的4倍。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0006",
+              "support_excerpt": "8月22日至26日，第二届世界人形机器人运动会在北京国家速滑馆“冰丝带”举行。来自六大洲16个国家的666支队伍、2056台机器人，在5天里参加51个项目、1301场比赛；参赛队伍数量较首届增长138%，机器人数量约为首届的4倍。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-NU2",
+          "statement": "灵巧手专项赛设置8个项目，包括积木搭建、粉末称量、镊子夹豆、精细夹取、打螺丝、钉钉、电动工具装配、线缆连接，考察负载、精度、力控、手眼协调和工具使用能力。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0007",
+              "support_excerpt": "灵巧手专项赛设置8个项目，从积木搭建、粉末称量、镊子夹豆、精细夹取，到打螺丝、钉钉、电动工具装配、线缆连接，将负载、精度、力控、手眼协调和工具使用放进同一张考卷。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-NU3",
+          "statement": "临界点OmniHand在灵巧手专项赛中的使用比例随赛程提高：预赛约27%，决赛约35%，前三名队伍约60%。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0009",
+              "support_excerpt": "灵巧手专项赛预赛实际参赛队伍超过200支，其中约27%使用临界点自研的OmniHand；进入决赛的110余支队伍中，这一比例升至35%；进入前三的队伍中，OmniHand的使用比例约为60%。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-NU4",
+          "statement": "临界点参赛使用同一款OmniHand和同一套核心硬件配置，未为8个项目准备8套硬件。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0010",
+              "support_excerpt": "临界点没有为8道题准备8套硬件。CEO乔天杰告诉「甲子光年」，参赛使用的是同一款OmniHand、同一套核心硬件配置。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-NU5",
+          "statement": "OmniHand可实现Feix人手抓取分类中33种标准抓取形态中的27种，覆盖率超80%。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0016",
+              "support_excerpt": "按照学术界普遍接受的Feix人手抓取分类方法，其中有33种标准抓取形态，临界点称OmniHand可以实现其中27种，覆盖率超80%。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-NU6",
+          "statement": "OmniHand参数：10个主动自由度、16个总自由度，整手重量不超过520克，指尖重复定位精度典型值0.3毫米，五指抓握力不低于5公斤。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0033",
+              "support_excerpt": "10个主动自由度、16个总自由度，整手重量不超过520克，指尖重复定位精度典型值为0.3毫米，五指抓握力不低于5公斤。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-NU7",
+          "statement": "临界点产品矩阵包括Lite系列（自由度较少，面向简单pick and place）、OmniHand（中间定位，平衡灵巧性、可靠性和成本）和Ultra系列（20个以上自由度，面向复杂手内操作）。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0039",
+              "support_excerpt": "Lite系列自由度较少，主要覆盖相对简单的pick and place；OmniHand处在中间，在灵巧性、可靠性和成本之间取平衡；Ultra则做到20个以上自由度，面向更复杂的手内操作。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-NU8",
+          "statement": "临界点团队在镊子夹豆项目中采用螺旋搜索方案（从碗中心向外沿螺旋路径寻找豆子，同时通过搅动增加可夹取目标），决赛自主方案稳定夹取约70颗黄豆。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0050",
+              "support_excerpt": "最后改成螺旋搜索：从碗中心向外沿螺旋路径寻找豆子，同时通过搅动增加可夹取目标。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0051",
+              "support_excerpt": "到了决赛，自主方案稳定夹取约70颗黄豆，拿下冠军。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-NU10",
+          "statement": "武大智元联合赛队在决赛前重新构建视觉管线，使用机器人头部和手部三个相机同时读取电子秤，通过相互校准和投票排除异常观测；决赛参数调得更保守，牺牲速度以提高一次成功概率。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0055",
+              "support_excerpt": "决赛前，他们重新做了一遍视觉管线，机器人头部和手部的三个相机同时读取电子秤，通过相互校准和投票排除异常观测。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0056",
+              "support_excerpt": "他们把决赛参数调得更保守，宁可牺牲一部分速度，也要提高一次成功的概率。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-NU11",
+          "statement": "临界点团队在灵巧手可靠性测试中增加了场景化测试，包括采集双足机器人行走/跑步时末端振动曲线并加严后用于单体测试；部分特殊工况需连续运行至少一周无问题才能进入下一阶段。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0068",
+              "support_excerpt": "他们团队后来增加了更多场景化测试，其中一些特殊工况需要连续运行至少一周、没有出现问题，才能进入下一阶段。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0070",
+              "support_excerpt": "后来，临界点团队把双足机器人真实行走、跑步时末端的振动曲线采集下来，再将这些工况加严，反过来用于灵巧手的单体测试。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS12-NU12",
+          "statement": "乔天杰认为灵巧手长期会越来越接近人手，原因包括工具设计围绕人手五指以及操作数据以人动作为源头；同时强调每增加机械复杂度需评估能换来多少可被算法稳定调用的任务能力。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0041",
+              "support_excerpt": "乔天杰认为，从更长期看，机器人的手仍会越来越接近人手，背后有两个现实原因：一个来自工具。剪刀、锤子、螺丝刀、杯子、门把手，现实世界绝大多数工具本来就是围绕人的五指设计的。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0042",
+              "support_excerpt": "另一个来自数据。今天具身智能能够获得的大量操作数据，无论来自互联网视频，还是人佩戴数据手套采集，本质上仍以人的动作作为源头。"
+            },
+            {
+              "source_id": "RS12",
+              "support_pointer": "PARA 0043",
+              "support_excerpt": "真正需要重新计算的是，每增加一份机械复杂度，究竟能换来多少可以被算法稳定调用、最终进入真实任务的能力。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source_id": "RS15",
+      "n_units": 7,
+      "n_scorable": 7,
+      "n_sufficient": 2,
+      "audits": [
+        {
+          "audit_id": "RS15:RS15-N1:epistemic_unit",
+          "source_id": "RS15",
+          "unit_id": "RS15-N1",
+          "statement": "Zeno-1 采用四阶段递进训练：大规模视频预训练、单体具身训练、闭环伙伴交互（CPI）、协作失败针对性纠正。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0026",
+              "support_excerpt": "四阶段递进训练"
+            },
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0027",
+              "support_excerpt": "第一阶段：学习世界（大规模视频预训练）。"
+            },
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0031",
+              "support_excerpt": "第二阶段：学习自身（单体具身训练）。"
+            },
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0036",
+              "support_excerpt": "第三阶段：学习协作（闭环伙伴交互，Closed-loop partner interaction，CPI）。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS15:RS15-N1:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object claims a four-stage progressive training including a fourth stage '协作失败针对性纠正'. The cited evidence provides support for the first three stages (大规模视频预训练, 单体具身训练, 闭环伙伴交互) but does not include any excerpt for the fourth stage. Therefore, the material claim about the fourth stage is unsupported.",
+            "unsupported_aspect": "第四阶段：协作失败针对性纠正"
+          },
+          "model_meta": {
+            "latency_ms": 1136,
+            "prompt_tokens": 974,
+            "completion_tokens": 159,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS15:RS15-N2:epistemic_unit",
+          "source_id": "RS15",
+          "unit_id": "RS15-N2",
+          "statement": "CPI 训练让两台独立运行的机器人互为训练伙伴，通过共享物理环境的闭环交互自然涌现协作行为，无需中央控制器或同步演示数据。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0038",
+              "support_excerpt": "CPI 的思路完全不同。它让两台独立运行的机器人互为训练伙伴。每台机器人根据自己的观测独立行动，而它的动作会改变共享的物理环境，进而影响另一台机器人的下一步决策。"
+            },
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0041",
+              "support_excerpt": "通过 CPI 训练，Zeno-1 学会了一系列具体的协作适应行为：减速、等待、让步、维持接触、重新校准时序，然后在交互重新变得兼容时恢复正常节奏。这些行为完全从闭环交互中自发涌现。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS15:RS15-N2:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object claims that CPI training enables two independently operating robots to become training partners, and that collaborative behavior emerges naturally through closed-loop interaction in a shared physical environment, without a central controller or synchronized demonstration data. The cited evidence supports that two independently operating robots act as training partners, each acting based on its own observations, and that actions change the shared physical environment affecting the other's decisions. It also supports that specific collaborative behaviors emerge spontaneously from closed-loop interaction. However, the evidence does not explicitly state that no central controller is used or that no synchronized demonstration data is required. These are material parts of the semantic object and are not supported by the cited excerpts.",
+            "unsupported_aspect": "The absence of a central controller and the lack of synchronized demonstration data are not mentioned in the cited evidence."
+          },
+          "model_meta": {
+            "latency_ms": 2292,
+            "prompt_tokens": 954,
+            "completion_tokens": 234,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS15:RS15-N3:epistemic_unit",
+          "source_id": "RS15",
+          "unit_id": "RS15-N3",
+          "statement": "Zeno-1 包含持久交互记忆模块，维护压缩的交互历史表征，编码任务进展、搭档行为模式和共享物理状态演变；消融实验表明该模块对超过 3 分钟的协作任务至关重要。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0057",
+              "support_excerpt": "Zeno-1 通过一个可学习的记忆模块来解决这个问题。这个模块在每个时间步更新，维护一个压缩的交互历史表征。它编码了三类信息："
+            },
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0061",
+              "support_excerpt": "据消融实验，持久记忆对于超过 3 分钟的协作任务至关重要。移除该模块后，模型在长时序任务上的表现显著退化。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS15:RS15-N3:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object claims the memory module encodes task progress, partner behavior patterns, and shared physical state evolution. The cited excerpt PARA 0057 states the module encodes '三类信息' but does not specify what those three categories are. PARA 0061 supports the importance for tasks over 3 minutes but does not detail the encoded content. Thus, the specific encoding claims are not supported by the cited evidence.",
+            "unsupported_aspect": "The specific claim that the memory module encodes task progress, partner behavior patterns, and shared physical state evolution is not supported; the excerpt only mentions '三类信息' without enumerating them."
+          },
+          "model_meta": {
+            "latency_ms": 2027,
+            "prompt_tokens": 944,
+            "completion_tokens": 199,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS15:RS15-N4:epistemic_unit",
+          "source_id": "RS15",
+          "unit_id": "RS15-N4",
+          "statement": "Zeno-1 的预测式内省机制在搭档交互层面评估候选动作对搭档后续行为的影响，在保留测试集上选择让搭档后续行为更优的动作的概率为 87%，移除搭档行为预测模块后降至 61%。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0067",
+              "support_excerpt": "Zeno-1 在协作决策点上有 87% 的概率选择了让搭档后续行为更优的动作。"
+            },
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0068",
+              "support_excerpt": "作为对照，移除搭档行为预测模块后（只考虑动作的即时效果），这一比例降至 61%。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS15:RS15-N4:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object claims that Zeno-1's predictive introspection mechanism evaluates candidate actions' impact on partner's subsequent behavior at the partner interaction level, and that on a held-out test set it selects actions leading to better partner behavior with 87% probability, dropping to 61% when the partner behavior prediction module is removed. The cited evidence provides the 87% and 61% figures and mentions removal of the partner behavior prediction module, but does not mention the 'predictive introspection mechanism', 'partner interaction level', 'evaluates candidate actions' impact on partner's subsequent behavior', or 'held-out test set'. These material aspects are unsupported by the cited excerpts.",
+            "unsupported_aspect": "The mechanism description (predictive introspection, partner interaction level, evaluating impact on partner's subsequent behavior) and the specification of a held-out test set are not present in the cited evidence."
+          },
+          "model_meta": {
+            "latency_ms": 2119,
+            "prompt_tokens": 930,
+            "completion_tokens": 254,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS15:RS15-N5:epistemic_unit",
+          "source_id": "RS15",
+          "unit_id": "RS15-N5",
+          "statement": "Zeno-1 内置行动条件世界模型，在动作执行前预测共享物理状态演变并识别潜在失败；在 200 次真实机器人实验中，0.5 秒预警窗口内接触失败预测 AUC 达到 0.94，仅基于当前观测的 AUC 为 0.81。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0070",
+              "support_excerpt": "在物理接触层面，Zeno-1 内置了一个行动条件世界模型（Action-Conditioned Latent World Model），可以预测执行某个动作后共享物理状态会如何演变。"
+            },
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0072",
+              "support_excerpt": "研究团队在 200 次真实机器人实验中的测试，这个世界模型在 0.5 秒预警窗口内对接触失败的预测 AUC 达到 0.94，而仅基于当前观测预测的 AUC 为 0.81。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS15:RS15-N5:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object states that Zeno-1's world model predicts shared physical state evolution and identifies potential failures before action execution. The cited evidence (PARA 0070) confirms the model predicts how shared physical state evolves after an action, but does not mention identifying potential failures. PARA 0072 provides the AUC numbers for contact failure prediction, but does not explicitly state that the prediction occurs before action execution or that the model identifies potential failures. Thus, the material claim about 'identifying potential failures' and the temporal aspect 'before action execution' are not supported by the cited excerpts.",
+            "unsupported_aspect": "The claim that the world model identifies potential failures before action execution is not supported; evidence only mentions predicting state evolution and predicting contact failures within a 0.5s warning window, without specifying pre-action identification."
+          },
+          "model_meta": {
+            "latency_ms": 1975,
+            "prompt_tokens": 989,
+            "completion_tokens": 241,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS15:RS15-N6:epistemic_unit",
+          "source_id": "RS15",
+          "unit_id": "RS15-N6",
+          "statement": "去中心化架构相比中心化控制具有扩展性和鲁棒性优势：联合动作空间随机器人数量指数膨胀，而去中心化下增加机器人只需加载同一策略副本，计算量线性增长；中心化存在单点故障，去中心化单节点故障不会传播。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0077",
+              "support_excerpt": "扩展性。 中心化控制器的联合动作空间随机器人数量指数膨胀。假设每台机器人的动作空间维度为 d，N 台机器人的联合空间为 d^N。Zeno-1 的去中心化架构下，增加一台机器人只需要加载同一个策略副本，无需重新设计控制器或重新划分联合动作空间，计算量线性增长。"
+            },
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0078",
+              "support_excerpt": "鲁棒性。 中心化系统存在单点故障。中央控制器如果出现延迟或故障，所有机器人同时失效。去中心化系统中，每台机器人独立决策，单个节点的故障不会传播到整个团队。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS15:RS15-N6:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The semantic object claims that decentralized architecture has scalability and robustness advantages over centralized control. The cited evidence directly supports each material part: scalability (centralized joint action space grows exponentially, decentralized adds robots by loading same policy copy with linear computation) and robustness (centralized single point of failure, decentralized node failure does not propagate). The wording is a conservative paraphrase of the evidence.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1580,
+            "prompt_tokens": 1011,
+            "completion_tokens": 152,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS15:RS15-N7:epistemic_unit",
+          "source_id": "RS15",
+          "unit_id": "RS15-N7",
+          "statement": "产业界和学术界正将多机器人协作视为机器人基础模型下一阶段的重要能力：斯坦福 CHORUS 方法提出基于单一 VLA policy 的去中心化多机器人协作；Figure Helix 02 和 Google DeepMind Gemini Robotics 2 已展示或强调 multi-robot collaboration。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0083",
+              "support_excerpt": "今年 6 月，斯坦福的 Chelsea Finn、Jeannette Bohg 的课题组提出一篇名为 CHORUS 的方法，提出了基于单一 VLA policy 的去中心化多机器人协作。"
+            },
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0084",
+              "support_excerpt": "Figure 的 Helix 02 和 Google DeepMind 的 Gemini Robotics 2 都已经明确展示或强调 multi-robot collaboration，说明协作正在逐渐进入机器人基础模型的核心能力定义。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS15:RS15-N7:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The semantic object claims that industry and academia are viewing multi-robot collaboration as an important next-stage capability for robot foundation models, citing Stanford's CHORUS method and Figure Helix 02 and Google DeepMind Gemini Robotics 2. The cited evidence directly supports each material part: PARA 0083 confirms Stanford's CHORUS method proposes decentralized multi-robot collaboration based on a single VLA policy, and PARA 0084 confirms Figure Helix 02 and Google DeepMind Gemini Robotics 2 have explicitly demonstrated or emphasized multi-robot collaboration. The evidence also supports the framing that collaboration is entering the core capability definition of robot foundation models, which aligns with the object's claim of being an important next-stage capability. No unsupported or ambiguous aspects are present.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1816,
+            "prompt_tokens": 978,
+            "completion_tokens": 231,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        }
+      ],
+      "admitted_units": [
+        {
+          "unit_id": "RS15-N6",
+          "statement": "去中心化架构相比中心化控制具有扩展性和鲁棒性优势：联合动作空间随机器人数量指数膨胀，而去中心化下增加机器人只需加载同一策略副本，计算量线性增长；中心化存在单点故障，去中心化单节点故障不会传播。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0077",
+              "support_excerpt": "扩展性。 中心化控制器的联合动作空间随机器人数量指数膨胀。假设每台机器人的动作空间维度为 d，N 台机器人的联合空间为 d^N。Zeno-1 的去中心化架构下，增加一台机器人只需要加载同一个策略副本，无需重新设计控制器或重新划分联合动作空间，计算量线性增长。"
+            },
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0078",
+              "support_excerpt": "鲁棒性。 中心化系统存在单点故障。中央控制器如果出现延迟或故障，所有机器人同时失效。去中心化系统中，每台机器人独立决策，单个节点的故障不会传播到整个团队。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS15-N7",
+          "statement": "产业界和学术界正将多机器人协作视为机器人基础模型下一阶段的重要能力：斯坦福 CHORUS 方法提出基于单一 VLA policy 的去中心化多机器人协作；Figure Helix 02 和 Google DeepMind Gemini Robotics 2 已展示或强调 multi-robot collaboration。",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0083",
+              "support_excerpt": "今年 6 月，斯坦福的 Chelsea Finn、Jeannette Bohg 的课题组提出一篇名为 CHORUS 的方法，提出了基于单一 VLA policy 的去中心化多机器人协作。"
+            },
+            {
+              "source_id": "RS15",
+              "support_pointer": "PARA 0084",
+              "support_excerpt": "Figure 的 Helix 02 和 Google DeepMind 的 Gemini Robotics 2 都已经明确展示或强调 multi-robot collaboration，说明协作正在逐渐进入机器人基础模型的核心能力定义。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source_id": "RS05",
+      "n_units": 12,
+      "n_scorable": 12,
+      "n_sufficient": 2,
+      "audits": [
+        {
+          "audit_id": "RS05:RS05-U1:epistemic_unit",
+          "source_id": "RS05",
+          "unit_id": "RS05-U1",
+          "statement": "The article is a tutorial introducing torch.profiler for PyTorch performance profiling, aimed at beginners, and is the first part of a series that will progressively cover reading performance traces and using them for optimization.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0011",
+              "support_excerpt": "本文是《PyTorch 性能剖析》系列的开篇文章。本系列会循序渐进地介绍如何阅读性能轨迹，并把这些观察用于指导优化。"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0012",
+              "support_excerpt": "本文从初学者视角记录这段过程。除基础 PyTorch 知识外，不需要其他前置知识；可以把它当作一篇轻松阅读的教程"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS05:RS05-U1:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The cited excerpts confirm the article is the first in a series on PyTorch performance profiling, aimed at beginners, and will cover reading performance traces and using them for optimization. However, they do not mention torch.profiler specifically, nor do they state that the article is a tutorial introducing torch.profiler. Thus, the material claim about torch.profiler is unsupported.",
+            "unsupported_aspect": "The article introduces torch.profiler"
+          },
+          "model_meta": {
+            "latency_ms": 1234,
+            "prompt_tokens": 935,
+            "completion_tokens": 166,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS05:RS05-U2:epistemic_unit",
+          "source_id": "RS05",
+          "unit_id": "RS05-U2",
+          "statement": "The tutorial uses a minimal example of matrix multiplication followed by bias addition (torch.add(torch.matmul(x, w), b)) to demonstrate profiling with torch.profiler, and the profiling process involves four steps: preparing code, optionally labeling with record_function, wrapping with torch.profiler.profile, and exporting results.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0018",
+              "support_excerpt": "def fn(x, w, b):\n  return torch.add(torch.matmul(x, w), b)"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0020",
+              "support_excerpt": "我们将借助 torch.profiler 模块完成性能剖析，整体分为四步："
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS05:RS05-U2:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The cited evidence provides the minimal example function (PARA 0018) and states that profiling with torch.profiler is divided into four steps (PARA 0020), but it does not specify the content of those four steps (preparing code, optionally labeling with record_function, wrapping with torch.profiler.profile, and exporting results). Thus, the material claim about the four specific steps is unsupported.",
+            "unsupported_aspect": "The specific four steps of the profiling process (preparing code, optionally labeling with record_function, wrapping with torch.profiler.profile, and exporting results) are not described in the cited evidence."
+          },
+          "model_meta": {
+            "latency_ms": 1298,
+            "prompt_tokens": 937,
+            "completion_tokens": 206,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS05:RS05-U3:epistemic_unit",
+          "source_id": "RS05",
+          "unit_id": "RS05-U3",
+          "statement": "torch.profiler produces two types of outputs: a performance statistics table (key_averages().table) that summarizes which events consume the most time, and a performance trace (export_chrome_trace) that provides a time-based view of CPU and GPU activities.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0026",
+              "support_excerpt": "性能统计表：提供算法的统计摘要，用来回答「什么耗时最多」。... 性能轨迹：提供时间维度上的执行视图，用来回答「某个操作何时发生、为什么发生」，并展示 CPU 与 GPU 上发生的活动。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS05:RS05-U3:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The cited evidence describes two types of outputs generically as '性能统计表' and '性能轨迹', but does not mention torch.profiler, key_averages().table, or export_chrome_trace. The semantic object attributes these outputs to torch.profiler and names specific methods, which are not supported by the evidence.",
+            "unsupported_aspect": "The attribution to torch.profiler and the specific method names key_averages().table and export_chrome_trace are not present in the cited evidence."
+          },
+          "model_meta": {
+            "latency_ms": 1664,
+            "prompt_tokens": 901,
+            "completion_tokens": 179,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS05:RS05-U4:epistemic_unit",
+          "source_id": "RS05",
+          "unit_id": "RS05-U4",
+          "statement": "For a 64x64 bf16 matrix multiplication with bias addition, the profiler shows Self CPU time total of 2.314ms and Self CUDA time total of 23.104us, indicating that GPU time is less than 1% of CPU time, which is characteristic of an overhead-bound algorithm where most time is spent on kernel preparation and launch rather than computation.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0035",
+              "support_excerpt": "Self CPU time total: 2.314ms\nSelf CUDA time total: 23.104us"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0036",
+              "support_excerpt": "GPU 上花费的时间（内核 ampere_bf16_s16816gemm...）不到 CPU 上花费时间（matmul_add 操作）的 1%。... 这类受调度开销制约的算法被称作 开销受限型（overhead-bound） 算法。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS05:RS05-U4:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited evidence provides the exact CPU and CUDA times (2.314ms and 23.104us) and explicitly states that GPU time is less than 1% of CPU time, and that such algorithms are overhead-bound. This directly supports the semantic object's claims about the times, the percentage, and the overhead-bound characterization.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 1475,
+            "prompt_tokens": 989,
+            "completion_tokens": 146,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS05:RS05-U5:epistemic_unit",
+          "source_id": "RS05",
+          "unit_id": "RS05-U5",
+          "statement": "Increasing the matrix size to 4096x4096 changes the profile to Self CPU time total of 4.908ms and Self CUDA time total of 4.495ms, both in milliseconds, indicating a shift from overhead-bound to compute-bound because most CUDA time is now spent in the GPU kernel rather than CPU launch overhead.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0040",
+              "support_excerpt": "Self CPU time total: 4.908ms\nSelf CUDA time total: 4.495ms"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0041",
+              "support_excerpt": "两项耗时单位均为毫秒，可见仅通过增大矩阵尺寸，就能让 GPU 承担更多实际计算。... 这说明程序成功从开销受限型（overhead-bound）转为计算受限型（compute-bound）。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS05:RS05-U5:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The cited evidence provides the timing values (4.908ms CPU, 4.495ms CUDA) and states that increasing matrix size makes the GPU do more actual computation and that the program shifts from overhead-bound to compute-bound. However, the semantic object claims that 'most CUDA time is now spent in the GPU kernel rather than CPU launch overhead.' This specific causal attribution—that the CUDA time is spent in the kernel rather than launch overhead—is not explicitly stated in the cited excerpts. The excerpts only mention a general shift to compute-bound, not the specific distribution of CUDA time between kernel execution and launch overhead.",
+            "unsupported_aspect": "The claim that 'most CUDA time is now spent in the GPU kernel rather than CPU launch overhead' is not supported by the cited evidence."
+          },
+          "model_meta": {
+            "latency_ms": 1757,
+            "prompt_tokens": 967,
+            "completion_tokens": 237,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS05:RS05-U6:epistemic_unit",
+          "source_id": "RS05",
+          "unit_id": "RS05-U6",
+          "statement": "In the 64x64 trace, the first profiling step (ProfilerStep#2) shows a gap of about 228 microseconds between the start of the record_function('matmul_add') block and the dispatch of aten::matmul, which is attributed to one-time initialization overhead such as workspace allocation, cuBLAS heuristics, or lazy module loading, and can be avoided by adding warmup iterations.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0053",
+              "support_excerpt": "ProfileStep#2 中 record_function matmul_add 和 aten::matmul 下发之间存在 228 微秒间隔 ... 造成这段耗时的诱因有很多：临时显存工作区申请、cuBLAS（NVIDIA 专有的 GPU 加速基础线性代数库）内部启发式策略开销，或是动态懒加载模块。"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0054",
+              "support_excerpt": "在性能剖析场景里，预热指正式采样前预先反复执行目标算子。上文提到的各类 GPU 初始化工作仅会执行一次，不应把这类一次性开销纳入剖析统计。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS05:RS05-U6:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The cited evidence supports the existence of a 228 microsecond gap and lists possible causes (workspace allocation, cuBLAS heuristics, lazy module loading), and mentions that warmup can avoid one-time initialization overhead. However, the semantic object asserts that the gap is 'attributed to one-time initialization overhead' and that it 'can be avoided by adding warmup iterations'. The evidence only lists these as possible causes ('诱因有很多') and does not definitively attribute the gap to them. Furthermore, the evidence does not explicitly state that adding warmup iterations will avoid this specific gap; it only says such one-time overhead should not be included in profiling statistics. Thus, the causal claim and the remedy are not fully supported.",
+            "unsupported_aspect": "The definitive attribution of the 228 microsecond gap to one-time initialization overhead and the claim that adding warmup iterations can avoid it."
+          },
+          "model_meta": {
+            "latency_ms": 1816,
+            "prompt_tokens": 1024,
+            "completion_tokens": 255,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS05:RS05-U7:epistemic_unit",
+          "source_id": "RS05",
+          "unit_id": "RS05-U7",
+          "statement": "The CPU and GPU timelines in the trace show an offset of about 2.5 ms, which is caused by the profiler's activity buffer request (Activity Buffer Request) that occurs before GPU operations begin, as confirmed by setting wait=0 and warmup=0 and observing the buffer request event.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0058",
+              "support_excerpt": "图 8 显示 CPU 和 GPU 时间线之间约有 2.5 ms 的偏移：CPU 提交 CUDA 内核之后，GPU 真正开始执行之前会有一段延迟。"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0061",
+              "support_excerpt": "图 9 显示，所有 GPU 运算开始前，GPU 时间线里出现了一项 Activity Buffer Request（活动缓冲区申请）事件"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0064",
+              "support_excerpt": "如图 11 所示，仅在 ProfileStep#1 出现该空隙，和之前推断吻合，因此可以确定空档源自缓冲区内存申请。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS05:RS05-U7:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The cited excerpts confirm an offset of about 2.5 ms between CPU and GPU timelines and the presence of an Activity Buffer Request event before GPU operations, but they do not mention setting wait=0 and warmup=0 or observing the buffer request event under those conditions. The causal claim that the offset is caused by the buffer request is only partially supported; the evidence states the offset is about 2.5 ms and that the buffer request appears before GPU operations, but does not explicitly link the offset to the buffer request as the cause. The excerpt from PARA 0064 mentions a gap in ProfileStep#1 and attributes it to buffer memory allocation, but does not specify the 2.5 ms offset or the wait/warmup settings.",
+            "unsupported_aspect": "The claim that the offset is caused by the Activity Buffer Request as confirmed by setting wait=0 and warmup=0 and observing the buffer request event is not supported by the cited evidence; the evidence does not mention these settings or the observation under those conditions."
+          },
+          "model_meta": {
+            "latency_ms": 2376,
+            "prompt_tokens": 1028,
+            "completion_tokens": 284,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS05:RS05-U8:epistemic_unit",
+          "source_id": "RS05",
+          "unit_id": "RS05-U8",
+          "statement": "The CPU dispatch chain for matrix multiplication is nested as ProfileStep -> matmul_add (custom record_function) -> aten::matmul -> aten::mm, and when a batch dimension is added, aten::matmul dispatches to aten::bmm instead, with additional CUDA runtime calls due to cuBLAS heuristics.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0066",
+              "support_excerpt": "最外层的 ProfileStep#编号 包裹整轮性能采样逻辑；因为代码里手动添加了标注，视图里出现 matmul_add 节点，其内部包含两次 ATen 算子调用：矩阵乘法和矩阵加法。"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0067",
+              "support_excerpt": "面向用户的 PyTorch 矩阵乘法调用最终会落到 ATen 层 的 aten::matmul 调度接口。aten::mm 是专用于二维矩阵相乘的底层后端算子。"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0071",
+              "support_excerpt": "在图 13 中，给输入张量新增批量维度后，aten::matmul 内部不再调用 aten::mm，转而使用 aten::bmm，同时还附带一系列前置 CUDA 运行时调用。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS05:RS05-U8:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object claims the dispatch chain is nested as ProfileStep -> matmul_add -> aten::matmul -> aten::mm, and that with a batch dimension aten::matmul dispatches to aten::bmm with additional CUDA runtime calls due to cuBLAS heuristics. The cited evidence supports the presence of ProfileStep wrapping, matmul_add containing two ATen calls (matrix multiplication and addition), and that aten::matmul is the dispatch interface with aten::mm for 2D. It also supports that with batch dimension aten::matmul uses aten::bmm and additional CUDA runtime calls. However, the evidence does not explicitly state the nesting order ProfileStep -> matmul_add -> aten::matmul -> aten::mm (it only says matmul_add contains two ATen calls, not that aten::matmul is inside matmul_add in that exact chain). More importantly, the evidence does not attribute the additional CUDA runtime calls to cuBLAS heuristics; that causal explanation is absent from the cited excerpts.",
+            "unsupported_aspect": "The exact nesting order ProfileStep -> matmul_add -> aten::matmul -> aten::mm is not explicitly stated; the causal link between additional CUDA runtime calls and cuBLAS heuristics is not supported by the cited evidence."
+          },
+          "model_meta": {
+            "latency_ms": 2263,
+            "prompt_tokens": 1064,
+            "completion_tokens": 338,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS05:RS05-U9:epistemic_unit",
+          "source_id": "RS05",
+          "unit_id": "RS05-U9",
+          "statement": "Matrix multiplication kernels (e.g., cuBLAS GEMM) require a cudaOccupancyMaxActiveBlocksPerMultiprocessor query before launch because their resource usage (registers, shared memory) varies with matrix size and cuBLAS uses heuristics to select among many kernel variants, whereas element-wise addition kernels have fixed low resource usage (32 registers, no shared memory) and do not need such a query.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0073",
+              "support_excerpt": "可以观察到：aten::mm 对应两次 CUDA Runtime 调用，分别是图中标注的 cudaOccupancyMaxActiveBlocksPerMultiprocessor 与 cudaLaunchKernel；而 aten::add 仅存在 cudaLaunchKernel 一次调用。"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0077",
+              "support_excerpt": "从图 15 可见，矩阵乘法的单线程寄存器占用、共享内存占用会随矩阵尺寸动态变化。cuBLAS 内置上百种不同版本的矩阵乘内核，每种内核都依托启发式策略完成启动，而该策略需要实时获取硬件算力信息，占用率查询就是启发逻辑的一环。"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0078",
+              "support_excerpt": "反观图 16，加法内核固定占用 32 个寄存器、不使用共享内存，资源需求极小，硬件资源不会成为运行瓶颈，因此无需提前查询占用率。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS05:RS05-U9:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The semantic object claims that matrix multiplication kernels require the occupancy query before launch because resource usage varies with matrix size and cuBLAS uses heuristics to select among many kernel variants. Evidence PARA 0077 supports that resource usage varies with matrix size and that cuBLAS has many kernel variants with heuristic strategies requiring real-time hardware info, and that occupancy query is part of the heuristic. However, the object also claims that the query is required 'before launch' and that element-wise addition kernels 'do not need such a query' because they have fixed low resource usage. PARA 0073 only shows that aten::mm corresponds to two CUDA Runtime calls including the occupancy query and cudaLaunchKernel, while aten::add only has cudaLaunchKernel. This supports the observation but does not explicitly state that the query is required before launch for matrix multiplication or that it is not needed for addition. PARA 0078 states that addition kernels have fixed low resource usage and therefore '无需提前查询占用率' (no need to query occupancy in advance), which supports the 'do not need' part. However, the causal link that matrix multiplication kernels require the query because of resource variation and heuristic selection is partially supported, but the necessity 'require' is not explicitly stated; the evidence only shows that the query occurs for mm and not for add, and explains why add doesn't need it. The object's claim that the query is required before launch for matrix multiplication is stronger than the evidence, which only shows that it is called. Thus, the material claim of necessity is not fully supported.",
+            "unsupported_aspect": "The claim that matrix multiplication kernels 'require' the occupancy query before launch is not explicitly supported; evidence only shows that the query is called for mm and explains why add does not need it, but does not state that mm requires it."
+          },
+          "model_meta": {
+            "latency_ms": 3865,
+            "prompt_tokens": 1111,
+            "completion_tokens": 448,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS05:RS05-U10:epistemic_unit",
+          "source_id": "RS05",
+          "unit_id": "RS05-U10",
+          "statement": "The cudaDeviceSynchronize call at the end of an active profiling window takes about 1.78 ms while the actual GPU computation is only 26 microseconds, indicating that the program is idle about 98% of the time, a typical overhead-bound symptom.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0080",
+              "support_excerpt": "cudaDeviceSynchronize 会阻塞 CPU 线程，直至当前 GPU 上所有计算任务全部执行完毕。剖析器会在有效采样窗口末尾执行该同步操作，目的是刷新缓存的性能事件，缺少这一步就会丢失内核耗时统计数据。"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0081",
+              "support_excerpt": "一次仅 26 微秒 GPU 有效运算，却伴随 1.78 毫秒同步耗时，说明程序空闲占比高达 98%，是典型的开销受限型性能特征。"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS05:RS05-U10:epistemic_unit",
+            "verdict": "SUFFICIENT",
+            "reason_code": "SUPPORTED",
+            "rationale": "The cited evidence directly states the 26 microsecond GPU computation and 1.78 ms synchronization time, and explicitly concludes that the program is idle about 98% of the time, characterizing it as a typical overhead-bound symptom. This supports all material parts of the semantic object.",
+            "unsupported_aspect": ""
+          },
+          "model_meta": {
+            "latency_ms": 975,
+            "prompt_tokens": 977,
+            "completion_tokens": 134,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS05:RS05-U11:epistemic_unit",
+          "source_id": "RS05",
+          "unit_id": "RS05-U11",
+          "statement": "Even with identical hardware, code, and input data, the execution time of the same GPU kernel varies across profiling steps (e.g., 4096x4096 bf16 matmul kernel times fluctuate), due to factors such as GPU clock frequency changes, temperature, power scheduling, and driver background tasks; relying only on average times can be misleading.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0086",
+              "support_excerpt": "该轨迹点明一个理想化示例里容易忽略的关键点：即便硬件环境、代码、输入数据完全相同，GPU 内核的实际运行耗时也并非固定值。"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0090",
+              "support_excerpt": "图 18 同样验证了上述现象：内核代码完全一致，但运算耗时各不相同。造成耗时波动的常见诱因："
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0091",
+              "support_excerpt": "GPU 空闲或加速状态下的时钟频率变化\n显卡温升带来的性能波动\n显卡功耗调度策略\n显卡驱动后台例行维护任务"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS05:RS05-U11:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The cited evidence supports that execution time varies even with identical hardware, code, and input data, and lists common causes (clock frequency, temperature, power scheduling, driver tasks). However, the semantic object includes a specific example '4096x4096 bf16 matmul kernel times fluctuate' which is not mentioned in the excerpts. Also, the claim that 'relying only on average times can be misleading' is not supported by the cited evidence.",
+            "unsupported_aspect": "The specific example of 4096x4096 bf16 matmul kernel and the conclusion about average times being misleading."
+          },
+          "model_meta": {
+            "latency_ms": 1541,
+            "prompt_tokens": 1028,
+            "completion_tokens": 197,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        },
+        {
+          "audit_id": "RS05:RS05-U12:epistemic_unit",
+          "source_id": "RS05",
+          "unit_id": "RS05-U12",
+          "statement": "With torch.compile, the matmul+add operation is fused at the scheduler level into a single aten::addmm call, but the underlying GPU still uses the same cuBLAS GEMM kernel; the fusion does not create a new fused CUDA kernel, and it introduces an extra device-to-device memory copy (Memcpy DtoD) for bias initialization, so the expected single-kernel fusion is not achieved.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0100",
+              "support_excerpt": "这属于计算图层面的算子融合：Inductor 将 torch.add(torch.matmul(x, w), b) 改写为单次 aten::addmm(b, x, w) 调用。关键细节是：该优化并未生成全新的融合 CUDA 内核。GPU 底层仍沿用动态执行模式使用的同一个 cuBLAS 内核 ampere_bf16_s16816gemm_bf16_128x256_ldg8_f2f_stages_64x3_nn。"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0108",
+              "support_excerpt": "初看图 21 的 CPU 轨迹时，我们一度高兴地以为每轮只有一次 cudaLaunchKernel 调用，但这与 GPU 轨迹直接矛盾：每轮依然启动了两个内核，分别是 设备到设备内存拷贝（Memcpy DtoD）和 GEMM。"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0112",
+              "support_excerpt": "out = copy(C) ← 这是 DtoD 内存拷贝（32 MB，耗时约 33 µs）\nout = α·(A·B) + β·out ← 使用 α=β=1 的 GEMM，将偏置加法融合到写回阶段"
+            }
+          ],
+          "scorable": true,
+          "failure_kind": null,
+          "error": null,
+          "repair_used": false,
+          "audit_result": {
+            "interface_version": "semantic-evidence-audit-result-v0.1.1",
+            "audit_id": "RS05:RS05-U12:epistemic_unit",
+            "verdict": "INSUFFICIENT",
+            "reason_code": "MISSING_SUPPORT",
+            "rationale": "The evidence supports that the fusion is at the computation graph level, resulting in a single aten::addmm call, and that the underlying GPU still uses the same cuBLAS GEMM kernel. It also supports that there is an extra Memcpy DtoD for bias initialization. However, the semantic object states that the fusion 'introduces an extra device-to-device memory copy (Memcpy DtoD) for bias initialization' and that 'the expected single-kernel fusion is not achieved.' The cited excerpts do not explicitly state that the Memcpy DtoD is for bias initialization; they only mention a DtoD copy and a GEMM. The causal link between the fusion and the extra copy is not explicitly stated. Also, the object's phrasing 'so the expected single-kernel fusion is not achieved' is a conclusion that is not directly supported by the evidence, which only describes the observed kernels without stating an expectation. Thus, the material claim about the purpose of the copy and the causal relation is unsupported.",
+            "unsupported_aspect": "The claim that the extra Memcpy DtoD is for bias initialization and that this causes the expected single-kernel fusion not to be achieved."
+          },
+          "model_meta": {
+            "latency_ms": 2444,
+            "prompt_tokens": 1177,
+            "completion_tokens": 318,
+            "model": "deepseek-v4-flash",
+            "estimated_cost_usd": null,
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 45.0,
+            "schema_repaired": false
+          }
+        }
+      ],
+      "admitted_units": [
+        {
+          "unit_id": "RS05-U4",
+          "statement": "For a 64x64 bf16 matrix multiplication with bias addition, the profiler shows Self CPU time total of 2.314ms and Self CUDA time total of 23.104us, indicating that GPU time is less than 1% of CPU time, which is characteristic of an overhead-bound algorithm where most time is spent on kernel preparation and launch rather than computation.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0035",
+              "support_excerpt": "Self CPU time total: 2.314ms\nSelf CUDA time total: 23.104us"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0036",
+              "support_excerpt": "GPU 上花费的时间（内核 ampere_bf16_s16816gemm...）不到 CPU 上花费时间（matmul_add 操作）的 1%。... 这类受调度开销制约的算法被称作 开销受限型（overhead-bound） 算法。"
+            }
+          ]
+        },
+        {
+          "unit_id": "RS05-U10",
+          "statement": "The cudaDeviceSynchronize call at the end of an active profiling window takes about 1.78 ms while the actual GPU computation is only 26 microseconds, indicating that the program is idle about 98% of the time, a typical overhead-bound symptom.",
+          "epistemic_status": "SOURCE_CLAIM",
+          "confidence": "HIGH",
+          "supports": [
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0080",
+              "support_excerpt": "cudaDeviceSynchronize 会阻塞 CPU 线程，直至当前 GPU 上所有计算任务全部执行完毕。剖析器会在有效采样窗口末尾执行该同步操作，目的是刷新缓存的性能事件，缺少这一步就会丢失内核耗时统计数据。"
+            },
+            {
+              "source_id": "RS05",
+              "support_pointer": "PARA 0081",
+              "support_excerpt": "一次仅 26 微秒 GPU 有效运算，却伴随 1.78 毫秒同步耗时，说明程序空闲占比高达 98%，是典型的开销受限型性能特征。"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
