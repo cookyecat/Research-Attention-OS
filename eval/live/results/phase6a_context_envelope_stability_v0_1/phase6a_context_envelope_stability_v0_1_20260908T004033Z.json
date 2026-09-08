@@ -1,0 +1,186 @@
+{
+  "name": "raos-phase6a-context-envelope-stability-v0.1",
+  "status": "DEVELOPMENT_ONLY_NOT_FRESH_VALIDATION",
+  "measurement_timestamp": "20260908T004033Z",
+  "measurement_git_head": "dd71f13eafaeed5652c36e5cf05633c7adef64d6",
+  "base_artifact": "/Users/liyang/Developer/Research-Attention-OS/eval/live/results/phase6a_aware_drop_vertical_slice_v0_1/phase6a_aware_drop_vertical_slice_v0_1_20260908T003637Z.json",
+  "enriched_artifact": "/Users/liyang/Developer/Research-Attention-OS/eval/live/results/phase6a_aware_drop_vertical_slice_v0_1_1/phase6a_aware_drop_vertical_slice_v0_1_1_20260908T003719Z.json",
+  "repeats": 3,
+  "events": [
+    "RS11-E1",
+    "RS11-E2"
+  ],
+  "summaries": {
+    "RS11-E1": {
+      "SEMANTIC_ONLY": {
+        "D_counts": {
+          "IN": 3
+        },
+        "S_counts": {
+          "NOT_MATERIAL": 1,
+          "MATERIAL": 2
+        }
+      },
+      "SEMANTIC_PLUS_ADMITTED_EVIDENCE": {
+        "D_counts": {
+          "IN": 3
+        },
+        "S_counts": {
+          "MATERIAL": 3
+        }
+      }
+    },
+    "RS11-E2": {
+      "SEMANTIC_ONLY": {
+        "D_counts": {
+          "IN": 3
+        },
+        "S_counts": {
+          "MATERIAL": 3
+        }
+      },
+      "SEMANTIC_PLUS_ADMITTED_EVIDENCE": {
+        "D_counts": {
+          "IN": 3
+        },
+        "S_counts": {
+          "MATERIAL": 3
+        }
+      }
+    }
+  },
+  "rows": [
+    {
+      "event_id": "RS11-E1",
+      "condition": "SEMANTIC_ONLY",
+      "repeat": 1,
+      "D": "IN",
+      "S": "NOT_MATERIAL",
+      "D_reason": "The event announces the release and open-sourcing of Qwen3.8-Flash and Qwen3.8-Flash-Next, which are LLMs/foundation models, directly satisfying the LLM/foundation model standing clause.",
+      "S_reason": "Release of a new model with aggressive pricing is a routine market entry; no evidence of structural change to the AI industry or capability frontier.",
+      "D_model": "deepseek-v4-pro",
+      "S_model": "deepseek-v4-flash"
+    },
+    {
+      "event_id": "RS11-E1",
+      "condition": "SEMANTIC_ONLY",
+      "repeat": 2,
+      "D": "IN",
+      "S": "MATERIAL",
+      "D_reason": "The event announces the release and open-sourcing of Qwen3.8-Flash, a large language model, which substantively satisfies the LLM/foundation model clause.",
+      "S_reason": "The release of a new open-source model at a significantly low price (1 yuan input / 3 yuan output per million tokens) materially disturbs the AI model market by changing the cost-performance baseline and competitive dynamics, affecting the entire industry.",
+      "D_model": "deepseek-v4-pro",
+      "S_model": "deepseek-v4-flash"
+    },
+    {
+      "event_id": "RS11-E1",
+      "condition": "SEMANTIC_ONLY",
+      "repeat": 3,
+      "D": "IN",
+      "S": "MATERIAL",
+      "D_reason": "The event is the release and open-sourcing of Qwen3.8-Flash, a foundation model, which substantively satisfies the LLM/foundation model clause.",
+      "S_reason": "The release of a competitive open-source model at a fraction of typical cost materially disturbs the AI model market and open-source ecosystem by changing the cost-performance frontier and available options.",
+      "D_model": "deepseek-v4-pro",
+      "S_model": "deepseek-v4-flash"
+    },
+    {
+      "event_id": "RS11-E1",
+      "condition": "SEMANTIC_PLUS_ADMITTED_EVIDENCE",
+      "repeat": 1,
+      "D": "IN",
+      "S": "MATERIAL",
+      "D_reason": "The event is the release and open-sourcing of Qwen3.8-Flash, a large language model, which directly satisfies the standing clause for substantive LLM/foundation model releases.",
+      "S_reason": "The event materially disturbs the AI model market by setting a dramatically lower price for a capable model and open-sourcing it, changing competitive dynamics and the cost/capability frontier.",
+      "D_model": "deepseek-v4-pro",
+      "S_model": "deepseek-v4-flash"
+    },
+    {
+      "event_id": "RS11-E1",
+      "condition": "SEMANTIC_PLUS_ADMITTED_EVIDENCE",
+      "repeat": 2,
+      "D": "IN",
+      "S": "MATERIAL",
+      "D_reason": "The event is the release and open-sourcing of Qwen3.8-Flash, a large language model, which directly satisfies the LLM/foundation model clause.",
+      "S_reason": "The release of Qwen3.8-Flash at a price one-twelfth of the prior model and below a major competitor's discounted rate materially disturbs the AI model market's pricing structure, and open-sourcing the model changes the capability frontier for open-source models.",
+      "D_model": "deepseek-v4-pro",
+      "S_model": "deepseek-v4-flash"
+    },
+    {
+      "event_id": "RS11-E1",
+      "condition": "SEMANTIC_PLUS_ADMITTED_EVIDENCE",
+      "repeat": 3,
+      "D": "IN",
+      "S": "MATERIAL",
+      "D_reason": "The event is a substantive release and open-sourcing of a large language model (Qwen3.8-Flash), directly satisfying the LLM/foundation model clause.",
+      "S_reason": "The release and open-sourcing of Qwen3.8-Flash at a disruptive price point materially changes the cost structure and competitive dynamics of the AI model market, affecting industry-wide pricing and access to advanced AI capabilities.",
+      "D_model": "deepseek-v4-pro",
+      "S_model": "deepseek-v4-flash"
+    },
+    {
+      "event_id": "RS11-E2",
+      "condition": "SEMANTIC_ONLY",
+      "repeat": 1,
+      "D": "IN",
+      "S": "MATERIAL",
+      "D_reason": "The event describes a pricing change for V4 Flash, which is an AI model API. This is a substantive change to a deployed AI system, satisfying the LLM/foundation model clause.",
+      "S_reason": "The price change affects a major AI model API used by many developers, materially altering the cost structure and potentially shifting usage patterns in the AI industry.",
+      "D_model": "deepseek-v4-pro",
+      "S_model": "deepseek-v4-flash"
+    },
+    {
+      "event_id": "RS11-E2",
+      "condition": "SEMANTIC_ONLY",
+      "repeat": 2,
+      "D": "IN",
+      "S": "MATERIAL",
+      "D_reason": "The event describes a pricing change for an API, specifically referencing 'V4 Flash' which is an AI model. This is a substantive change to an AI system's deployment/pricing, satisfying the LLM/foundation model clause.",
+      "S_reason": "The event changes the cost structure of a widely used AI API, affecting the broader developer ecosystem and market, which is a consequential shared system.",
+      "D_model": "deepseek-v4-pro",
+      "S_model": "deepseek-v4-flash"
+    },
+    {
+      "event_id": "RS11-E2",
+      "condition": "SEMANTIC_ONLY",
+      "repeat": 3,
+      "D": "IN",
+      "S": "MATERIAL",
+      "D_reason": "The event describes a pricing change for V4 Flash, which is an AI model (likely a foundation model/LLM). This is a substantive change to an AI system's commercial deployment, satisfying the AI systems clause.",
+      "S_reason": "The event changes the cost structure of a widely used AI API, affecting a broad developer and business ecosystem, which constitutes a material disturbance to the AI industry market.",
+      "D_model": "deepseek-v4-pro",
+      "S_model": "deepseek-v4-flash"
+    },
+    {
+      "event_id": "RS11-E2",
+      "condition": "SEMANTIC_PLUS_ADMITTED_EVIDENCE",
+      "repeat": 1,
+      "D": "IN",
+      "S": "MATERIAL",
+      "D_reason": "DeepSeek is an LLM provider, and the event describes a substantive change to its API pricing for V4 models, which is a change to an AI system's commercial deployment.",
+      "S_reason": "The event materially changes the pricing structure of a major AI API provider, affecting the cost landscape for developers and businesses relying on such services, thereby disturbing the market structure and cost expectations in the AI industry.",
+      "D_model": "deepseek-v4-pro",
+      "S_model": "deepseek-v4-flash"
+    },
+    {
+      "event_id": "RS11-E2",
+      "condition": "SEMANTIC_PLUS_ADMITTED_EVIDENCE",
+      "repeat": 2,
+      "D": "IN",
+      "S": "MATERIAL",
+      "D_reason": "The event describes a substantive pricing change to DeepSeek's V4 API, which is a deployed LLM service. This satisfies the clause for substantive changes to LLM systems.",
+      "S_reason": "The event changes the pricing structure of a widely used AI API, affecting the cost landscape for developers and businesses that depend on it, thereby materially altering the market conditions for AI services.",
+      "D_model": "deepseek-v4-pro",
+      "S_model": "deepseek-v4-flash"
+    },
+    {
+      "event_id": "RS11-E2",
+      "condition": "SEMANTIC_PLUS_ADMITTED_EVIDENCE",
+      "repeat": 3,
+      "D": "IN",
+      "S": "MATERIAL",
+      "D_reason": "DeepSeek is an LLM provider, and the event is a substantive change to its API pricing for V4 models, which falls under the LLM/foundation model clause.",
+      "S_reason": "The event materially alters the pricing structure of a major AI API provider, affecting the cost basis for developers and the competitive dynamics of the AI model market.",
+      "D_model": "deepseek-v4-pro",
+      "S_model": "deepseek-v4-flash"
+    }
+  ]
+}

@@ -646,3 +646,32 @@ The Mathematical Language Registry (`35_RAOS_MATHEMATICAL_LANGUAGE_REGISTRY.md`)
 Core lesson:
 
 > **RAOS stays understandable only if every module has one clear job, one clear boundary, and one clear place in the attention-allocation chain.**
+
+---
+
+# 14. Phase 6 interface clarification — audited context envelope
+
+Phase 6A end-to-end measurement exposed an important interface rule between the Auditor and downstream judges.
+
+Do not collapse an approved semantic object to prose alone after audit. The downstream representation should preserve the evidence context already admitted with that object:
+
+```text
+Audited Semantic Representation
+=
+admitted semantic objects
++
+their evidence excerpts from SUFFICIENT Auditor edges
+```
+
+This does **not** authorize retrieval, repair, or resurrection of rejected semantic objects.
+
+Invariant:
+
+```text
+Context preservation != Semantic repair
+Rejected object != restored object
+```
+
+Reason: removing already-admitted evidence context can erase domain, causal, quantitative, or attribution information needed by D/S/Delta and can change final Attention Policy output even though each local Auditor verdict is individually reasonable.
+
+The Auditor still has one job: evidence sufficiency. The context envelope is an interface property of its output, not a new Auditor responsibility or theoretical variable.

@@ -1,0 +1,1186 @@
+{
+  "name": "raos-phase6a-aware-drop-vertical-slice-v0.1",
+  "status": "DEVELOPMENT_ONLY_NOT_FRESH_VALIDATION",
+  "run_version": "phase6a-aware-drop-vertical-slice-v0.1",
+  "measurement_timestamp": "20260908T003637Z",
+  "measurement_git_head": "7cbbe2688f67405bb6e64aeee78978a40560abf5",
+  "input_audit_artifact": "/Users/liyang/Developer/Research-Attention-OS/eval/live/results/raw_source_event_audit_v0_1/raw_source_event_audit_v0_1_20260907T205418Z.json",
+  "input_audit_measurement_head": "f428fef69bd9275ae7a8c0649de040f051b5a228",
+  "p_manifest": "/Users/liyang/Developer/Research-Attention-OS/eval/live/manifest.phase6a_controlled_p_packets.v0.1.yaml",
+  "p_manifest_name": "raos-phase6a-controlled-p-packets-v0.1",
+  "model_policy": {
+    "D": "deepseek-v4-pro",
+    "S": "deepseek-v4-flash",
+    "P": "deepseek-v4-flash",
+    "attention_policy": "production Scheduler via no_delta_awareness_integration_v2"
+  },
+  "n_events": 8,
+  "n_scorable": 8,
+  "n_gate_wiring_matches": 8,
+  "disposition_counts": {
+    "DROP": 8
+  },
+  "rows": [
+    {
+      "source_id": "RS11",
+      "event_id": "RS11-E1",
+      "routing_status": "ROUTABLE",
+      "rendered_event_text": "Audited event representation:\nActions / changes:\n- [ANNOUNCED] Release of Qwen3.8-Flash and open-sourcing of Qwen3.8-Flash-Next\n- [ANNOUNCED] Pricing set at 1 yuan input / 3 yuan output per million tokens\nSubstantive actors / objects:\n- 阿里: releasing organization — released Qwen3.8-Flash",
+      "sensor_event_summary_diagnostic_only": "Qwen3.8-Flash released with new architecture and low pricing, positioned as Qwen4 preview.",
+      "admitted_counts": {
+        "actors": 1,
+        "actions": 2,
+        "systems": 0,
+        "uncertainties": 0
+      },
+      "rejected_object_count": 3,
+      "p_condition": "strong_salience",
+      "p_packet": {
+        "event": {
+          "event_id": "RS11-E1",
+          "as_of": "2026-09-08T00:00:00Z",
+          "semantic_summary": "Audited event representation:\nActions / changes:\n- [ANNOUNCED] Release of Qwen3.8-Flash and open-sourcing of Qwen3.8-Flash-Next\n- [ANNOUNCED] Pricing set at 1 yuan input / 3 yuan output per million tokens\nSubstantive actors / objects:\n- 阿里: releasing organization — released Qwen3.8-Flash"
+        },
+        "constituency_prior": {
+          "description": "AI model developers and practitioners",
+          "scope": "domain",
+          "reference_scale": "10^6",
+          "reference_size_hint": "controlled-development prior",
+          "basis": "explicit_event_scope",
+          "provenance": "Phase 6A controlled development packet"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "controlled_discussion",
+            "controlled_search"
+          ],
+          "channels_unavailable": [],
+          "notes": "Synthetic attention observations for wiring only; not real-world claims."
+        },
+        "recent_attention_history": [],
+        "current_attention_evidence": [
+          {
+            "kind": "human_discussion",
+            "window": "last 24h",
+            "observation": "Independent discussion is widespread across the controlled constituency and materially above its normal baseline.",
+            "source": "phase6a controlled sensor",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "controlled_humans",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "active_search",
+            "window": "last 24h",
+            "observation": "Voluntary search activity is several times the constituency's ordinary baseline.",
+            "source": "phase6a controlled sensor",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "controlled_search",
+            "quality": "direct",
+            "contamination": []
+          }
+        ]
+      },
+      "scorable": true,
+      "labels": {
+        "D": "IN",
+        "S": "NOT_MATERIAL",
+        "P": "SALIENT"
+      },
+      "disposition": "DROP",
+      "policy_reason": "No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
+      "gate_wiring_matches": true,
+      "component_scorable": {
+        "D": true,
+        "S": true,
+        "P": true
+      },
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "IN",
+        "substantive_anchors": [
+          "Qwen3.8-Flash",
+          "Qwen3.8-Flash-Next",
+          "阿里"
+        ],
+        "matched_clauses": [
+          "Monitor events where LLMs, foundation models, AI Agents, multimodal AI, or closely related AI systems are substantively developed, released, evaluated, deployed, or changed."
+        ],
+        "reason": "The event announces the release and open-sourcing of Qwen3.8-Flash and Qwen3.8-Flash-Next, which are LLMs/foundation models, directly satisfying the LLM/foundation model standing clause.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 2038,
+          "prompt_tokens": 1725,
+          "completion_tokens": 141,
+          "model": "deepseek-v4-pro",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "NOT_MATERIAL",
+        "affected_shared_systems": [],
+        "material_changes": [],
+        "reason": "Release of a new model variant and pricing announcement does not by itself materially disturb a consequential shared reference system; it is a routine product update in a competitive market.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1123,
+          "prompt_tokens": 1139,
+          "completion_tokens": 67,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "SALIENT",
+        "objective_constituency": "AI model developers and practitioners",
+        "attention_state_summary": "Widespread independent discussion and voluntary search activity several times above baseline within the constituency indicate genuine collective attention.",
+        "inertia_summary": "No prior history; current evidence shows attention clearly forming, so salience is emerging.",
+        "reason": "Evidence shows genuine, voluntary engagement from the relevant constituency, well above baseline, indicating salient collective attention.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1489,
+          "prompt_tokens": 1861,
+          "completion_tokens": 120,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "source_id": "RS11",
+      "event_id": "RS11-E2",
+      "routing_status": "ROUTABLE",
+      "rendered_event_text": "Audited event representation:\nActions / changes:\n- [EFFECTIVE] New API pricing effective with peak/off-peak rates\n- [EFFECTIVE] V4 Flash off-peak input price up ~57%, output up ~136%, peak output ~4.7x old price",
+      "sensor_event_summary_diagnostic_only": "DeepSeek V4 API price increase effective August 17 with peak/off-peak pricing.",
+      "admitted_counts": {
+        "actors": 0,
+        "actions": 2,
+        "systems": 0,
+        "uncertainties": 0
+      },
+      "rejected_object_count": 3,
+      "p_condition": "low_salience",
+      "p_packet": {
+        "event": {
+          "event_id": "RS11-E2",
+          "as_of": "2026-09-08T00:00:00Z",
+          "semantic_summary": "Audited event representation:\nActions / changes:\n- [EFFECTIVE] New API pricing effective with peak/off-peak rates\n- [EFFECTIVE] V4 Flash off-peak input price up ~57%, output up ~136%, peak output ~4.7x old price"
+        },
+        "constituency_prior": {
+          "description": "DeepSeek API users and AI API developers",
+          "scope": "product",
+          "reference_scale": "10^5",
+          "reference_size_hint": "controlled-development prior",
+          "basis": "explicit_event_scope",
+          "provenance": "Phase 6A controlled development packet"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "controlled_discussion",
+            "controlled_search"
+          ],
+          "channels_unavailable": [],
+          "notes": "Synthetic attention observations for wiring only; not real-world claims."
+        },
+        "recent_attention_history": [],
+        "current_attention_evidence": [
+          {
+            "kind": "human_discussion",
+            "window": "last 24h",
+            "observation": "Checked discussion channels show only sparse isolated mentions, far below normal constituency-wide attention levels.",
+            "source": "phase6a controlled sensor",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "controlled_humans",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "active_search",
+            "window": "last 24h",
+            "observation": "Search activity remains near ordinary baseline with no clear emerging spike.",
+            "source": "phase6a controlled sensor",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "controlled_search",
+            "quality": "direct",
+            "contamination": []
+          }
+        ]
+      },
+      "scorable": true,
+      "labels": {
+        "D": "OUT",
+        "S": "MATERIAL",
+        "P": "NOT_SALIENT"
+      },
+      "disposition": "DROP",
+      "policy_reason": "No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
+      "gate_wiring_matches": true,
+      "component_scorable": {
+        "D": true,
+        "S": true,
+        "P": true
+      },
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "OUT",
+        "substantive_anchors": [
+          "API pricing",
+          "V4 Flash pricing"
+        ],
+        "matched_clauses": [],
+        "reason": "The event is about API pricing changes for a model (V4 Flash), but no standing clause covers generic API pricing or this specific model. It does not substantively involve LLM development/release/evaluation/deployment/changes, nor any other monitored domain.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 2438,
+          "prompt_tokens": 1699,
+          "completion_tokens": 96,
+          "model": "deepseek-v4-pro",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "MATERIAL",
+        "affected_shared_systems": [
+          "AI developer ecosystem and API market",
+          "LLM inference cost structure for developers"
+        ],
+        "material_changes": [
+          "Significant price increase for a widely used AI model API alters cost structure for developers and businesses relying on it",
+          "Changes competitive dynamics and pricing benchmarks in the LLM API market"
+        ],
+        "reason": "The event changes the cost structure of a widely used AI API, materially affecting the developer ecosystem and market pricing norms.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1606,
+          "prompt_tokens": 1113,
+          "completion_tokens": 118,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "NOT_SALIENT",
+        "objective_constituency": "DeepSeek API users and AI API developers",
+        "attention_state_summary": "Sparse isolated mentions and baseline search activity indicate no genuine collective attention forming.",
+        "inertia_summary": "No prior attention history; current evidence shows no established salience.",
+        "reason": "Evidence shows only sparse discussion and baseline search, far below constituency scale, with no emerging spike.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1693,
+          "prompt_tokens": 1839,
+          "completion_tokens": 115,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "source_id": "RS12",
+      "event_id": "RS12-E1",
+      "routing_status": "ROUTABLE",
+      "rendered_event_text": "Audited event representation:\nActions / changes:\n- [OBSERVED] 获得7金4银3铜，覆盖全部8个赛项\nSubstantive actors / objects:\n- 临界点: 参赛公司 — 首次参赛并携OmniHand参赛",
+      "sensor_event_summary_diagnostic_only": "临界点OmniHand在第二届世界人形机器人运动会灵巧手专项赛中获得7金4银3铜，覆盖全部8个赛项。",
+      "admitted_counts": {
+        "actors": 1,
+        "actions": 1,
+        "systems": 0,
+        "uncertainties": 0
+      },
+      "rejected_object_count": 2,
+      "p_condition": "strong_salience",
+      "p_packet": {
+        "event": {
+          "event_id": "RS12-E1",
+          "as_of": "2026-09-08T00:00:00Z",
+          "semantic_summary": "Audited event representation:\nActions / changes:\n- [OBSERVED] 获得7金4银3铜，覆盖全部8个赛项\nSubstantive actors / objects:\n- 临界点: 参赛公司 — 首次参赛并携OmniHand参赛"
+        },
+        "constituency_prior": {
+          "description": "humanoid robotics and dexterous-manipulation community",
+          "scope": "domain",
+          "reference_scale": "10^4",
+          "reference_size_hint": "controlled-development prior",
+          "basis": "explicit_event_scope",
+          "provenance": "Phase 6A controlled development packet"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "controlled_discussion",
+            "controlled_search"
+          ],
+          "channels_unavailable": [],
+          "notes": "Synthetic attention observations for wiring only; not real-world claims."
+        },
+        "recent_attention_history": [],
+        "current_attention_evidence": [
+          {
+            "kind": "human_discussion",
+            "window": "last 24h",
+            "observation": "Independent discussion is widespread across the controlled constituency and materially above its normal baseline.",
+            "source": "phase6a controlled sensor",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "controlled_humans",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "active_search",
+            "window": "last 24h",
+            "observation": "Voluntary search activity is several times the constituency's ordinary baseline.",
+            "source": "phase6a controlled sensor",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "controlled_search",
+            "quality": "direct",
+            "contamination": []
+          }
+        ]
+      },
+      "scorable": true,
+      "labels": {
+        "D": "OUT",
+        "S": "NOT_MATERIAL",
+        "P": "SALIENT"
+      },
+      "disposition": "DROP",
+      "policy_reason": "No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
+      "gate_wiring_matches": true,
+      "component_scorable": {
+        "D": true,
+        "S": true,
+        "P": true
+      },
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "OUT",
+        "substantive_anchors": [
+          "临界点 (company)",
+          "OmniHand (product)",
+          "7金4银3铜 (competition results)"
+        ],
+        "matched_clauses": [],
+        "reason": "The event describes a company's competition results with a product named OmniHand, but no standing radar clause is substantively satisfied. The robotics clause requires the robot itself to be a substantive technology/product/capability, but the event only mentions competition results without development, release, evaluation, deployment, or change of the robot. No other clause applies.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 3188,
+          "prompt_tokens": 1697,
+          "completion_tokens": 130,
+          "model": "deepseek-v4-pro",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "NOT_MATERIAL",
+        "affected_shared_systems": [],
+        "material_changes": [],
+        "reason": "Winning medals at a competition, even across all events, does not by itself change industry structure, standards, or capability frontier; it is an achievement within an existing framework.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 979,
+          "prompt_tokens": 1111,
+          "completion_tokens": 70,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "SALIENT",
+        "objective_constituency": "humanoid robotics and dexterous-manipulation community",
+        "attention_state_summary": "Widespread independent human discussion and voluntary search activity, both materially above baseline, indicate genuine collective attention within the constituency.",
+        "inertia_summary": "No prior history; current evidence shows clear formation of attention, so salience is emerging.",
+        "reason": "The event is scoped to the humanoid robotics and dexterous-manipulation community, and the evidence shows genuine, voluntary engagement (discussion and search) well above baseline, indicating salient collective attention.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1300,
+          "prompt_tokens": 1839,
+          "completion_tokens": 152,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "source_id": "RS12",
+      "event_id": "RS12-E2",
+      "routing_status": "ROUTABLE",
+      "rendered_event_text": "Audited event representation:\nActions / changes:\n- [OBSERVED] 以全自主模式完成粉末称量任务，用时27秒，零失误称出20克\nAffected systems / populations:\n- 粉末称量项目决赛 (scope: 该项目决赛)",
+      "sensor_event_summary_diagnostic_only": "武大智元联合赛队在粉末称量项目决赛中以全自主模式27秒零失误称出20克粉末，获得冠军。",
+      "admitted_counts": {
+        "actors": 0,
+        "actions": 1,
+        "systems": 1,
+        "uncertainties": 0
+      },
+      "rejected_object_count": 2,
+      "p_condition": "low_salience",
+      "p_packet": {
+        "event": {
+          "event_id": "RS12-E2",
+          "as_of": "2026-09-08T00:00:00Z",
+          "semantic_summary": "Audited event representation:\nActions / changes:\n- [OBSERVED] 以全自主模式完成粉末称量任务，用时27秒，零失误称出20克\nAffected systems / populations:\n- 粉末称量项目决赛 (scope: 该项目决赛)"
+        },
+        "constituency_prior": {
+          "description": "dexterous robotic manipulation researchers and teams",
+          "scope": "domain",
+          "reference_scale": "10^4",
+          "reference_size_hint": "controlled-development prior",
+          "basis": "explicit_event_scope",
+          "provenance": "Phase 6A controlled development packet"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "controlled_discussion",
+            "controlled_search"
+          ],
+          "channels_unavailable": [],
+          "notes": "Synthetic attention observations for wiring only; not real-world claims."
+        },
+        "recent_attention_history": [],
+        "current_attention_evidence": [
+          {
+            "kind": "human_discussion",
+            "window": "last 24h",
+            "observation": "Checked discussion channels show only sparse isolated mentions, far below normal constituency-wide attention levels.",
+            "source": "phase6a controlled sensor",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "controlled_humans",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "active_search",
+            "window": "last 24h",
+            "observation": "Search activity remains near ordinary baseline with no clear emerging spike.",
+            "source": "phase6a controlled sensor",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "controlled_search",
+            "quality": "direct",
+            "contamination": []
+          }
+        ]
+      },
+      "scorable": true,
+      "labels": {
+        "D": "OUT",
+        "S": "NOT_MATERIAL",
+        "P": "NOT_SALIENT"
+      },
+      "disposition": "DROP",
+      "policy_reason": "No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
+      "gate_wiring_matches": true,
+      "component_scorable": {
+        "D": true,
+        "S": true,
+        "P": true
+      },
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "OUT",
+        "substantive_anchors": [
+          "粉末称量任务",
+          "全自主模式",
+          "20克粉末"
+        ],
+        "matched_clauses": [],
+        "reason": "事件描述的是粉末称量任务的全自主完成，未涉及任何受监控的AI、机器人、半导体、云、自动驾驶、量子、脑机、网络安全、消费电子、平台、游戏、金融、基础科学、影视、癌症研究或特定组织/机构/地方治理等实质性领域。",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 2728,
+          "prompt_tokens": 1697,
+          "completion_tokens": 113,
+          "model": "deepseek-v4-pro",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "NOT_MATERIAL",
+        "affected_shared_systems": [],
+        "material_changes": [],
+        "reason": "The event is a single successful task in a project final, affecting only that competition. No consequential shared reference system is materially disturbed.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 801,
+          "prompt_tokens": 1111,
+          "completion_tokens": 61,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "NOT_SALIENT",
+        "objective_constituency": "dexterous robotic manipulation researchers and teams",
+        "attention_state_summary": "Sparse isolated mentions and baseline search activity indicate no genuine collective attention forming.",
+        "inertia_summary": "No prior attention history; current evidence shows no established attention state.",
+        "reason": "Evidence shows only sparse discussion and baseline search, far below constituency scale, with no emerging spike.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1429,
+          "prompt_tokens": 1837,
+          "completion_tokens": 114,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "source_id": "RS12",
+      "event_id": "RS12-E3",
+      "routing_status": "ROUTABLE",
+      "rendered_event_text": "Audited event representation:\nActions / changes:\n- [OBSERVED] 自主方案稳定夹取约70颗黄豆，获得冠军",
+      "sensor_event_summary_diagnostic_only": "临界点团队在镊子夹豆项目决赛中自主方案稳定夹取约70颗黄豆，获得冠军。",
+      "admitted_counts": {
+        "actors": 0,
+        "actions": 1,
+        "systems": 0,
+        "uncertainties": 0
+      },
+      "rejected_object_count": 2,
+      "p_condition": "strong_salience",
+      "p_packet": {
+        "event": {
+          "event_id": "RS12-E3",
+          "as_of": "2026-09-08T00:00:00Z",
+          "semantic_summary": "Audited event representation:\nActions / changes:\n- [OBSERVED] 自主方案稳定夹取约70颗黄豆，获得冠军"
+        },
+        "constituency_prior": {
+          "description": "dexterous robotic manipulation researchers and teams",
+          "scope": "domain",
+          "reference_scale": "10^4",
+          "reference_size_hint": "controlled-development prior",
+          "basis": "explicit_event_scope",
+          "provenance": "Phase 6A controlled development packet"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "controlled_discussion",
+            "controlled_search"
+          ],
+          "channels_unavailable": [],
+          "notes": "Synthetic attention observations for wiring only; not real-world claims."
+        },
+        "recent_attention_history": [],
+        "current_attention_evidence": [
+          {
+            "kind": "human_discussion",
+            "window": "last 24h",
+            "observation": "Independent discussion is widespread across the controlled constituency and materially above its normal baseline.",
+            "source": "phase6a controlled sensor",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "controlled_humans",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "active_search",
+            "window": "last 24h",
+            "observation": "Voluntary search activity is several times the constituency's ordinary baseline.",
+            "source": "phase6a controlled sensor",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "controlled_search",
+            "quality": "direct",
+            "contamination": []
+          }
+        ]
+      },
+      "scorable": true,
+      "labels": {
+        "D": "IN",
+        "S": "NOT_MATERIAL",
+        "P": "SALIENT"
+      },
+      "disposition": "DROP",
+      "policy_reason": "No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
+      "gate_wiring_matches": true,
+      "component_scorable": {
+        "D": true,
+        "S": true,
+        "P": true
+      },
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "IN",
+        "substantive_anchors": [
+          "自主方案稳定夹取约70颗黄豆，获得冠军"
+        ],
+        "matched_clauses": [
+          "Monitor events where robotics, embodied intelligence, Physical AI, or a domain robot is itself a substantive technology/product/capability, even when deployed inside an otherwise unmonitored industry."
+        ],
+        "reason": "The event describes a robotic solution (autonomous scheme) stably grasping ~70 soybeans and winning a championship, which is a substantive robotics capability demonstration.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 2676,
+          "prompt_tokens": 1669,
+          "completion_tokens": 116,
+          "model": "deepseek-v4-pro",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "NOT_MATERIAL",
+        "affected_shared_systems": [],
+        "material_changes": [],
+        "reason": "The event is a local competition achievement with no disturbance to any consequential shared reference system.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 680,
+          "prompt_tokens": 1083,
+          "completion_tokens": 52,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "SALIENT",
+        "objective_constituency": "dexterous robotic manipulation researchers and teams",
+        "attention_state_summary": "Widespread independent human discussion and voluntary search activity several times above baseline within the controlled constituency indicate genuine collective attention.",
+        "inertia_summary": "No prior history; current evidence shows clear formation of attention, so salience is emerging.",
+        "reason": "The event has clearly formed a salient state of genuine collective attention within its objective constituency, as evidenced by high discussion and search activity relative to the constituency's scale.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1597,
+          "prompt_tokens": 1807,
+          "completion_tokens": 138,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "source_id": "RS12",
+      "event_id": "RS12-E4",
+      "routing_status": "ROUTABLE",
+      "rendered_event_text": "Audited event representation:\nActions / changes:\n- [OBSERVED] 预赛排名第八，决赛更换OmniHand后获得第三名\nSubstantive actors / objects:\n- “北京人形-北邮”飞雁队: 参赛队伍 — 参加钉钉固定项目\n- OmniHand: 更换的灵巧手 — 决赛中更换为OmniHand",
+      "sensor_event_summary_diagnostic_only": "“北京人形-北邮”飞雁队在钉钉固定项目预赛排名第八，决赛更换为OmniHand后获得第三名。",
+      "admitted_counts": {
+        "actors": 2,
+        "actions": 1,
+        "systems": 0,
+        "uncertainties": 0
+      },
+      "rejected_object_count": 1,
+      "p_condition": "low_salience",
+      "p_packet": {
+        "event": {
+          "event_id": "RS12-E4",
+          "as_of": "2026-09-08T00:00:00Z",
+          "semantic_summary": "Audited event representation:\nActions / changes:\n- [OBSERVED] 预赛排名第八，决赛更换OmniHand后获得第三名\nSubstantive actors / objects:\n- “北京人形-北邮”飞雁队: 参赛队伍 — 参加钉钉固定项目\n- OmniHand: 更换的灵巧手 — 决赛中更换为OmniHand"
+        },
+        "constituency_prior": {
+          "description": "humanoid robotics competition and manipulation community",
+          "scope": "domain",
+          "reference_scale": "10^4",
+          "reference_size_hint": "controlled-development prior",
+          "basis": "explicit_event_scope",
+          "provenance": "Phase 6A controlled development packet"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "controlled_discussion",
+            "controlled_search"
+          ],
+          "channels_unavailable": [],
+          "notes": "Synthetic attention observations for wiring only; not real-world claims."
+        },
+        "recent_attention_history": [],
+        "current_attention_evidence": [
+          {
+            "kind": "human_discussion",
+            "window": "last 24h",
+            "observation": "Checked discussion channels show only sparse isolated mentions, far below normal constituency-wide attention levels.",
+            "source": "phase6a controlled sensor",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "controlled_humans",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "active_search",
+            "window": "last 24h",
+            "observation": "Search activity remains near ordinary baseline with no clear emerging spike.",
+            "source": "phase6a controlled sensor",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "controlled_search",
+            "quality": "direct",
+            "contamination": []
+          }
+        ]
+      },
+      "scorable": true,
+      "labels": {
+        "D": "IN",
+        "S": "NOT_MATERIAL",
+        "P": "NOT_SALIENT"
+      },
+      "disposition": "DROP",
+      "policy_reason": "No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
+      "gate_wiring_matches": true,
+      "component_scorable": {
+        "D": true,
+        "S": true,
+        "P": true
+      },
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "IN",
+        "substantive_anchors": [
+          "OmniHand (dexterous hand)",
+          "Beijing Humanoid-BUPT Feiyan team (robotics competition)"
+        ],
+        "matched_clauses": [
+          "Monitor events where robotics, embodied intelligence, Physical AI, or a domain robot is itself a substantive technology/product/capability"
+        ],
+        "reason": "The event involves a robotics competition where a team changed to an OmniHand dexterous hand, a substantive robotics technology, satisfying the robotics standing clause.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 2562,
+          "prompt_tokens": 1723,
+          "completion_tokens": 125,
+          "model": "deepseek-v4-pro",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "NOT_MATERIAL",
+        "affected_shared_systems": [],
+        "material_changes": [],
+        "reason": "A single team's competition result change (from 8th to 3rd) after swapping a dexterous hand does not disturb any consequential shared reference system; it is a local competitive outcome.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1085,
+          "prompt_tokens": 1137,
+          "completion_tokens": 75,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "NOT_SALIENT",
+        "objective_constituency": "humanoid robotics competition and manipulation community",
+        "attention_state_summary": "Sparse isolated mentions and near-baseline search activity indicate no genuine collective attention within the constituency.",
+        "inertia_summary": "No prior attention history; current evidence shows no established or forming attention state.",
+        "reason": "Current evidence shows only sparse discussion and baseline search, far below the scale of the relevant community.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1117,
+          "prompt_tokens": 1862,
+          "completion_tokens": 120,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "source_id": "RS12",
+      "event_id": "RS12-E5",
+      "routing_status": "ROUTABLE",
+      "rendered_event_text": "Audited event representation:\nActions / changes:\n- [ANNOUNCED] 累计交付接近1万台，预计9月跨过万台门槛",
+      "sensor_event_summary_diagnostic_only": "OmniHand累计交付接近1万台，预计2025年9月跨过万台门槛。",
+      "admitted_counts": {
+        "actors": 0,
+        "actions": 1,
+        "systems": 0,
+        "uncertainties": 0
+      },
+      "rejected_object_count": 4,
+      "p_condition": "strong_salience",
+      "p_packet": {
+        "event": {
+          "event_id": "RS12-E5",
+          "as_of": "2026-09-08T00:00:00Z",
+          "semantic_summary": "Audited event representation:\nActions / changes:\n- [ANNOUNCED] 累计交付接近1万台，预计9月跨过万台门槛"
+        },
+        "constituency_prior": {
+          "description": "dexterous robotic-hand buyers, integrators, and robotics industry",
+          "scope": "product",
+          "reference_scale": "10^4",
+          "reference_size_hint": "controlled-development prior",
+          "basis": "explicit_event_scope",
+          "provenance": "Phase 6A controlled development packet"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "controlled_discussion",
+            "controlled_search"
+          ],
+          "channels_unavailable": [],
+          "notes": "Synthetic attention observations for wiring only; not real-world claims."
+        },
+        "recent_attention_history": [],
+        "current_attention_evidence": [
+          {
+            "kind": "human_discussion",
+            "window": "last 24h",
+            "observation": "Independent discussion is widespread across the controlled constituency and materially above its normal baseline.",
+            "source": "phase6a controlled sensor",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "controlled_humans",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "active_search",
+            "window": "last 24h",
+            "observation": "Voluntary search activity is several times the constituency's ordinary baseline.",
+            "source": "phase6a controlled sensor",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "controlled_search",
+            "quality": "direct",
+            "contamination": []
+          }
+        ]
+      },
+      "scorable": true,
+      "labels": {
+        "D": "OUT",
+        "S": "NOT_MATERIAL",
+        "P": "SALIENT"
+      },
+      "disposition": "DROP",
+      "policy_reason": "No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
+      "gate_wiring_matches": true,
+      "component_scorable": {
+        "D": true,
+        "S": true,
+        "P": true
+      },
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "OUT",
+        "substantive_anchors": [],
+        "matched_clauses": [],
+        "reason": "The event only states a delivery count milestone (接近1万台) without specifying the product, technology, or domain. No standing radar clause is substantively satisfied.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1823,
+          "prompt_tokens": 1670,
+          "completion_tokens": 67,
+          "model": "deepseek-v4-pro",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "NOT_MATERIAL",
+        "affected_shared_systems": [],
+        "material_changes": [],
+        "reason": "The event is a company-specific delivery milestone announcement. It does not by itself change industry structure, market rules, or any consequential shared reference system.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1015,
+          "prompt_tokens": 1084,
+          "completion_tokens": 64,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "SALIENT",
+        "objective_constituency": "dexterous robotic-hand buyers, integrators, and robotics industry",
+        "attention_state_summary": "Widespread independent discussion and voluntary search activity several times above baseline within the controlled constituency indicate genuine collective attention forming.",
+        "inertia_summary": "No prior history; current evidence shows clear emergence of attention, so salience is established.",
+        "reason": "Evidence shows genuine collective attention relative to the small, specialized constituency, with direct human discussion and active search well above baseline.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1528,
+          "prompt_tokens": 1813,
+          "completion_tokens": 135,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    },
+    {
+      "source_id": "RS15",
+      "event_id": "RS15-E1",
+      "routing_status": "ROUTABLE",
+      "rendered_event_text": "Audited event representation:\nActions / changes:\n- [ANNOUNCED] 发布 Zeno-1 模型\nSubstantive actors / objects:\n- 芝诺机器人: 发布者 — 发布 Zeno-1 模型\n- Zeno-1: 被发布的基础模型 — 3B 参数，去中心化多机器人协作物理智能基础模型",
+      "sensor_event_summary_diagnostic_only": "芝诺机器人发布 Zeno-1，全球首个专为去中心化多机器人协作设计的物理智能基础模型，3B 参数，本地 30 Hz 闭环视觉-运动推理。",
+      "admitted_counts": {
+        "actors": 2,
+        "actions": 1,
+        "systems": 0,
+        "uncertainties": 0
+      },
+      "rejected_object_count": 2,
+      "p_condition": "strong_salience",
+      "p_packet": {
+        "event": {
+          "event_id": "RS15-E1",
+          "as_of": "2026-09-08T00:00:00Z",
+          "semantic_summary": "Audited event representation:\nActions / changes:\n- [ANNOUNCED] 发布 Zeno-1 模型\nSubstantive actors / objects:\n- 芝诺机器人: 发布者 — 发布 Zeno-1 模型\n- Zeno-1: 被发布的基础模型 — 3B 参数，去中心化多机器人协作物理智能基础模型"
+        },
+        "constituency_prior": {
+          "description": "embodied-AI and multi-robot collaboration community",
+          "scope": "domain",
+          "reference_scale": "10^5",
+          "reference_size_hint": "controlled-development prior",
+          "basis": "explicit_event_scope",
+          "provenance": "Phase 6A controlled development packet"
+        },
+        "collection_context": {
+          "channels_checked": [
+            "controlled_discussion",
+            "controlled_search"
+          ],
+          "channels_unavailable": [],
+          "notes": "Synthetic attention observations for wiring only; not real-world claims."
+        },
+        "recent_attention_history": [],
+        "current_attention_evidence": [
+          {
+            "kind": "human_discussion",
+            "window": "last 24h",
+            "observation": "Independent discussion is widespread across the controlled constituency and materially above its normal baseline.",
+            "source": "phase6a controlled sensor",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "controlled_humans",
+            "quality": "direct",
+            "contamination": []
+          },
+          {
+            "kind": "active_search",
+            "window": "last 24h",
+            "observation": "Voluntary search activity is several times the constituency's ordinary baseline.",
+            "source": "phase6a controlled sensor",
+            "observed_at": "2026-09-08T00:00:00Z",
+            "independence_group": "controlled_search",
+            "quality": "direct",
+            "contamination": []
+          }
+        ]
+      },
+      "scorable": true,
+      "labels": {
+        "D": "IN",
+        "S": "NOT_MATERIAL",
+        "P": "SALIENT"
+      },
+      "disposition": "DROP",
+      "policy_reason": "No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
+      "gate_wiring_matches": true,
+      "component_scorable": {
+        "D": true,
+        "S": true,
+        "P": true
+      },
+      "D": {
+        "scorable": true,
+        "standing_radar_fit": "IN",
+        "substantive_anchors": [
+          "Zeno-1 model",
+          "robotics",
+          "embodied intelligence",
+          "multi-robot collaboration"
+        ],
+        "matched_clauses": [
+          "Monitor events where robotics, embodied intelligence, Physical AI, or a domain robot is itself a substantive technology/product/capability",
+          "Monitor events where LLMs, foundation models, AI Agents, multimodal AI, or closely related AI systems are substantively developed, released, evaluated, deployed, or changed"
+        ],
+        "reason": "The event announces a 3B-parameter foundation model for decentralized multi-robot collaboration, substantively involving robotics/embodied intelligence and a foundation model release.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 2777,
+          "prompt_tokens": 1719,
+          "completion_tokens": 153,
+          "model": "deepseek-v4-pro",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "S": {
+        "scorable": true,
+        "material_consequence": "NOT_MATERIAL",
+        "affected_shared_systems": [],
+        "material_changes": [],
+        "reason": "The release of a 3B-parameter model is a product announcement without demonstrated structural change to an industry, market, or capability frontier.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 816,
+          "prompt_tokens": 1133,
+          "completion_tokens": 63,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      },
+      "P": {
+        "scorable": true,
+        "measurement_status": "scorable",
+        "collective_attention_salience": "SALIENT",
+        "objective_constituency": "embodied-AI and multi-robot collaboration community",
+        "attention_state_summary": "Widespread independent discussion and voluntary search activity several times above baseline within the constituency indicate genuine collective attention forming.",
+        "inertia_summary": "No prior history; current evidence shows clear formation of attention, so salience is emerging.",
+        "reason": "Evidence shows genuine collective attention within the relevant community, with discussion and search activity well above baseline, indicating a salient state.",
+        "failure_kind": null,
+        "error": null,
+        "transport_retries": 0,
+        "schema_events": [],
+        "model_meta": {
+          "latency_ms": 1657,
+          "prompt_tokens": 1860,
+          "completion_tokens": 131,
+          "model": "deepseek-v4-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0
+        }
+      }
+    }
+  ],
+  "methodology_note": "Development-only end-to-end wiring study. P evidence is synthetic controlled input; no final action is treated as real-world truth or fresh validation evidence."
+}

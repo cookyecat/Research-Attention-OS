@@ -21,9 +21,9 @@ def _entry(source_id: str):
     return next(item for item in manifest["sources"] if item["id"] == source_id)
 
 
-def test_dev_corpus_is_12_and_reserves_13_14():
+def test_dev_corpus_is_13_with_rs15_and_reserves_13_14():
     manifest = load_dev_manifest()
-    assert [item["id"] for item in manifest["sources"]] == [f"RS{i:02d}" for i in range(1, 13)]
+    assert [item["id"] for item in manifest["sources"]] == [*[f"RS{i:02d}" for i in range(1, 13)], "RS15"]
     assert [item["id"] for item in manifest["reserved_unconsumed"]] == ["RS13", "RS14"]
 
 
