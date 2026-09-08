@@ -2,11 +2,10 @@ from __future__ import annotations
 import json, subprocess, sys
 from datetime import datetime, timezone
 from pathlib import Path
-from eval.live.semantic_source_loader_v0_1 import load_dev_manifest, load_manifest_source
-
 ROOT=Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+from eval.live.semantic_source_loader_v0_1 import load_dev_manifest, load_manifest_source
 OUT=ROOT/'eval/live/results/phase7a_gpt56_sol_reference_v0_1'
 
 def head():
