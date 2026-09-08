@@ -869,3 +869,13 @@ RS12 -> weak-positive boundary control; require repeated bridge-driven divergenc
 ```
 
 No live Phase 8C.2 result has yet been used to tune Sensor, Auditor, Delta, or Attention Policy. Current next step is exact-SHA live controlled A/B followed by regression and default-path decision.
+
+### Phase 8C.2 live bridge evidence — 2026-09-09
+
+Tier-1 exact-SHA production A/B passed the canonical decision-bearing sentinels: RS05 preserved `CHALLENGE(CF-B-PERF) -> ENGAGE`, RS15 preserved `REINFORCE(Q2) -> WATCH`, and RS11 preserved `NONE -> DROP`. RS12 reproduced the previously observed weak boundary jitter without stable directional bridge regression. Relevant regression passed 64 tests with the pre-existing Case K residual explicitly excluded.
+
+Tier-2 re-acquired the exact Phase 8C.1 A/C/D/X pages. All four matched their Phase 8C.1 production-normalized `content_hash` and extracted character count, and legacy replay again reproduced `C SECONDARY -> KEEP_ACTIVE`, `X unrelated -> ordinary analysis`, and `D INDEPENDENT -> PROMOTED`.
+
+The first Sensor continuity run failed 3/3 before Auditor/downstream on Azure A with the same schema-validation failure. Attribution found a production packaging defect: URLConnector emitted meaningful newline-separated blocks, but the bridge's blank-line renderer collapsed the full 6614-character page into one `[PARA 0001]`, causing overlong provenance excerpts. The failure is attributed to source-packaging geometry, not Sensor/Auditor/Delta/WATCH semantics.
+
+Current remediation is `production-source-to-semantic-sensor-v0.3-url-provenance-blocks`: URL sources preserve non-empty connector blocks as stable provenance units and split only oversized blocks at sentence boundaries (word-boundary fallback). Sensor v0.2.6, Auditor v0.1.1, schema limits, Delta, D/S/P, WATCH, and Attention remain frozen. Production default remains legacy until the repaired exact-SHA Tier-2 continuity run and regression pass.

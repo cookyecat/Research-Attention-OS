@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from datetime import timezone
 import hashlib
+import re
 from typing import Any
 
 from app.config import settings
@@ -33,7 +34,8 @@ from eval.live.semantic_evidence_extractor_v0_2_6 import (
 from eval.live.semantic_source_loader_v0_1 import LoadedSemanticSource, _render_text_paragraphs
 
 BRIDGE_VERSION = "phase8c2-production-sensor-bridge-v0.1"
-SOURCE_PACKAGING_VERSION = "production-source-to-semantic-sensor-v0.2-git-blob-identity"
+SOURCE_PACKAGING_VERSION = "production-source-to-semantic-sensor-v0.3-url-provenance-blocks"
+URL_PROVENANCE_BLOCK_MAX_CHARS = 580
 
 _CONFIDENCE_ORDER = {"UNKNOWN": 0, "LOW": 1, "MEDIUM": 2, "HIGH": 3}
 
@@ -60,11 +62,63 @@ def _git_blob_sha(text: str) -> str:
     return hashlib.sha1(header + payload).hexdigest()
 
 
+def _split_long_provenance_block(text: str, *, max_chars: int = URL_PROVENANCE_BLOCK_MAX_CHARS) -> list[str]:
+    block = str(text or "").strip()
+    if not block:
+        return []
+    sentences = [part.strip() for part in re.split(r"(?<=[.!?。！？])\s+", block) if part.strip()]
+    chunks: list[str] = []
+    current = ""
+    for sentence in sentences:
+        if len(sentence) <= max_chars:
+            candidate = f"{current} {sentence}".strip() if current else sentence
+            if len(candidate) <= max_chars:
+                current = candidate
+                continue
+            chunks.append(current)
+            current = sentence
+            continue
+        if current:
+            chunks.append(current)
+            current = ""
+        rest = sentence
+        while len(rest) > max_chars:
+            cut = rest.rfind(" ", 0, max_chars + 1)
+            if cut < max_chars // 2:
+                cut = max_chars
+            chunks.append(rest[:cut].strip())
+            rest = rest[cut:].strip()
+        current = rest
+    if current:
+        chunks.append(current)
+    return chunks
+
+
+def _render_url_connector_blocks(text: str) -> str:
+    normalized = text.replace("\r\n", "\n").replace("\r", "\n").strip()
+    blocks: list[str] = []
+    for raw_block in normalized.split("\n"):
+        block = raw_block.strip()
+        if block:
+            blocks.extend(_split_long_provenance_block(block))
+    return "\n\n".join(
+        f"[PARA {idx:04d}]\n{block}" for idx, block in enumerate(blocks, start=1)
+    )
+
+
+def _render_production_source_text(source: Source, raw: str) -> str:
+    source_type = str(source.source_type or "").upper()
+    ingestion_method = str(source.ingestion_method or "").upper()
+    if source_type == "URL" or ingestion_method == "URL_FETCH":
+        return _render_url_connector_blocks(raw)
+    return _render_text_paragraphs(raw)
+
+
 def production_source_to_sensor_source(source: Source) -> LoadedSemanticSource:
     raw = str(source.content_text or "").strip()
     if not raw:
         raise ProductionSensorBridgeError(f"source {source.id} has no content_text")
-    rendered = _render_text_paragraphs(raw)
+    rendered = _render_production_source_text(source, raw)
     locator = source.canonical_url or f"raos://source/{source.id}"
     captured = _iso(source.ingested_at or source.created_at)
     return LoadedSemanticSource(
@@ -179,6 +233,7 @@ class SemanticSensorProductionBridgeV0_1:
         return {
             "bridge_version": BRIDGE_VERSION,
             "source_packaging_version": SOURCE_PACKAGING_VERSION,
+            "source_packaging_max_block_chars": URL_PROVENANCE_BLOCK_MAX_CHARS,
             "sensor_version": EXTRACTOR_VERSION,
             "sensor_prompt_sha256": sensor_prompt_sha256(),
             "auditor_version": AUDITOR_VERSION,

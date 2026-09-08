@@ -15,6 +15,7 @@ if str(BACKEND) not in sys.path:
 from app.models.source import Source
 from eval.live.phase8c2_production_sensor_bridge_v0_1 import (
     SemanticSensorProductionBridgeV0_1,
+    URL_PROVENANCE_BLOCK_MAX_CHARS,
     production_source_to_sensor_source,
 )
 
@@ -128,3 +129,39 @@ def test_non_event_epistemic_types_are_preserved_conservatively():
     assert [c.text for c in extraction.claims] == ["source says X"]
     assert [o.text for o in extraction.observations] == ["measured Y"]
     assert [i.text for i in extraction.inferences] == ["X may imply Z"]
+
+def test_url_source_packaging_preserves_blocks_and_bounds_long_provenance_units():
+    now = datetime(2026, 9, 9, 3, 0, tzinfo=timezone.utc)
+    long_sentence = " ".join(["oversized"] * 120) + "."
+    source = Source(
+        id=uuid4(), source_type="URL", title="URL packaging",
+        canonical_url="https://example.test/article",
+        content_text=(
+            "Heading block\n"
+            "First sentence. Second sentence stays in the same connector block.\n"
+            f"{long_sentence}\n"
+            "Final block."
+        ),
+        fingerprint="phase8c2-url-packaging", content_hash="url-content-hash",
+        ingestion_method="URL_FETCH", ingested_at=now, created_at=now, updated_at=now,
+    )
+    packed = production_source_to_sensor_source(source)
+    paragraphs = packed.rendered_text.split("\n\n")
+    assert len(paragraphs) >= 4
+    for paragraph in paragraphs:
+        marker, payload = paragraph.split("\n", 1)
+        assert marker.startswith("[PARA ")
+        assert len(payload) <= URL_PROVENANCE_BLOCK_MAX_CHARS
+
+
+def test_non_url_source_keeps_existing_blank_line_paragraph_semantics():
+    now = datetime(2026, 9, 9, 3, 0, tzinfo=timezone.utc)
+    source = Source(
+        id=uuid4(), source_type="TEXT", title="Text packaging",
+        content_text="line one\nline two\n\nsecond paragraph",
+        fingerprint="phase8c2-text-packaging", content_hash="text-content-hash",
+        ingestion_method="MANUAL_TEXT", ingested_at=now, created_at=now, updated_at=now,
+    )
+    packed = production_source_to_sensor_source(source)
+    assert packed.rendered_text.count("[PARA ") == 2
+    assert "line one\nline two" in packed.rendered_text
