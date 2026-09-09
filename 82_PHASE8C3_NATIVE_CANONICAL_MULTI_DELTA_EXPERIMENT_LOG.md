@@ -47,3 +47,7 @@ Cases:
 - RS05 frozen Phase 7A canonical four-unit world as a stable control.
 
 Conditions: `temperature=0.1` versus `temperature=0.0`, 6 repeats each, interleaved. Production defaults remain unchanged. The new client parameter preserves `0.1` as the default and exists only to make the A/B controllable.
+
+### Step 1 measurement clarification
+
+An exploratory pre-measurement call showed that `temperature=0` can deterministically repeat a structurally invalid `ModelDeltaResponse` even after repair. This is not silently repaired or excluded. The canonical A/B therefore records both valid-decision variance and schema/technical failure rate. The exploratory calls are not measurement evidence.

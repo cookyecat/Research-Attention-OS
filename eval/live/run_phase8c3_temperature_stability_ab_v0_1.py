@@ -99,10 +99,15 @@ def _summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
     for case_id in CASES:
         out[case_id] = {}
         for temperature in TEMPERATURES:
-            items = [r for r in rows if r["case"] == case_id and r["temperature"] == temperature and r["status"] == "OK"]
+            all_items = [r for r in rows if r["case"] == case_id and r["temperature"] == temperature]
+            items = [r for r in all_items if r["status"] == "OK"]
+            failed = [r for r in all_items if r["status"] != "OK"]
             landings = [_landing(r["summary"]) for r in items]
             out[case_id][str(temperature)] = {
+                "n_runs": len(all_items),
                 "n_ok": len(items),
+                "n_errors": len(failed),
+                "error_type_counts": dict(Counter(str(r.get("error_type") or "UNKNOWN") for r in failed)),
                 "target_counts": dict(Counter(str(x[1] or "NONE") for x in landings)),
                 "attention_counts": dict(Counter(str(x[2] or "NONE") for x in landings)),
                 "landing_counts": dict(Counter(str(x) for x in landings)),
@@ -126,7 +131,7 @@ def main() -> int:
                 raw = _run_once(case_id, case, units, temperature, repeat)
                 row = {"case": case_id, "repeat": repeat, "temperature": temperature, "semantic_sha256": _hash_units(units), "source_artifact_sha256": artifact_sha, **raw}
                 rows.append(row)
-                print(json.dumps({"case": case_id, "repeat": repeat, "temperature": temperature, "status": row["status"], "landing": list(_landing(row["summary"])) if row["summary"] else None}, ensure_ascii=False), flush=True)
+                print(json.dumps({"case": case_id, "repeat": repeat, "temperature": temperature, "status": row["status"], "landing": list(_landing(row["summary"])) if row["summary"] else None, "error_type": row.get("error_type"), "error": row.get("error")}, ensure_ascii=False), flush=True)
 
     output = {"run_version": RUN_VERSION, "measurement_sha": git_head(), "status": "DEVELOPMENT_TEMPERATURE_AB_ONLY", "repeats": args.repeats, "temperatures": list(TEMPERATURES), "summary": _summarize(rows), "runs": rows,
               "guardrails": ["Sensor and Auditor are frozen; only Locate/Delta/Attention cognition is rerun.", "RS15 uses the exact fixed semantic realization from the prior causal attribution.", "RS05 uses the exact four Phase7A Auditor-admitted canonical units.", "Temperature is the only intended LLM sampling variable in this experiment."]}
