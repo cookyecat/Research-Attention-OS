@@ -99,3 +99,9 @@ Artifact SHA256: `3f68c034b55fd8a132c282027f87fe3665a388ed94e8be2e653bfba6aaf55d
 All four cases completed 3/3 without bridge or `ExtractionResult`. RS15 produced the same six REINFORCE target channels in all three repeats, including both Q2 and B2 simultaneously; the old Q2↔B2 argmax oscillation disappears at the effect-set level. RS05 preserved its core CHALLENGE 3/3 while optional OPEN_NEW branches varied. RS11 exposed weak over-generation (many effects with very small magnitude/importance), so native multi-effect output requires effect-level materiality/attention handling rather than treating every emitted effect as equally decision-bearing. RS12 remained a weak multi-effect boundary case.
 
 Decision: native canonical semantic consumption is viable enough to continue. Step 3 will preserve multiple effects and analyze stable/core versus optional/weak channels; it will not restore single-primary selection.
+
+## Step 3 — Multi-Locate / Multi-Delta preregistration
+
+Step 3 does not make new LLM calls. It deterministically re-reads the frozen Step-2 native artifact and treats each distinct `(operation, target)` CognitiveEffect as a separate candidate Δ channel. No `select_primary_effect()` or argmax is applied.
+
+For each case it records: per-repeat effect set; repeat frequency of every operation-target channel; `core` channels present in every valid repeat; optional channels; and diagnostic utility `change_magnitude × target_importance`. Utility is descriptive only in Step 3. No Attention threshold is introduced until Step 4.
