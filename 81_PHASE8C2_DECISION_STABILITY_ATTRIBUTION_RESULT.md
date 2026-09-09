@@ -239,3 +239,36 @@ After all measurement-only runners were added, the broader exact-current regress
 ```
 
 The deselected Case K residual remains pre-existing and outside Phase 8C.2 causality.
+
+## 12. Product-level interpretation — cognitive target vs Attention action
+
+The constitutional invariant `CognitiveChange != AttentionAction` matters directly in these results.
+
+For the six fresh RS15 full candidate-path realizations (`AUDITED_EVENT_PLUS_NON`):
+
+```text
+cognitive target: Q2 2, B2 2, OPEN_NEW 2
+Attention action: WATCH 6/6
+```
+
+So RS15 is clearly unstable at the cognitive landing/target level, but the full current candidate path is stable at the coarse Attention-allocation level in this six-run measurement. This makes RS15 a valuable boundary diagnostic without proving a catastrophic attention-allocation failure.
+
+RS05 is more serious for the product objective:
+
+```text
+fresh current path:
+ENGAGE 3/6
+DROP   3/6
+
+frozen Phase7A semantics:
+ENGAGE 6/6
+```
+
+RS11 remains `DROP 6/6`.
+
+Therefore the production-readiness gate must report at least two distinct stability dimensions:
+
+1. **Cognitive landing stability** — does the represented world consistently locate the same decision-bearing cognitive change?
+2. **Attention allocation stability** — does stochastic variation change how much scarce human attention is requested?
+
+For RAOS product safety, `DROP <-> ENGAGE/WATCH` oscillation is more consequential than `Q2 <-> B2` oscillation when the final Attention tier remains unchanged. False DROP / severe under-attention should therefore remain a primary promotion guardrail without changing frozen cognitive semantics.

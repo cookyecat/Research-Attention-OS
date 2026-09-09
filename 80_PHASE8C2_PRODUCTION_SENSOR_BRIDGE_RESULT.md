@@ -208,6 +208,6 @@ This does not reopen the Phase 7A formula `Decision-Sufficient Semantic Precisio
 
 ## 10. Current decision
 
-Phase 8C.2 remains ACTIVE. The production default remains legacy. Do not tune Sensor v0.2.6, Auditor v0.1.1, Delta, or Attention Policy from RS15 alone. Before production promotion, broaden the repeated decision-stability / representation-robustness gate across multiple canonical decision-bearing and negative-control cases.
+Phase 8C.2 remains ACTIVE. The production default remains legacy. Do not tune Sensor v0.2.6, Auditor v0.1.1, Delta, or Attention Policy from RS15 alone. RS15 full-path Attention remained WATCH 6/6 despite cognitive-target jitter, while RS05 fresh runs crossed the product-critical DROP/ENGAGE boundary 3/6 vs 3/6. Before production promotion, broaden the repeated decision-stability / representation-robustness gate across multiple canonical decision-bearing and negative-control cases, and report cognitive-target stability separately from Attention-action stability.
 
 After the attribution runners were added, the broader relevant regression passed `72 passed, 1 deselected, 1 warning`; the deselected Case K residual remains pre-existing and causally outside Phase 8C.2.
