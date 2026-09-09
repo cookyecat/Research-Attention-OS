@@ -51,3 +51,18 @@ Conditions: `temperature=0.1` versus `temperature=0.0`, 6 repeats each, interlea
 ### Step 1 measurement clarification
 
 An exploratory pre-measurement call showed that `temperature=0` can deterministically repeat a structurally invalid `ModelDeltaResponse` even after repair. This is not silently repaired or excluded. The canonical A/B therefore records both valid-decision variance and schema/technical failure rate. The exploratory calls are not measurement evidence.
+
+## Step 1 — Result
+
+Measurement SHA: `9373c93cb9360e329ff2f502ac5e989c789f6446`
+Artifact: `eval/live/results/phase8c3_temperature_stability_ab_v0_1/phase8c3_temperature_stability_ab_v0.1_20260909T130755Z.json`
+Artifact SHA256: `056909a0c0454d9e8e4c07b50fc7b4eaeceb9602a37c1b0c9009990e8b75c15d`
+
+```text
+RS15 T=0.1: 3/6 valid; B2/WATCH x2, Q2/ENGAGE x1; 3 schema failures
+RS15 T=0.0: 2/6 valid; B2/WATCH x1, Q2/ENGAGE x1; 4 technical/schema failures
+RS05 T=0.1: 2/6 valid; CHALLENGE/ENGAGE x2; 4 schema failures
+RS05 T=0.0: 3/6 valid; CHALLENGE/ENGAGE x3; 3 schema failures
+```
+
+Decision: `temperature=0` is **not** a validated stabilization fix on the current DeepSeek API / structured-output protocol. It neither removed the RS15 Q2/B2 boundary nor improved technical reliability. Low temperature remains a plausible engineering principle for a different provider or self-hosted deployment, but provider/model A/B is deferred so it does not interrupt the five-step architecture experiment.
