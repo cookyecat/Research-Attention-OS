@@ -47,3 +47,11 @@ Calibration A/B always consumes the exact same CognitiveEffects within a realiza
 These four real-web sources have no newly invented cognitive gold. Attention changes are stability/behavior evidence, not automatic correctness claims. A/C/D/X event-relation roles from Phase 8C.1 are not cognitive labels.
 
 Phase 8C.7 may support generalization of robustness findings, identify upstream perception variance, or expose new boundary cases. It must not tune thresholds after observing outcomes.
+
+## Operational amendment — 2026-09-10
+
+The initial `4 sources × 3 fresh perception repeats` execution was aborted before artifact creation for an outcome-independent operational reason: one real-web perception realization admitted about 15 semantic units and therefore expanded into many serial Auditor calls. This makes twelve fresh perception realizations disproportionately expensive for the question being asked.
+
+The bounded validation therefore uses **one fresh perception/cognition realization per each of the four distinct real-web sources**. Statistical expansion comes from source diversity, not repeated sampling of the same article. Calibration robustness is then stress-tested deterministically on each frozen real-web CognitiveEffect topology by perturbing/removing raw magnitude, which requires no new LLM calls.
+
+No threshold, policy rule, source set, or observed article outcome is changed by this amendment. The aborted partial stdout is not a measurement artifact and is excluded from evidence.
