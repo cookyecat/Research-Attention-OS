@@ -81,3 +81,7 @@ Frozen Phase7A audited semantic units
 ```
 
 This probe intentionally bypasses `ExtractionResult`, bridge projection, production evidence fields, and single-primary `ModelDelta`. Cases: RS05/RS15/RS11/RS12, using the exact Phase7A canonical Auditor artifact; 3 repeats each at current provider temperature 0.1. Step 2 is an interface viability/stability probe only. Step 3 will analyze the multiple effects as cognitive deltas rather than selecting an argmax.
+
+### Step 2 pre-measurement correction
+
+The first live attempt failed before producing usable native-interface evidence because the new measurement prompt referenced `CognitiveImpactResponse` by name but did not include its explicit JSON shape. `chat_json_schema` validates locally; it does not automatically transmit the Pydantic schema to the model. This is a harness-contract defect, not a semantic result. The invalid attempt is excluded. The native impact prompt now carries the exact output shape before the measurement SHA is re-frozen.

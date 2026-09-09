@@ -87,7 +87,9 @@ def native_assess(units: list[dict[str, Any]], nodes, matches, *, chat_fn=chat_j
         "Audited canonical semantic units:\n" + json.dumps(_canonical_payload(units), ensure_ascii=False)
         + "\n\nKernel locations:\n" + json.dumps(locations, ensure_ascii=False)
         + "\n\nEligible cognitive targets:\n" + json.dumps(eligible, ensure_ascii=False)
-        + "\n\nReturn every distinct material effect using the CognitiveImpactResponse schema."
+        + "\n\nReturn JSON exactly in this shape:\n"
+        + '{"effects":[{"target_kernel_node_id":null,"operation":"REINFORCE","change_magnitude":0.0,"epistemic_strength":0.0,"target_importance":0.0,"reason":"","exploration_candidate":false}],"attention_cost":0.0,"exploration_candidate":false,"evidence_maturity":0.0,"threatens_active_work":false,"marketing_heavy":false,"high_quality_technical":false,"foundational_paper":false}'
+        + "\nReturn every distinct material effect. Empty effects is legal when nothing changes cognition."
     )
     parsed, meta, events = chat_json_schema(
         [{"role": "system", "content": NATIVE_IMPACT_SYSTEM}, {"role": "user", "content": user}],
