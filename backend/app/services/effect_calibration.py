@@ -66,6 +66,13 @@ class RawCardinalCalibration:
     def channel_plan(self, effect, *, features, matches) -> PlanDraft:
         return _cognitive_disposition(features, effect, matches or [], awareness=None)
 
+    def representative_key(self, effect: CognitiveEffect, matches) -> tuple:
+        change = round(float(effect.change_magnitude), 6)
+        importance = round(float(effect.target_importance), 6)
+        epi = round(float(effect.epistemic_strength), 6)
+        nid = str(effect.target_kernel_node_id) if effect.target_kernel_node_id else ""
+        return (round(change * importance, 6), change, importance, epi, nid)
+
 
 RAW_CARDINAL_CALIBRATION = RawCardinalCalibration()
 RAW_CARDINAL_CALIBRATION = RawCardinalCalibration()
@@ -170,6 +177,11 @@ class MagnitudeFreeCalibration:
             reason="Magnitude-free: ordinary REINFORCE is awareness, not automatic deep attention.",
             cognitive_budget_minutes=_budget(Disposition.AWARE),
         )
+
+    def representative_key(self, effect: CognitiveEffect, matches) -> tuple:
+        op = _kind(effect)
+        nid = str(effect.target_kernel_node_id) if effect.target_kernel_node_id else ""
+        return (*self.decision_vector(effect, matches or []), op.value, nid)
 
 
 MAGNITUDE_FREE_CALIBRATION = MagnitudeFreeCalibration()

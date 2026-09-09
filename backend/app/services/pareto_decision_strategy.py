@@ -84,18 +84,28 @@ def pareto_frontier(
     ]
 
 
-def _representative_effect(effects: list[CognitiveEffect]) -> CognitiveEffect | None:
+def _representative_effect(
+    effects: list[CognitiveEffect],
+    matches,
+    *,
+    calibration_strategy,
+) -> CognitiveEffect | None:
     if not effects:
         return None
-    return select_primary_effect(CognitiveImpactAssessment(effects=list(effects)))
+    return max(effects, key=lambda effect: calibration_strategy.representative_key(effect, matches or []))
 
 
 def _aggregate_frontier_plans(
     planned: list[tuple[CognitiveEffect, PlanDraft]],
+    matches,
+    *,
+    calibration_strategy,
 ) -> tuple[PlanDraft, CognitiveEffect | None]:
     best_rank = max(ATTENTION_RANK[draft.disposition] for _, draft in planned)
     winners = [(effect, draft) for effect, draft in planned if ATTENTION_RANK[draft.disposition] == best_rank]
-    representative = _representative_effect([effect for effect, _ in winners]) or winners[0][0]
+    representative = _representative_effect(
+        [effect for effect, _ in winners], matches, calibration_strategy=calibration_strategy
+    ) or winners[0][0]
     selected = next((draft for effect, draft in winners if effect is representative), winners[0][1])
     draft = deepcopy(selected)
     draft.watch_after_processing = any(d.watch_after_processing for _, d in winners)
@@ -154,7 +164,9 @@ class ParetoMultiDeltaDecisionStrategy:
             )
             for effect in frontier
         ]
-        draft, representative = _aggregate_frontier_plans(planned)
+        draft, representative = _aggregate_frontier_plans(
+            planned, matches, calibration_strategy=self.calibration_strategy
+        )
         return _apply_runtime_overlays(
             draft, features, runtime, primary=representative, matches=matches
         )

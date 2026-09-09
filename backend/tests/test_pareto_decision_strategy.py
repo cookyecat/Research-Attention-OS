@@ -119,6 +119,7 @@ def test_magnitude_free_question_reinforce_is_invariant_to_raw_magnitude():
     assert decision_vector(low, [question], calibration_strategy=MAGNITUDE_FREE_CALIBRATION) == decision_vector(
         high, [question], calibration_strategy=MAGNITUDE_FREE_CALIBRATION
     )
+    assert MAGNITUDE_FREE_CALIBRATION.representative_key(low, [question]) == MAGNITUDE_FREE_CALIBRATION.representative_key(high, [question])
     for effect in (low, high):
         plan = route(
             _features(), assessment=CognitiveImpactAssessment(effects=[effect]), matches=[question],
