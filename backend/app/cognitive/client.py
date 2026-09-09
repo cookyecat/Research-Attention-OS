@@ -92,6 +92,7 @@ def chat_json(
     timeout: float = 45.0,
     thinking: ThinkingMode | None = None,
     reasoning_effort: ReasoningEffort | None = None,
+    temperature: float = 0.1,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """OpenAI-compatible chat completion expecting a JSON object."""
     if not settings.llm_api_key:
@@ -99,7 +100,7 @@ def chat_json(
     url = settings.llm_base_url.rstrip("/") + "/chat/completions"
     payload = {
         "model": model or settings.llm_model,
-        "temperature": 0.1,
+        "temperature": float(temperature),
         "response_format": {"type": "json_object"},
         "messages": messages,
     }
@@ -134,6 +135,7 @@ def chat_json(
         "thinking": thinking,
         "reasoning_effort": reasoning_effort,
         "timeout": timeout,
+        "temperature": float(temperature),
     }
     return parsed, meta
 

@@ -330,6 +330,14 @@ def test_deepseek_protocol_sends_thinking_fields(monkeypatch):
     assert _CapturingClient.last_payload["reasoning_effort"] == "low"
 
 
+def test_chat_json_temperature_override(monkeypatch):
+    monkeypatch.setattr(settings, "llm_api_key", "test-key")
+    monkeypatch.setattr("app.cognitive.client.httpx.Client", _CapturingClient)
+    _, meta = chat_json([{"role": "user", "content": "hi"}], temperature=0.0)
+    assert _CapturingClient.last_payload["temperature"] == 0.0
+    assert meta["temperature"] == 0.0
+
+
 def test_chat_json_timeout_becomes_llm_timeout_error(monkeypatch):
     monkeypatch.setattr(settings, "llm_api_key", "test-key")
     monkeypatch.setattr("app.cognitive.client.httpx.Client", _TimeoutClient)
