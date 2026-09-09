@@ -941,3 +941,13 @@ Architecture record: `84_PHASE8C4_DECISION_STRATEGY_PLUGIN_ARCHITECTURE.md`.
 The decision algorithm is now an explicit injectable/versioned strategy seam. Production default remains `one-delta-v1`; historical runs without a strategy fingerprint resolve to that baseline. Strategy identity enters AnalysisRun execution identity and score_debug, so future one-Delta / Multi-Delta / Pareto experiments can change one decision algorithm at a time without rewriting scheduler control flow or colliding in cache.
 
 This change does not solve calibration by itself. `change_magnitude` remains a raw LLM estimate even after full production grounding; target importance and epistemic strength receive deterministic grounding/caps. Next research step: implement a Pareto/partial-order candidate behind the new seam, leaving `one-delta-v1` untouched for A/B recovery.
+
+## Phase 8C.5 Pareto / partial-order decision strategy — EXPERIMENTALLY COMPLETE 2026-09-10
+
+Preregistration: `85_PHASE8C5_PARETO_DECISION_STRATEGY_PREREGISTRATION.md`. Result: `86_PHASE8C5_PARETO_DECISION_STRATEGY_RESULT.md`.
+
+`pareto-multidelta-v0.1` is now an experimental Decision Strategy chip. A frozen 12-run A/B against `one-delta-v1` used the Phase 8C.3 native canonical CognitiveEffect artifact and made no LLM calls.
+
+Article-level Attention was unchanged in all 12 runs. Pareto materially changed decision geometry, preserving simultaneous RS15 channels on the Attention frontier instead of collapsing immediately to one primary winner, but it did not remove RS15 AWARE/ENGAGE variation because the frozen raw `change_magnitude` values still crossed Attention bands.
+
+Conclusion: Pareto addresses lossy single-winner compression, not pseudo-cardinal calibration. Production default remains `one-delta-v1`; Pareto v0.1 is frozen as an experimental baseline. Next gate: a calibration/margin strategy chip, tested independently before any further Pareto tuning.
