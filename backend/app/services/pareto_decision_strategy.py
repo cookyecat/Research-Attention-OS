@@ -5,15 +5,19 @@ from dataclasses import dataclass
 
 from app.enums import CognitiveEffectKind, Disposition, Urgency
 from app.services.cognitive_impact import (
-    LOW_EPISTEMIC,
-    MATERIAL_CHANGE_MIN,
-    MEANINGFUL_CHANGE,
     CognitiveEffect,
     CognitiveImpactAssessment,
     legal_public_effects,
     normalize_frozen_transition,
     select_primary_effect,
     visible_prediction_from_frozen,
+)
+from app.services.effect_calibration import (
+    MAGNITUDE_FREE_CALIBRATION,
+    RAW_CARDINAL_CALIBRATION,
+    epistemic_band,
+    importance_band,
+    raw_change_band,
 )
 from app.services.scheduler import (
     AwarenessSignals,
@@ -37,45 +41,46 @@ def _kind(effect: CognitiveEffect) -> CognitiveEffectKind:
 
 
 def change_band(value: float) -> int:
-    value = float(value)
-    if value <= 0:
-        return 0
-    if value < MATERIAL_CHANGE_MIN:
-        return 1
-    if value < MEANINGFUL_CHANGE:
-        return 2
-    return 3
+    """Compatibility alias for raw-cardinal v1."""
+    return raw_change_band(value)
 
 
-def epistemic_band(value: float) -> int:
-    return 0 if float(value) < LOW_EPISTEMIC else 1
+def decision_vector(
+    effect: CognitiveEffect,
+    matches=None,
+    *,
+    calibration_strategy=RAW_CARDINAL_CALIBRATION,
+) -> tuple[int, ...]:
+    return calibration_strategy.decision_vector(effect, matches or [])
 
 
-def importance_band(value: float) -> int:
-    return 0 if float(value) < 0.55 else 1
-
-
-def decision_vector(effect: CognitiveEffect) -> tuple[int, int, int, int, int]:
-    op = _kind(effect)
-    return (
-        change_band(effect.change_magnitude),
-        epistemic_band(effect.epistemic_strength),
-        importance_band(effect.target_importance),
-        int(op == CognitiveEffectKind.CHALLENGE),
-        int(op == CognitiveEffectKind.OPEN_NEW),
-    )
-def dominates(a: CognitiveEffect, b: CognitiveEffect) -> bool:
-    va = decision_vector(a)
-    vb = decision_vector(b)
+def dominates(
+    a: CognitiveEffect,
+    b: CognitiveEffect,
+    matches=None,
+    *,
+    calibration_strategy=RAW_CARDINAL_CALIBRATION,
+) -> bool:
+    va = decision_vector(a, matches, calibration_strategy=calibration_strategy)
+    vb = decision_vector(b, matches, calibration_strategy=calibration_strategy)
     return all(x >= y for x, y in zip(va, vb)) and any(x > y for x, y in zip(va, vb))
 
 
-def pareto_frontier(effects: list[CognitiveEffect]) -> list[CognitiveEffect]:
+def pareto_frontier(
+    effects: list[CognitiveEffect],
+    matches=None,
+    *,
+    calibration_strategy=RAW_CARDINAL_CALIBRATION,
+) -> list[CognitiveEffect]:
     """Attention frontier only; does not delete CognitiveEffects from semantic state."""
     return [
         effect
         for i, effect in enumerate(effects)
-        if not any(j != i and dominates(other, effect) for j, other in enumerate(effects))
+        if not any(
+            j != i
+            and dominates(other, effect, matches, calibration_strategy=calibration_strategy)
+            for j, other in enumerate(effects)
+        )
     ]
 
 
@@ -109,6 +114,7 @@ def _aggregate_frontier_plans(
 class ParetoMultiDeltaDecisionStrategy:
     strategy_id: str = "pareto-multidelta"
     version: str = "pareto-multidelta-v0.1"
+    calibration_strategy: object = RAW_CARDINAL_CALIBRATION
 
     def execution_snapshot(self) -> dict:
         return {
@@ -116,6 +122,7 @@ class ParetoMultiDeltaDecisionStrategy:
             "version": self.version,
             "selection": "ordinal-pareto-frontier-v0.1",
             "article_aggregation": "attention-join-v0.1",
+            "effect_calibration": self.calibration_strategy.execution_snapshot(),
             "public_update_projection": "legacy-single-primary-compatibility",
         }
 
@@ -131,13 +138,20 @@ class ParetoMultiDeltaDecisionStrategy:
         runtime = runtime or RuntimeView()
         matches = matches or []
         normalized = normalize_frozen_transition(assessment, matches).assessment
-        frontier = pareto_frontier(legal_public_effects(normalized))
+        frontier = pareto_frontier(
+            legal_public_effects(normalized),
+            matches,
+            calibration_strategy=self.calibration_strategy,
+        )
         if not frontier:
             draft = _cognitive_disposition(features, None, matches, awareness=awareness)
             return _apply_runtime_overlays(draft, features, runtime, primary=None, matches=matches)
 
         planned = [
-            (effect, _cognitive_disposition(features, effect, matches, awareness=None))
+            (
+                effect,
+                self.calibration_strategy.channel_plan(effect, features=features, matches=matches),
+            )
             for effect in frontier
         ]
         draft, representative = _aggregate_frontier_plans(planned)
@@ -155,3 +169,9 @@ class ParetoMultiDeltaDecisionStrategy:
 
 
 PARETO_MULTI_DELTA_DECISION_STRATEGY = ParetoMultiDeltaDecisionStrategy()
+
+MAGNITUDE_FREE_PARETO_DECISION_STRATEGY = ParetoMultiDeltaDecisionStrategy(
+    strategy_id="pareto-multidelta-magnitude-free",
+    version="pareto-multidelta-magnitude-free-v0.1",
+    calibration_strategy=MAGNITUDE_FREE_CALIBRATION,
+)

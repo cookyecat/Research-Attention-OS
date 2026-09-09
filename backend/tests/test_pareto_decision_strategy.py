@@ -4,8 +4,10 @@ from uuid import uuid4
 
 from app.enums import CognitiveEffectKind, Disposition
 from app.services.cognitive_impact import CognitiveEffect, CognitiveImpactAssessment
+from app.services.effect_calibration import MAGNITUDE_FREE_CALIBRATION
 from app.services.matching import KernelMatch
 from app.services.pareto_decision_strategy import (
+    MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
     PARETO_MULTI_DELTA_DECISION_STRATEGY,
     decision_vector,
     dominates,
@@ -99,3 +101,49 @@ def test_article_attention_is_join_over_frontier_channels():
     )
     assert plan.disposition == Disposition.ENGAGE
     assert "Pareto frontier" in plan.reason
+
+
+def test_magnitude_free_strategy_is_registered_and_fingerprinted():
+    strategy = get_decision_strategy("pareto-multidelta-magnitude-free")
+    assert strategy is MAGNITUDE_FREE_PARETO_DECISION_STRATEGY
+    snapshot = strategy.execution_snapshot()
+    assert snapshot["version"] == "pareto-multidelta-magnitude-free-v0.1"
+    assert snapshot["effect_calibration"]["version"] == "magnitude-free-v0.1"
+    assert snapshot["effect_calibration"]["uses_raw_change_magnitude"] is False
+
+
+def test_magnitude_free_question_reinforce_is_invariant_to_raw_magnitude():
+    question = _match("QUESTION")
+    low = _effect(question, CognitiveEffectKind.REINFORCE, change=.01, epi=.8, importance=.8)
+    high = _effect(question, CognitiveEffectKind.REINFORCE, change=.99, epi=.8, importance=.8)
+    assert decision_vector(low, [question], calibration_strategy=MAGNITUDE_FREE_CALIBRATION) == decision_vector(
+        high, [question], calibration_strategy=MAGNITUDE_FREE_CALIBRATION
+    )
+    for effect in (low, high):
+        plan = route(
+            _features(), assessment=CognitiveImpactAssessment(effects=[effect]), matches=[question],
+            decision_strategy=MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
+        )
+        assert plan.disposition == Disposition.WATCH
+
+
+def test_magnitude_free_important_challenge_engages_regardless_of_raw_magnitude():
+    belief = _match("BELIEF")
+    for magnitude in (.01, .99):
+        effect = _effect(belief, CognitiveEffectKind.CHALLENGE, change=magnitude, epi=.8, importance=.8)
+        plan = route(
+            _features(), assessment=CognitiveImpactAssessment(effects=[effect]), matches=[belief],
+            decision_strategy=MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
+        )
+        assert plan.disposition == Disposition.ENGAGE
+
+
+def test_magnitude_free_low_importance_challenge_stays_aware_regardless_of_raw_magnitude():
+    question = _match("QUESTION")
+    for magnitude in (.01, .99):
+        effect = _effect(question, CognitiveEffectKind.CHALLENGE, change=magnitude, epi=.8, importance=.1)
+        plan = route(
+            _features(), assessment=CognitiveImpactAssessment(effects=[effect]), matches=[question],
+            decision_strategy=MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
+        )
+        assert plan.disposition == Disposition.AWARE
