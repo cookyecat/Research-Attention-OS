@@ -4,9 +4,11 @@ from uuid import uuid4
 
 from app.enums import CognitiveEffectKind, Disposition
 from app.services.cognitive_impact import CognitiveEffect, CognitiveImpactAssessment
+from app.services.effect_admission import ANCHORED_OPEN_NEW_ADMISSION, has_jurisdiction_anchor
 from app.services.effect_calibration import MAGNITUDE_FREE_CALIBRATION
 from app.services.matching import KernelMatch
 from app.services.pareto_decision_strategy import (
+    ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
     MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
     PARETO_MULTI_DELTA_DECISION_STRATEGY,
     decision_vector,
@@ -148,3 +150,53 @@ def test_magnitude_free_low_importance_challenge_stays_aware_regardless_of_raw_m
             decision_strategy=MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
         )
         assert plan.disposition == Disposition.AWARE
+
+
+def test_anchored_open_new_strategy_is_registered_and_fingerprinted():
+    strategy = get_decision_strategy("pareto-multidelta-magnitude-free-anchored-open-new")
+    assert strategy is ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY
+    snapshot = strategy.execution_snapshot()
+    assert snapshot["effect_admission"]["version"] == "anchored-open-new-v0.1"
+    assert snapshot["effect_admission"]["uses_raw_change_magnitude"] is False
+
+
+def test_free_floating_open_new_is_rejected_without_jurisdiction_anchor():
+    effect = _effect(None, CognitiveEffectKind.OPEN_NEW, change=.99, epi=.9, importance=.9)
+    assessment = CognitiveImpactAssessment(effects=[effect])
+    baseline = route(
+        _features(), assessment=assessment, matches=[],
+        decision_strategy=MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
+    )
+    anchored = route(
+        _features(), assessment=assessment, matches=[],
+        decision_strategy=ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
+    )
+    assert baseline.disposition == Disposition.ENGAGE
+    assert anchored.disposition == Disposition.DROP
+
+
+def test_project_or_structural_match_is_a_jurisdiction_anchor_for_open_new():
+    project = _match("PROJECT")
+    effect = _effect(None, CognitiveEffectKind.OPEN_NEW, change=.01, epi=.9, importance=.9)
+    assert has_jurisdiction_anchor([project])
+    admitted = ANCHORED_OPEN_NEW_ADMISSION.admit([effect], [project])
+    assert admitted == [effect]
+    plan = route(
+        _features(), assessment=CognitiveImpactAssessment(effects=[effect]), matches=[project],
+        decision_strategy=ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
+    )
+    assert plan.disposition == Disposition.ENGAGE
+
+
+def test_bare_topic_belief_is_not_sufficient_jurisdiction_anchor():
+    belief = _match("BELIEF")
+    effect = _effect(None, CognitiveEffectKind.OPEN_NEW, epi=.9, importance=.9)
+    assert not has_jurisdiction_anchor([belief])
+    assert ANCHORED_OPEN_NEW_ADMISSION.admit([effect], [belief]) == []
+
+
+def test_anchor_admission_never_removes_targeted_effects():
+    belief = _match("BELIEF")
+    challenge = _effect(belief, CognitiveEffectKind.CHALLENGE, epi=.8, importance=.8)
+    reinforce = _effect(belief, CognitiveEffectKind.REINFORCE, epi=.8, importance=.8)
+    assert ANCHORED_OPEN_NEW_ADMISSION.admit([challenge, reinforce], []) == [challenge, reinforce]

@@ -370,14 +370,22 @@ _DECISION_STRATEGIES = {
 
 def get_decision_strategy(strategy_id: str | None = None):
     strategy_id = strategy_id or LEGACY_ONE_DELTA_DECISION_STRATEGY.strategy_id
-    if strategy_id in {"pareto-multidelta", "pareto-multidelta-magnitude-free"} and strategy_id not in _DECISION_STRATEGIES:
+    if strategy_id in {
+        "pareto-multidelta",
+        "pareto-multidelta-magnitude-free",
+        "pareto-multidelta-magnitude-free-anchored-open-new",
+    } and strategy_id not in _DECISION_STRATEGIES:
         from app.services.pareto_decision_strategy import (
+            ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
             MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
             PARETO_MULTI_DELTA_DECISION_STRATEGY,
         )
 
         _DECISION_STRATEGIES["pareto-multidelta"] = PARETO_MULTI_DELTA_DECISION_STRATEGY
         _DECISION_STRATEGIES["pareto-multidelta-magnitude-free"] = MAGNITUDE_FREE_PARETO_DECISION_STRATEGY
+        _DECISION_STRATEGIES["pareto-multidelta-magnitude-free-anchored-open-new"] = (
+            ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY
+        )
     try:
         return _DECISION_STRATEGIES[strategy_id]
     except KeyError as exc:

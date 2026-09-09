@@ -12,6 +12,10 @@ from app.services.cognitive_impact import (
     select_primary_effect,
     visible_prediction_from_frozen,
 )
+from app.services.effect_admission import (
+    ANCHORED_OPEN_NEW_ADMISSION,
+    LEGAL_PUBLIC_EFFECT_ADMISSION,
+)
 from app.services.effect_calibration import (
     MAGNITUDE_FREE_CALIBRATION,
     RAW_CARDINAL_CALIBRATION,
@@ -125,6 +129,7 @@ class ParetoMultiDeltaDecisionStrategy:
     strategy_id: str = "pareto-multidelta"
     version: str = "pareto-multidelta-v0.1"
     calibration_strategy: object = RAW_CARDINAL_CALIBRATION
+    effect_admission_strategy: object = LEGAL_PUBLIC_EFFECT_ADMISSION
 
     def execution_snapshot(self) -> dict:
         return {
@@ -133,6 +138,7 @@ class ParetoMultiDeltaDecisionStrategy:
             "selection": "ordinal-pareto-frontier-v0.1",
             "article_aggregation": "attention-join-v0.1",
             "effect_calibration": self.calibration_strategy.execution_snapshot(),
+            "effect_admission": self.effect_admission_strategy.execution_snapshot(),
             "public_update_projection": "legacy-single-primary-compatibility",
         }
 
@@ -148,8 +154,10 @@ class ParetoMultiDeltaDecisionStrategy:
         runtime = runtime or RuntimeView()
         matches = matches or []
         normalized = normalize_frozen_transition(assessment, matches).assessment
+        legal_effects = legal_public_effects(normalized)
+        admitted_effects = self.effect_admission_strategy.admit(legal_effects, matches)
         frontier = pareto_frontier(
-            legal_public_effects(normalized),
+            admitted_effects,
             matches,
             calibration_strategy=self.calibration_strategy,
         )
@@ -186,4 +194,11 @@ MAGNITUDE_FREE_PARETO_DECISION_STRATEGY = ParetoMultiDeltaDecisionStrategy(
     strategy_id="pareto-multidelta-magnitude-free",
     version="pareto-multidelta-magnitude-free-v0.1",
     calibration_strategy=MAGNITUDE_FREE_CALIBRATION,
+)
+
+ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY = ParetoMultiDeltaDecisionStrategy(
+    strategy_id="pareto-multidelta-magnitude-free-anchored-open-new",
+    version="pareto-multidelta-magnitude-free-anchored-open-new-v0.1",
+    calibration_strategy=MAGNITUDE_FREE_CALIBRATION,
+    effect_admission_strategy=ANCHORED_OPEN_NEW_ADMISSION,
 )
