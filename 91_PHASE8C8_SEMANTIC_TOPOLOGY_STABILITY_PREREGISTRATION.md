@@ -1,6 +1,6 @@
 # Phase 8C.8 — Semantic Topology Stability Attribution Preregistration
 
-Status: PREREGISTERED / NOT YET MEASURED
+Status: EXPERIMENTALLY COMPLETE / SEE `92_PHASE8C8_SEMANTIC_TOPOLOGY_STABILITY_RESULT.md`
 Date: 2026-09-10
 
 ## Question

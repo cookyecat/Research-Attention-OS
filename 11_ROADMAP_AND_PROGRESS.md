@@ -968,3 +968,12 @@ The four exact Phase 8C.1 public-web URLs were reacquired through the production
 Natural fresh decisions were A=`AWARE`, C=`DROP`, D=`DROP`, X=`AWARE` under both raw-cardinal and magnitude-free calibration. The important robustness result came from deterministic perturbation of the frozen real-web CognitiveEffects: on the two non-empty topologies (A and X), changing only raw `change_magnitude` moved Raw Cardinal from `AWARE` to `ENGAGE`, while Magnitude-Free remained `AWARE` for all four variants. Empty-topology controls C/D remained `DROP`.
 
 Conclusion: the pseudo-cardinal magnitude failure mode generalizes to real-web sources. With Semantic Topology frozen, raw magnitude alone can create an artificial Attention boundary; Magnitude-Free removes that authority. This does not solve Semantic Topology variance itself. Production default remains `one-delta-v1`; next research target is Semantic Topology stability / preservation of decision-bearing relations rather than further continuous magnitude tuning. Full backend regression after this measurement was 576 passed / 63 skipped with only the pre-existing Case K PREEMPT-vs-PRIORITY residual failing.
+
+
+## Phase 8C.8 Semantic Topology stability attribution — EXPERIMENTALLY COMPLETE 2026-09-10
+
+Preregistration: `91_PHASE8C8_SEMANTIC_TOPOLOGY_STABILITY_PREREGISTRATION.md`; result: `92_PHASE8C8_SEMANTIC_TOPOLOGY_STABILITY_RESULT.md`.
+
+Frozen-audited-world attribution separated Locate from Cognitive Impact. RS05 critical CHALLENGE and RS15 Q2/B2 relations remained 6/6, and Magnitude-Free Attention was stable for RS05/RS15/RS11/RS12/A/C/X despite peripheral topology variance. D was the only product-level failure: with modal Locate frozen empty, Cognitive Impact spontaneously emitted five OPEN_NEW effects in 1/6 and moved DROP→ENGAGE.
+
+Current next target is therefore OPEN_NEW jurisdiction/materiality admission inside Cognitive Impact, not Auditor/Sensor variance. Production default remains `one-delta-v1`.
