@@ -550,6 +550,17 @@ def _primary_sort_key(effect: CognitiveEffect) -> tuple:
     return (useful, change, importance, epi, nid)
 
 
+def legal_public_effects(assessment: CognitiveImpactAssessment | None) -> list[CognitiveEffect]:
+    """Legal positive effects without collapsing them to a single winner."""
+    if assessment is None:
+        return []
+    return [
+        e
+        for e in assessment.effects
+        if _legal_public_effect(e) and float(e.change_magnitude) > 0
+    ]
+
+
 def select_primary_effect(assessment: CognitiveImpactAssessment | None) -> CognitiveEffect | None:
     """The one CognitiveEffect that public Update and Attention Policy both use.
 
@@ -558,13 +569,7 @@ def select_primary_effect(assessment: CognitiveImpactAssessment | None) -> Cogni
     legal positive effects; it does not erase Δ existence. Zero magnitude
     is not a positive Δ. MATERIAL_CHANGE_MIN is not applied here.
     """
-    if assessment is None:
-        return None
-    legal = [
-        e
-        for e in assessment.effects
-        if _legal_public_effect(e) and float(e.change_magnitude) > 0
-    ]
+    legal = legal_public_effects(assessment)
     if not legal:
         return None
     return max(legal, key=_primary_sort_key)
