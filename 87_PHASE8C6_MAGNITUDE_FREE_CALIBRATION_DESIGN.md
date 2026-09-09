@@ -1,6 +1,6 @@
 # Phase 8C.6 — Magnitude-Free Cognitive-Effect Calibration Design
 
-Status: PREREGISTERED / EXPERIMENTAL CALIBRATION CHIP
+Status: IMPLEMENTED / EXPERIMENTALLY TESTED; SEE 88 RESULT
 Date: 2026-09-10
 
 ## Problem

@@ -951,3 +951,9 @@ Preregistration: `85_PHASE8C5_PARETO_DECISION_STRATEGY_PREREGISTRATION.md`. Resu
 Article-level Attention was unchanged in all 12 runs. Pareto materially changed decision geometry, preserving simultaneous RS15 channels on the Attention frontier instead of collapsing immediately to one primary winner, but it did not remove RS15 AWARE/ENGAGE variation because the frozen raw `change_magnitude` values still crossed Attention bands.
 
 Conclusion: Pareto addresses lossy single-winner compression, not pseudo-cardinal calibration. Production default remains `one-delta-v1`; Pareto v0.1 is frozen as an experimental baseline. Next gate: a calibration/margin strategy chip, tested independently before any further Pareto tuning.
+
+## Phase 8C.6 magnitude-free calibration — EXPERIMENTALLY COMPLETE 2026-09-10
+
+Design: `87_PHASE8C6_MAGNITUDE_FREE_CALIBRATION_DESIGN.md`; result: `88_PHASE8C6_MAGNITUDE_FREE_CALIBRATION_RESULT.md`.
+
+`magnitude-free-v0.1` removes raw LLM `change_magnitude` from Pareto dominance, per-channel Attention, article aggregation and compatibility representative selection. Controlled magnitude perturbation was decision/frontier invariant 12/12 while raw-cardinal decisions changed 12/12. Frozen real-realization A/B: RS05 `ENGAGE 3/3`, RS15 stabilized to `WATCH 3/3`, RS11 `AWARE 3/3`; RS12 moved to `WATCH 3/3` and remains the calibration boundary case. Production default remains `one-delta-v1`.
