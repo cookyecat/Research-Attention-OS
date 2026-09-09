@@ -22,6 +22,14 @@ Directional objective:
 CROA = Useful Cognitive Change / Human Attention Cost
 ```
 
+Product-direction invariant:
+
+> **Many recommendation systems compete to capture and extend human attention. RAOS is directionally the opposite: in an AI era where information production exceeds human cognitive throughput, it should minimize unnecessary screen time and return more of the user's finite time to thinking, creating, deciding, experimenting, and doing the work.**
+
+> **推荐系统常常争取并延长人的注意力；RAOS 的方向恰恰相反：在 AI 时代信息生成速度超过人脑处理速度的情况下，尽可能减少不必要的屏幕时间，把更多有限的人类时间还给思考、创造、判断、实验和真正的工作。**
+
+This is an objective-function distinction, not a claim that every recommendation algorithm or recommender-system researcher optimizes screen time. See `13_RAOS_VS_RECOMMENDATION_SYSTEMS.md`.
+
 The modules below are not independent products. They are stages in one attention-allocation pipeline.
 
 ---

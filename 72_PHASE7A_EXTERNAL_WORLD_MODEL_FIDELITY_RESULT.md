@@ -126,6 +126,8 @@ Evidence Fidelity
 
 This is an engineering decomposition, not a new frozen mathematical variable.
 
+Maintenance discipline: this remains the active Phase 7A working formulation unless later controlled experimental evidence demonstrates that the decomposition is insufficient or materially wrong. Do not replace it merely because a new descriptive taxonomy is proposed during downstream debugging.
+
 Research memory:
 
 > **Sensor 真正需要的不是“多”，而是“在正确的语义位置上精准”。**
