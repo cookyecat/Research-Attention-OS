@@ -1,7 +1,7 @@
 # Research Attention OS — Roadmap and Progress
 
 Status: **ACTIVE PROJECT ROADMAP**  
-Date: 2026-09-08
+Date: 2026-09-09
 Current integrated baseline referenced: `0eb54a29208c44757317caf192b55232e586b397`
 Semantic baseline: `08_COGNITIVE_TRANSITION_MODEL_V2.1.md` + Phase II-B AWARE semantics in `10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md`  
 D semantic baseline: `16_STANDING_ATTENTION_JURISDICTION.md`  
@@ -93,8 +93,8 @@ Core invariants:
 | Phase II-A — Cognitive Transition Model | Reliable `Extract -> Locate -> Impact -> Delta`; freeze cognitive semantics | **FROZEN / CLOSED BASELINE** |
 | Phase II-B — Attention Policy Calibration | Determine how frozen cognitive judgment plus legitimate non-cognitive signals allocate DROP/AWARE/WATCH/ENGAGE | **CLOSED / INTEGRATED BASELINE** |
 | Phase 6 — Integrated Cognitive Attention Loop | Raw Source → Sensor/Auditor → D/S/P + Δ → four Attention Actions → human-gated Kernel proposal | **CLOSED** |
-| Phase 7 — Perception Fidelity | External World Model fidelity, dynamic P evidence, minimal trusted Brain World Model | **ACTIVE — CURRENT PHASE** |
-| Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **NEXT** |
+| Phase 7 — Perception Fidelity | External World Model fidelity, dynamic P evidence, minimal trusted Brain World Model | **CLOSED / WORKING BASELINE** |
+| Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **ACTIVE — 8C.2 PRODUCTION SENSOR INTEGRATION** |
 | Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **NOT STARTED** |
 | Phase 10 — Uncertainty / Boundary Calibration | Probabilistic treatment of weak-Δ and policy-boundary jitter | **DEFERRED** |
 | Phase 11 — Personalization / Scale | Questionnaire prior + trajectory residuals + multi-user/product validation | **NOT STARTED** |
@@ -102,10 +102,10 @@ Core invariants:
 Current strategic position:
 
 $$
-\boxed{Phase\ 7:\ Perception\ Fidelity\ NOW}
+\boxed{Phase\ 8C.2:\ Production\ Sensor\ Integration\ NOW}
 $$
 
-Immediate order: `7A External World Model Fidelity → 7B Dynamic P Evidence → 7C Minimal Trusted Brain World Model → Phase 8 Narrow Continuous Attention Loop`.
+Immediate order: `8C.2 repeated decision-stability / representation-robustness gate → Sensor-path promotion/default decision → broader narrow dogfooding`.
 
 D semantic research is closed. The v3 D estimator has attributable implementation residuals and is not certified as a passed estimator; do not expand D into another offline synthetic benchmark now.
 
@@ -884,3 +884,41 @@ Current remediation is `production-source-to-semantic-sensor-v0.3-url-provenance
 Post-gate Tier-2 diagnostic found one remaining bridge-fidelity residual on initial real-web source A: legacy `AWARE / SUMMARY` vs Sensor `DROP / NONE`. Both had no Kernel match. Attribution showed the legacy `ExtractionResult` contained a decision-active `technical_claims` separation that can support OPEN_NEW, while the audited-units adapter reconstructed only claim/observation/inference and left production separation fields empty.
 
 The remediation is bridge-only and Auditor-preserving: production claim type and separation fields are reconstructed exclusively from Auditor-admitted claim statements using the existing production classifier. Raw unaudited source text is excluded. This restores `ClaimType`, `current_facts`, `future_plans`, `technical_claims`, `promotional_framing`, `marketing_heavy`, and derived `evidence_maturity` without changing Sensor v0.2.6, Auditor v0.1.1, Delta, D/S/P, WATCH, or Attention semantics. The bridge execution version is bumped before new measurement.
+
+
+### Phase 8C.2 decision-stability attribution — 2026-09-09
+
+Bridge v0.2 restored production decision-active extraction separations from Auditor-admitted claims only, and the final A/C/D/X Tier-2 real-world continuity rerun passed all structural and cognitive diagnostics.
+
+A subsequent Tier-1 RS15 rerun exposed a deeper production-readiness residual. Controlled attribution is archived in `81_PHASE8C2_DECISION_STABILITY_ATTRIBUTION_RESULT.md`.
+
+Current evidence separates three regimes:
+
+```text
+RS11 — robust basin
+  fresh current Sensor/Auditor/downstream -> NONE / DROP 6/6
+
+RS05 — upstream representation instability
+  frozen Phase7A audited semantics -> canonical CHALLENGE / ENGAGE 6/6
+  fresh current path              -> canonical 3/6, DROP 3/6
+
+RS15 — compound boundary amplification
+  same exact semantic input -> Q2 3/6, B2 3/6
+  fresh Sensor/Auditor realizations add further Q2/B2/OPEN_NEW variation
+```
+
+The critical RS15 Q2 relation remains present after Auditor admission. Event projection is not a deterministic root cause, and a one-pair Pro/Flash probe does not support a simple stronger-model explanation.
+
+Working causal summary:
+
+$$
+\boxed{\text{Representation Variance}\times\text{Decision Sensitivity}\rightarrow\text{Landing Instability}}
+$$
+
+This is a production stability/readiness finding, not evidence to replace the Phase 7A working formulation:
+
+$$
+\boxed{\text{Decision-Sufficient Semantic Precision}=\text{Evidence Fidelity}+\text{Scope Fidelity}+\text{Relational Fidelity}}
+$$
+
+Phase 8C.2 therefore remains ACTIVE and production default remains legacy. Immediate next research gate: broaden repeated decision-stability / representation-robustness measurement across multiple canonical decision-bearing and negative-control cases before any Sensor-path promotion. Probabilistic redesign of Delta/Attention remains deferred to Phase 10 unless broader evidence proves it necessary.

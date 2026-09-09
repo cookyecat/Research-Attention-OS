@@ -1,6 +1,6 @@
 # Phase 8C.2 — Production Sensor Bridge Result
 
-Status: **ACTIVE / TIER-1 PASS / TIER-2 PACKAGING FAILURE ATTRIBUTED**
+Status: **ACTIVE / TIER-2 PASS / DECISION-STABILITY RESIDUAL ATTRIBUTED / PRODUCTION PROMOTION BLOCKED**
 Date: 2026-09-09
 
 ## 1. Research question
@@ -165,3 +165,49 @@ The Tier-2 methodology preregistered ungolded cognitive differences on A/C/D/X a
 Attribution shows both arms had no Kernel match. Legacy produced an `OPEN_NEW` candidate with reason `No current Kernel target; possible new question or model candidate.` and contained one `technical_claims` entry. The audited-units adapter, however, reconstructs only `claims / observations / inferences` and hard-codes source claims as `FACTUAL`; it leaves production separation fields such as `technical_claims` empty. Those fields are decision-active in Impact/Scheduler/Delta.
 
 Therefore the A-initial difference is a bridge schema-translation fidelity gap, not evidence that the compact Sensor representation is intrinsically too small. The next remediation must restore production separation fields only from Auditor-admitted claim statements, without allowing raw unaudited source text back into downstream cognition. Sensor v0.2.6, Auditor v0.1.1, Delta, D/S/P, WATCH, and Attention remain frozen.
+
+
+## 8. Bridge v0.2 separation restoration and final Tier-2 pass
+
+The production bridge was upgraded to `phase8c2-production-sensor-bridge-v0.2` by rebuilding production decision-active separations exclusively from Auditor-admitted claims. The legacy Phase 6B adapter remained unchanged.
+
+A targeted Azure-A causal retest restored the same `OPEN_NEW -> AWARE / SUMMARY` landing as legacy while preserving Auditor authority. The remaining `future_plans` field difference was traced to a legacy rhetorical `will be` classification and was not forced into field equality.
+
+The full Tier-2 A/C/D/X continuity rerun at measurement SHA `0622bc4be9b5b80782522e0a81a234eb77713969` passed all structural gates and matched cognitive diagnostics at every point. Artifact: `eval/live/results/phase8c2_real_world_continuity_ab_v0_1/phase8c2_real_world_continuity_ab_v0_1_20260908T211120Z.json`; SHA256: `73f6a1d9a60b1daf365435b894e2fefa03ea38fcc28f8dd2a58056f378a5e66b`.
+
+```text
+A_initial   legacy AWARE/SUMMARY   sensor AWARE/SUMMARY
+C_recheck   legacy WATCH/WATCH     sensor WATCH/WATCH
+X_ordinary  legacy DROP/NONE       sensor DROP/NONE
+D_recheck   legacy AWARE/SUMMARY   sensor AWARE/SUMMARY
+```
+
+Tier 2 therefore validates real-web acquisition, audited Sensor transport, event observability, continuous WATCH continuity, and the bridge v0.2 separation projection on this supervised continuity set.
+
+## 9. Tier-1 RS15 stability attribution
+
+A fresh Tier-1 sentinel rerun at the same bridge-v0.2 SHA produced `REINFORCE(B2) -> WATCH` for RS15 in 3/3 confirmation pairs instead of canonical `REINFORCE(Q2)`. Subsequent controlled attribution showed that this should **not** be interpreted as a deterministic event-projection or bridge-only regression.
+
+The complete attribution is archived in `81_PHASE8C2_DECISION_STABILITY_ATTRIBUTION_RESULT.md`. Key findings:
+
+```text
+RS15 fixed exact semantic input:  Q2 3/6, B2 3/6
+RS15 six fresh Flash realizations: Q2 / B2 / OPEN_NEW all observed
+RS05 fresh end-to-end:             canonical 3/6, DROP 3/6
+RS05 frozen Phase7A semantics:     canonical 6/6
+RS11 fresh end-to-end:             DROP 6/6
+```
+
+The critical RS15 Q2 predicate remained Auditor-admitted; the instability is not a simple loss of that relation. Current evidence supports a compound mechanism:
+
+$$
+\boxed{\text{Representation Variance}\times\text{Decision Sensitivity}\rightarrow\text{Landing Instability}}
+$$
+
+This does not reopen the Phase 7A formula `Decision-Sufficient Semantic Precision = Evidence Fidelity + Scope Fidelity + Relational Fidelity`. Stability is a production measurement/readiness property of the stochastic implementation.
+
+## 10. Current decision
+
+Phase 8C.2 remains ACTIVE. The production default remains legacy. Do not tune Sensor v0.2.6, Auditor v0.1.1, Delta, or Attention Policy from RS15 alone. Before production promotion, broaden the repeated decision-stability / representation-robustness gate across multiple canonical decision-bearing and negative-control cases.
+
+After the attribution runners were added, the broader relevant regression passed `72 passed, 1 deselected, 1 warning`; the deselected Case K residual remains pre-existing and causally outside Phase 8C.2.
