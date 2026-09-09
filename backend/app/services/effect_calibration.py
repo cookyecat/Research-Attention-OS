@@ -75,7 +75,6 @@ class RawCardinalCalibration:
 
 
 RAW_CARDINAL_CALIBRATION = RawCardinalCalibration()
-RAW_CARDINAL_CALIBRATION = RawCardinalCalibration()
 
 
 @dataclass(frozen=True)
