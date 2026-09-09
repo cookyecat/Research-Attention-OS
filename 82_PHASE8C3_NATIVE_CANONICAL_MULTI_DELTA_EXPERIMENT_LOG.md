@@ -66,3 +66,18 @@ RS05 T=0.0: 3/6 valid; CHALLENGE/ENGAGE x3; 3 schema failures
 ```
 
 Decision: `temperature=0` is **not** a validated stabilization fix on the current DeepSeek API / structured-output protocol. It neither removed the RS15 Q2/B2 boundary nor improved technical reliability. Low temperature remains a plausible engineering principle for a different provider or self-hosted deployment, but provider/model A/B is deferred so it does not interrupt the five-step architecture experiment.
+
+## Step 2 — Native Canonical Semantic Interface preregistration
+
+Question: can the cognitive modules consume Phase 7 audited semantic units directly, without constructing legacy `ExtractionResult` or invoking the 8C.2 bridge?
+
+Measurement path:
+
+```text
+Frozen Phase7A audited semantic units
+→ native_locate(units, Kernel)
+→ native_assess(units, matches, Kernel)
+→ CognitiveImpactResponse.effects[]
+```
+
+This probe intentionally bypasses `ExtractionResult`, bridge projection, production evidence fields, and single-primary `ModelDelta`. Cases: RS05/RS15/RS11/RS12, using the exact Phase7A canonical Auditor artifact; 3 repeats each at current provider temperature 0.1. Step 2 is an interface viability/stability probe only. Step 3 will analyze the multiple effects as cognitive deltas rather than selecting an argmax.
