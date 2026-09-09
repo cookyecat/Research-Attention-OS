@@ -120,3 +120,11 @@ Exact measurement SHA: `d77d429b55a2735b1e3991e578adf57d2169d171`.
 Artifact SHA256: `b094c4b153bae559a98a1c7c0e63dba537dbc93727cdb3d3eb89feb6ff611e89`.
 
 RS05: core CHALLENGE is ENGAGE 3/3; optional OPEN_NEW channels are WATCH/ENGAGE when present. RS11: all 19 weak candidate channels DROP. RS12: all 18 weak candidate channels DROP. RS15: 16/18 channels DROP; only repeat 3 produces Q2=ENGAGE and B2=WATCH. Multi-target identity is stable, but effect magnitude remains variable. No thresholds were tuned from these outcomes.
+
+## Step 5 — Article-level Attention aggregation
+
+Input is frozen Step 4 per-channel Attention; no new LLM calls and no threshold changes.
+Article-level Attention is the maximum channel disposition under the fixed order:
+`ENGAGE > WATCH > AWARE > DROP`.
+
+This step tests whether removing single-primary compression improves article-level stability across RS05/RS15/RS11/RS12. It does not yet add D/S/P no-Delta awareness overlays; those remain orthogonal to this cognitive-channel aggregation probe.
