@@ -38,7 +38,7 @@ Baseline admission remains `legal-public-v1` and is behavior-preserving.
 3. Require all non-OPEN_NEW relations to be invariant.
 4. D should no longer allow an OPEN_NEW-only burst to create ENGAGE when frozen Locate has no jurisdiction anchor.
 5. RS05 is the natural positive-jurisdiction control: its modal Locate contains EVIDENCE/STRUCTURAL project anchors, so its OPEN_NEW candidates must remain admissible. Its critical CHALLENGE must remain untouched.
-6. After deterministic replay, stress D with additional fresh Cognitive Impact repeats using the same frozen audited world and exact empty modal Locate. The candidate strategy must remain insensitive to any repeated free-floating OPEN_NEW burst.
+6. After deterministic replay, stress D with **12** additional fresh Cognitive Impact repeats using the same frozen audited world and exact empty modal Locate. The candidate strategy must remain insensitive to any repeated free-floating OPEN_NEW burst.
 
 ## Boundaries
 
