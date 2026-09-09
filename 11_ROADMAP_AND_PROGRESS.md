@@ -977,3 +977,12 @@ Preregistration: `91_PHASE8C8_SEMANTIC_TOPOLOGY_STABILITY_PREREGISTRATION.md`; r
 Frozen-audited-world attribution separated Locate from Cognitive Impact. RS05 critical CHALLENGE and RS15 Q2/B2 relations remained 6/6, and Magnitude-Free Attention was stable for RS05/RS15/RS11/RS12/A/C/X despite peripheral topology variance. D was the only product-level failure: with modal Locate frozen empty, Cognitive Impact spontaneously emitted five OPEN_NEW effects in 1/6 and moved DROP→ENGAGE.
 
 Current next target is therefore OPEN_NEW jurisdiction/materiality admission inside Cognitive Impact, not Auditor/Sensor variance. Production default remains `one-delta-v1`.
+
+
+## Phase 8C.9 anchored OPEN_NEW admission — EXPERIMENTALLY COMPLETE 2026-09-10
+
+Preregistration: `93_PHASE8C9_ANCHORED_OPEN_NEW_ADMISSION_PREREGISTRATION.md`; result: `94_PHASE8C9_ANCHORED_OPEN_NEW_ADMISSION_RESULT.md`.
+
+`anchored-open-new-v0.1` adds a deterministic Effect Admission slot to the Pareto experimental stack. Frozen replay of all Phase 8C.8 Impact outputs removed the sole D free-floating OPEN_NEW `DROP→ENGAGE` failure (`DROP 5/6 + ENGAGE 1/6` -> `DROP 6/6`) while leaving article Attention unchanged for RS05/RS15/RS11/RS12/A/C/X. RS05 anchored OPEN_NEW candidates and the critical CHALLENGE remain preserved.
+
+The structural working invariant is `OPEN_NEW may have target=null, but should not have jurisdiction=null`. Full backend regression: 581 passed, 63 skipped, only the pre-existing Case K urgency residual failed. Production default remains `one-delta-v1`.
