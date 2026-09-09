@@ -31,7 +31,6 @@ from eval.live.run_phase8c2_production_sensor_bridge_ab_v0_1 import (
 )
 from eval.live.run_phase8c2_rs15_event_projection_ablation_v0_1 import (
     FrozenExtractionBridge,
-    _freeze_semantic_world,
     _hash_units,
     _make_extraction,
 )
@@ -40,6 +39,11 @@ HIST_AUDIT = ROOT / (
     "eval/live/results/phase7a_v0_2_6_epistemic_audit_v0_1/"
     "phase6b_epistemic_unit_audit_v0_1_20260908T090628Z.json"
 )
+CURRENT_ABLATION = ROOT / (
+    "eval/live/results/phase8c2_rs15_event_projection_ablation_v0_1/"
+    "phase8c2_rs15_event_projection_ablation_v0.1_20260909T080250Z.json"
+)
+CURRENT_ABLATION_SHA256 = "def0b2a986b2b8d4d74608c0100803216be656cb440e5ec6f999845b28afa28a"
 OUT_DIR = ROOT / "eval/live/results/phase8c2_rs15_historical_current_semantics_ablation_v0_1"
 RUN_VERSION = "phase8c2-rs15-historical-current-semantics-ablation-v0.1"
 SOURCE_ID = "RS15"
@@ -58,6 +62,22 @@ def _load_hist7() -> tuple[list[dict[str, Any]], str]:
     units = admitted_epistemic_units(list(source.get("audits") or []))
     if len(units) != 7:
         raise RuntimeError(f"expected 7 historical admitted units, got {len(units)}")
+    return units, artifact_sha
+
+
+def _load_current_units() -> tuple[list[dict[str, Any]], str]:
+    raw = CURRENT_ABLATION.read_bytes()
+    artifact_sha = hashlib.sha256(raw).hexdigest()
+    if artifact_sha != CURRENT_ABLATION_SHA256:
+        raise RuntimeError(
+            f"current ablation artifact sha mismatch: {artifact_sha} != {CURRENT_ABLATION_SHA256}"
+        )
+    data = json.loads(raw)
+    if data.get("source_id") != SOURCE_ID:
+        raise RuntimeError("current ablation source mismatch")
+    units = list((data.get("frozen_semantic_world") or {}).get("non_event_units") or [])
+    if not units:
+        raise RuntimeError("current ablation has no frozen non-event units")
     return units, artifact_sha
 
 
@@ -157,8 +177,7 @@ def main() -> int:
     case = dict(manifest["cases"][SOURCE_ID])
     measurement_sha = git_head()
     hist7, hist_artifact_sha = _load_hist7()
-    frozen_current = _freeze_semantic_world(case)
-    curr_units = list(frozen_current["unit_sets"]["N_NON_EVENT"])
+    curr_units, current_artifact_sha = _load_current_units()
 
     condition_units = {
         "HIST7_PHASE7A": hist7,
@@ -196,7 +215,8 @@ def main() -> int:
                 "n_units": len(curr_units),
                 "semantic_sha256": _hash_units(curr_units),
                 "units": curr_units,
-                "sensor": frozen_current["sensor"],
+                "source_artifact": str(CURRENT_ABLATION.relative_to(ROOT)),
+                "source_artifact_sha256": current_artifact_sha,
             },
         },
         "summary": summary,
