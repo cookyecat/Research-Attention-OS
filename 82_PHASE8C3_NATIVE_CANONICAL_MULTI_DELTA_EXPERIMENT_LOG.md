@@ -89,3 +89,13 @@ The first live attempt failed before producing usable native-interface evidence 
 ### Step 2 control-set correction
 
 The first complete native run showed RS05/RS15 successfully but RS11/RS12 failed before model execution because the selected Phase7A audit artifact contains only RS05/RS15. The canonical v0.2.6 regression audit artifact contains RS11/RS12. This is a fixture-loading error, not a semantic result. The loader now selects the appropriate frozen Phase7A artifact per case; the mixed run is excluded and Step 2 is re-frozen before rerun.
+
+## Step 2 — Result
+
+Measurement SHA: `d961ccb0c71ebcae79e78e04e1f7a2bff2241a29`
+Artifact: `eval/live/results/phase8c3_native_interface_probe_v0_1/phase8c3_native_interface_probe_v0.1_20260909T135412Z.json`
+Artifact SHA256: `3f68c034b55fd8a132c282027f87fe3665a388ed94e8be2e653bfba6aaf55d9e`
+
+All four cases completed 3/3 without bridge or `ExtractionResult`. RS15 produced the same six REINFORCE target channels in all three repeats, including both Q2 and B2 simultaneously; the old Q2↔B2 argmax oscillation disappears at the effect-set level. RS05 preserved its core CHALLENGE 3/3 while optional OPEN_NEW branches varied. RS11 exposed weak over-generation (many effects with very small magnitude/importance), so native multi-effect output requires effect-level materiality/attention handling rather than treating every emitted effect as equally decision-bearing. RS12 remained a weak multi-effect boundary case.
+
+Decision: native canonical semantic consumption is viable enough to continue. Step 3 will preserve multiple effects and analyze stable/core versus optional/weak channels; it will not restore single-primary selection.
