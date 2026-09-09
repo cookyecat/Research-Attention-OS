@@ -105,3 +105,11 @@ Decision: native canonical semantic consumption is viable enough to continue. St
 Step 3 does not make new LLM calls. It deterministically re-reads the frozen Step-2 native artifact and treats each distinct `(operation, target)` CognitiveEffect as a separate candidate Δ channel. No `select_primary_effect()` or argmax is applied.
 
 For each case it records: per-repeat effect set; repeat frequency of every operation-target channel; `core` channels present in every valid repeat; optional channels; and diagnostic utility `change_magnitude × target_importance`. Utility is descriptive only in Step 3. No Attention threshold is introduced until Step 4.
+
+## Step 4 — Per-channel Attention
+
+Input is frozen Step 2 native `CognitiveEffect[]`; no new LLM calls.
+Each candidate effect is classified independently using the existing cognitive thresholds:
+`MATERIAL_CHANGE_MIN=0.35`, `MEANINGFUL_CHANGE=0.55`, `LOW_EPISTEMIC=0.45`.
+
+Multi-Delta-specific clarification: sub-material candidate effects do not receive article-level AWARE merely because an LLM mentioned them; channel-level sub-material effects are DROP. AWARE remains an article-level no-Delta / D-S-P situational-awareness outcome. Production policy remains unchanged.
