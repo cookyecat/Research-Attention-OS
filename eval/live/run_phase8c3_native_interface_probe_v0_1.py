@@ -28,6 +28,7 @@ from eval.live.run_phase8c2_production_sensor_bridge_ab_v0_1 import _base_world,
 RUN_VERSION = "phase8c3-native-interface-probe-v0.1"
 CASES = ("RS05", "RS15", "RS11", "RS12")
 HIST_AUDIT = ROOT / "eval/live/results/phase7a_v0_2_6_epistemic_audit_v0_1/phase6b_epistemic_unit_audit_v0_1_20260908T090628Z.json"
+REGRESSION_AUDIT = ROOT / "eval/live/results/phase7a_v0_2_6_regression_audit_v0_1/phase6b_epistemic_unit_audit_v0_1_20260908T094903Z.json"
 OUT_DIR = ROOT / "eval/live/results/phase8c3_native_interface_probe_v0_1"
 
 
@@ -46,7 +47,8 @@ def _forced_chat(messages, **kwargs):
 
 
 def _load_units(case_id: str):
-    raw = HIST_AUDIT.read_bytes()
+    path = HIST_AUDIT if case_id in {"RS05", "RS15"} else REGRESSION_AUDIT
+    raw = path.read_bytes()
     data = json.loads(raw)
     row = next(x for x in data["sources"] if x.get("source_id") == case_id)
     return admitted_epistemic_units(list(row.get("audits") or [])), hashlib.sha256(raw).hexdigest()

@@ -85,3 +85,7 @@ This probe intentionally bypasses `ExtractionResult`, bridge projection, product
 ### Step 2 pre-measurement correction
 
 The first live attempt failed before producing usable native-interface evidence because the new measurement prompt referenced `CognitiveImpactResponse` by name but did not include its explicit JSON shape. `chat_json_schema` validates locally; it does not automatically transmit the Pydantic schema to the model. This is a harness-contract defect, not a semantic result. The invalid attempt is excluded. The native impact prompt now carries the exact output shape before the measurement SHA is re-frozen.
+
+### Step 2 control-set correction
+
+The first complete native run showed RS05/RS15 successfully but RS11/RS12 failed before model execution because the selected Phase7A audit artifact contains only RS05/RS15. The canonical v0.2.6 regression audit artifact contains RS11/RS12. This is a fixture-loading error, not a semantic result. The loader now selects the appropriate frozen Phase7A artifact per case; the mixed run is excluded and Step 2 is re-frozen before rerun.
