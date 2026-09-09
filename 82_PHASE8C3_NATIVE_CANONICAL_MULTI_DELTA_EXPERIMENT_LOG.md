@@ -113,3 +113,10 @@ Each candidate effect is classified independently using the existing cognitive t
 `MATERIAL_CHANGE_MIN=0.35`, `MEANINGFUL_CHANGE=0.55`, `LOW_EPISTEMIC=0.45`.
 
 Multi-Delta-specific clarification: sub-material candidate effects do not receive article-level AWARE merely because an LLM mentioned them; channel-level sub-material effects are DROP. AWARE remains an article-level no-Delta / D-S-P situational-awareness outcome. Production policy remains unchanged.
+
+### Step 4 result
+
+Exact measurement SHA: `d77d429b55a2735b1e3991e578adf57d2169d171`.
+Artifact SHA256: `b094c4b153bae559a98a1c7c0e63dba537dbc93727cdb3d3eb89feb6ff611e89`.
+
+RS05: core CHALLENGE is ENGAGE 3/3; optional OPEN_NEW channels are WATCH/ENGAGE when present. RS11: all 19 weak candidate channels DROP. RS12: all 18 weak candidate channels DROP. RS15: 16/18 channels DROP; only repeat 3 produces Q2=ENGAGE and B2=WATCH. Multi-target identity is stable, but effect magnitude remains variable. No thresholds were tuned from these outcomes.
