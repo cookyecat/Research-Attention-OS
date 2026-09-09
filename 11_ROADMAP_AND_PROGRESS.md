@@ -957,3 +957,14 @@ Conclusion: Pareto addresses lossy single-winner compression, not pseudo-cardina
 Design: `87_PHASE8C6_MAGNITUDE_FREE_CALIBRATION_DESIGN.md`; result: `88_PHASE8C6_MAGNITUDE_FREE_CALIBRATION_RESULT.md`.
 
 `magnitude-free-v0.1` removes raw LLM `change_magnitude` from Pareto dominance, per-channel Attention, article aggregation and compatibility representative selection. Controlled magnitude perturbation was decision/frontier invariant 12/12 while raw-cardinal decisions changed 12/12. Frozen real-realization A/B: RS05 `ENGAGE 3/3`, RS15 stabilized to `WATCH 3/3`, RS11 `AWARE 3/3`; RS12 moved to `WATCH 3/3` and remains the calibration boundary case. Production default remains `one-delta-v1`.
+
+
+## Phase 8C.7 real-web magnitude-free validation — EXPERIMENTALLY COMPLETE 2026-09-10
+
+Preregistration: `89_PHASE8C7_REAL_WEB_MAGNITUDE_FREE_VALIDATION_PREREGISTRATION.md`; result: `90_PHASE8C7_REAL_WEB_MAGNITUDE_FREE_VALIDATION_RESULT.md`.
+
+The four exact Phase 8C.1 public-web URLs were reacquired through the production URLConnector and passed the frozen production-normalized content-hash and character-count gate 4/4 before model calls. Fresh native processing used `Sensor v0.2.6 -> Auditor v0.1.1 -> canonical admitted units -> native Locate -> native multi-effect cognition`, without the legacy bridge as the cognitive interface.
+
+Natural fresh decisions were A=`AWARE`, C=`DROP`, D=`DROP`, X=`AWARE` under both raw-cardinal and magnitude-free calibration. The important robustness result came from deterministic perturbation of the frozen real-web CognitiveEffects: on the two non-empty topologies (A and X), changing only raw `change_magnitude` moved Raw Cardinal from `AWARE` to `ENGAGE`, while Magnitude-Free remained `AWARE` for all four variants. Empty-topology controls C/D remained `DROP`.
+
+Conclusion: the pseudo-cardinal magnitude failure mode generalizes to real-web sources. With Semantic Topology frozen, raw magnitude alone can create an artificial Attention boundary; Magnitude-Free removes that authority. This does not solve Semantic Topology variance itself. Production default remains `one-delta-v1`; next research target is Semantic Topology stability / preservation of decision-bearing relations rather than further continuous magnitude tuning. Full backend regression after this measurement was 576 passed / 63 skipped with only the pre-existing Case K PREEMPT-vs-PRIORITY residual failing.

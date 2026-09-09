@@ -1,6 +1,6 @@
 # Phase 8C.7 — Real-Web Magnitude-Free Validation Preregistration
 
-Status: PREREGISTERED / NOT YET MEASURED
+Status: EXPERIMENTALLY COMPLETE / SEE `90_PHASE8C7_REAL_WEB_MAGNITUDE_FREE_VALIDATION_RESULT.md`
 Date: 2026-09-10
 
 ## Question
