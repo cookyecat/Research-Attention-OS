@@ -933,3 +933,11 @@ Measured sequence:
 Key measured facts: native canonical RS15 preserved Q2 and B2 simultaneously 3/3, removing forced single-target competition at the effect-set level. RS05 preserved its core CHALLENGE 3/3. Weak incidental RS11/RS12 effects were removed by the frozen materiality gate. However, RS15 effect magnitude remained variable enough that article Attention was `DROP 2/3, ENGAGE 1/3`; Multi-Delta alone is therefore not a complete stability solution.
 
 No threshold was tuned after outcomes. No production default was changed. Phase 7A Decision-Sufficient Semantic Precision remains the working semantic formulation.
+
+## Phase 8C.4 decision-strategy plug-in architecture — IMPLEMENTED 2026-09-10
+
+Architecture record: `84_PHASE8C4_DECISION_STRATEGY_PLUGIN_ARCHITECTURE.md`.
+
+The decision algorithm is now an explicit injectable/versioned strategy seam. Production default remains `one-delta-v1`; historical runs without a strategy fingerprint resolve to that baseline. Strategy identity enters AnalysisRun execution identity and score_debug, so future one-Delta / Multi-Delta / Pareto experiments can change one decision algorithm at a time without rewriting scheduler control flow or colliding in cache.
+
+This change does not solve calibration by itself. `change_magnitude` remains a raw LLM estimate even after full production grounding; target importance and epistemic strength receive deterministic grounding/caps. Next research step: implement a Pareto/partial-order candidate behind the new seam, leaving `one-delta-v1` untouched for A/B recovery.

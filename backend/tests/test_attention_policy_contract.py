@@ -15,7 +15,16 @@ from app.services.cognitive_impact import (
     select_primary_effect,
 )
 from app.services.matching import KernelMatch
-from app.services.scheduler import AwarenessSignals, PlanDraft, RuntimeView, SchedulerFeatures, route, validate_plan
+from app.services.scheduler import (
+    AwarenessSignals,
+    LEGACY_ONE_DELTA_DECISION_STRATEGY,
+    PlanDraft,
+    RuntimeView,
+    SchedulerFeatures,
+    decision_strategy_snapshot,
+    route,
+    validate_plan,
+)
 from tests.conftest import add_text, analyze
 
 
@@ -529,3 +538,35 @@ def test_scheduler_features_does_not_carry_awareness_signals():
     assert "domain_fit" not in fields
     assert "event_significance" not in fields
     assert "attention_momentum" not in fields
+
+
+def test_default_decision_strategy_is_explicit_and_versioned():
+    assert decision_strategy_snapshot() == {
+        "strategy_id": "one-delta",
+        "version": "one-delta-v1",
+    }
+
+
+def test_route_accepts_injected_decision_strategy():
+    class ForcedAwareStrategy:
+        def execution_snapshot(self):
+            return {"strategy_id": "test-aware", "version": "v1"}
+
+        def route(self, *_args, **_kwargs):
+            return PlanDraft(
+                disposition=Disposition.AWARE,
+                expected_output=ExpectedOutput.SUMMARY,
+                reason="injected decision strategy",
+                cognitive_budget_minutes=1,
+            )
+
+        def visible_prediction(self, **kwargs):
+            return LEGACY_ONE_DELTA_DECISION_STRATEGY.visible_prediction(**kwargs)
+
+    plan = route(
+        _features(threatens_active_work=False),
+        assessment=_assessment(),
+        decision_strategy=ForcedAwareStrategy(),
+    )
+    assert plan.disposition == Disposition.AWARE
+    assert plan.reason == "injected decision strategy"

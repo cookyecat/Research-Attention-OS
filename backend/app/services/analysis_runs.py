@@ -27,7 +27,6 @@ from app.models.kernel import KernelNode, KernelPatch
 from app.models.analysis import AnalysisRun
 from app.models.scheduler import AttentionFeedback, AttentionPlan
 from app.models.source import Source
-from app.services.cognitive_impact import visible_prediction_from_frozen
 from app.services.attention_feedback import feedback_for_plan, feedback_public
 
 
@@ -380,7 +379,10 @@ def _apply_current_public_contract(payload: dict) -> dict:
     stored = payload.get("attention_plan") if isinstance(payload.get("attention_plan"), dict) else {}
     debug = stored.get("score_debug") if isinstance(stored.get("score_debug"), dict) else {}
     impact = debug.get("cognitive_impact") or payload.get("cognitive_impact")
-    visible = visible_prediction_from_frozen(
+    from app.services.scheduler import get_decision_strategy_from_snapshot
+
+    strategy = get_decision_strategy_from_snapshot(debug.get("decision_strategy"))
+    visible = strategy.visible_prediction(
         frozen_impact=impact,
         frozen_matches=matches_from_debug(debug.get("matches")),
         disposition=stored.get("disposition") or payload.get("disposition"),
@@ -396,7 +398,10 @@ def plan_public(plan: AttentionPlan) -> dict:
     debug = plan.score_debug if isinstance(plan.score_debug, dict) else {}
     from app.services.scheduler import matches_from_debug
 
-    visible = visible_prediction_from_frozen(
+    from app.services.scheduler import get_decision_strategy_from_snapshot
+
+    strategy = get_decision_strategy_from_snapshot(debug.get("decision_strategy"))
+    visible = strategy.visible_prediction(
         frozen_impact=debug.get("cognitive_impact"),
         frozen_matches=matches_from_debug(debug.get("matches")),
         disposition=plan.disposition,

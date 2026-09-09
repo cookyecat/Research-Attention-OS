@@ -470,3 +470,38 @@ def test_model_fallback_embedding_path_still_runs(client: TestClient, monkeypatc
     result = analyze(client, src["id"])
     assert called["embed"] >= 1
     assert result["analysis_run"]["status"] == "COMPLETED"
+
+
+def test_decision_strategy_version_changes_execution_identity(client: TestClient, db):
+    from app.services.pipeline import run_pipeline
+    from app.services.scheduler import LEGACY_ONE_DELTA_DECISION_STRATEGY
+
+    class VersionedDecisionStrategy:
+        strategy_id = "test-decision"
+
+        def __init__(self, version: str):
+            self.version = version
+
+        def execution_snapshot(self):
+            return {"strategy_id": self.strategy_id, "version": self.version}
+
+        def route(self, *args, **kwargs):
+            return LEGACY_ONE_DELTA_DECISION_STRATEGY.route(*args, **kwargs)
+
+        def visible_prediction(self, **kwargs):
+            return LEGACY_ONE_DELTA_DECISION_STRATEGY.visible_prediction(**kwargs)
+
+    src = add_text(client, "A technical paper about motor intelligence latency.", title="decision-chip-id")
+    first = run_pipeline(
+        db, UUID(src["id"]), provider=_rule_provider(), decision_strategy=VersionedDecisionStrategy("v1")
+    )
+    db.commit()
+    second = run_pipeline(
+        db, UUID(src["id"]), provider=_rule_provider(), decision_strategy=VersionedDecisionStrategy("v2")
+    )
+    db.commit()
+
+    assert first["analysis_run"]["id"] != second["analysis_run"]["id"]
+    assert first["execution_digest"] != second["execution_digest"]
+    assert first["execution_snapshot"]["decision_strategy"]["version"] == "v1"
+    assert second["execution_snapshot"]["decision_strategy"]["version"] == "v2"

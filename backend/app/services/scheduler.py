@@ -304,7 +304,7 @@ def matches_from_debug(raw) -> list[KernelMatch]:
     return out
 
 
-def route(
+def _route_legacy_one_delta(
     features: SchedulerFeatures,
     runtime: RuntimeView | None = None,
     assessment=None,
@@ -335,6 +335,90 @@ def route(
 
     draft = _cognitive_disposition(features, primary, matches, awareness=awareness)
     return _apply_runtime_overlays(draft, features, runtime, primary=primary, matches=matches)
+
+
+@dataclass(frozen=True)
+class LegacyOneDeltaDecisionStrategy:
+    """Versioned production baseline: normalize -> argmax one Delta -> legacy Attention Policy."""
+
+    strategy_id: str = "one-delta"
+    version: str = "one-delta-v1"
+
+    def execution_snapshot(self) -> dict:
+        return {"strategy_id": self.strategy_id, "version": self.version}
+
+    def route(self, features, runtime=None, assessment=None, matches=None, *, awareness=None) -> PlanDraft:
+        return _route_legacy_one_delta(
+            features, runtime, assessment=assessment, matches=matches, awareness=awareness
+        )
+
+    def visible_prediction(self, *, frozen_impact, frozen_matches, disposition) -> dict:
+        from app.services.cognitive_impact import visible_prediction_from_frozen
+
+        return visible_prediction_from_frozen(
+            frozen_impact=frozen_impact,
+            frozen_matches=frozen_matches,
+            disposition=disposition,
+        )
+
+
+LEGACY_ONE_DELTA_DECISION_STRATEGY = LegacyOneDeltaDecisionStrategy()
+_DECISION_STRATEGIES = {
+    LEGACY_ONE_DELTA_DECISION_STRATEGY.strategy_id: LEGACY_ONE_DELTA_DECISION_STRATEGY,
+}
+
+
+def get_decision_strategy(strategy_id: str | None = None):
+    strategy_id = strategy_id or LEGACY_ONE_DELTA_DECISION_STRATEGY.strategy_id
+    try:
+        return _DECISION_STRATEGIES[strategy_id]
+    except KeyError as exc:
+        raise ValueError(f"Unknown decision strategy: {strategy_id}") from exc
+
+
+def register_decision_strategy(strategy, *, replace: bool = False):
+    snapshot = decision_strategy_snapshot(strategy)
+    strategy_id = str(snapshot["strategy_id"])
+    if strategy_id in _DECISION_STRATEGIES and not replace:
+        raise ValueError(f"Decision strategy already registered: {strategy_id}")
+    _DECISION_STRATEGIES[strategy_id] = strategy
+    return strategy
+
+
+def decision_strategy_snapshot(strategy=None) -> dict:
+    strategy = strategy or LEGACY_ONE_DELTA_DECISION_STRATEGY
+    snapshot = dict(strategy.execution_snapshot() or {})
+    if not snapshot.get("strategy_id") or not snapshot.get("version"):
+        raise ValueError("decision strategy execution_snapshot() requires strategy_id and version")
+    return snapshot
+
+
+def get_decision_strategy_from_snapshot(snapshot: dict | None):
+    if not snapshot:
+        return LEGACY_ONE_DELTA_DECISION_STRATEGY
+    strategy = get_decision_strategy(str(snapshot.get("strategy_id") or ""))
+    expected = str(snapshot.get("version") or "")
+    if expected and expected != strategy.version:
+        raise ValueError(
+            f"Decision strategy version mismatch for {strategy.strategy_id}: stored={expected} current={strategy.version}"
+        )
+    return strategy
+
+
+def route(
+    features: SchedulerFeatures,
+    runtime: RuntimeView | None = None,
+    assessment=None,
+    matches: list[KernelMatch] | None = None,
+    *,
+    awareness: AwarenessSignals | None = None,
+    decision_strategy=None,
+) -> PlanDraft:
+    """Route through a versioned, injectable decision strategy; legacy one-Delta is the default."""
+    strategy = decision_strategy or LEGACY_ONE_DELTA_DECISION_STRATEGY
+    return strategy.route(
+        features, runtime, assessment=assessment, matches=matches, awareness=awareness
+    )
 
 
 def _cognitive_disposition(

@@ -17,7 +17,7 @@ from app.models.observation import Observation
 from app.models.scheduler import AttentionPlan, RuntimeContext
 from app.models.source import Source
 from app.models.watch import Watch, WatchTrigger
-from app.services.cognitive_impact import CognitiveImpactAssessment, visible_prediction_from_frozen
+from app.services.cognitive_impact import CognitiveImpactAssessment
 from app.services.deltas import ModelDelta, suggest_watches
 from app.services.extraction import (
     ExtractionResult,
@@ -33,6 +33,8 @@ from app.services.scheduler import (
     ground_features_to_matches,
     route,
     validate_plan,
+    decision_strategy_snapshot,
+    get_decision_strategy,
 )
 from app.services.analysis_execution import (
     analysis_execution_digest,
@@ -458,6 +460,7 @@ def run_pipeline(
     allow_watch_creation: bool = True,
     provider=None,
     extraction_bridge=None,
+    decision_strategy=None,
 ) -> dict:
     from app.cognitive.factory import get_provider
     from app.cognitive.versions import IMPACT_ASSESSOR_VERSION, PIPELINE_VERSION
@@ -484,12 +487,15 @@ def run_pipeline(
     extras = [db.get(Source, sid) for sid in extra_source_ids or []]
     extras = canonical_extra_sources([s for s in extras if s is not None])
     provider = provider or get_provider()
+    decision_strategy = decision_strategy or get_decision_strategy()
     nodes = _active_kernel(db)
     in_hash = input_hash(source, extras)
     k_hash = kernel_snapshot_hash(nodes)
     event_source_ids = [source.id] + [e.id for e in extras]
     rel_ctx = freeze_analysis_relational_context(db, event_source_ids)
     exec_snapshot = analysis_execution_snapshot(provider)
+    strategy_execution = decision_strategy_snapshot(decision_strategy)
+    exec_snapshot["decision_strategy"] = strategy_execution
     bridge_execution = None
     if extraction_bridge is not None:
         bridge_execution = dict(extraction_bridge.execution_snapshot() or {})
@@ -543,6 +549,7 @@ def run_pipeline(
                     return _reschedule(
                         db, run, runtime, source, persist_suggested_watches=persist_suggested_watches,
                         runtime_context_id=runtime_context_id,
+                        decision_strategy=decision_strategy,
                     )
                 return hydrate_run(db, run)
             if run.status in {"FAILED", "SUPERSEDED"}:
@@ -640,7 +647,11 @@ def run_pipeline(
         )
         features = assessment.features
         features = ground_features_to_matches(features, matches)
-        draft = validate_plan(route(features, view, assessment=assessment, matches=matches))
+        draft = validate_plan(
+            route(
+                features, view, assessment=assessment, matches=matches, decision_strategy=decision_strategy
+            )
+        )
         plan = AttentionPlan(
             candidate_type=CandidateType.SOURCE,
             candidate_id=source.id,
@@ -676,6 +687,7 @@ def run_pipeline(
                 ],
                 "independence": independence,
                 "brain_world_model": brain_snapshot.as_dict(),
+                "decision_strategy": strategy_execution,
             },
         )
         db.add(plan)
@@ -725,6 +737,7 @@ def run_pipeline(
             features,
             retrieval=retrieval,
             assessment=assessment,
+            decision_strategy=decision_strategy,
         )
         from app.services.impact_input import capture_impact_input
 
@@ -793,6 +806,7 @@ def _reschedule(
     source: Source,
     persist_suggested_watches: bool = False,
     runtime_context_id: UUID | None = None,
+    decision_strategy=None,
 ) -> dict:
     from app.cognitive.factory import get_provider
     from app.services.analysis_runs import fresh_kernel_snapshot_hash, hydrate_run, plan_public
@@ -843,7 +857,12 @@ def _reschedule(
     features.threatens_active_work = bool(
         brain_snapshot.authoritative_value("threatens_active_work", default=False)
     )
-    draft = validate_plan(route(features, runtime, assessment=assessment or impact, matches=matches))
+    decision_strategy = decision_strategy or get_decision_strategy()
+    draft = validate_plan(
+        route(
+            features, runtime, assessment=assessment or impact, matches=matches, decision_strategy=decision_strategy
+        )
+    )
     score_debug = dict(orig_debug or (payload.get("attention_plan") or {}).get("score_debug") or {})
     score_debug["brain_world_model"] = brain_snapshot.as_dict()
     plan = AttentionPlan(
@@ -931,8 +950,10 @@ def serialize_analysis(
     features: SchedulerFeatures,
     retrieval: dict | None = None,
     assessment: CognitiveImpactAssessment | None = None,
+    decision_strategy=None,
 ) -> dict:
-    visible = visible_prediction_from_frozen(
+    decision_strategy = decision_strategy or get_decision_strategy()
+    visible = decision_strategy.visible_prediction(
         frozen_impact=assessment,
         frozen_matches=matches,
         disposition=plan.disposition,
