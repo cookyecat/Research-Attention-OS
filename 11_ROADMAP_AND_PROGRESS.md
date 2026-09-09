@@ -94,7 +94,7 @@ Core invariants:
 | Phase II-B — Attention Policy Calibration | Determine how frozen cognitive judgment plus legitimate non-cognitive signals allocate DROP/AWARE/WATCH/ENGAGE | **CLOSED / INTEGRATED BASELINE** |
 | Phase 6 — Integrated Cognitive Attention Loop | Raw Source → Sensor/Auditor → D/S/P + Δ → four Attention Actions → human-gated Kernel proposal | **CLOSED** |
 | Phase 7 — Perception Fidelity | External World Model fidelity, dynamic P evidence, minimal trusted Brain World Model | **CLOSED / WORKING BASELINE** |
-| Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **ACTIVE — 8C.2 PRODUCTION SENSOR INTEGRATION** |
+| Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **ACTIVE — 8C.2 COMPATIBILITY PATH + 8C.3 NATIVE PROBE COMPLETE** |
 | Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **NOT STARTED** |
 | Phase 10 — Uncertainty / Boundary Calibration | Probabilistic treatment of weak-Δ and policy-boundary jitter | **DEFERRED** |
 | Phase 11 — Personalization / Scale | Questionnaire prior + trajectory residuals + multi-user/product validation | **NOT STARTED** |
@@ -102,10 +102,10 @@ Core invariants:
 Current strategic position:
 
 $$
-\boxed{Phase\ 8C.2:\ Production\ Sensor\ Integration\ NOW}
+\boxed{Phase\ 8C.3:\ Native\ Canonical\ Multi\text{-}Delta\ Probe\ COMPLETE}
 $$
 
-Immediate order: `8C.2 repeated decision-stability / representation-robustness gate → Sensor-path promotion/default decision → broader narrow dogfooding`.
+Immediate order: `analyze completed 8C.3 evidence → decide native canonical / Multi-Delta production direction → only then reopen promotion/default-path decision`. 8C.2 remains the compatibility-path baseline; production default remains legacy.
 
 D semantic research is closed. The v3 D estimator has attributable implementation residuals and is not certified as a passed estimator; do not expand D into another offline synthetic benchmark now.
 
@@ -922,3 +922,14 @@ $$
 $$
 
 Phase 8C.2 therefore remains ACTIVE and production default remains legacy. RS15 full-path Attention remained WATCH 6/6 despite cognitive-target jitter; the more product-critical residual is RS05 crossing DROP/ENGAGE 3/6 vs 3/6 while its frozen Phase7A semantics remain ENGAGE 6/6. Immediate next research gate: broaden repeated decision-stability / representation-robustness measurement across multiple canonical decision-bearing and negative-control cases before any Sensor-path promotion, reporting cognitive-target stability separately from Attention-action stability. Probabilistic redesign of Delta/Attention remains deferred to Phase 10 unless broader evidence proves it necessary.
+
+## Phase 8C.3 native canonical Multi-Delta probe — EXPERIMENTALLY COMPLETE 2026-09-09
+
+Five-step measurement sequence is archived in `82_PHASE8C3_NATIVE_CANONICAL_MULTI_DELTA_EXPERIMENT_LOG.md`; consolidated result is `83_PHASE8C3_NATIVE_CANONICAL_MULTI_DELTA_RESULT.md`.
+
+Measured sequence:
+`temperature A/B -> native canonical interface -> Multi-Delta -> per-channel Attention -> article Attention aggregation`.
+
+Key measured facts: native canonical RS15 preserved Q2 and B2 simultaneously 3/3, removing forced single-target competition at the effect-set level. RS05 preserved its core CHALLENGE 3/3. Weak incidental RS11/RS12 effects were removed by the frozen materiality gate. However, RS15 effect magnitude remained variable enough that article Attention was `DROP 2/3, ENGAGE 1/3`; Multi-Delta alone is therefore not a complete stability solution.
+
+No threshold was tuned after outcomes. No production default was changed. Phase 7A Decision-Sufficient Semantic Precision remains the working semantic formulation.

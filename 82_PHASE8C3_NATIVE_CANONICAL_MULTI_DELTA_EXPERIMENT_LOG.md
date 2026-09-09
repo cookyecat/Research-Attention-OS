@@ -1,6 +1,6 @@
 # Phase 8C.3 — Native Canonical Multi-Delta Experiment Log
 
-Status: **ACTIVE — STEP 1 TEMPERATURE A/B PREREGISTERED**
+Status: **EXPERIMENTALLY COMPLETE — FIVE-STEP SEQUENCE FINISHED**
 Date: 2026-09-09
 
 ## Purpose
@@ -128,3 +128,21 @@ Article-level Attention is the maximum channel disposition under the fixed order
 `ENGAGE > WATCH > AWARE > DROP`.
 
 This step tests whether removing single-primary compression improves article-level stability across RS05/RS15/RS11/RS12. It does not yet add D/S/P no-Delta awareness overlays; those remain orthogonal to this cognitive-channel aggregation probe.
+
+### Step 5 result
+
+Exact measurement SHA: `219e30006367a01d5fddcb5f27efdb50b719ee72`.
+Artifact SHA256: `ed8a62959c76ec5746169171829c8d98c1beba402cda9e1770738bdd1d054bfd`.
+
+Article Attention under `ENGAGE > WATCH > AWARE > DROP`:
+- RS05: ENGAGE 3/3, stable.
+- RS15: DROP 2/3, ENGAGE 1/3, not stable.
+- RS11: DROP 3/3, stable.
+- RS12: DROP 3/3, stable.
+
+Five-step sequence is experimentally complete. No threshold was tuned after observing Step 5. RS15 target-set stability improved under Multi-Delta, but current effect-magnitude/materiality realization remains insufficiently stable for article Attention.
+
+## Post-sequence regression
+
+Broader regression after all five steps: `72 passed, 1 deselected, 1 warning in 1.18s`.
+Case K remains the known pre-existing residual excluded from this gate. No production default or production cognitive semantics were changed.
