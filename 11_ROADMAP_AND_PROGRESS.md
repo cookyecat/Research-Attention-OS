@@ -1021,3 +1021,8 @@ Formal construction plan: `102_DISTRIBUTIONAL_COGNITIVE_STABILITY_RESEARCH_PLAN.
 The stability program now separates descriptive topology similarity from policy-relative causal structure. `topology-stability-metrics-v0.1` remains the descriptive measurement chip; the next planned chips are deterministic Decision-Causal Core, a static empirical Probabilistic Cognitive Map, and only if evidence requires it a temporal distribution-drift / stochastic-process layer.
 
 Immediate next gate is Phase 8C.12: under exact frozen audited semantics, separate longitudinal Locate drift from Relation-Mapping/Impact drift. Phase 10 probabilistic work remains gated behind this deterministic attribution. `Cognitive Attractor` is retained only as a working analogy until distributional concentration and, if claimed dynamically, state-evolution/convergence evidence exist.
+
+
+## Phase 8C.12 Locate vs Relation Mapping longitudinal attribution — EXPERIMENTALLY COMPLETE 2026-09-10
+
+Result: `104_PHASE8C12_LOCATE_RELATION_LONGITUDINAL_RESULT.md`. With exact historical audited semantic worlds and Kernel fixtures frozen, Locate target sets were substantially more stable than relevance-type labels. Reconstructing and freezing the exact historical modal Locate fixture still produced strong current Relation Mapping shifts: RS15 historical `WATCH 6/6` became `ENGAGE 4/6 + WATCH 2/6`, RS11 historical `AWARE 6/6` became `WATCH 6/6`, while RS12 topology changed but remained `WATCH 6/6`. RS05 remained the stable positive control. Current principal longitudinal residual is therefore attributed to Relation Mapping rather than Sensor/Auditor/current-Locate. Next gate: deterministic Decision-Causal Core measurement. Production default remains `one-delta-v1`.
