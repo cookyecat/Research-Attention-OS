@@ -1046,3 +1046,8 @@ Preregistration: `109_PHASE10A_STATIC_PROBABILISTIC_COGNITIVE_MAP_PREREGISTRATIO
 Canonical results: RS05 N=12 stayed ENGAGE 12/12 with `CHALLENGE(CF-B-PERF)` load-bearing 12/12. RS15 triggered the preregistered precision expansion to N=24 and remained bimodal at ENGAGE 20/24 vs WATCH 4/24; `CHALLENGE(B1/Q1)` each carried P(B)=0.833. RS11 stayed WATCH 12/12 while its dominant load-bearing OPEN_NEW branch was `RS11-N11` at 11/12. RS12 expanded to N=24 for core-probability precision, stayed WATCH 24/24, and preserved `REINFORCE(BT1)` as load-bearing 24/24 despite high peripheral topology diversity.
 
 The working conclusion is `Topology variability != Decision instability`: distributional stability is better characterized by the load-bearing core and Attention distribution than by exact topology equality alone. Phase 10B may now compare independently frozen epochs with distribution-distance metrics; do not introduce a temporal stochastic-process model unless cross-epoch drift is materially demonstrated. Full backend regression was 598 passed / 63 skipped / 1 historical Case K urgency residual. Production default remains `one-delta-v1`.
+
+
+## Phase 10B — Temporal Cognitive Basin Shift — NULL-CALIBRATED 2026-09-10
+
+Cross-epoch cognitive-map distances were calibrated with 5000 fixed-seed permutation nulls. RS15 and RS11 show supported drift at topology, load-bearing, and Attention levels. RS12 shows supported topology/load-bearing drift but zero Attention drift, demonstrating downstream absorption. RS05 preserves Attention and topology basin with some load-bearing participation drift. Do not fit a stochastic process yet; next gate is an independent current `t2` persistence checkpoint. Production default remains `one-delta-v1`.
