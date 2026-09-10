@@ -1063,3 +1063,8 @@ A fresh t2 Relation-Mapping checkpoint (N=12 per canonical case) was collected w
 A deterministic three-checkpoint regime chip now classifies null-calibrated drift patterns without fitting a stochastic process. RS15 and RS11 are PERSISTENT_SHIFT at Attention, load-bearing, and topology levels. RS12 is STABLE at Attention but PERSISTENT_SHIFT internally at topology/load-bearing. RS05 is STABLE at Attention/topology and INDETERMINATE at load-bearing. This supports the Cognitive Basin / Distributional Structural Stability working model but is not yet a dynamical-attractor claim. Production default remains `one-delta-v1`.
 
 Phase 10C full backend regression: `615 passed / 63 skipped / 1 historical Case K failure`; no new regression.
+
+
+## Phase 10D.1 — Real-Web Static Probabilistic Cognitive Map — COMPLETE 2026-09-10
+
+Expanded the static probability-map program from four canonical cases to four additional real-web sources. Each real-web source used one fresh Sensor+Auditor perception pass, then exact frozen semantic world + modal Locate with repeated Relation Mapping under Anchored + Magnitude-Free + Pareto. Final maps: A WATCH 14/24, DROP 6/24, AWARE 4/24; C DROP 12/12; D WATCH 22/24, AWARE 2/24; X ENGAGE 11/12, WATCH 1/12. Across Phase 10A + 10D.1 there are now 8 case-level maps and 144 Relation realizations. 7/8 cases have dominant Attention concentration >=0.8 and 7/8 have Topology entropy above Attention entropy. A/D expose unresolved OPEN_NEW branch identity and A additionally exposes epistemic-band crossing as a remaining decision-axis instability. No theory or production policy was changed; production default remains `one-delta-v1`.
