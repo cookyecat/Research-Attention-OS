@@ -1,4 +1,4 @@
-from eval.live.cognitive_map_distance_v0_1 import js_divergence_bits, compare_cognitive_maps
+from eval.live.cognitive_map_distance_v0_1 import js_divergence_bits, compare_cognitive_maps, empirical_state_distribution
 from eval.live.probabilistic_cognitive_map_v0_1 import summarize_static_cognitive_map
 
 
