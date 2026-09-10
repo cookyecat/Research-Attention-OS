@@ -45,6 +45,7 @@ For each source:
 - This batch tests external-sample feasibility, not population prevalence.
 - No source may be removed because its Attention distribution is inconvenient or degenerate.
 - Acquisition failures, parser anomalies, schema failures, and empty-effect controls remain in the record.
+- A source-level URL acquisition failure does not authorize substitution: retain the failed preregistered source as an acquisition-failure row and continue the remaining preregistered sources.
 - `Jaccard`/topology entropy remain representation-level measures; decision conclusions must use load-bearing and Attention distributions.
 - `OPEN_NEW[UNRESOLVED]` remains unresolved rather than being merged by free-text semantic similarity.
 - No thresholds, calibration bands, prompts, Kernel nodes, or downstream strategy may be tuned from Batch-2 outcomes.

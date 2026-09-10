@@ -66,16 +66,27 @@ def prepare_batch2_world():
     try:
         for label in LABELS:
             spec = specs[label]
-            source = ingest_url(db, str(spec["url"]))
-            sources[label] = source
-            acquisition[label] = {
+            base = {
                 "label": label,
                 "stratum": str(spec["stratum"]),
                 "publisher_preregistered": str(spec["publisher"]),
                 "title_preregistered": str(spec["title"]),
+                "requested_url": str(spec["url"]),
+            }
+            try:
+                source = ingest_url(db, str(spec["url"]))
+            except Exception as exc:
+                acquisition[label] = {
+                    **base, "status": "ACQUISITION_ERROR",
+                    "error_type": type(exc).__name__, "error": str(exc)[:2000],
+                }
+                print(json.dumps({"label": label, "stage": "ACQUISITION_ERROR", "error_type": type(exc).__name__, "error": str(exc)[:300]}, ensure_ascii=False), flush=True)
+                continue
+            sources[label] = source
+            acquisition[label] = {
+                **base, "status": "OK",
                 "source_id": str(source.id),
                 "title_fetched": source.title,
-                "requested_url": str(spec["url"]),
                 "canonical_url": source.canonical_url,
                 "content_hash": source.content_hash,
                 "content_chars": len(source.content_text or ""),
@@ -254,9 +265,9 @@ def main() -> int:
 
     engine, db, sources, acquisition, manifest = prepare_batch2_world()
     try:
-        acquisition_class = {label: "NEW_BATCH2_SNAPSHOT" for label in LABELS}
-        if any(not str((sources[label].content_text or "")).strip() for label in LABELS):
-            raise RuntimeError("blank real-web source before model calls")
+        acquisition_class = {label: ("NEW_BATCH2_SNAPSHOT" if label in sources else "ACQUISITION_ERROR") for label in LABELS}
+        if any(not str((source.content_text or "")).strip() for source in sources.values()):
+            raise RuntimeError("blank successfully-acquired real-web source before model calls")
         print(json.dumps({"stage": "ACQUISITION_CLASS", "classes": acquisition_class}, ensure_ascii=False), flush=True)
         for node in build_phase6b_mvp_kernel_nodes():
             db.add(node)
@@ -266,6 +277,8 @@ def main() -> int:
         cases = {}
 
         for label in LABELS:
+            if label not in sources:
+                continue
             print(json.dumps({"label": label, "stage": "PERCEPTION_START"}), flush=True)
             units, perception_diag = _perceive(sources[label])
             frozen_units = [jsonable_unit(u) for u in units]
@@ -332,6 +345,8 @@ def main() -> int:
             "measurement_sha": git_head(),
             "manifest": str(MANIFEST.relative_to(ROOT)),
             "selection_strata": {label: acquisition[label]["stratum"] for label in LABELS},
+            "acquisition_success_labels": [label for label in LABELS if label in sources],
+            "acquisition_failure_labels": [label for label in LABELS if label not in sources],
             "acquisition": acquisition,
             "acquisition_class": acquisition_class,
             "perception_contract": "one fresh Sensor v0.2.6 + Auditor v0.1.1 pass per source, then exact frozen replay",
@@ -343,7 +358,8 @@ def main() -> int:
             "cases": cases,
             "guardrails": [
                 "Batch-2 source labels/strata/URLs were preregistered before any RAOS outcome was observed.",
-                "Every Batch-2 URL is a new frozen snapshot; this phase makes no historical continuity claim for these sources.",
+                "Every successfully acquired Batch-2 URL is a new frozen snapshot; this phase makes no historical continuity claim for these sources.",
+                "A preregistered acquisition failure is retained and is not replaced by another source; remaining preregistered sources continue.",
                 "Perception is sampled once per source and then frozen; this phase does not estimate Sensor/Auditor variance.",
                 "Complete native-consumed semantic unit fields are persisted for exact replay.",
                 "Relation Mapping is the only repeatedly sampled cognitive stage after Locate freeze.",
