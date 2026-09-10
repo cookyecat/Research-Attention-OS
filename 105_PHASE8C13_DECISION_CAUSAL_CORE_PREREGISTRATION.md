@@ -40,3 +40,7 @@ The ablation unit is a decision relation `(operation, target)`, not an individua
 3. Relation Mapping is sampled; all causal ablations inside each sample are deterministic and make no additional LLM calls.
 
 Report relation occurrence frequency separately from necessity/sufficiency frequency. A high-frequency relation is not automatically causal.
+
+## Measurement-definition amendment discovered by negative control
+
+The first exploratory replay revealed that `alone == baseline == DROP` cannot constitute causal sufficiency. Canonical v0.1 therefore requires `pi({r}) == pi(T)` **and** `pi(T) != pi(empty)`. The pre-fix artifact is invalid for inference; the corrected rerun is the canonical result recorded in `106_PHASE8C13_DECISION_CAUSAL_CORE_RESULT.md`.

@@ -1026,3 +1026,8 @@ Immediate next gate is Phase 8C.12: under exact frozen audited semantics, separa
 ## Phase 8C.12 Locate vs Relation Mapping longitudinal attribution — EXPERIMENTALLY COMPLETE 2026-09-10
 
 Result: `104_PHASE8C12_LOCATE_RELATION_LONGITUDINAL_RESULT.md`. With exact historical audited semantic worlds and Kernel fixtures frozen, Locate target sets were substantially more stable than relevance-type labels. Reconstructing and freezing the exact historical modal Locate fixture still produced strong current Relation Mapping shifts: RS15 historical `WATCH 6/6` became `ENGAGE 4/6 + WATCH 2/6`, RS11 historical `AWARE 6/6` became `WATCH 6/6`, while RS12 topology changed but remained `WATCH 6/6`. RS05 remained the stable positive control. Current principal longitudinal residual is therefore attributed to Relation Mapping rather than Sensor/Auditor/current-Locate. Next gate: deterministic Decision-Causal Core measurement. Production default remains `one-delta-v1`.
+
+
+## Phase 8C.13 Decision-Causal Core — EXPERIMENTALLY COMPLETE 2026-09-10
+
+Result: `106_PHASE8C13_DECISION_CAUSAL_CORE_RESULT.md`. First-order counterfactual replay separates semantic/topology frequency from policy causality. RS05 `CHALLENGE(CF-B-PERF)` is the stable load-bearing positive control; RS15 ENGAGE is redundantly sustained by B1/Q1 challenge relations while always-present BT1 challenge is peripheral; RS11 current WATCH is singularly carried by the coarse `OPEN_NEW(null)` relation class; RS12 WATCH is stably supported by `REINFORCE(BT1)` with optional redundant OPEN_NEW. D confirms free-floating OPEN_NEW is peripheral under Anchored admission. Next gate: OPEN_NEW branch-level causal identity before probabilistic modeling or admission redesign. Production default remains `one-delta-v1`.
