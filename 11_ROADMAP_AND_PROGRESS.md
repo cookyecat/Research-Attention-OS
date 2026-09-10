@@ -1056,3 +1056,8 @@ Cross-epoch cognitive-map distances were calibrated with 5000 fixed-seed permuta
 ## Phase 10B.2 — Current Basin Persistence — COMPLETE 2026-09-10
 
 A fresh t2 Relation-Mapping checkpoint (N=12 per canonical case) was collected with requested/response model identity separately recorded. Null-calibrated triangular comparison shows persistent new-basin patterns at all three levels for RS15 and RS11; RS12 shows persistent topology/load-bearing shift with stable WATCH Attention; RS05 remains decision/topology stable and its earlier load-bearing signal does not persist. This supports a distributional basin interpretation but still does not justify a stochastic-process fit. Next: deterministic temporal regime/change-point chip. Production default remains `one-delta-v1`.
+
+
+## Phase 10C — Temporal Regime Classifier — COMPLETE 2026-09-10
+
+A deterministic three-checkpoint regime chip now classifies null-calibrated drift patterns without fitting a stochastic process. RS15 and RS11 are PERSISTENT_SHIFT at Attention, load-bearing, and topology levels. RS12 is STABLE at Attention but PERSISTENT_SHIFT internally at topology/load-bearing. RS05 is STABLE at Attention/topology and INDETERMINATE at load-bearing. This supports the Cognitive Basin / Distributional Structural Stability working model but is not yet a dynamical-attractor claim. Production default remains `one-delta-v1`.
