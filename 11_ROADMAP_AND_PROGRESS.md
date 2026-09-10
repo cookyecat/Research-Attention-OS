@@ -1051,3 +1051,8 @@ The working conclusion is `Topology variability != Decision instability`: distri
 ## Phase 10B — Temporal Cognitive Basin Shift — NULL-CALIBRATED 2026-09-10
 
 Cross-epoch cognitive-map distances were calibrated with 5000 fixed-seed permutation nulls. RS15 and RS11 show supported drift at topology, load-bearing, and Attention levels. RS12 shows supported topology/load-bearing drift but zero Attention drift, demonstrating downstream absorption. RS05 preserves Attention and topology basin with some load-bearing participation drift. Do not fit a stochastic process yet; next gate is an independent current `t2` persistence checkpoint. Production default remains `one-delta-v1`.
+
+
+## Phase 10B.2 — Current Basin Persistence — COMPLETE 2026-09-10
+
+A fresh t2 Relation-Mapping checkpoint (N=12 per canonical case) was collected with requested/response model identity separately recorded. Null-calibrated triangular comparison shows persistent new-basin patterns at all three levels for RS15 and RS11; RS12 shows persistent topology/load-bearing shift with stable WATCH Attention; RS05 remains decision/topology stable and its earlier load-bearing signal does not persist. This supports a distributional basin interpretation but still does not justify a stochastic-process fit. Next: deterministic temporal regime/change-point chip. Production default remains `one-delta-v1`.
