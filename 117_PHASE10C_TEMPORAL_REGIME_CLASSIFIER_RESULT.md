@@ -27,3 +27,7 @@ RS15 and RS11 therefore provide the first three-checkpoint evidence for a persis
 These results strengthen the **Cognitive Basin / Distributional Structural Stability** model. They do not yet justify formal dynamical-attractor language or a Markov/HMM/stochastic-process fit. A formal attractor claim still lacks an explicit state-evolution law and more temporally separated checkpoints.
 
 The next longitudinal action is to reuse the same checkpoint protocol at an independently later epoch with requested/response model identity recorded. Until then, keep the deterministic causal, static probabilistic, and temporal regime chips separate and composable. Production default remains `one-delta-v1`.
+
+## Regression
+
+Full backend regression: `615 passed / 63 skipped / 1 failed`. The sole failure remains the historical Case K urgency residual (`PREEMPT` expected, `PRIORITY` actual). No new regression was introduced.
