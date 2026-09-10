@@ -65,3 +65,12 @@ def test_magnitude_free_causal_profile_is_invariant_to_raw_magnitude():
     low = analyze([effect(b, CognitiveEffectKind.CHALLENGE, magnitude=.01)], [b])
     high = analyze([effect(b, CognitiveEffectKind.CHALLENGE, magnitude=.99)], [b])
     assert low.as_dict() == high.as_dict()
+
+
+def test_rejected_relation_cannot_be_sufficient_for_null_drop_baseline():
+    open_new = effect(None, CognitiveEffectKind.OPEN_NEW, magnitude=.99, epi=.9, importance=.9)
+    report = analyze([open_new], [])
+    assert report.baseline_decision == "DROP"
+    assert report.necessary_core == ()
+    assert report.sufficient_supports == ()
+    assert report.relations[0].classification == "PERIPHERAL"

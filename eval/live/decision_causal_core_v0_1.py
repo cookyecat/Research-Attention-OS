@@ -103,6 +103,7 @@ def analyze_decision_causal_core(
         return decision_key(plan)
 
     baseline = decide(legal)
+    null_decision = decide([])
     rows = []
     for relation in relations:
         members = [e for e in legal if relation_key(e) == relation]
@@ -117,7 +118,7 @@ def analyze_decision_causal_core(
             without_decision=without_decision,
             alone_decision=alone_decision,
             necessary=without_decision != baseline,
-            sufficient=alone_decision == baseline,
+            sufficient=(alone_decision == baseline and baseline != null_decision),
         ))
     return DecisionCausalCoreReport(baseline_decision=baseline, relations=tuple(rows))
 
