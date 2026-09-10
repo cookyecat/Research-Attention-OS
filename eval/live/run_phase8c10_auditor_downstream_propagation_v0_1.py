@@ -55,7 +55,7 @@ def load_inputs():
     verify(GATE2A, GATE2A_SHA); verify(GATE1, GATE1_SHA)
     g2 = json.loads(GATE2A.read_text())
     g1 = json.loads(GATE1.read_text())
-    baseline = {row["case"]: row for row in g1["results"] if row["case"] in CRITICAL}
+    baseline = {row["case"]: row for row in g1["cases"] if row["case"] in CRITICAL}
     worlds = []
     for case in g2["results"]:
         cid = case["case"]
