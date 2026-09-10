@@ -1,6 +1,6 @@
 # Phase 8C.10 — Auditor Gate 2B Downstream Propagation Preregistration
 
-Status: PREREGISTERED / NOT YET MEASURED
+Status: EXPERIMENTALLY COMPLETE / SEE `99_PHASE8C10_AUDITOR_DOWNSTREAM_PROPAGATION_RESULT.md`
 Date: 2026-09-10
 
 ## Question
