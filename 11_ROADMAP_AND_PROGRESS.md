@@ -1036,3 +1036,13 @@ Result: `106_PHASE8C13_DECISION_CAUSAL_CORE_RESULT.md`. First-order counterfactu
 ## Phase 8C.14 OPEN_NEW branch-level causal attribution — EXPERIMENTALLY COMPLETE 2026-09-10
 
 Result: `108_PHASE8C14_OPEN_NEW_BRANCH_CAUSAL_ATTRIBUTION_RESULT.md`. Coarse `OPEN_NEW(null)` stability can hide load-bearing branch drift. RS11 WATCH is carried mainly by the N11 infrastructure branch but one realization switches singular support to N10; RS12 remains structurally robust because `REINFORCE(BT1)` is a stable sufficient support while OPEN_NEW branches are redundant. The current anchored admission is global-jurisdiction only, not effect-specific binding. Next gate is the static probabilistic cognitive-map pilot using existing frozen samples; no temporal stochastic-process model yet. Production default remains `one-delta-v1`.
+
+## Phase 10A — Static Probabilistic Cognitive Map — EXPERIMENTALLY COMPLETE 2026-09-10
+
+Preregistration: `109_PHASE10A_STATIC_PROBABILISTIC_COGNITIVE_MAP_PREREGISTRATION.md`; result: `110_PHASE10A_STATIC_PROBABILISTIC_COGNITIVE_MAP_RESULT.md`.
+
+`static-probabilistic-cognitive-map-v0.1` measures one bounded-epoch empirical Cognitive Map as `P(r in T)`, `P(r in B_pi(T))`, and `P(A)`, where `B_pi(T)` is the union of necessary and individually sufficient decision supports. Wilson-95 intervals are reported for Bernoulli relation/core probabilities; topology/core and Attention entropy remain descriptive measurement only.
+
+Canonical results: RS05 N=12 stayed ENGAGE 12/12 with `CHALLENGE(CF-B-PERF)` load-bearing 12/12. RS15 triggered the preregistered precision expansion to N=24 and remained bimodal at ENGAGE 20/24 vs WATCH 4/24; `CHALLENGE(B1/Q1)` each carried P(B)=0.833. RS11 stayed WATCH 12/12 while its dominant load-bearing OPEN_NEW branch was `RS11-N11` at 11/12. RS12 expanded to N=24 for core-probability precision, stayed WATCH 24/24, and preserved `REINFORCE(BT1)` as load-bearing 24/24 despite high peripheral topology diversity.
+
+The working conclusion is `Topology variability != Decision instability`: distributional stability is better characterized by the load-bearing core and Attention distribution than by exact topology equality alone. Phase 10B may now compare independently frozen epochs with distribution-distance metrics; do not introduce a temporal stochastic-process model unless cross-epoch drift is materially demonstrated. Full backend regression was 598 passed / 63 skipped / 1 historical Case K urgency residual. Production default remains `one-delta-v1`.
