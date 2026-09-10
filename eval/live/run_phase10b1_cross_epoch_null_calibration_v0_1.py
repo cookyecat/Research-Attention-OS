@@ -1,10 +1,14 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-import hashlib, json, subprocess
+import hashlib, json, subprocess, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+BACKEND = ROOT / 'backend'
+for _p in (ROOT, BACKEND):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
 SOURCE = ROOT / 'eval/live/results/phase10b_temporal_cognitive_basin_shift_v0_1/phase10b_temporal_cognitive_basin_shift_v0.1_20260910T081018Z.json'
 SOURCE_SHA256 = '098dde0df2922a2244c26b99777a7744384394603831031f647d066605dc72d0'
 OUT_DIR = ROOT / 'eval/live/results/phase10b1_cross_epoch_null_calibration_v0_1'
