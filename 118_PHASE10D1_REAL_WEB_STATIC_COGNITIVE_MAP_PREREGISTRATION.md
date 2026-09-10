@@ -8,7 +8,7 @@ Does the Static Probabilistic Cognitive Map observed on canonical fixtures gener
 
 ## Cases
 
-Reuse the four Phase 8C.7 real-web sources with the same acquisition continuity gate:
+Reuse the same four Phase 8C.7 real-web URLs. Continuity is recorded per source rather than required globally:
 
 - A — Microsoft Azure / Astra;
 - C — OpenAI Safety / Astra;
@@ -55,6 +55,17 @@ No expansion may depend on whether the result looks favorable.
 - No Sensor/Auditor repetition in this phase; perception variance is intentionally frozen out.
 - No temporal/stochastic-process model.
 - Do not interpret AWARE/WATCH/ENGAGE as accuracy gold without human labels.
-- If acquisition continuity fails, fail before model calls.
+- Acquisition continuity is classified per source before model calls. A hash/length mismatch may proceed only as an explicitly labeled `NEW_SNAPSHOT`, never as a longitudinal replay of the old page.
 - If complete admitted units cannot be serialized/replayed exactly, fail closed rather than reconstructing an approximate semantic world.
 - Production default remains `one-delta-v1`.
+
+## Pre-measurement acquisition amendment — 2026-09-10
+
+The first formal attempt stopped before any model call because source C no longer matched the Phase 8C.7 snapshot. Inspection showed this was not parser noise: the same `/gpt-6-astra/vision` URL now yields the full Astra System Card (~184k chars) rather than the earlier ~5.95k-char narrow extraction.
+
+Therefore v0.1 records two acquisition classes before perception:
+
+- `CONTINUITY_PRESERVED`: current hash and char count both match Phase 8C.7;
+- `NEW_SNAPSHOT`: current page differs and is treated as a new real-web sample, with no longitudinal claim against the old snapshot.
+
+Observed before any model call: A/D/X are continuity-preserved; C is a new snapshot. This amendment changes only source-snapshot interpretation, not the downstream sampling or precision rules.

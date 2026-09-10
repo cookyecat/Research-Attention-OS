@@ -205,8 +205,13 @@ def main() -> int:
 
     engine, db, sources, acquisition, manifest = _prepare_base_world()
     try:
-        if not all(x["hash_match"] and x["char_count_match"] for x in acquisition.values()):
-            raise RuntimeError("real-web acquisition continuity gate failed before model calls")
+        acquisition_class = {
+            label: ("CONTINUITY_PRESERVED" if row["hash_match"] and row["char_count_match"] else "NEW_SNAPSHOT")
+            for label, row in acquisition.items()
+        }
+        if any(not str((sources[label].content_text or "")).strip() for label in LABELS):
+            raise RuntimeError("blank real-web source before model calls")
+        print(json.dumps({"stage": "ACQUISITION_CLASS", "classes": acquisition_class}, ensure_ascii=False), flush=True)
         for node in build_phase6b_mvp_kernel_nodes():
             db.add(node)
         db.flush()
@@ -280,6 +285,7 @@ def main() -> int:
             "status": "REAL_WEB_FROZEN_PERCEPTION_STATIC_EMPIRICAL_MAP",
             "measurement_sha": git_head(),
             "acquisition": acquisition,
+            "acquisition_class": acquisition_class,
             "perception_contract": "one fresh Sensor v0.2.6 + Auditor v0.1.1 pass per source, then exact frozen replay",
             "locate_contract": f"{LOCATE_REPEATS} repeats; modal target-set; earliest representative tie-break; then frozen",
             "relation_mapping_prompt_sha256": prompt_sha(),
@@ -288,7 +294,7 @@ def main() -> int:
             "model_pairs_seen": model_pairs,
             "cases": cases,
             "guardrails": [
-                "A/C/D/X acquisition continuity must pass before model calls.",
+                "Acquisition continuity is classified before model calls; mismatched pages are NEW_SNAPSHOT and carry no old-snapshot longitudinal claim.",
                 "Perception is sampled once per source and then frozen; this phase does not estimate Sensor/Auditor variance.",
                 "Complete native-consumed semantic unit fields are persisted for exact replay.",
                 "Relation Mapping is the only repeatedly sampled cognitive stage after Locate freeze.",
