@@ -46,6 +46,20 @@ INITIAL_N = 12
 EXPANDED_N = 24
 HALF_WIDTH_GATE = 0.20
 
+# First Batch-2 execution at d7cd5accc80b180f79cfe9300446f3a5b2bac2ac
+# reached N1 perception once and failed on malformed/truncated Sensor JSON before any
+# downstream sample was produced. Preserve that observation and do not retry N1.
+PRE_ARTIFACT_SOURCE_FAILURES = {
+    "N1": {
+        "stage": "SENSOR",
+        "status": "TECHNICAL_FAILURE",
+        "error_type": "RuntimeError",
+        "error": "Sensor failure: model_call model did not return JSON: Unterminated string starting at: line 596 column 27 (char 32816)",
+        "observed_measurement_sha": "d7cd5accc80b180f79cfe9300446f3a5b2bac2ac",
+        "retry_policy": "NO_RETRY_WITHIN_BATCH",
+    }
+}
+
 
 
 
@@ -275,12 +289,25 @@ def main() -> int:
         nodes = _active_kernel(db)
         strategy = get_decision_strategy(STRATEGY_ID)
         cases = {}
+        source_failures = dict(PRE_ARTIFACT_SOURCE_FAILURES)
 
         for label in LABELS:
             if label not in sources:
                 continue
+            if label in PRE_ARTIFACT_SOURCE_FAILURES:
+                print(json.dumps({"label": label, "stage": "SKIP_RECORDED_SOURCE_FAILURE", "failure": PRE_ARTIFACT_SOURCE_FAILURES[label]}, ensure_ascii=False), flush=True)
+                continue
             print(json.dumps({"label": label, "stage": "PERCEPTION_START"}), flush=True)
-            units, perception_diag = _perceive(sources[label])
+            try:
+                units, perception_diag = _perceive(sources[label])
+            except Exception as exc:
+                source_failures[label] = {
+                    "stage": "PERCEPTION", "status": "TECHNICAL_FAILURE",
+                    "error_type": type(exc).__name__, "error": str(exc)[:3000],
+                    "observed_measurement_sha": git_head(), "retry_policy": "NO_RETRY_WITHIN_BATCH",
+                }
+                print(json.dumps({"label": label, "stage": "PERCEPTION_ERROR", "error_type": type(exc).__name__, "error": str(exc)[:500]}, ensure_ascii=False), flush=True)
+                continue
             frozen_units = [jsonable_unit(u) for u in units]
             if any(not u["statement"] for u in frozen_units):
                 raise RuntimeError(f"blank admitted unit in {label}")
@@ -347,6 +374,8 @@ def main() -> int:
             "selection_strata": {label: acquisition[label]["stratum"] for label in LABELS},
             "acquisition_success_labels": [label for label in LABELS if label in sources],
             "acquisition_failure_labels": [label for label in LABELS if label not in sources],
+            "source_failures": source_failures,
+            "map_success_labels": [label for label in LABELS if label in cases],
             "acquisition": acquisition,
             "acquisition_class": acquisition_class,
             "perception_contract": "one fresh Sensor v0.2.6 + Auditor v0.1.1 pass per source, then exact frozen replay",
@@ -360,6 +389,7 @@ def main() -> int:
                 "Batch-2 source labels/strata/URLs were preregistered before any RAOS outcome was observed.",
                 "Every successfully acquired Batch-2 URL is a new frozen snapshot; this phase makes no historical continuity claim for these sources.",
                 "A preregistered acquisition failure is retained and is not replaced by another source; remaining preregistered sources continue.",
+                "A Sensor/Auditor technical failure is retained without within-batch retry or substitution; remaining preregistered sources continue.",
                 "Perception is sampled once per source and then frozen; this phase does not estimate Sensor/Auditor variance.",
                 "Complete native-consumed semantic unit fields are persisted for exact replay.",
                 "Relation Mapping is the only repeatedly sampled cognitive stage after Locate freeze.",

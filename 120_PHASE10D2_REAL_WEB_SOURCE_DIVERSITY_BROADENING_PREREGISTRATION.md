@@ -46,6 +46,7 @@ For each source:
 - No source may be removed because its Attention distribution is inconvenient or degenerate.
 - Acquisition failures, parser anomalies, schema failures, and empty-effect controls remain in the record.
 - A source-level URL acquisition failure does not authorize substitution: retain the failed preregistered source as an acquisition-failure row and continue the remaining preregistered sources.
+- A source-level Sensor/Auditor technical or schema failure is likewise retained without substitution; the failed source is not retried inside the same batch merely to obtain a usable map.
 - `Jaccard`/topology entropy remain representation-level measures; decision conclusions must use load-bearing and Attention distributions.
 - `OPEN_NEW[UNRESOLVED]` remains unresolved rather than being merged by free-text semantic similarity.
 - No thresholds, calibration bands, prompts, Kernel nodes, or downstream strategy may be tuned from Batch-2 outcomes.
