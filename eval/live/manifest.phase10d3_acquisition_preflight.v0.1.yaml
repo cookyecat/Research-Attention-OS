@@ -1,0 +1,46 @@
+version: phase10d3-acquisition-preflight-v0.1
+status: PREREGISTERED_ACQUISITION_ONLY
+selection_rule: first_two_passing_per_stratum_in_manifest_order
+viability:
+  min_content_chars: 1000
+  require_ingest_success: true
+strata:
+  NEAR:
+    - id: N3
+      publisher: Anthropic
+      url: https://www.anthropic.com/research/multiagent-systems
+    - id: N4
+      publisher: Anthropic
+      url: https://www.anthropic.com/research/claude-plays-robotics
+    - id: N5
+      publisher: NVIDIA
+      url: https://blogs.nvidia.com/blog/icra-research-robotics-simulation-to-real-world/
+    - id: N6
+      publisher: NVIDIA
+      url: https://blogs.nvidia.com/blog/cvpr-physical-ai-research-agent-skills/
+  BOUNDARY:
+    - id: B3
+      publisher: Anthropic
+      url: https://www.anthropic.com/research/claude-code-expertise
+    - id: B4
+      publisher: Anthropic
+      url: https://www.anthropic.com/research/coding-agents-social-sciences
+    - id: B5
+      publisher: Google Research
+      url: https://research.google/blog/a-new-era-of-innovation-google-research-at-io-2026/
+    - id: B6
+      publisher: Google Research
+      url: https://research.google/blog/unlocking-dependable-responses-with-gemini-enterprise-agent-platforms-agentic-rag/
+  FAR_CONTROL:
+    - id: F3
+      publisher: NASA
+      url: https://science.nasa.gov/missions/hubble/nasas-hubble-webb-find-far-out-solar-system-objects-remember-past/
+    - id: F4
+      publisher: ESA
+      url: https://eo4society.esa.int/2026/09/04/early-signs-of-reduced-fossil-fuel-use-in-europe-from-sentinel-5p-nox-emissions/
+    - id: F5
+      publisher: USGS
+      url: https://www.usgs.gov/centers/alaska-science-center/science/alaska-earthquake-and-tsunami-hazards
+    - id: F6
+      publisher: NASA
+      url: https://science.nasa.gov/missions/webb/nasas-webb-discovers-hidden-planet-in-famous-star-system/
