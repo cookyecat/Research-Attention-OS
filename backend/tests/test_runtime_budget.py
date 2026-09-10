@@ -338,6 +338,17 @@ def test_chat_json_temperature_override(monkeypatch):
     assert meta["temperature"] == 0.0
 
 
+def test_chat_json_records_requested_and_response_model_separately(monkeypatch):
+    monkeypatch.setattr(settings, "llm_api_key", "test-key")
+    monkeypatch.setattr(settings, "llm_model", "requested-alias")
+    monkeypatch.setattr("app.cognitive.client.httpx.Client", _CapturingClient)
+    _, meta = chat_json([{"role": "user", "content": "hi"}])
+    assert _CapturingClient.last_payload["model"] == "requested-alias"
+    assert meta["requested_model"] == "requested-alias"
+    assert meta["response_model"] == "captured"
+    assert meta["model"] == "captured"
+
+
 def test_chat_json_timeout_becomes_llm_timeout_error(monkeypatch):
     monkeypatch.setattr(settings, "llm_api_key", "test-key")
     monkeypatch.setattr("app.cognitive.client.httpx.Client", _TimeoutClient)

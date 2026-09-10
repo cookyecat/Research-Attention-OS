@@ -123,11 +123,15 @@ def chat_json(
     content = body["choices"][0]["message"]["content"]
     usage = body.get("usage") or {}
     parsed = _parse_json_object(content)
+    requested_model = model or settings.llm_model
+    response_model = body.get("model")
     meta = {
         "latency_ms": latency_ms,
         "prompt_tokens": usage.get("prompt_tokens") or 0,
         "completion_tokens": usage.get("completion_tokens") or 0,
-        "model": body.get("model") or (model or settings.llm_model),
+        "model": response_model or requested_model,
+        "requested_model": requested_model,
+        "response_model": response_model,
         "estimated_cost_usd": estimate_cost_usd(
             int(usage.get("prompt_tokens") or 0),
             int(usage.get("completion_tokens") or 0),
