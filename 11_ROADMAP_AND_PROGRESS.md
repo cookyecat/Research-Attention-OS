@@ -1031,3 +1031,8 @@ Result: `104_PHASE8C12_LOCATE_RELATION_LONGITUDINAL_RESULT.md`. With exact histo
 ## Phase 8C.13 Decision-Causal Core — EXPERIMENTALLY COMPLETE 2026-09-10
 
 Result: `106_PHASE8C13_DECISION_CAUSAL_CORE_RESULT.md`. First-order counterfactual replay separates semantic/topology frequency from policy causality. RS05 `CHALLENGE(CF-B-PERF)` is the stable load-bearing positive control; RS15 ENGAGE is redundantly sustained by B1/Q1 challenge relations while always-present BT1 challenge is peripheral; RS11 current WATCH is singularly carried by the coarse `OPEN_NEW(null)` relation class; RS12 WATCH is stably supported by `REINFORCE(BT1)` with optional redundant OPEN_NEW. D confirms free-floating OPEN_NEW is peripheral under Anchored admission. Next gate: OPEN_NEW branch-level causal identity before probabilistic modeling or admission redesign. Production default remains `one-delta-v1`.
+
+
+## Phase 8C.14 OPEN_NEW branch-level causal attribution — EXPERIMENTALLY COMPLETE 2026-09-10
+
+Result: `108_PHASE8C14_OPEN_NEW_BRANCH_CAUSAL_ATTRIBUTION_RESULT.md`. Coarse `OPEN_NEW(null)` stability can hide load-bearing branch drift. RS11 WATCH is carried mainly by the N11 infrastructure branch but one realization switches singular support to N10; RS12 remains structurally robust because `REINFORCE(BT1)` is a stable sufficient support while OPEN_NEW branches are redundant. The current anchored admission is global-jurisdiction only, not effect-specific binding. Next gate is the static probabilistic cognitive-map pilot using existing frozen samples; no temporal stochastic-process model yet. Production default remains `one-delta-v1`.
