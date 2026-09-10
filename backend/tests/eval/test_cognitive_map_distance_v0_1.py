@@ -37,3 +37,11 @@ def test_frequency_drift_identifies_changed_relation():
     d=compare_cognitive_maps(_map(a),a,_map(b),b)
     changes=d["load_bearing_relation_frequency_drift"]["top_changes"]
     assert changes[0]["abs_delta"] == 1.0
+
+
+def test_json_roundtrip_nested_relation_identity_is_hashable():
+    samples = [{'topology': [['OPEN_NEW', ['RS11-N11']], ['REINFORCE', 'BT1']]}]
+    dist = empirical_state_distribution(samples, 'topology')
+    assert list(dist.values()) == [1.0]
+    state = next(iter(dist))
+    assert ('OPEN_NEW', ('RS11-N11',)) in state

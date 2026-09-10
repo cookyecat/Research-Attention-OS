@@ -27,8 +27,18 @@ def js_divergence_bits(p: dict[Hashable, float], q: dict[Hashable, float]) -> fl
     return 0.5 * kl(p, m) + 0.5 * kl(q, m)
 
 
+def _freeze(value):
+    if isinstance(value, list):
+        return tuple(_freeze(v) for v in value)
+    if isinstance(value, tuple):
+        return tuple(_freeze(v) for v in value)
+    if isinstance(value, dict):
+        return tuple(sorted((str(k), _freeze(v)) for k, v in value.items()))
+    return value
+
+
 def canonical_state(items) -> tuple:
-    return tuple(sorted(set(items or ()), key=repr))
+    return tuple(sorted({_freeze(v) for v in (items or ())}, key=repr))
 
 
 def empirical_state_distribution(samples: Sequence[dict], field: str) -> dict:
