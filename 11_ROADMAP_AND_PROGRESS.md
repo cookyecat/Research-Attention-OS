@@ -1012,3 +1012,12 @@ Preregistration: `100_PHASE8C11_AUDITOR_BOUNDARY_UNIT_ABLATION_PREREGISTRATION.m
 Same-SHA paired ablation did not support the simple hypothesis that newly admitted Auditor boundary units were necessary causes of the Gate 2B Attention shifts. RS05 remained `ENGAGE 6/6` with or without U06/U08; RS15 remained in the current ENGAGE basin after removing NEU4 (`full ENGAGE 5/6 + WATCH 1/6`, `-NEU4 ENGAGE 6/6`); RS11 remained `ENGAGE 6/6` after removing N1; RS12 remained `WATCH 6/6` after removing N11.
 
 The next attributable target is therefore longitudinal Cognitive Mapping stability under frozen audited semantics, not Auditor retuning. Production default remains `one-delta-v1`.
+
+
+## Distributional Cognitive Stability construction plan — 2026-09-10
+
+Formal construction plan: `102_DISTRIBUTIONAL_COGNITIVE_STABILITY_RESEARCH_PLAN.md`.
+
+The stability program now separates descriptive topology similarity from policy-relative causal structure. `topology-stability-metrics-v0.1` remains the descriptive measurement chip; the next planned chips are deterministic Decision-Causal Core, a static empirical Probabilistic Cognitive Map, and only if evidence requires it a temporal distribution-drift / stochastic-process layer.
+
+Immediate next gate is Phase 8C.12: under exact frozen audited semantics, separate longitudinal Locate drift from Relation-Mapping/Impact drift. Phase 10 probabilistic work remains gated behind this deterministic attribution. `Cognitive Attractor` is retained only as a working analogy until distributional concentration and, if claimed dynamically, state-evolution/convergence evidence exist.
