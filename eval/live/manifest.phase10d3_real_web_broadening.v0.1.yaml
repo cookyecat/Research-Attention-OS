@@ -1,0 +1,46 @@
+version: phase10d3-real-web-broadening-v0.1
+selection_status: selected_by_acquisition_only_preflight
+preflight_sha256: 5d707a6bafd3558e9d2ba86232e9e468485776a43a4cccbd430e4b867df81ebf
+sources:
+  - label: N3
+    stratum: NEAR_KERNEL
+    publisher: Anthropic
+    title: Patterns and problems in multiagent systems
+    url: https://www.anthropic.com/research/multiagent-systems
+    content_chars: 23679
+    content_hash: 0e19e3523eeed6d1a3f78dc4c3af947a68eb868ee8a6730d76a0490867078f4c
+  - label: N4
+    stratum: NEAR_KERNEL
+    publisher: Anthropic
+    title: How Claude performs on robotics tasks
+    url: https://www.anthropic.com/research/claude-plays-robotics
+    content_chars: 46517
+    content_hash: 60bb690ee90455c328e40447512dcde21e5da191f7e28492846cffc1ab833d39
+  - label: B3
+    stratum: BOUNDARY
+    publisher: Anthropic
+    title: How Claude Code is used in practice
+    url: https://www.anthropic.com/research/claude-code-expertise
+    content_chars: 23004
+    content_hash: c250c4d3258a7918685daeab3ab12f3fbc9063d20f9c6456a9452f4fa9175cc4
+  - label: B4
+    stratum: BOUNDARY
+    publisher: Anthropic
+    title: Coding agents in the social sciences
+    url: https://www.anthropic.com/research/coding-agents-social-sciences
+    content_chars: 15398
+    content_hash: b5a6c0b421e5b0784734050cb93779abe9f129603d585c44b082701d6f79de25
+  - label: F3
+    stratum: FAR_CONTROL
+    publisher: NASA
+    title: NASA Hubble Webb find far-out solar system objects remember past
+    url: https://science.nasa.gov/missions/hubble/nasas-hubble-webb-find-far-out-solar-system-objects-remember-past/
+    content_chars: 6065
+    content_hash: f4881135cf039dc17c01db32c0ae216e4858b00fe2ee1a3f48e16d03b402801b
+  - label: F4
+    stratum: FAR_CONTROL
+    publisher: ESA
+    title: Early signs of reduced fossil fuel use in Europe from Sentinel-5P NOx emissions
+    url: https://eo4society.esa.int/2026/09/04/early-signs-of-reduced-fossil-fuel-use-in-europe-from-sentinel-5p-nox-emissions/
+    content_chars: 5383
+    content_hash: ac43500548b78e21872e4ab9e98627b8c84e8e278d35788ba721d1f0e0f9de4e
