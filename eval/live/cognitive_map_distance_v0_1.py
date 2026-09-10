@@ -45,7 +45,7 @@ def empirical_state_distribution(samples: Sequence[dict], field: str) -> dict:
     states = []
     for s in samples:
         if field == "load_bearing":
-            state = canonical_state(set(s.get("necessary_core") or ()) | set(s.get("sufficient_supports") or ()))
+            state = canonical_state(list(s.get("necessary_core") or ()) + list(s.get("sufficient_supports") or ()))
         else:
             state = canonical_state(s.get(field) or ())
         states.append(state)

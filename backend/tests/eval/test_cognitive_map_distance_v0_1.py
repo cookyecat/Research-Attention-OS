@@ -45,3 +45,15 @@ def test_json_roundtrip_nested_relation_identity_is_hashable():
     assert list(dist.values()) == [1.0]
     state = next(iter(dist))
     assert ('OPEN_NEW', ('RS11-N11',)) in state
+
+
+def test_json_roundtrip_nested_load_bearing_identity_is_hashable():
+    samples = [{
+        'necessary_core': [['OPEN_NEW', ['RS11-N11']]],
+        'sufficient_supports': [['OPEN_NEW', ['RS11-N11']], ['REINFORCE', 'BT1']],
+    }]
+    dist = empirical_state_distribution(samples, 'load_bearing')
+    state = next(iter(dist))
+    assert ('OPEN_NEW', ('RS11-N11',)) in state
+    assert ('REINFORCE', 'BT1') in state
+    assert len(state) == 2
