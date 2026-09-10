@@ -1,0 +1,33 @@
+version: phase10d2-real-web-broadening-v0.1
+selection_status: preregistered_before_raos_outcomes
+sources:
+  - label: N1
+    stratum: NEAR_KERNEL
+    publisher: Google DeepMind
+    title: Gemini Robotics 2 brings whole body intelligence to robots
+    url: https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/
+  - label: N2
+    stratum: NEAR_KERNEL
+    publisher: Google Research
+    title: "Towards a science of scaling agent systems: When and why agent systems work"
+    url: https://research.google/blog/towards-a-science-of-scaling-agent-systems-when-and-why-agent-systems-work/
+  - label: B1
+    stratum: BOUNDARY
+    publisher: Anthropic
+    title: Trustworthy agents in practice
+    url: https://www.anthropic.com/research/trustworthy-agents
+  - label: B2
+    stratum: BOUNDARY
+    publisher: OpenAI
+    title: "Research acceleration: The view inside OpenAI"
+    url: https://openai.com/index/research-acceleration-view-inside-openai/
+  - label: F1
+    stratum: FAR_CONTROL
+    publisher: NIH
+    title: Scientists identify new role for tau protein in brain diseases
+    url: https://www.nih.gov/news-events/nih-research-matters/scientists-identify-new-role-tau-protein-brain-diseases
+  - label: F2
+    stratum: FAR_CONTROL
+    publisher: NASA
+    title: NASA's Webb Discovers Hidden Planet in Famous Star System
+    url: https://science.nasa.gov/missions/webb/nasas-webb-discovers-hidden-planet-in-famous-star-system/
