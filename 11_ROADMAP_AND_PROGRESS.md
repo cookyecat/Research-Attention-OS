@@ -187,7 +187,8 @@ Critical Under       0
 Key representational result:
 
 $$
-\boxed{\Delta=\varnothing\not\Rightarrow DROP}
+\boxed{\Delta=\varnothing
+ot\Rightarrow DROP}
 $$
 
 ### 4.5 Oracle-Awareness wiring / provenance — CLOSED
@@ -310,7 +311,8 @@ Standing Radar Clauses are applicability conditions, not domain weights. Clauses
 Exclusions remain:
 
 $$
-\boxed{Exclusion=ScopeGuard,\quad Exclusion\neq Veto}
+\boxed{Exclusion=ScopeGuard,\quad Exclusion
+eq Veto}
 $$
 
 ### 6.2 Historical v1 measurement
@@ -986,4 +988,27 @@ Preregistration: `93_PHASE8C9_ANCHORED_OPEN_NEW_ADMISSION_PREREGISTRATION.md`; r
 `anchored-open-new-v0.1` adds a deterministic Effect Admission slot to the Pareto experimental stack. Frozen replay of all Phase 8C.8 Impact outputs removed the sole D free-floating OPEN_NEW `DROP→ENGAGE` failure (`DROP 5/6 + ENGAGE 1/6` -> `DROP 6/6`) while leaving article Attention unchanged for RS05/RS15/RS11/RS12/A/C/X. RS05 anchored OPEN_NEW candidates and the critical CHALLENGE remain preserved.
 
 The structural working invariant is `OPEN_NEW may have target=null, but should not have jurisdiction=null`. Full backend regression: 581 passed, 63 skipped, only the pre-existing Case K urgency residual failed. Production default remains `one-delta-v1`.
-\n\n## Phase 8C.10 Auditor topology stability — GATE 2A COMPLETE 2026-09-10\n\nMeasurement foundation: `95_SEMANTIC_TOPOLOGY_STABILITY_METRICS.md`. Preregistration: `96_PHASE8C10_AUDITOR_TOPOLOGY_STABILITY_PREREGISTRATION.md`; Gate 2A result: `97_PHASE8C10_AUDITOR_TOPOLOGY_STABILITY_GATE2A_RESULT.md`.\n\nWith Phase 7A Sensor candidate units frozen, fresh Auditor v0.1.1 repeats show narrow admitted-set jitter: RS05 and RS11 each have one single-unit minority variant, while RS15 and RS12 are fresh-repeat invariant 4/4. However the current modal admitted worlds differ from the historical Phase 7A audit for RS05, RS15 and RS12, separating within-run stochastic variance from historical admission-boundary drift.\n\nGate 2B is now required: propagate only distinct changed admitted worlds through the frozen experimental downstream (`Anchored OPEN_NEW + Magnitude-Free + Pareto`) and compare critical Cognitive Topology / Article Attention against the Phase 8C.8 historical audited-world baseline. Production default remains `one-delta-v1`.\n\n\n### Phase 8C.10 Gate 2B — downstream propagation COMPLETE 2026-09-10\n\nGate 2B propagated only changed Auditor admitted worlds through the frozen experimental decision stack. RS05 Auditor variance was absorbed: critical `CHALLENGE(CF-B-PERF)` and `ENGAGE` remained stable. RS15's stable +NEU4 admission preserved Q2/B2 but added decision-bearing CHALLENGE relations and moved `WATCH -> ENGAGE 4/4`. RS11's one-repeat +N1 admission moved historical `AWARE -> ENGAGE 4/4`. RS12's stable +N11 admission moved historical `WATCH` to `ENGAGE 3/4, WATCH 1/4`.\n\nTherefore admitted-set similarity alone is insufficient: a single boundary unit can be decision-causal. However historical disagreement is not equivalent to Auditor error; packet inspection suggests RS15 NEU4 may be an earlier false negative, RS11 N1 is a stronger current false-positive candidate, and RS12 N11 remains genuinely boundary-like. Next gate is paired same-SHA boundary-unit ablation before any Auditor redesign.\n
+
+
+## Phase 8C.10 Auditor topology stability — GATE 2A COMPLETE 2026-09-10
+
+Measurement foundation: `95_SEMANTIC_TOPOLOGY_STABILITY_METRICS.md`. Preregistration: `96_PHASE8C10_AUDITOR_TOPOLOGY_STABILITY_PREREGISTRATION.md`; Gate 2A result: `97_PHASE8C10_AUDITOR_TOPOLOGY_STABILITY_GATE2A_RESULT.md`.
+
+With Phase 7A Sensor candidate units frozen, fresh Auditor v0.1.1 repeats show narrow admitted-set jitter: RS05 and RS11 each have one single-unit minority variant, while RS15 and RS12 are fresh-repeat invariant 4/4. However the current modal admitted worlds differ from the historical Phase 7A audit for RS05, RS15 and RS12, separating within-run stochastic variance from historical admission-boundary drift.
+
+Gate 2B is now required: propagate only distinct changed admitted worlds through the frozen experimental downstream (`Anchored OPEN_NEW + Magnitude-Free + Pareto`) and compare critical Cognitive Topology / Article Attention against the Phase 8C.8 historical audited-world baseline. Production default remains `one-delta-v1`.
+
+### Phase 8C.10 Gate 2B — downstream propagation COMPLETE 2026-09-10
+
+Gate 2B propagated only changed Auditor admitted worlds through the frozen experimental decision stack. RS05 Auditor variance was absorbed: critical `CHALLENGE(CF-B-PERF)` and `ENGAGE` remained stable. RS15's stable +NEU4 admission preserved Q2/B2 but added decision-bearing CHALLENGE relations and moved `WATCH -> ENGAGE 4/4`. RS11's one-repeat +N1 admission moved historical `AWARE -> ENGAGE 4/4`. RS12's stable +N11 admission moved historical `WATCH` to `ENGAGE 3/4, WATCH 1/4`.
+
+Therefore admitted-set similarity alone is insufficient: a single boundary unit can be decision-causal. However historical disagreement is not equivalent to Auditor error; packet inspection suggests RS15 NEU4 may be an earlier false negative, RS11 N1 is a stronger current false-positive candidate, and RS12 N11 remains genuinely boundary-like. Next gate is paired same-SHA boundary-unit ablation before any Auditor redesign.
+
+
+## Phase 8C.11 boundary-unit causal ablation — EXPERIMENTALLY COMPLETE 2026-09-10
+
+Preregistration: `100_PHASE8C11_AUDITOR_BOUNDARY_UNIT_ABLATION_PREREGISTRATION.md`; result: `101_PHASE8C11_AUDITOR_BOUNDARY_UNIT_ABLATION_RESULT.md`.
+
+Same-SHA paired ablation did not support the simple hypothesis that newly admitted Auditor boundary units were necessary causes of the Gate 2B Attention shifts. RS05 remained `ENGAGE 6/6` with or without U06/U08; RS15 remained in the current ENGAGE basin after removing NEU4 (`full ENGAGE 5/6 + WATCH 1/6`, `-NEU4 ENGAGE 6/6`); RS11 remained `ENGAGE 6/6` after removing N1; RS12 remained `WATCH 6/6` after removing N11.
+
+The next attributable target is therefore longitudinal Cognitive Mapping stability under frozen audited semantics, not Auditor retuning. Production default remains `one-delta-v1`.
