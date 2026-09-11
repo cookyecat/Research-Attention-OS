@@ -344,15 +344,15 @@ def _fulfill_watch_obligation(
     triggers = list(draft.watch_triggers or ["NEW_EVIDENCE"])
     scoped_matches = list(matches or [])
     if bool(getattr(draft, "decision_effect_bound", False)):
-        effect = getattr(draft, "decision_effect", None)
-        target_id = getattr(effect, "target_kernel_node_id", None) if effect is not None else None
-        if target_id is not None:
-            scoped_matches = [m for m in scoped_matches if str(m.node_id) == str(target_id)]
-        elif effect is not None:
-            from app.services.effect_admission import jurisdiction_anchor_matches
-            scoped_matches = jurisdiction_anchor_matches(scoped_matches)
-        else:
-            scoped_matches = []
+        scoped_ids = set(getattr(draft, "decision_scope_node_ids", []) or [])
+        scope_provenance = getattr(draft, "decision_scope_provenance", None)
+        if scope_provenance is None:
+            # Compatibility for custom strategies that adopted decision_effect before
+            # the explicit decision_scope contract. Only targeted effects are exact.
+            effect = getattr(draft, "decision_effect", None)
+            target_id = getattr(effect, "target_kernel_node_id", None) if effect is not None else None
+            scoped_ids = {str(target_id)} if target_id is not None else set()
+        scoped_matches = [m for m in scoped_matches if str(m.node_id) in scoped_ids]
     title = next((m.title for m in scoped_matches if m.title), None)
     target_ref = title or source.title or str(source.id)
     watch = Watch(
@@ -677,7 +677,11 @@ def run_pipeline(
             processing_modes=[],
             urgency=draft.urgency,
             cognitive_budget_minutes=draft.cognitive_budget_minutes,
-            kernel_target_ids=[str(m.node_id) for m in matches],
+            kernel_target_ids=(
+                list(draft.decision_scope_node_ids)
+                if draft.decision_effect_bound
+                else [str(m.node_id) for m in matches]
+            ),
             expected_output=draft.expected_output,
             reason=draft.reason,
             watch_after_processing=draft.watch_after_processing,
@@ -708,6 +712,11 @@ def run_pipeline(
                 "decision_strategy": strategy_execution,
                 "decision_cause": draft.decision_effect.as_dict() if draft.decision_effect is not None else None,
                 "decision_cause_bound": bool(draft.decision_effect_bound),
+                "decision_scope": {
+                    "node_ids": list(draft.decision_scope_node_ids),
+                    "kind": draft.decision_scope_kind,
+                    "provenance": draft.decision_scope_provenance,
+                },
             },
         )
         db.add(plan)
@@ -892,6 +901,11 @@ def _reschedule(
     score_debug["decision_strategy"] = decision_strategy_snapshot(decision_strategy)
     score_debug["decision_cause"] = draft.decision_effect.as_dict() if draft.decision_effect is not None else None
     score_debug["decision_cause_bound"] = bool(draft.decision_effect_bound)
+    score_debug["decision_scope"] = {
+        "node_ids": list(draft.decision_scope_node_ids),
+        "kind": draft.decision_scope_kind,
+        "provenance": draft.decision_scope_provenance,
+    }
     plan = AttentionPlan(
         candidate_type=CandidateType.SOURCE,
         candidate_id=source.id,
@@ -899,7 +913,11 @@ def _reschedule(
         processing_modes=[],
         urgency=draft.urgency,
         cognitive_budget_minutes=draft.cognitive_budget_minutes,
-        kernel_target_ids=[str(m.node_id) for m in matches] or (payload.get("attention_plan") or {}).get("kernel_target_ids") or [],
+        kernel_target_ids=(
+            list(draft.decision_scope_node_ids)
+            if draft.decision_effect_bound
+            else ([str(m.node_id) for m in matches] or (payload.get("attention_plan") or {}).get("kernel_target_ids") or [])
+        ),
         expected_output=draft.expected_output,
         reason=draft.reason,
         watch_after_processing=draft.watch_after_processing,

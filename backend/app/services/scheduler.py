@@ -90,6 +90,9 @@ class PlanDraft:
     # Ephemeral in the draft; persisted explicitly in AttentionPlan.score_debug.
     decision_effect: object | None = None
     decision_effect_bound: bool = False
+    decision_scope_node_ids: list[str] = field(default_factory=list)
+    decision_scope_kind: str | None = None
+    decision_scope_provenance: str | None = None
 
 
 def _match_supported(
@@ -308,6 +311,26 @@ def matches_from_debug(raw) -> list[KernelMatch]:
     return out
 
 
+def _bind_decision_scope(draft: PlanDraft, effect, matches: list[KernelMatch]) -> None:
+    """Bind causal responsibility without pretending global OPEN_NEW anchors are exact provenance."""
+    if effect is None:
+        draft.decision_scope_node_ids = []
+        draft.decision_scope_kind = "NONE"
+        draft.decision_scope_provenance = "strategy-no-cognitive-cause"
+        return
+    target = getattr(effect, "target_kernel_node_id", None)
+    if target is not None:
+        draft.decision_scope_node_ids = [str(target)]
+        draft.decision_scope_kind = "TARGET"
+        draft.decision_scope_provenance = "exact-target"
+        return
+    from app.services.effect_admission import jurisdiction_anchor_matches
+    anchors = jurisdiction_anchor_matches(matches or [])
+    draft.decision_scope_node_ids = [str(m.node_id) for m in anchors]
+    draft.decision_scope_kind = "JURISDICTION"
+    draft.decision_scope_provenance = "global-locate-jurisdiction-approximation"
+
+
 def _route_legacy_one_delta(
     features: SchedulerFeatures,
     runtime: RuntimeView | None = None,
@@ -340,6 +363,7 @@ def _route_legacy_one_delta(
     draft = _cognitive_disposition(features, primary, matches, awareness=awareness)
     draft.decision_effect = primary
     draft.decision_effect_bound = True
+    _bind_decision_scope(draft, primary, matches)
     return _apply_runtime_overlays(draft, features, runtime, primary=primary, matches=matches)
 
 

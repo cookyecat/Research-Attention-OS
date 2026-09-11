@@ -30,6 +30,7 @@ from app.services.scheduler import (
     PlanDraft,
     RuntimeView,
     _apply_runtime_overlays,
+    _bind_decision_scope,
     _cognitive_disposition,
 )
 
@@ -178,6 +179,7 @@ class ParetoMultiDeltaDecisionStrategy:
             draft = _cognitive_disposition(features, None, matches, awareness=awareness)
             draft.decision_effect = None
             draft.decision_effect_bound = True
+            _bind_decision_scope(draft, None, matches)
             return _apply_runtime_overlays(draft, features, runtime, primary=None, matches=matches)
 
         planned = [
@@ -192,6 +194,7 @@ class ParetoMultiDeltaDecisionStrategy:
         )
         draft.decision_effect = representative
         draft.decision_effect_bound = True
+        _bind_decision_scope(draft, representative, matches)
         return _apply_runtime_overlays(
             draft, features, runtime, primary=representative, matches=matches
         )

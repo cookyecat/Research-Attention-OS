@@ -274,3 +274,35 @@ def test_pareto_public_projection_uses_attention_decision_cause_not_legacy_prima
         "operation": "CHALLENGE",
         "target_node_id": str(belief.node_id),
     }
+
+
+def test_decision_scope_marks_targeted_effect_as_exact_target():
+    question = _match("QUESTION")
+    effect = _effect(question, CognitiveEffectKind.REINFORCE, change=.2, epi=.8, importance=.8)
+    plan = route(
+        _features(),
+        assessment=CognitiveImpactAssessment(effects=[effect]),
+        matches=[question],
+        decision_strategy=ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
+    )
+    assert plan.decision_effect_bound is True
+    assert plan.decision_scope_node_ids == [str(question.node_id)]
+    assert plan.decision_scope_kind == "TARGET"
+    assert plan.decision_scope_provenance == "exact-target"
+
+
+def test_decision_scope_marks_open_new_global_anchor_as_approximation():
+    project = _match("PROJECT")
+    belief = _match("BELIEF")
+    effect = _effect(None, CognitiveEffectKind.OPEN_NEW, change=.2, epi=.8, importance=.8)
+    plan = route(
+        _features(),
+        assessment=CognitiveImpactAssessment(effects=[effect]),
+        matches=[project, belief],
+        decision_strategy=ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
+    )
+    assert plan.decision_effect_bound is True
+    assert plan.decision_scope_kind == "JURISDICTION"
+    assert plan.decision_scope_provenance == "global-locate-jurisdiction-approximation"
+    assert plan.decision_scope_node_ids == [str(project.node_id)]
+    assert str(belief.node_id) not in plan.decision_scope_node_ids
