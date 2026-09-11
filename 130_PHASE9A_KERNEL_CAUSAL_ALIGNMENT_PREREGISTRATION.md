@@ -3,6 +3,7 @@
 Status: **PREREGISTERED — DO NOT TUNE AFTER OUTCOME**  
 Date: 2026-09-11  
 Parent checkpoint: `phase10d4-production-dogfood-v1` / `7054029599b5e3302e6748c3dc7e90ef0473b278`
+Pre-measurement instrument amendment: `131_PHASE9A_INSTRUMENT_AUDIT_AND_PREREGISTRATION_AMENDMENT.md`
 
 ## Frozen question
 
