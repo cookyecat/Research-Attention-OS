@@ -42,3 +42,33 @@ A synthetic counterexample reproduces: effect A is the unique Magnitude-Free Par
 - fallback/provider provenance and versioning.
 
 No new 10D.6K or Phase 9A cognitive outcomes are valid until P0 audit items are repaired and regression-tested.
+
+## Repair status after first end-to-end pass
+
+### REPAIRED / regression-locked
+
+- `cfd6204`: Impact prompt/contract hash is part of AnalysisRun execution identity; explicit decision strategy survives completed-run reschedule.
+- `cba6e6f`: strategy-selected `decision_cause` is carried through public update, ModelDelta, and KernelPatch authorization. Legacy single-primary selection is no longer allowed to choose a different side-effect target after Pareto Attention has decided.
+- `fb2a37d` + `48c29ad`: policy WATCH and `AttentionPlan.kernel_target_ids` consume explicit decision scope. Targeted effects use exact target scope; current OPEN_NEW scope is explicitly labeled `global-locate-jurisdiction-approximation` rather than masquerading as exact effect provenance.
+- `b712f78`: runtime reschedule preserves the provider selected by the identity-bearing `run_pipeline()` call instead of silently reacquiring a global provider.
+- `09c066d`: Impact Replay separates historical `primary_update` as a legacy Impact-local projection from the persisted strategy-selected decision cause. Impact-only replay does not claim to re-execute the decision stage.
+- `db65ed5`: completed AnalysisRun provenance records the actual fallback path (`model+rule-fallback`) while preserving identity as the planned execution contract.
+- `dee5d84`: Pareto execution snapshots now declare decision-cause public projection and strategy-bound decision scope, so execution metadata matches current semantics.
+
+Focused regressions for these repairs have passed; no new cognitive outcome samples were collected.
+
+### AUDITED / non-blocking compatibility layers
+
+- `features_from_impact()` still derives compatibility/debug numeric features from the legacy primary projection, but Magnitude-Free/Pareto disposition does not consume those projected cardinal fields. Empty Pareto frontier remains fail-closed DROP unless explicit `AwarenessSignals` are supplied.
+- Legacy `primary_update()` / `select_primary_effect()` remain intentionally available for one-delta history, legacy replay diagnostics, and already-projected single-effect synthesis. They are no longer allowed to reselect a cause after a bound Pareto decision.
+- Decision-strategy hydration checks stored strategy version and fails on version mismatch rather than silently interpreting an old run with a different registered version.
+
+### REMAINING BLOCKERS
+
+1. **Production Impact prompt still contains downstream-policy authority.** The current default `IMPACT_SYSTEM` still instructs the LLM to threshold OPEN_NEW by `change_magnitude` and choose one public update by `change_magnitude × target_importance`, which conflicts with multi-effect Pareto semantics before downstream policy can act. `833a7bb` introduces `IMPACT_SYSTEM_PARETO_COMPAT`, defined as the mature production prompt with only those two downstream-policy lines removed. It is experimental only; production default is unchanged until a controlled shadow validates it.
+2. **Exact OPEN_NEW jurisdiction provenance is not yet present in production CognitiveEffect.** Current scope is now explicit and safely labeled as a global-Locate jurisdiction approximation. Exact effect-specific `jurisdiction_anchor_ids` remains a capability of the support-bound research contract, not yet a production authority.
+3. Run the full backend regression after the audit repairs. Only after regressions and the prompt-contract decision may 10D.6K outcome sampling resume. Phase 9A remains paused.
+
+## Current audit decision
+
+The major P0 plumbing defects that could make measurement, public update, or side effects disagree with the selected Attention cause have been repaired. The audit is still ACTIVE because the production Impact prompt remains semantically inconsistent with the downstream Pareto contract. No 10D.6K or Phase 9A cognitive outcome should be interpreted until that prompt seam is resolved or explicitly excluded by the frozen experimental path.
