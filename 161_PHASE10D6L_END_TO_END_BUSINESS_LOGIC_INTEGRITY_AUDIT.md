@@ -43,6 +43,14 @@ A synthetic counterexample reproduces: effect A is the unique Magnitude-Free Par
 
 No new 10D.6K or Phase 9A cognitive outcomes are valid until P0 audit items are repaired and regression-tested.
 
+## Regression checkpoint — 2026-09-11
+
+After the P0/P1 repairs through commit `c65e140`, the full backend regression is `666 passed, 63 skipped, 1 failed, 1 warning`. The sole failure is the pre-existing `tests/acceptance/test_cases.py::test_case_k_preempt` (`PREEMPT` expected, `PRIORITY` actual); no new regression failure was introduced and Case K remains intentionally untouched.
+
+The remaining production semantic blocker is upstream Impact prompt authority: the mature production prompt still contains (a) an OPEN_NEW `change_magnitude >= 0.55` materiality instruction and (b) a single-winner `change_magnitude × target_importance` public-update instruction. `IMPACT_SYSTEM_PARETO_COMPAT` removes exactly those two downstream-policy instructions and changes nothing else. It is experimental only; production default is unchanged pending a controlled shadow.
+
+OPEN_NEW jurisdiction is no longer a hidden responsibility bug: current production explicitly labels its decision scope as `global-locate-jurisdiction-approximation`; exact effect-level `jurisdiction_anchor_ids` remain a research-contract gap rather than an implicit production truth.
+
 ## Repair status after first end-to-end pass
 
 ### REPAIRED / regression-locked
