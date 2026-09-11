@@ -1,8 +1,8 @@
 # Research Attention OS — Roadmap and Progress
 
 Status: **ACTIVE PROJECT ROADMAP**  
-Date: 2026-09-09
-Current integrated baseline referenced: `0eb54a29208c44757317caf192b55232e586b397`
+Date: 2026-09-11
+Current integrated baseline referenced: Phase 10D.4 production dogfood checkpoint (tag: `phase10d4-production-dogfood-v1`)
 Semantic baseline: `08_COGNITIVE_TRANSITION_MODEL_V2.1.md` + Phase II-B AWARE semantics in `10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md`  
 D semantic baseline: `16_STANDING_ATTENTION_JURISDICTION.md`  
 D final validation: `17_STANDING_RADAR_FIT_V3_FINAL_VALIDATION.md`  
@@ -94,18 +94,22 @@ Core invariants:
 | Phase II-B — Attention Policy Calibration | Determine how frozen cognitive judgment plus legitimate non-cognitive signals allocate DROP/AWARE/WATCH/ENGAGE | **CLOSED / INTEGRATED BASELINE** |
 | Phase 6 — Integrated Cognitive Attention Loop | Raw Source → Sensor/Auditor → D/S/P + Δ → four Attention Actions → human-gated Kernel proposal | **CLOSED** |
 | Phase 7 — Perception Fidelity | External World Model fidelity, dynamic P evidence, minimal trusted Brain World Model | **CLOSED / WORKING BASELINE** |
-| Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **ACTIVE — 8C.2 COMPATIBILITY PATH + 8C.3 NATIVE PROBE COMPLETE** |
-| Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **NOT STARTED** |
-| Phase 10 — Uncertainty / Boundary Calibration | Probabilistic treatment of weak-Δ and policy-boundary jitter | **DEFERRED** |
+| Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **CLOSED / OPERATIONAL BASELINE ESTABLISHED** |
+| Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **NEXT — 9A KERNEL CAUSAL ALIGNMENT** |
+| Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence | **10D.4 COMPLETE / THEORY V1.0 FORMALIZED** |
 | Phase 11 — Personalization / Scale | Questionnaire prior + trajectory residuals + multi-user/product validation | **NOT STARTED** |
 
 Current strategic position:
 
 $$
-\boxed{Phase\ 8C.3:\ Native\ Canonical\ Multi\text{-}Delta\ Probe\ COMPLETE}
+\boxed{Phase\ 10D.4:\ Real\text{-}Web\ Basin\ Persistence\ COMPLETE}
 $$
 
-Immediate order: `analyze completed 8C.3 evidence → decide native canonical / Multi-Delta production direction → only then reopen promotion/default-path decision`. 8C.2 remains the compatibility-path baseline; production default remains legacy.
+$$
+\boxed{RAOS\ Distributional\ Cognitive\ Stability\ Theory\ V1.0\ FORMALIZED}
+$$
+
+Current handoff order: `synchronize roadmap/archive → promote Anchored + Magnitude-Free + Pareto for direct production dogfooding → tag the promoted baseline for rollback → open Phase 9A Kernel Causal Alignment`. The frozen `one-delta-v1` strategy remains preserved for historical replay and rollback.
 
 D semantic research is closed. The v3 D estimator has attributable implementation residuals and is not certified as a passed estimator; do not expand D into another offline synthetic benchmark now.
 
@@ -1084,3 +1088,13 @@ Objectively selected every existing real-web static map with >=2 observed Attent
 ## RAOS Distributional Cognitive Stability Theory V1.0 — FORMALIZED 2026-09-11
 
 Theory reference: `128_RAOS_DISTRIBUTIONAL_COGNITIVE_STABILITY_THEORY.md`; Phase 10D.4 implementation audit: `127_PHASE10D4_CODE_AUDIT_AND_SAMPLING_SEMANTICS.md`. The stability model now explicitly separates one stochastic realization from the empirical Cognitive Probability Map `M_t(E,K) = (P(r in T), P(r in B_pi(T)), P(A))`. Distributional Structural Stability and Cognitive Probability Basin are promoted to experimentally supported RAOS stability concepts; Cognitive Attractor remains analogy/hypothesis only. Interference-pattern and spectrum analogies are retained with strict semantic boundaries. Code audit independently reproduced all Phase 10D.4 Attention JSD values and found no evidence of caching or cross-metric calculation error. Production default remains `one-delta-v1`.
+
+## Phase 10D.4 production dogfood rollout — COMPLETE 2026-09-11
+
+Promotion / handoff record: `129_PHASE10D4_PRODUCTION_PROMOTION_AND_PHASE9_HANDOFF.md`.
+
+The combined research strategy `Anchored OPEN_NEW + Magnitude-Free + Pareto Multi-Delta` is now enabled for the active Mac dogfood runtime through `RAOS_DECISION_STRATEGY_ID=pareto-multidelta-magnitude-free-anchored-open-new`. The repository compatibility default remains `one-delta-v1`, preserving historical replay and a one-line rollback path.
+
+A fresh live API smoke analysis confirmed the running `AnalysisRun.execution_snapshot.decision_strategy` is `pareto-multidelta-magnitude-free-anchored-open-new-v0.1`, with `magnitude-free-v0.1` and `anchored-open-new-v0.1` recorded explicitly. Focused regression: `78 passed / 1 warning`. Full backend regression: `616 passed / 63 skipped / 1 historical Case K failure`; no new regression.
+
+Current handoff is now **Phase 9A — Kernel Causal Alignment**. First question: after an explicit human-authorized `K0 -> K1` change, does the same frozen information interaction move from `M(E,K0)` to `M(E,K1)` in a semantically expected way that exceeds the fixed-K stochastic basin? Do not introduce Markov/HMM/attractor machinery at this gate.

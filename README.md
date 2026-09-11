@@ -52,6 +52,8 @@ SQLite remains a light local mode (`create_all` when `RAOS_AUTO_CREATE_TABLES=tr
 ```bash
 export RAOS_COGNITIVE_PROVIDER=rule    # default; A–O regression baseline
 export RAOS_COGNITIVE_PROVIDER=model   # OpenAI-compatible + rule fallback
+export RAOS_DECISION_STRATEGY_ID=one-delta  # compatibility default
+# Phase 10D.4 dogfood: pareto-multidelta-magnitude-free-anchored-open-new
 export RAOS_LLM_BASE_URL=https://api.openai.com/v1
 export RAOS_LLM_API_KEY=...
 export RAOS_LLM_MODEL=gpt-4o-mini

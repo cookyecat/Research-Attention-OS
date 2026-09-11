@@ -22,6 +22,7 @@ from app.services.scheduler import (
     RuntimeView,
     SchedulerFeatures,
     decision_strategy_snapshot,
+    get_decision_strategy,
     route,
     validate_plan,
 )
@@ -545,6 +546,20 @@ def test_default_decision_strategy_is_explicit_and_versioned():
         "strategy_id": "one-delta",
         "version": "one-delta-v1",
     }
+
+
+def test_configured_production_strategy_can_select_phase10d4_stack(monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(
+        settings,
+        "decision_strategy_id",
+        "pareto-multidelta-magnitude-free-anchored-open-new",
+    )
+    snapshot = get_decision_strategy().execution_snapshot()
+    assert snapshot["version"] == "pareto-multidelta-magnitude-free-anchored-open-new-v0.1"
+    assert snapshot["effect_calibration"]["version"] == "magnitude-free-v0.1"
+    assert snapshot["effect_admission"]["version"] == "anchored-open-new-v0.1"
 
 
 def test_route_accepts_injected_decision_strategy():

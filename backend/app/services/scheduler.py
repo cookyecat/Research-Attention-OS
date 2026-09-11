@@ -369,6 +369,10 @@ _DECISION_STRATEGIES = {
 
 
 def get_decision_strategy(strategy_id: str | None = None):
+    if strategy_id is None:
+        from app.config import settings
+
+        strategy_id = settings.decision_strategy_id
     strategy_id = strategy_id or LEGACY_ONE_DELTA_DECISION_STRATEGY.strategy_id
     if strategy_id in {
         "pareto-multidelta",
@@ -402,7 +406,7 @@ def register_decision_strategy(strategy, *, replace: bool = False):
 
 
 def decision_strategy_snapshot(strategy=None) -> dict:
-    strategy = strategy or LEGACY_ONE_DELTA_DECISION_STRATEGY
+    strategy = strategy or get_decision_strategy()
     snapshot = dict(strategy.execution_snapshot() or {})
     if not snapshot.get("strategy_id") or not snapshot.get("version"):
         raise ValueError("decision strategy execution_snapshot() requires strategy_id and version")
@@ -430,7 +434,7 @@ def route(
     awareness: AwarenessSignals | None = None,
     decision_strategy=None,
 ) -> PlanDraft:
-    """Route through a versioned, injectable decision strategy; legacy one-Delta is the default."""
+    """Route through an explicit strategy; bare calls preserve the legacy policy contract."""
     strategy = decision_strategy or LEGACY_ONE_DELTA_DECISION_STRATEGY
     return strategy.route(
         features, runtime, assessment=assessment, matches=matches, awareness=awareness
