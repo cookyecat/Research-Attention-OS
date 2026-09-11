@@ -1140,3 +1140,7 @@ First execution at SHA `08963a4` yielded 0/24 valid C1 outcomes because the expe
 ## Phase 10D.6C Canonical Input Reconciliation — CLOSED 2026-09-11
 
 Result: `139_PHASE10D6C_CANONICAL_INPUT_RECONCILIATION_RESULT.md`. Valid rerun at SHA `cd809fd` shows direct canonical audited units are decision-bearing: A recovers WATCH in 2/6 from B0 DROP 6/6; D recovers AWARE/WATCH in 4/6 from B0 DROP 6/6; X removes the single B0 DROP; N4 remains WATCH 6/6. Recovered A/D raw effects generally survive production grounding, attributing the main measured difference upstream to Impact input representation. Canonical input alone still does not reproduce the richer Phase-10 targeted topology. Next gate: prompt × input interaction; importance remains frozen.
+
+## Phase 10D.6D Canonical Input × Reconciled Prompt — PREREGISTERED 2026-09-11
+
+Preregistration: `140_PHASE10D6D_CANONICAL_PROMPT_INTERACTION_PREREGISTRATION.md`. C0/C1 both consume direct canonical audited units and preserve production grounding/importance/runtime/decision semantics; only the Impact system prompt differs. This completes the representation × prompt interaction test before any target-importance redesign or production promotion.
