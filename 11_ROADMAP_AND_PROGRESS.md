@@ -1183,3 +1183,7 @@ Result: `157_PHASE10D6J_RELATION_SUPPORT_DIRECTNESS_RESULT.md`. Measurement SHA 
 ## Phase 10D.6K Conservative Authoritative Attention Replay — PREREGISTERED 2026-09-11
 
 Preregistration: `158_PHASE10D6K_CONSERVATIVE_AUTHORITATIVE_ATTENTION_REPLAY_PREREGISTRATION.md`. Frozen input is the 24-sample 10D.6H cardinal-free/support-bound artifact. The gate reconnects authoritative importance/epistemic bands to the unchanged Anchored + Magnitude-Free + Pareto stack. Three same-topology arms isolate epistemic authority: all-support sufficient upper bound, single-source-weak conservative baseline, and canonical directness+provenance authority. No production promotion is permitted from this gate; Phase 9A remains paused.
+
+## Phase 10D.6K first execution — TECHNICAL CARDINAL-FREE LEGALITY FAILURE / AMENDMENT LOCKED 2026-09-11
+
+First execution at SHA `2053ad0` produced all-DROP because shared `legal_public_effects()` still requires `change_magnitude > 0` before the Magnitude-Free/Pareto stack. Failed artifact SHA256 `bed036e39041f296c0b1b88234daa910f9de65021f6c60191e4a26a363072bbf` is retained and is not a cognitive result. Amendment `159_PHASE10D6K_CARDINAL_FREE_LEGALITY_FAILURE_AND_AMENDMENT.md` forbids injecting a fake positive magnitude. Existing Magnitude-Free v0.1 remains unchanged; a separately versioned experimental semantic-effect-existence strategy will be introduced for the valid rerun. Production defaults unchanged; Phase 9A remains paused.
