@@ -95,8 +95,8 @@ Core invariants:
 | Phase 6 — Integrated Cognitive Attention Loop | Raw Source → Sensor/Auditor → D/S/P + Δ → four Attention Actions → human-gated Kernel proposal | **CLOSED** |
 | Phase 7 — Perception Fidelity | External World Model fidelity, dynamic P evidence, minimal trusted Brain World Model | **CLOSED / WORKING BASELINE** |
 | Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **CLOSED / OPERATIONAL BASELINE ESTABLISHED** |
-| Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **ACTIVE — 9A PREREGISTERED** |
-| Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence | **10D.4 COMPLETE / THEORY V1.0 FORMALIZED** |
+| Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **9A PREREGISTERED / OUTCOME SAMPLING PAUSED FOR PARITY GATE** |
+| Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence | **10D.5 COMPLETE / PRODUCTION-IMPORTANCE PARITY AUDITED** |
 | Phase 11 — Personalization / Scale | Questionnaire prior + trajectory residuals + multi-user/product validation | **NOT STARTED** |
 
 Current strategic position:
@@ -1112,3 +1112,11 @@ Preregistration / audit plan: `132_PHASE10D5_PRODUCTION_SEMANTIC_PARITY_PREREGIS
 The 10D.5 formal audit will deterministically replay the exact 168 stored Phase 10D.4 real-web samples. Arm R must reproduce historical Attention and Decision-Causal Core exactly before Arm P rebinds only targeted importance with production authority. No acquisition, Sensor, Auditor, Locate, or LLM call is permitted.
 
 Pre-measurement scope amendment: `133_PHASE10D5_SCOPE_AUDIT_AND_REPLAY_BOUNDARY.md`. Static code audit also found production-only Impact prompting and `ground_effects`; therefore v0.1 isolates only the discovered target-importance authority seam. Full native-vs-production prompt/grounding parity is explicitly not claimed by this replay.
+
+## Phase 10D.5 Production Semantic Parity Audit — COMPLETE 2026-09-11
+
+Result: `134_PHASE10D5_PRODUCTION_SEMANTIC_PARITY_RESULT.md`; scope amendment: `133_PHASE10D5_SCOPE_AUDIT_AND_REPLAY_BOUNDARY.md`. Measurement SHA `e71e99f8a0450567069d5f83a557ce9dbe4dfa82`; canonical artifact SHA256 `e2ef93617f48e8d296e63eb6b0075b00986e764f8b46a46023837b2c0e5eb6af`.
+
+Historical Arm R reproduced all 168 stored Phase 10D.4 topology/core/Attention samples exactly. Rebinding only targeted `target_importance` through deployed `resolve_target_importance` changed individual decisions materially (A 32/48, D 48/48, X 3/24, N4 0/48), but all 4/4 cases remained null-compatible at the Attention layer. D's load-bearing basin changed from compatible to supported drift; its raw topology drift remains supported.
+
+Interpretation: 10D.4's exact Attention frequencies belong to the native research path, but its product-level `4/4 same Attention basin` conclusion survives deployed target-importance authority. The live dogfood pipeline itself uses production `ModelProvider`; the mismatch was in research-to-production transfer semantics, not a newly introduced live production bug. Full native-vs-production Impact prompt / `ground_effects` parity remains a separate future gate before claiming exact production distribution equivalence. Phase 9A remains preregistered with no outcome samples collected.

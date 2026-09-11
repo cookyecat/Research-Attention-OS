@@ -403,3 +403,11 @@ Together they motivate the central stability statement:
 > **RAOS need not reproduce every realization exactly. It should preserve a stable, decision-bearing probability structure under controlled conditions.**
 
 This is the present meaning of **Distributional Structural Stability** and **Cognitive Probability Basin** in RAOS Theory V1.0.
+
+## Post-V1.0 addendum — Phase 10D.5 production-importance parity
+
+Phase 10D.5 (`134_PHASE10D5_PRODUCTION_SEMANTIC_PARITY_RESULT.md`) discovered and formally audited a research-to-production authority seam: Phase-10 native cognition preserved the LLM-returned `target_importance`, while deployed `ModelProvider` resolves targeted importance through Kernel authority (`explicit importance/priority > node-type prior > LLM estimate > neutral`).
+
+The exact 168 stored Phase 10D.4 realizations replayed historical topology, Decision-Causal Core, and Attention with zero mismatch. Reprojecting only targeted importance through production authority changed many individual decisions in A/D/X but preserved the cross-checkpoint **Attention basin in all 4/4 selected real-web cases**. D's stronger load-bearing-basin stability did not survive: under production importance authority, D has supported load-bearing drift while Attention remains `ENGAGE 24/24` at both checkpoints.
+
+Therefore Theory V1.0's layered stability distinction remains supported, while empirical transfer language is narrowed: exact Phase 10D.4 Attention frequencies are native-research-path frequencies; the higher-level `4/4` Attention-basin persistence result survives production target-importance authority. This addendum does not claim full `native_assess` ↔ production `ModelProvider` prompt/grounding parity.
