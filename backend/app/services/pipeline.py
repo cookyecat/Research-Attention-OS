@@ -552,6 +552,7 @@ def run_pipeline(
                 persist_suggested_watches=persist_suggested_watches,
                 runtime_context_id=runtime_context_id,
                 decision_strategy=decision_strategy,
+                provider=provider,
             )
         return hydrate_run(db, run)
     if kind == "existing" and run.status == "RUNNING":
@@ -566,6 +567,7 @@ def run_pipeline(
                         db, run, runtime, source, persist_suggested_watches=persist_suggested_watches,
                         runtime_context_id=runtime_context_id,
                         decision_strategy=decision_strategy,
+                        provider=provider,
                     )
                 return hydrate_run(db, run)
             if run.status in {"FAILED", "SUPERSEDED"}:
@@ -827,6 +829,7 @@ def _reschedule(
     persist_suggested_watches: bool = False,
     runtime_context_id: UUID | None = None,
     decision_strategy=None,
+    provider=None,
 ) -> dict:
     from app.cognitive.factory import get_provider
     from app.services.analysis_runs import fresh_kernel_snapshot_hash, hydrate_run, plan_public
@@ -910,7 +913,11 @@ def _reschedule(
     db.add(plan)
     db.flush()
     authorized = _expected_output(draft.expected_output)
-    provider = get_provider()
+    provider = provider or get_provider()
+    score_debug["artifact_execution"] = analysis_execution_snapshot(provider)
+    plan.score_debug = score_debug
+    from sqlalchemy.orm.attributes import flag_modified
+    flag_modified(plan, "score_debug")
     delta, patch_drafts = _execute_authorized_artifacts(
         authorized,
         provider=provider,

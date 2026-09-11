@@ -354,3 +354,28 @@ def test_completed_run_reschedule_preserves_explicit_decision_strategy(client: T
     latest = second["attention_plan"]
     assert latest["score_debug"]["decision_strategy"]["strategy_id"] == strategy.strategy_id
     assert latest["score_debug"]["decision_strategy"]["version"] == strategy.version
+
+
+def test_completed_run_reschedule_preserves_explicit_provider_for_artifact_synthesis(client: TestClient, db, monkeypatch):
+    from app.cognitive.rule_provider import RuleBasedCognitiveProvider
+    from app.services.pipeline import run_pipeline
+    from app.services.scheduler import RuntimeView
+
+    provider = RuleBasedCognitiveProvider()
+    src = add_text(client, "A technical paper about motor intelligence latency.", title="prov-explicit-provider")
+    first = run_pipeline(db, UUID(src["id"]), provider=provider)
+    db.commit()
+
+    def should_not_resolve_global_provider():
+        raise AssertionError("completed-run reschedule must preserve the explicit provider")
+
+    monkeypatch.setattr("app.cognitive.factory.get_provider", should_not_resolve_global_provider)
+    second = run_pipeline(
+        db,
+        UUID(src["id"]),
+        provider=provider,
+        runtime=RuntimeView(current_task="later"),
+    )
+    assert second["analysis_run"]["id"] == first["analysis_run"]["id"]
+    debug = second["attention_plan"].get("score_debug") or {}
+    assert "artifact_execution" in debug
