@@ -96,7 +96,7 @@ Core invariants:
 | Phase 7 — Perception Fidelity | External World Model fidelity, dynamic P evidence, minimal trusted Brain World Model | **CLOSED / WORKING BASELINE** |
 | Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **CLOSED / OPERATIONAL BASELINE ESTABLISHED** |
 | Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **9A PREREGISTERED / OUTCOME SAMPLING PAUSED FOR PARITY GATE** |
-| Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence | **10D.5 COMPLETE / PRODUCTION-IMPORTANCE PARITY AUDITED** |
+| Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence | **10D.6E CLOSED / 10D.6F SUPPORT-BINDING NEXT** |
 | Phase 11 — Personalization / Scale | Questionnaire prior + trajectory residuals + multi-user/product validation | **NOT STARTED** |
 
 Current strategic position:
@@ -109,7 +109,7 @@ $$
 \boxed{RAOS\ Distributional\ Cognitive\ Stability\ Theory\ V1.0\ FORMALIZED}
 $$
 
-Current research position: `Phase 10D.4 production checkpoint frozen/tagged → Phase 9A Kernel Causal Alignment preregistered`. Phase 9A now tests whether explicit accepted Kernel changes produce directionally correct shifts beyond the fixed-K stochastic basin. The frozen `one-delta-v1` strategy remains preserved for historical replay and rollback.
+Current research position: `Phase 10D.6E authority-band calibration closed → Phase 10D.6F support-binding/evidence-class authority next; Phase 9A remains preregistered and paused`. Phase 9A now tests whether explicit accepted Kernel changes produce directionally correct shifts beyond the fixed-K stochastic basin. The frozen `one-delta-v1` strategy remains preserved for historical replay and rollback.
 
 D semantic research is closed. The v3 D estimator has attributable implementation residuals and is not certified as a passed estimator; do not expand D into another offline synthetic benchmark now.
 
@@ -1152,3 +1152,7 @@ Result: `141_PHASE10D6D_CANONICAL_PROMPT_INTERACTION_RESULT.md`. Combined canoni
 ## Phase 10D.6E Canonical Authority Enrichment — PREREGISTERED 2026-09-11
 
 Preregistration: `142_PHASE10D6E_CANONICAL_AUTHORITY_ENRICHMENT_PREREGISTRATION.md`. 10D.6D exposed that remaining divergence is no longer safely described as a prompt problem: production grounding can delete canonical targeted relations and forces single-source/no-observation epistemic values to 0.35, while the current importance resolver also collapses most update-eligible node-type priors above the Magnitude-Free 0.55 high/low boundary. 10D.6E therefore moves LLM responsibility toward semantic-only operation/target/support references/reason and requires authoritative deterministic enrichment for importance and epistemic bands before any production promotion.
+
+## Phase 10D.6E Authority Band Calibration — CLOSED / NO PROMOTION 2026-09-11
+
+Result: `144_PHASE10D6E_AUTHORITY_BAND_CALIBRATION_RESULT.md`. Exact 168-sample offline replay passed both fail-closed references: historical Phase 10D.4 outputs and Phase 10D.5 production-importance projections. C2 (treat every Auditor-admitted relation as epistemically sufficient) produced 46 new ENGAGE decisions and a supported D Attention-basin shift, so it is rejected. C1 removed production-importance ENGAGE inflation without introducing any new DROP or ENGAGE and retained all four Attention basins, but collapsed N4 to WATCH 24/24. Attribution shows the bottleneck is epistemic representation: `SOURCE_CLAIM` currently conflates announcements/media claims with primary technical measurements, including RS05 profiler evidence and N4 robotics evaluations. Importance authority remains on the C1 direction; epistemic authority must become support-bound and evidence-class-aware. Next: 10D.6F Effect Support Binding / Evidence-Class Authority. Production defaults unchanged; Phase 9A stays paused.
