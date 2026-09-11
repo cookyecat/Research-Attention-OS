@@ -1191,3 +1191,7 @@ First execution at SHA `2053ad0` produced all-DROP because shared `legal_public_
 ## Phase 10D.6K second execution — CAUSAL-CORE LEGALITY PLUMBING FAILURE / AMENDMENT LOCKED 2026-09-11
 
 The new cardinal-free strategy itself was correct, but `Decision-Causal Core` independently applied legacy `legal_public_effects()` before invoking it, again producing all-DROP. Failed artifact SHA256 `3661c32c1dd9eb493e74d55e830aa9b84ee8f08e1522c8f4f5d544c19fe26423` is retained and is not a cognitive result. Amendment `160_PHASE10D6K_CAUSAL_CORE_LEGALITY_PLUMBING_FAILURE_AND_AMENDMENT.md` centralizes effect-existence legality in the decision strategy so route and causal ablation share one contract. Existing production strategy semantics remain unchanged.
+
+## Phase 10D.6L End-to-End Business Logic Integrity Audit — ACTIVE 2026-09-11
+
+Audit: `161_PHASE10D6L_END_TO_END_BUSINESS_LOGIC_INTEGRITY_AUDIT.md`. New cognitive outcome sampling is paused after 10D.6K exposed repeated legacy/instrumentation semantic interference. Confirmed high-priority findings include: Pareto Attention cause can diverge from legacy public-update/KernelPatch cause; completed-run runtime reschedule can drop an explicit decision strategy; Impact prompt/contract is absent from AnalysisRun execution identity; and WATCH/OPEN_NEW side-effect responsibility still relies on global Locate approximations instead of effect-specific provenance. Complete the end-to-end authority/call-graph audit and repair P0/P1 items before resuming 10D.6K or Phase 9A.
