@@ -1144,3 +1144,7 @@ Result: `139_PHASE10D6C_CANONICAL_INPUT_RECONCILIATION_RESULT.md`. Valid rerun a
 ## Phase 10D.6D Canonical Input × Reconciled Prompt — PREREGISTERED 2026-09-11
 
 Preregistration: `140_PHASE10D6D_CANONICAL_PROMPT_INTERACTION_PREREGISTRATION.md`. C0/C1 both consume direct canonical audited units and preserve production grounding/importance/runtime/decision semantics; only the Impact system prompt differs. This completes the representation × prompt interaction test before any target-importance redesign or production promotion.
+
+## Phase 10D.6D Canonical Input × Reconciled Prompt — CLOSED / NOT PROMOTED 2026-09-11
+
+Result: `141_PHASE10D6D_CANONICAL_PROMPT_INTERACTION_RESULT.md`. Combined canonical input + reconciled prompt did not produce a promotable candidate: A remained DROP 6/6, D became more DROP-heavy, X gained richer topology but less stable Attention, and N4 remained WATCH 6/6. Raw/grounded attribution exposed a deeper legacy coupling: production `ground_effects` can delete canonical targeted relations and caps single-source/no-observation epistemic strength at 0.35, directly forcing the Magnitude-Free epistemic band low. Next gate shifts from prompt tuning to canonical authority enrichment for both importance and epistemic bands.
