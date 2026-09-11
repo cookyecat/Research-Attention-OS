@@ -503,6 +503,58 @@ def normalize_frozen_transition(
     )
 
 
+def project_assessment_to_effect(
+    assessment: CognitiveImpactAssessment | None,
+    effect: CognitiveEffect | None,
+) -> CognitiveImpactAssessment:
+    """Project a multi-effect assessment onto the strategy-selected decision cause.
+
+    This is a side-effect/public-projection adapter, not a second selector.  If the
+    strategy selected no cognitive effect, the projection is explicitly empty.
+    """
+    return CognitiveImpactAssessment(
+        effects=[effect] if effect is not None else [],
+        attention_cost=float(getattr(assessment, "attention_cost", 2.0) if assessment is not None else 2.0),
+        exploration_candidate=bool(getattr(assessment, "exploration_candidate", False) if assessment is not None else False),
+        features=getattr(assessment, "features", None) if assessment is not None else None,
+        raw_effects=list(getattr(assessment, "raw_effects", []) or []) if assessment is not None else [],
+    )
+
+
+def update_from_effect(effect: CognitiveEffect | None) -> dict:
+    if effect is None:
+        return {"operation": None, "target_node_id": None}
+    op = effect.operation.value if hasattr(effect.operation, "value") else str(effect.operation)
+    target = None if str(op) == CognitiveEffectKind.OPEN_NEW.value else (
+        str(effect.target_kernel_node_id) if effect.target_kernel_node_id else None
+    )
+    return {"operation": str(op), "target_node_id": target}
+
+
+def visible_prediction_from_decision_cause(decision_cause, *, disposition) -> dict:
+    """Render the exact strategy-selected cause without re-running a winner selector."""
+    effect = decision_cause if isinstance(decision_cause, CognitiveEffect) else None
+    if effect is None and isinstance(decision_cause, dict):
+        parsed = assessment_from_dict({"effects": [decision_cause]})
+        effect = parsed.effects[0] if parsed and parsed.effects else None
+    update = update_from_effect(effect)
+    if effect is None:
+        content = "No material cognitive change relative to the current Kernel."
+    else:
+        content = str(effect.reason or "").strip()
+        if not content:
+            content = (
+                "OPEN_NEW: no existing Kernel node is the correct landing point."
+                if update["operation"] == CognitiveEffectKind.OPEN_NEW.value
+                else f"{update['operation']} on {effect.target_node_type or update['target_node_id'] or 'existing target'}."
+            )
+    return {
+        "disposition": disposition,
+        "update": update,
+        "delta_content": visible_delta_content(disposition, content),
+    }
+
+
 def visible_prediction_from_frozen(
     *,
     frozen_impact: CognitiveImpactAssessment | dict | None,

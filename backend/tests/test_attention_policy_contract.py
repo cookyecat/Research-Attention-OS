@@ -585,3 +585,37 @@ def test_route_accepts_injected_decision_strategy():
     )
     assert plan.disposition == Disposition.AWARE
     assert plan.reason == "injected decision strategy"
+
+
+def test_authorized_artifacts_project_multi_effect_assessment_to_decision_cause():
+    from uuid import uuid4
+    from app.enums import CognitiveEffectKind, ExpectedOutput
+    from app.services.cognitive_impact import CognitiveEffect, CognitiveImpactAssessment
+    from app.services.pipeline import _execute_authorized_artifacts
+    from app.services.deltas import ModelDelta
+
+    target_a, target_b = uuid4(), uuid4()
+    cause = CognitiveEffect(target_a, CognitiveEffectKind.CHALLENGE, .1, .8, .8, "cause", False, "BELIEF")
+    other = CognitiveEffect(target_b, CognitiveEffectKind.REINFORCE, .9, .8, .8, "other", False, "MODEL")
+    assessment = CognitiveImpactAssessment(effects=[cause, other])
+    seen = []
+
+    class Provider:
+        def propose_model_delta(self, *args, assessment=None, **kwargs):
+            seen.append(("delta", assessment))
+            return ModelDelta(summary="x")
+        def propose_patches(self, *args, assessment=None, **kwargs):
+            seen.append(("patch", assessment))
+            return []
+
+    _execute_authorized_artifacts(
+        ExpectedOutput.KERNEL_PATCH,
+        provider=Provider(), blob="", extraction=None, matches=[], features=None,
+        nodes=[], assessment=assessment, evidence_link_ids=[],
+        decision_effect=cause, decision_effect_bound=True,
+    )
+    assert [kind for kind, _ in seen] == ["delta", "patch"]
+    for _, projected in seen:
+        assert len(projected.effects) == 1
+        assert projected.effects[0].operation == CognitiveEffectKind.CHALLENGE
+        assert projected.effects[0].target_kernel_node_id == target_a

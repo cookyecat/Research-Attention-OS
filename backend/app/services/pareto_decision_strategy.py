@@ -11,6 +11,7 @@ from app.services.cognitive_impact import (
     legal_semantic_effects,
     normalize_frozen_transition,
     select_primary_effect,
+    visible_prediction_from_decision_cause,
     visible_prediction_from_frozen,
 )
 from app.services.effect_admission import (
@@ -175,6 +176,8 @@ class ParetoMultiDeltaDecisionStrategy:
         )
         if not frontier:
             draft = _cognitive_disposition(features, None, matches, awareness=awareness)
+            draft.decision_effect = None
+            draft.decision_effect_bound = True
             return _apply_runtime_overlays(draft, features, runtime, primary=None, matches=matches)
 
         planned = [
@@ -187,12 +190,16 @@ class ParetoMultiDeltaDecisionStrategy:
         draft, representative = _aggregate_frontier_plans(
             planned, matches, calibration_strategy=self.calibration_strategy
         )
+        draft.decision_effect = representative
+        draft.decision_effect_bound = True
         return _apply_runtime_overlays(
             draft, features, runtime, primary=representative, matches=matches
         )
 
-    def visible_prediction(self, *, frozen_impact, frozen_matches, disposition) -> dict:
-        # Public HTTP contract is still single-update. Multi-effect semantics remain in score_debug.
+    def visible_prediction(self, *, frozen_impact, frozen_matches, disposition, decision_cause=None, decision_cause_bound=False) -> dict:
+        # Single public update is a compatibility projection of the actual decision cause.
+        if decision_cause_bound:
+            return visible_prediction_from_decision_cause(decision_cause, disposition=disposition)
         return visible_prediction_from_frozen(
             frozen_impact=frozen_impact,
             frozen_matches=frozen_matches,

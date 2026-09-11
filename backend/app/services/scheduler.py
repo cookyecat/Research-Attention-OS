@@ -86,6 +86,10 @@ class PlanDraft:
     reason: str = ""
     watch_after_processing: bool = False
     watch_triggers: list[str] = field(default_factory=list)
+    # Strategy-selected cognitive cause for public update / authorized side effects.
+    # Ephemeral in the draft; persisted explicitly in AttentionPlan.score_debug.
+    decision_effect: object | None = None
+    decision_effect_bound: bool = False
 
 
 def _match_supported(
@@ -334,6 +338,8 @@ def _route_legacy_one_delta(
     primary = select_primary_effect(assessment)
 
     draft = _cognitive_disposition(features, primary, matches, awareness=awareness)
+    draft.decision_effect = primary
+    draft.decision_effect_bound = True
     return _apply_runtime_overlays(draft, features, runtime, primary=primary, matches=matches)
 
 
@@ -352,9 +358,14 @@ class LegacyOneDeltaDecisionStrategy:
             features, runtime, assessment=assessment, matches=matches, awareness=awareness
         )
 
-    def visible_prediction(self, *, frozen_impact, frozen_matches, disposition) -> dict:
-        from app.services.cognitive_impact import visible_prediction_from_frozen
+    def visible_prediction(self, *, frozen_impact, frozen_matches, disposition, decision_cause=None, decision_cause_bound=False) -> dict:
+        from app.services.cognitive_impact import (
+            visible_prediction_from_decision_cause,
+            visible_prediction_from_frozen,
+        )
 
+        if decision_cause_bound:
+            return visible_prediction_from_decision_cause(decision_cause, disposition=disposition)
         return visible_prediction_from_frozen(
             frozen_impact=frozen_impact,
             frozen_matches=frozen_matches,

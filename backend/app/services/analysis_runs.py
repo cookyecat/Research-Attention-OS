@@ -386,6 +386,8 @@ def _apply_current_public_contract(payload: dict) -> dict:
         frozen_impact=impact,
         frozen_matches=matches_from_debug(debug.get("matches")),
         disposition=stored.get("disposition") or payload.get("disposition"),
+        decision_cause=debug.get("decision_cause"),
+        decision_cause_bound=bool(debug.get("decision_cause_bound")),
     )
     payload["update"] = visible["update"]
     payload["delta_content"] = visible["delta_content"]
@@ -405,6 +407,8 @@ def plan_public(plan: AttentionPlan) -> dict:
         frozen_impact=debug.get("cognitive_impact"),
         frozen_matches=matches_from_debug(debug.get("matches")),
         disposition=plan.disposition,
+        decision_cause=debug.get("decision_cause"),
+        decision_cause_bound=bool(debug.get("decision_cause_bound")),
     )
     return {
         "id": str(plan.id),

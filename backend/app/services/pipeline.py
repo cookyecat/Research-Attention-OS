@@ -17,7 +17,7 @@ from app.models.observation import Observation
 from app.models.scheduler import AttentionPlan, RuntimeContext
 from app.models.source import Source
 from app.models.watch import Watch, WatchTrigger
-from app.services.cognitive_impact import CognitiveImpactAssessment
+from app.services.cognitive_impact import CognitiveImpactAssessment, project_assessment_to_effect
 from app.services.deltas import ModelDelta, suggest_watches
 from app.services.extraction import (
     ExtractionResult,
@@ -299,7 +299,11 @@ def _execute_authorized_artifacts(
     nodes,
     assessment,
     evidence_link_ids: list[str],
+    decision_effect=None,
+    decision_effect_bound: bool = False,
 ) -> tuple[ModelDelta, list]:
+    if decision_effect_bound:
+        assessment = project_assessment_to_effect(assessment, decision_effect)
     if authorized == ExpectedOutput.SUMMARY:
         return (
             provider.propose_model_delta(
@@ -689,6 +693,8 @@ def run_pipeline(
                 "independence": independence,
                 "brain_world_model": brain_snapshot.as_dict(),
                 "decision_strategy": strategy_execution,
+                "decision_cause": draft.decision_effect.as_dict() if draft.decision_effect is not None else None,
+                "decision_cause_bound": bool(draft.decision_effect_bound),
             },
         )
         db.add(plan)
@@ -704,6 +710,8 @@ def run_pipeline(
             nodes=nodes,
             assessment=assessment,
             evidence_link_ids=[str(link.id) for link in links],
+            decision_effect=draft.decision_effect,
+            decision_effect_bound=draft.decision_effect_bound,
         )
         watch_suggestions = suggest_watches(blob, features, delta)
         patches, created_watches = _persist_authorized_artifacts(
@@ -867,6 +875,8 @@ def _reschedule(
     score_debug = dict(orig_debug or (payload.get("attention_plan") or {}).get("score_debug") or {})
     score_debug["brain_world_model"] = brain_snapshot.as_dict()
     score_debug["decision_strategy"] = decision_strategy_snapshot(decision_strategy)
+    score_debug["decision_cause"] = draft.decision_effect.as_dict() if draft.decision_effect is not None else None
+    score_debug["decision_cause_bound"] = bool(draft.decision_effect_bound)
     plan = AttentionPlan(
         candidate_type=CandidateType.SOURCE,
         candidate_id=source.id,
@@ -900,6 +910,8 @@ def _reschedule(
         nodes=nodes,
         assessment=assessment or impact,
         evidence_link_ids=evidence_link_ids,
+        decision_effect=draft.decision_effect,
+        decision_effect_bound=draft.decision_effect_bound,
     )
     watch_suggestions = suggest_watches(blob, features, delta)
     new_patches, new_watches = _persist_authorized_artifacts(
@@ -959,6 +971,8 @@ def serialize_analysis(
         frozen_impact=assessment,
         frozen_matches=matches,
         disposition=plan.disposition,
+        decision_cause=(plan.score_debug or {}).get("decision_cause") if isinstance(plan.score_debug, dict) else None,
+        decision_cause_bound=bool((plan.score_debug or {}).get("decision_cause_bound")) if isinstance(plan.score_debug, dict) else False,
     )
     update = visible["update"]
     delta_content = visible["delta_content"]

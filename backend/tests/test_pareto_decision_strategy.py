@@ -228,3 +228,49 @@ def test_cardinal_free_strategy_is_registered_without_replacing_production_strat
     existing = get_decision_strategy("pareto-multidelta-magnitude-free-anchored-open-new")
     assert candidate is CARDINAL_FREE_ANCHORED_OPEN_NEW_PARETO_DECISION_STRATEGY
     assert existing is ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY
+
+
+def test_pareto_public_projection_uses_attention_decision_cause_not_legacy_primary():
+    from app.services.cognitive_impact import select_primary_effect
+
+    belief = _match("BELIEF")
+    model = _match("MODEL")
+    challenge = _effect(
+        belief,
+        CognitiveEffectKind.CHALLENGE,
+        change=.10,
+        epi=.8,
+        importance=.8,
+    )
+    high_raw_reinforce = _effect(
+        model,
+        CognitiveEffectKind.REINFORCE,
+        change=.95,
+        epi=.8,
+        importance=.8,
+    )
+    assessment = CognitiveImpactAssessment(effects=[challenge, high_raw_reinforce])
+
+    # Legacy single-primary projection would choose the high raw-magnitude reinforce.
+    assert select_primary_effect(assessment) is high_raw_reinforce
+
+    strategy = ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY
+    plan = route(
+        _features(), assessment=assessment, matches=[belief, model], decision_strategy=strategy,
+    )
+    assert plan.disposition == Disposition.ENGAGE
+    assert plan.decision_effect.operation == challenge.operation
+    assert plan.decision_effect.target_kernel_node_id == challenge.target_kernel_node_id
+    assert plan.decision_effect_bound is True
+
+    visible = strategy.visible_prediction(
+        frozen_impact=assessment,
+        frozen_matches=[belief, model],
+        disposition=plan.disposition,
+        decision_cause=plan.decision_effect.as_dict(),
+        decision_cause_bound=True,
+    )
+    assert visible["update"] == {
+        "operation": "CHALLENGE",
+        "target_node_id": str(belief.node_id),
+    }
