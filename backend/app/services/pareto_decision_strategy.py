@@ -143,7 +143,8 @@ class ParetoMultiDeltaDecisionStrategy:
             "article_aggregation": "attention-join-v0.1",
             "effect_calibration": self.calibration_strategy.execution_snapshot(),
             "effect_admission": self.effect_admission_strategy.execution_snapshot(),
-            "public_update_projection": "legacy-single-primary-compatibility",
+            "public_update_projection": "strategy-decision-cause-with-legacy-unbound-fallback-v0.1",
+            "decision_scope": "strategy-bound-scope-v0.1",
         }
         if self.semantic_effect_existence:
             snapshot["effect_existence"] = "legal-semantic-relation-v0.1"

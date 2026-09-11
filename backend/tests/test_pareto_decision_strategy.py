@@ -306,3 +306,9 @@ def test_decision_scope_marks_open_new_global_anchor_as_approximation():
     assert plan.decision_scope_provenance == "global-locate-jurisdiction-approximation"
     assert plan.decision_scope_node_ids == [str(project.node_id)]
     assert str(belief.node_id) not in plan.decision_scope_node_ids
+
+
+def test_pareto_execution_snapshot_declares_decision_cause_projection_and_scope():
+    snap = ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY.execution_snapshot()
+    assert snap["public_update_projection"] == "strategy-decision-cause-with-legacy-unbound-fallback-v0.1"
+    assert snap["decision_scope"] == "strategy-bound-scope-v0.1"
