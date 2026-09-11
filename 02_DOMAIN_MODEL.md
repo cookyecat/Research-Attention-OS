@@ -1,6 +1,6 @@
 # Research Attention OS — DOMAIN_MODEL.md
 
-Version: RAOS v1.1
+Version: RAOS v1.2
 
 ## 1. General conventions
 
@@ -413,3 +413,96 @@ Committed Kernel objects are versioned:
 - record user action and timestamp.
 
 Event sourcing is preferred over destructive overwrite.
+
+
+# 13. Cognitive processing pipeline glossary
+
+The operational cognition path is one mostly top-down pipeline. For reasoning about architecture, group it into four stages rather than treating every box as an independent subsystem:
+
+```text
+1. Build the external world: Sensor / Auditor -> Audited Semantic World
+2. Relate world to cognition: Locate -> Relation Mapping -> Grounding / Authority
+3. Allocate attention: Anchored OPEN_NEW -> Magnitude-Free -> Pareto -> Attention
+4. Execute and preserve causality: Decision Cause -> Public Update / KernelPatch / WATCH -> Replay / Cache / Reschedule
+```
+
+Design principle: each stage owns one responsibility. Upstream semantic stages must not pre-empt downstream decision policy.
+
+## Relation Mapping
+
+A semantic relation-classification task: connect audited external evidence to relevant Cognitive Kernel nodes. It is deliberately similar to a constrained matching / "connect-the-lines" NLP task.
+
+Input: audited semantic evidence plus Kernel locations / eligible targets.
+Output: zero or more semantic relations: `REINFORCE(existing node)`, `CHALLENGE(existing node)`, or `OPEN_NEW`.
+
+A `targeted effect` is simply a Relation Mapping output with an existing Kernel target (`REINFORCE` or `CHALLENGE`). `OPEN_NEW` has no existing target.
+
+The LLM system prompt for this task is called **Relation Mapping Prompt** in architecture documentation and new code (`RELATION_MAPPING_SYSTEM_PROMPT`). Historical `IMPACT_SYSTEM` remains only as a compatibility alias.
+
+Relation Mapping must not choose DROP/AWARE/WATCH/ENGAGE, rank effects into a single winner, or manufacture decision authority from compatibility scores.
+
+## Grounding
+
+Grounding asks whether a proposed semantic relation is actually licensed by the evidence and Kernel state.
+
+Input: a relation, its exact support evidence, target/jurisdiction, and Kernel propositions.
+Output: legal/illegal relation plus categorical support/scope assessment.
+
+Grounding checks identifier legality, target eligibility, scope alignment, operation direction, and relation-to-support fit. It is the deterministic/semantic firewall between "the LLM proposed a relation" and "the system may reason from that relation."
+
+## Authority
+
+Authority answers which state is allowed to influence downstream decisions. It is separate from Relation Mapping.
+
+Examples: target importance comes from Kernel/user state; epistemic authority comes from evidence provenance/support quality; active-role status comes from Kernel/Locate state. LLM compatibility scores are not authoritative merely because they are numeric.
+
+Authority produces decision-bearing bands/flags consumed by Magnitude-Free policy; it does not itself select the final Attention disposition.
+
+## Anchored OPEN_NEW
+
+`OPEN_NEW` means the evidence opens a useful new cognitive branch but no existing epistemic Kernel node is the correct update target. Such a branch must still belong to a cognitive jurisdiction.
+
+A jurisdiction is a responsibility area in the Kernel, analogous to assigning a new research proposal to an appropriate discipline/division even when it is not an update to an existing project. Current production may use an explicitly labelled Locate-derived approximation; the research contract can carry exact `jurisdiction_anchor_ids` per effect.
+
+Anchored admission answers only whether an `OPEN_NEW` branch has legitimate Kernel jurisdiction. It does not rank the branch or determine Attention.
+
+## Pareto selection
+
+Pareto preserves multiple effects that are incomparable on the discrete decision-bearing dimensions. An effect is removed only when another effect dominates it on all relevant dimensions and is strictly better on at least one.
+
+This prevents a scalar rule such as `change_magnitude * target_importance` from collapsing multiple legitimate cognitive effects into one winner. After the frontier is formed, each frontier effect receives a Magnitude-Free channel plan and article-level Attention is joined from those plans.
+
+## Decision Cause
+
+Decision Cause is the strategy-selected effect that causally explains the article-level Attention decision and authorizes downstream side effects. It is provenance, not a new semantic relation.
+
+Invariant for built-in strategies: `Decision Cause = Public Update Cause = Authorized Side-Effect Cause` unless a versioned compatibility projection explicitly states otherwise.
+
+## Public Update and KernelPatch
+
+Public Update is the user-facing compatibility projection of what the system says changed or matters cognitively. It must project the actual Decision Cause rather than independently selecting another effect.
+
+KernelPatch is an AI-proposed mutation to committed Cognitive Kernel state. It is only a proposal; user acceptance/modification is required before committed Kernel mutation. A patch must be authorized by the same Decision Cause that justified the Attention action.
+
+`WATCH` is future-attention responsibility: preserve a causal target/jurisdiction and define triggers for new evidence rather than mutating cognition immediately.
+
+## Replay / Cache / Reschedule
+
+Replay re-executes a declared stage against frozen inputs for attribution or reproducibility. It must not silently execute a different policy stage or redefine legality.
+
+Cache reuses a completed `AnalysisRun` only when frozen execution identity matches the relevant provider/prompt/strategy contract.
+
+Reschedule keeps frozen cognition but recomputes runtime-dependent attention/artifacts when runtime context changes. Explicit provider and decision strategy must be preserved across reschedule paths.
+
+## Research contract
+
+A research contract is a versioned experimental interface/semantic contract used to test a proposed architecture before production promotion. It is not automatically the production contract. For example, effect-level `support_unit_ids` and `jurisdiction_anchor_ids` are currently validated research-contract fields even when production core still uses a compatibility representation.
+
+## Evaluator-capacity bracketing
+
+Model errors and architecture errors must be separated. During research, evaluate the same frozen task at multiple evaluator strengths when possible:
+
+- weaker model: robustness lower bound / stress test;
+- strongest available model or strong-model manual adjudication: capability upper bound / architecture ceiling.
+
+A single weak-model error is not sufficient evidence that the RAOS architecture is wrong. Architecture changes require evidence that the failure persists under a stronger evaluator or follows from a deterministic contract/invariant violation. Conversely, a design that remains reliable under a weak model is especially valuable because it demonstrates architectural robustness rather than merely model capability.

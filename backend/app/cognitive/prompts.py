@@ -171,7 +171,7 @@ Return JSON:
   "what_could_change": []
 }}"""
 
-IMPACT_SYSTEM = """Assess potential cognitive impact for Research Attention OS.
+RELATION_MAPPING_SYSTEM_PROMPT = """Assess potential cognitive impact for Research Attention OS.
 You do NOT choose DROP/AWARE/WATCH/ENGAGE. You estimate what absorbing this information could mean for the current Cognitive Kernel.
 
 Judge from Epistemic Objects (Claims, Observations, Inferences). Do not re-read the raw document to invent a cognitive update from keywords, titles, or words like unified / model / motor.
@@ -228,9 +228,13 @@ _IMPACT_DOWNSTREAM_POLICY_LINES = (
     "Set OPEN_NEW change_magnitude >= 0.55 only for a real new cognitive branch worth keeping in view (a paper, method, or located near current Goal/Project without updating existing cognition). Changelog, leaderboard, minor-version news, and unsourced media hype should be empty effects or well below 0.55.\n",
     "When several legal effects exist, the public update is the single coherent effect with the largest useful cognitive change (change_magnitude × target_importance). An existing target does not outrank OPEN_NEW by default.\n",
 )
-IMPACT_SYSTEM_PARETO_COMPAT = IMPACT_SYSTEM
+RELATION_MAPPING_SYSTEM_PROMPT_PARETO_COMPAT = RELATION_MAPPING_SYSTEM_PROMPT
 for _line in _IMPACT_DOWNSTREAM_POLICY_LINES:
-    IMPACT_SYSTEM_PARETO_COMPAT = IMPACT_SYSTEM_PARETO_COMPAT.replace(_line, "")
+    RELATION_MAPPING_SYSTEM_PROMPT_PARETO_COMPAT = RELATION_MAPPING_SYSTEM_PROMPT_PARETO_COMPAT.replace(_line, "")
+
+# Backward-compatible aliases. New code/docs should use the semantic names above.
+IMPACT_SYSTEM = RELATION_MAPPING_SYSTEM_PROMPT
+IMPACT_SYSTEM_PARETO_COMPAT = RELATION_MAPPING_SYSTEM_PROMPT_PARETO_COMPAT
 
 
 IMPACT_SYSTEM_VNEXT = """Assess all distinct legal cognitive effects for Research Attention OS.

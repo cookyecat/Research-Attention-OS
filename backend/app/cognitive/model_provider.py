@@ -12,7 +12,7 @@ from app.cognitive.prompts import (
     EVIDENCE_USER,
     EXTRACT_SYSTEM,
     extraction_user_prompt,
-    IMPACT_SYSTEM,
+    RELATION_MAPPING_SYSTEM_PROMPT,
     IMPACT_SYSTEM_VNEXT,
     impact_user_prompt,
     MATCH_SYSTEM,
@@ -65,7 +65,7 @@ class ModelBackedCognitiveProvider:
         *,
         model: str | None = None,
         impact_runtime: StageRuntime | None = None,
-        impact_system_prompt: str = IMPACT_SYSTEM,
+        impact_system_prompt: str = RELATION_MAPPING_SYSTEM_PROMPT,
         impact_contract_version: str = "production-impact-v2.1-legacy",
     ):
         self._chat = chat_fn

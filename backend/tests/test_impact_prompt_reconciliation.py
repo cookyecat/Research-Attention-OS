@@ -1,5 +1,5 @@
 from app.cognitive.model_provider import ModelBackedCognitiveProvider
-from app.cognitive.prompts import IMPACT_SYSTEM, IMPACT_SYSTEM_VNEXT
+from app.cognitive.prompts import IMPACT_SYSTEM, IMPACT_SYSTEM_VNEXT, RELATION_MAPPING_SYSTEM_PROMPT
 
 
 def test_vnext_prompt_removes_stale_single_winner_cardinal_instruction():
@@ -13,7 +13,8 @@ def test_vnext_prompt_removes_stale_single_winner_cardinal_instruction():
 
 def test_model_provider_defaults_to_legacy_prompt_until_shadow_gate_closes():
     p = ModelBackedCognitiveProvider()
-    assert p._impact_system_prompt == IMPACT_SYSTEM
+    assert p._impact_system_prompt == RELATION_MAPPING_SYSTEM_PROMPT
+    assert RELATION_MAPPING_SYSTEM_PROMPT == IMPACT_SYSTEM
     assert p.impact_contract_version == "production-impact-v2.1-legacy"
 
 
