@@ -1136,3 +1136,7 @@ Preregistration: `137_PHASE10D6C_CANONICAL_INPUT_RECONCILIATION_PREREGISTRATION.
 ## Phase 10D.6C first execution — TECHNICAL SCHEMA FAILURE / AMENDMENT LOCKED 2026-09-11
 
 First execution at SHA `08963a4` yielded 0/24 valid C1 outcomes because the experimental canonical user payload omitted the explicit JSON response skeleton that production `impact_user_prompt` includes. This is a runner plumbing asymmetry, not a semantic result. Amendment `138_PHASE10D6C_SCHEMA_PLUMBING_FAILURE_AND_AMENDMENT.md` permits only restoring the exact output-shape instruction; all semantic and decision variables remain frozen. Failed artifact is retained.
+
+## Phase 10D.6C Canonical Input Reconciliation — CLOSED 2026-09-11
+
+Result: `139_PHASE10D6C_CANONICAL_INPUT_RECONCILIATION_RESULT.md`. Valid rerun at SHA `cd809fd` shows direct canonical audited units are decision-bearing: A recovers WATCH in 2/6 from B0 DROP 6/6; D recovers AWARE/WATCH in 4/6 from B0 DROP 6/6; X removes the single B0 DROP; N4 remains WATCH 6/6. Recovered A/D raw effects generally survive production grounding, attributing the main measured difference upstream to Impact input representation. Canonical input alone still does not reproduce the richer Phase-10 targeted topology. Next gate: prompt × input interaction; importance remains frozen.
