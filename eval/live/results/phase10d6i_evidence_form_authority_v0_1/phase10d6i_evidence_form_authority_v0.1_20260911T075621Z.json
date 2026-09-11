@@ -1,0 +1,1119 @@
+{
+  "run_version": "phase10d6i-evidence-form-authority-v0.1",
+  "status": "EVIDENCE_FORM_INSTRUMENT_MEASUREMENT",
+  "measurement_sha": "8dca45af2dd5e644e5e3c3cf47b70ecf12752789",
+  "reference_path": "eval/live/phase10d6i_evidence_form_reference_v0_1.json",
+  "reference_sha256": "219e26ffb3fdb6d82a5bf521301d203203d10284097527970f4c84a7bb2d9ebe",
+  "classifier_version": "phase10d6i-evidence-form-classifier-v0.1",
+  "system_prompt_sha256": "1944da4c3de3d654db278cd006d9e933d8130f5dc03c4701147a0938b37d7170",
+  "n_reference_items": 18,
+  "repeats": 6,
+  "rows": [
+    {
+      "repeat": 1,
+      "status": "OK",
+      "by_id": {
+        "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-001:action_change:1": {
+          "item_id": "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-001:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "Microsoft Azure blog announcing availability of its own Foundry offering."
+        },
+        "A::neu-003": {
+          "item_id": "A::neu-003",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes designed capabilities/behavior of the model."
+        },
+        "A::neu-005": {
+          "item_id": "A::neu-005",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes designed computer-use capabilities and interfaces."
+        },
+        "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-003:uncertainty:1": {
+          "item_id": "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-003:uncertainty:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "LIMITATION_OR_UNCERTAINTY",
+          "reason": "Records unknown publication timing for supporting evaluations."
+        },
+        "D::de274e78-astra-release:action_change:1": {
+          "item_id": "D::de274e78-astra-release:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "The Verge reports OpenAI's announcement and rollout."
+        },
+        "D::de274e78-astra-release:action_change:2": {
+          "item_id": "D::de274e78-astra-release:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "Journalism relaying OpenAI's capability claims."
+        },
+        "D::de274e78-huggingface-hack:action_change:1": {
+          "item_id": "D::de274e78-huggingface-hack:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "Journalism reporting a historical incident."
+        },
+        "D::u1": {
+          "item_id": "D::u1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "Quoted executive opinion about AGI timing."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:action_change:1": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes within-subjects study setup and conditions."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:action_change:2": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:action_change:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports study results confirming effectiveness."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:uncertainty:1": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:uncertainty:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "LIMITATION_OR_UNCERTAINTY",
+          "reason": "Notes missing quantitative metric values."
+        },
+        "X::neu-0005": {
+          "item_id": "X::neu-0005",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes system architecture and synchronization mechanism."
+        },
+        "X::neu-0008": {
+          "item_id": "X::neu-0008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "Authors' broad interpretation and future-facing claim."
+        },
+        "N4::b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:actor_object:2": {
+          "item_id": "N4::b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:actor_object:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes evaluated systems in the study setup."
+        },
+        "N4::neu-001": {
+          "item_id": "N4::neu-001",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes control interfaces used in evaluation."
+        },
+        "N4::neu-002": {
+          "item_id": "N4::neu-002",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes simulation setup and latency conditions."
+        },
+        "N4::neu-003": {
+          "item_id": "N4::neu-003",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports benchmark performance comparisons across models."
+        },
+        "N4::neu-008": {
+          "item_id": "N4::neu-008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports LIBERO benchmark results and model comparisons."
+        }
+      },
+      "meta": {
+        "latency_ms": 3604,
+        "prompt_tokens": 6091,
+        "completion_tokens": 1066,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    },
+    {
+      "repeat": 2,
+      "status": "OK",
+      "by_id": {
+        "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-001:action_change:1": {
+          "item_id": "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-001:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "Microsoft Azure blog announcing availability of GPT-6 Astra in Foundry; release/availability event."
+        },
+        "A::neu-003": {
+          "item_id": "A::neu-003",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes designed capabilities and behavior of Astra."
+        },
+        "A::neu-005": {
+          "item_id": "A::neu-005",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes designed computer-use capabilities and interfaces."
+        },
+        "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-003:uncertainty:1": {
+          "item_id": "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-003:uncertainty:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "LIMITATION_OR_UNCERTAINTY",
+          "reason": "Records unknown publication timing for supporting evaluations."
+        },
+        "D::de274e78-astra-release:action_change:1": {
+          "item_id": "D::de274e78-astra-release:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "The Verge reports OpenAI announcement and rollout of GPT-6 Astra."
+        },
+        "D::de274e78-astra-release:action_change:2": {
+          "item_id": "D::de274e78-astra-release:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "The Verge relays OpenAI claims about agentic and coding capabilities."
+        },
+        "D::de274e78-huggingface-hack:action_change:1": {
+          "item_id": "D::de274e78-huggingface-hack:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "The Verge reports historical incident involving an unreleased OpenAI model."
+        },
+        "D::u1": {
+          "item_id": "D::u1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "The Verge quotes Brockman's opinion/prediction about AGI era."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:action_change:1": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes within-subjects study setup comparing AgentHands to baseline."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:action_change:2": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:action_change:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports study results confirming effectiveness of XR plus co-speech gestures."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:uncertainty:1": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:uncertainty:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "LIMITATION_OR_UNCERTAINTY",
+          "reason": "Notes insufficient support for specific quantitative metric values."
+        },
+        "X::neu-0005": {
+          "item_id": "X::neu-0005",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes backend LLM GestureEvents and parser synchronization mechanism."
+        },
+        "X::neu-0008": {
+          "item_id": "X::neu-0008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "Authors' broad interpretation and future-facing claim about AgentHands."
+        },
+        "N4::b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:actor_object:2": {
+          "item_id": "N4::b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:actor_object:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Identifies evaluated systems: twelve models across five providers."
+        },
+        "N4::neu-001": {
+          "item_id": "N4::neu-001",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes four control interfaces used in the evaluation."
+        },
+        "N4::neu-002": {
+          "item_id": "N4::neu-002",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes simulator pausing setup and latency conditions for direct control."
+        },
+        "N4::neu-003": {
+          "item_id": "N4::neu-003",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports benchmark comparison results across Claude model versions."
+        },
+        "N4::neu-008": {
+          "item_id": "N4::neu-008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports LIBERO benchmark results with MolmoAct VLA and model comparisons."
+        }
+      },
+      "meta": {
+        "latency_ms": 4186,
+        "prompt_tokens": 6091,
+        "completion_tokens": 1134,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    },
+    {
+      "repeat": 3,
+      "status": "OK",
+      "by_id": {
+        "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-001:action_change:1": {
+          "item_id": "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-001:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "Microsoft Azure blog announcing availability of GPT-6 Astra in Foundry; reports a release/availability event."
+        },
+        "A::neu-003": {
+          "item_id": "A::neu-003",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes designed capabilities and behavior of Astra, not an observed measurement result."
+        },
+        "A::neu-005": {
+          "item_id": "A::neu-005",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes designed computer-use capabilities and interfaces of Astra."
+        },
+        "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-003:uncertainty:1": {
+          "item_id": "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-003:uncertainty:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "LIMITATION_OR_UNCERTAINTY",
+          "reason": "Explicitly notes unknown publication timing for supporting evaluations."
+        },
+        "D::de274e78-astra-release:action_change:1": {
+          "item_id": "D::de274e78-astra-release:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "The Verge reports OpenAI's announcement and rollout of GPT-6 Astra."
+        },
+        "D::de274e78-astra-release:action_change:2": {
+          "item_id": "D::de274e78-astra-release:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "The Verge relays OpenAI's claims about Astra's agentic and coding capabilities."
+        },
+        "D::de274e78-huggingface-hack:action_change:1": {
+          "item_id": "D::de274e78-huggingface-hack:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "The Verge reports a historical incident involving an unreleased OpenAI model."
+        },
+        "D::u1": {
+          "item_id": "D::u1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "The Verge quotes Brockman's opinion/prediction about AGI timing."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:action_change:1": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes the within-subjects study setup and conditions without stating results."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:action_change:2": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:action_change:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports study results confirming effectiveness of XR plus co-speech gestures."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:uncertainty:1": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:uncertainty:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "LIMITATION_OR_UNCERTAINTY",
+          "reason": "Notes insufficient support because specific metric values are not reported."
+        },
+        "X::neu-0005": {
+          "item_id": "X::neu-0005",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes system architecture and synchronization mechanism for gesture generation."
+        },
+        "X::neu-0008": {
+          "item_id": "X::neu-0008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "Authors' broad interpretation and future-facing claim about AgentHands."
+        },
+        "N4::b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:actor_object:2": {
+          "item_id": "N4::b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:actor_object:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Identifies evaluated systems as part of the evaluation setup."
+        },
+        "N4::neu-001": {
+          "item_id": "N4::neu-001",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes the four control interfaces used in the evaluation."
+        },
+        "N4::neu-002": {
+          "item_id": "N4::neu-002",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes simulator pausing and latency conditions in the evaluation setup."
+        },
+        "N4::neu-003": {
+          "item_id": "N4::neu-003",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports benchmark performance comparisons and observed improvement patterns."
+        },
+        "N4::neu-008": {
+          "item_id": "N4::neu-008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports LIBERO benchmark results comparing models with MolmoAct VLA."
+        }
+      },
+      "meta": {
+        "latency_ms": 5001,
+        "prompt_tokens": 6091,
+        "completion_tokens": 1286,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    },
+    {
+      "repeat": 4,
+      "status": "OK",
+      "by_id": {
+        "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-001:action_change:1": {
+          "item_id": "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-001:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "Microsoft Azure blog announcing availability of GPT-6 Astra in Foundry."
+        },
+        "A::neu-003": {
+          "item_id": "A::neu-003",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes designed capabilities and behavior of Astra."
+        },
+        "A::neu-005": {
+          "item_id": "A::neu-005",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes designed computer-use capabilities and interfaces."
+        },
+        "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-003:uncertainty:1": {
+          "item_id": "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-003:uncertainty:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "LIMITATION_OR_UNCERTAINTY",
+          "reason": "Notes unknown publication timing for supporting evaluations."
+        },
+        "D::de274e78-astra-release:action_change:1": {
+          "item_id": "D::de274e78-astra-release:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "The Verge reports OpenAI announcement and rollout plans."
+        },
+        "D::de274e78-astra-release:action_change:2": {
+          "item_id": "D::de274e78-astra-release:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "The Verge relays OpenAI claims about agentic and coding capabilities."
+        },
+        "D::de274e78-huggingface-hack:action_change:1": {
+          "item_id": "D::de274e78-huggingface-hack:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "The Verge reports historical incident involving an unreleased OpenAI model."
+        },
+        "D::u1": {
+          "item_id": "D::u1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "The Verge quotes Brockman's opinion about AGI timing."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:action_change:1": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes within-subjects study setup and conditions."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:action_change:2": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:action_change:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports study results confirming effectiveness."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:uncertainty:1": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:uncertainty:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "LIMITATION_OR_UNCERTAINTY",
+          "reason": "Notes missing quantitative metric values in supplied text."
+        },
+        "X::neu-0005": {
+          "item_id": "X::neu-0005",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes backend LLM and parser synchronization mechanism."
+        },
+        "X::neu-0008": {
+          "item_id": "X::neu-0008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "Authors state broad future implications and benefits."
+        },
+        "N4::b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:actor_object:2": {
+          "item_id": "N4::b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:actor_object:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Identifies evaluated systems in the study setup."
+        },
+        "N4::neu-001": {
+          "item_id": "N4::neu-001",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes control interfaces used in evaluation."
+        },
+        "N4::neu-002": {
+          "item_id": "N4::neu-002",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes simulator pausing and latency conditions in evaluation."
+        },
+        "N4::neu-003": {
+          "item_id": "N4::neu-003",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports benchmark performance comparisons across Claude models."
+        },
+        "N4::neu-008": {
+          "item_id": "N4::neu-008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports LIBERO benchmark results with MolmoAct VLA."
+        }
+      },
+      "meta": {
+        "latency_ms": 4332,
+        "prompt_tokens": 6091,
+        "completion_tokens": 1226,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    },
+    {
+      "repeat": 5,
+      "status": "OK",
+      "by_id": {
+        "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-001:action_change:1": {
+          "item_id": "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-001:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "Microsoft Azure blog announces availability of GPT-6 Astra in Foundry, a release/availability event."
+        },
+        "A::neu-003": {
+          "item_id": "A::neu-003",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes designed capabilities and behavior of Astra, not an observed measurement result."
+        },
+        "A::neu-005": {
+          "item_id": "A::neu-005",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes designed computer-use capabilities and interfaces of Astra."
+        },
+        "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-003:uncertainty:1": {
+          "item_id": "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-003:uncertainty:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "LIMITATION_OR_UNCERTAINTY",
+          "reason": "Explicitly notes unknown publication timing for supporting evaluations."
+        },
+        "D::de274e78-astra-release:action_change:1": {
+          "item_id": "D::de274e78-astra-release:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "The Verge reports OpenAI's announcement and rollout of GPT-6 Astra."
+        },
+        "D::de274e78-astra-release:action_change:2": {
+          "item_id": "D::de274e78-astra-release:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "The Verge relays OpenAI's claims about Astra's agentic and coding capabilities."
+        },
+        "D::de274e78-huggingface-hack:action_change:1": {
+          "item_id": "D::de274e78-huggingface-hack:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "The Verge reports a historical incident involving an unreleased OpenAI model."
+        },
+        "D::u1": {
+          "item_id": "D::u1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "The Verge quotes Brockman's opinion/prediction about AGI timing."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:action_change:1": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes the within-subjects study setup comparing AgentHands to a baseline."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:action_change:2": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:action_change:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports study results confirming effectiveness of XR plus co-speech gestures."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:uncertainty:1": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:uncertainty:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "LIMITATION_OR_UNCERTAINTY",
+          "reason": "Notes insufficient support because specific metric values are not reported."
+        },
+        "X::neu-0005": {
+          "item_id": "X::neu-0005",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes the system architecture and synchronization mechanism for gesture generation."
+        },
+        "X::neu-0008": {
+          "item_id": "X::neu-0008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "Authors state broad interpretation and future-facing claims about AgentHands."
+        },
+        "N4::b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:actor_object:2": {
+          "item_id": "N4::b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:actor_object:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Identifies the evaluated systems in the robotics evaluation setup."
+        },
+        "N4::neu-001": {
+          "item_id": "N4::neu-001",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes the four control interfaces used in the evaluation."
+        },
+        "N4::neu-002": {
+          "item_id": "N4::neu-002",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes simulator pausing and latency conditions in the direct-control setup."
+        },
+        "N4::neu-003": {
+          "item_id": "N4::neu-003",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports benchmark performance comparisons and observed improvement patterns."
+        },
+        "N4::neu-008": {
+          "item_id": "N4::neu-008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports LIBERO benchmark results comparing models with MolmoAct VLA."
+        }
+      },
+      "meta": {
+        "latency_ms": 4601,
+        "prompt_tokens": 6091,
+        "completion_tokens": 1289,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    },
+    {
+      "repeat": 6,
+      "status": "OK",
+      "by_id": {
+        "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-001:action_change:1": {
+          "item_id": "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-001:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "Microsoft Azure blog announcing availability of GPT-6 Astra in Foundry; release/availability event."
+        },
+        "A::neu-003": {
+          "item_id": "A::neu-003",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes designed capabilities and behavior of Astra."
+        },
+        "A::neu-005": {
+          "item_id": "A::neu-005",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes designed computer-use capabilities and interfaces."
+        },
+        "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-003:uncertainty:1": {
+          "item_id": "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-003:uncertainty:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "LIMITATION_OR_UNCERTAINTY",
+          "reason": "Records unknown publication timing for supporting evaluations."
+        },
+        "D::de274e78-astra-release:action_change:1": {
+          "item_id": "D::de274e78-astra-release:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "The Verge reports OpenAI announcement and rollout of GPT-6 Astra."
+        },
+        "D::de274e78-astra-release:action_change:2": {
+          "item_id": "D::de274e78-astra-release:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "The Verge relays OpenAI's touted capability claims about Astra."
+        },
+        "D::de274e78-huggingface-hack:action_change:1": {
+          "item_id": "D::de274e78-huggingface-hack:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVENT_OR_STATE_REPORT",
+          "reason": "The Verge reports historical incident involving an unreleased OpenAI model."
+        },
+        "D::u1": {
+          "item_id": "D::u1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "The Verge quotes Brockman's opinion/prediction about AGI era."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:action_change:1": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes within-subjects study setup comparing AgentHands to baseline."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:action_change:2": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:action_change:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports study results confirming effectiveness of XR plus co-speech gestures."
+        },
+        "X::cb16adbf-agenthands-evaluation-study:uncertainty:1": {
+          "item_id": "X::cb16adbf-agenthands-evaluation-study:uncertainty:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "LIMITATION_OR_UNCERTAINTY",
+          "reason": "Notes insufficient support: specific metric values/effect sizes not reported."
+        },
+        "X::neu-0005": {
+          "item_id": "X::neu-0005",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "TECHNICAL_DESCRIPTION",
+          "reason": "Describes backend LLM GestureEvents and parser/TTS synchronization mechanism."
+        },
+        "X::neu-0008": {
+          "item_id": "X::neu-0008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "EVALUATIVE_ASSERTION",
+          "reason": "Authors' broad interpretation and future-facing claim about AgentHands."
+        },
+        "N4::b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:actor_object:2": {
+          "item_id": "N4::b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:actor_object:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Identifies evaluated systems: twelve models across five providers."
+        },
+        "N4::neu-001": {
+          "item_id": "N4::neu-001",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes four control interfaces used in the evaluation."
+        },
+        "N4::neu-002": {
+          "item_id": "N4::neu-002",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_PROTOCOL",
+          "reason": "Describes simulator pausing setup and latency conditions for direct control."
+        },
+        "N4::neu-003": {
+          "item_id": "N4::neu-003",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports benchmark comparison results across Claude model versions."
+        },
+        "N4::neu-008": {
+          "item_id": "N4::neu-008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_form": "MEASUREMENT_RESULT",
+          "reason": "Reports LIBERO benchmark results with MolmoAct VLA and model comparisons."
+        }
+      },
+      "meta": {
+        "latency_ms": 4157,
+        "prompt_tokens": 6091,
+        "completion_tokens": 1140,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    }
+  ],
+  "summary": {
+    "n_ok": 6,
+    "n_error": 0,
+    "axes": {
+      "provenance_role": {
+        "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-001:action_change:1": {
+          "reference": "PRIMARY_SOURCE",
+          "counts": {
+            "PRIMARY_SOURCE": 6
+          },
+          "modal": "PRIMARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "A::neu-003": {
+          "reference": "PRIMARY_SOURCE",
+          "counts": {
+            "PRIMARY_SOURCE": 6
+          },
+          "modal": "PRIMARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "A::neu-005": {
+          "reference": "PRIMARY_SOURCE",
+          "counts": {
+            "PRIMARY_SOURCE": 6
+          },
+          "modal": "PRIMARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-003:uncertainty:1": {
+          "reference": "PRIMARY_SOURCE",
+          "counts": {
+            "PRIMARY_SOURCE": 6
+          },
+          "modal": "PRIMARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "D::de274e78-astra-release:action_change:1": {
+          "reference": "SECONDARY_SOURCE",
+          "counts": {
+            "SECONDARY_SOURCE": 6
+          },
+          "modal": "SECONDARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "D::de274e78-astra-release:action_change:2": {
+          "reference": "SECONDARY_SOURCE",
+          "counts": {
+            "SECONDARY_SOURCE": 6
+          },
+          "modal": "SECONDARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "D::de274e78-huggingface-hack:action_change:1": {
+          "reference": "SECONDARY_SOURCE",
+          "counts": {
+            "SECONDARY_SOURCE": 6
+          },
+          "modal": "SECONDARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "D::u1": {
+          "reference": "SECONDARY_SOURCE",
+          "counts": {
+            "SECONDARY_SOURCE": 6
+          },
+          "modal": "SECONDARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "X::cb16adbf-agenthands-evaluation-study:action_change:1": {
+          "reference": "PRIMARY_SOURCE",
+          "counts": {
+            "PRIMARY_SOURCE": 6
+          },
+          "modal": "PRIMARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "X::cb16adbf-agenthands-evaluation-study:action_change:2": {
+          "reference": "PRIMARY_SOURCE",
+          "counts": {
+            "PRIMARY_SOURCE": 6
+          },
+          "modal": "PRIMARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "X::cb16adbf-agenthands-evaluation-study:uncertainty:1": {
+          "reference": "PRIMARY_SOURCE",
+          "counts": {
+            "PRIMARY_SOURCE": 6
+          },
+          "modal": "PRIMARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "X::neu-0005": {
+          "reference": "PRIMARY_SOURCE",
+          "counts": {
+            "PRIMARY_SOURCE": 6
+          },
+          "modal": "PRIMARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "X::neu-0008": {
+          "reference": "PRIMARY_SOURCE",
+          "counts": {
+            "PRIMARY_SOURCE": 6
+          },
+          "modal": "PRIMARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "N4::b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:actor_object:2": {
+          "reference": "PRIMARY_SOURCE",
+          "counts": {
+            "PRIMARY_SOURCE": 6
+          },
+          "modal": "PRIMARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "N4::neu-001": {
+          "reference": "PRIMARY_SOURCE",
+          "counts": {
+            "PRIMARY_SOURCE": 6
+          },
+          "modal": "PRIMARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "N4::neu-002": {
+          "reference": "PRIMARY_SOURCE",
+          "counts": {
+            "PRIMARY_SOURCE": 6
+          },
+          "modal": "PRIMARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "N4::neu-003": {
+          "reference": "PRIMARY_SOURCE",
+          "counts": {
+            "PRIMARY_SOURCE": 6
+          },
+          "modal": "PRIMARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "N4::neu-008": {
+          "reference": "PRIMARY_SOURCE",
+          "counts": {
+            "PRIMARY_SOURCE": 6
+          },
+          "modal": "PRIMARY_SOURCE",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        }
+      },
+      "evidence_form": {
+        "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-001:action_change:1": {
+          "reference": "EVENT_OR_STATE_REPORT",
+          "counts": {
+            "EVENT_OR_STATE_REPORT": 6
+          },
+          "modal": "EVENT_OR_STATE_REPORT",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "A::neu-003": {
+          "reference": "EVALUATIVE_ASSERTION",
+          "counts": {
+            "TECHNICAL_DESCRIPTION": 6
+          },
+          "modal": "TECHNICAL_DESCRIPTION",
+          "modal_rate": 1.0,
+          "modal_matches_reference": false
+        },
+        "A::neu-005": {
+          "reference": "TECHNICAL_DESCRIPTION",
+          "counts": {
+            "TECHNICAL_DESCRIPTION": 6
+          },
+          "modal": "TECHNICAL_DESCRIPTION",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "A::7e66a038-04de-455a-86d8-2b3577a08950-evt-003:uncertainty:1": {
+          "reference": "LIMITATION_OR_UNCERTAINTY",
+          "counts": {
+            "LIMITATION_OR_UNCERTAINTY": 6
+          },
+          "modal": "LIMITATION_OR_UNCERTAINTY",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "D::de274e78-astra-release:action_change:1": {
+          "reference": "EVENT_OR_STATE_REPORT",
+          "counts": {
+            "EVENT_OR_STATE_REPORT": 6
+          },
+          "modal": "EVENT_OR_STATE_REPORT",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "D::de274e78-astra-release:action_change:2": {
+          "reference": "EVALUATIVE_ASSERTION",
+          "counts": {
+            "EVALUATIVE_ASSERTION": 6
+          },
+          "modal": "EVALUATIVE_ASSERTION",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "D::de274e78-huggingface-hack:action_change:1": {
+          "reference": "EVENT_OR_STATE_REPORT",
+          "counts": {
+            "EVENT_OR_STATE_REPORT": 6
+          },
+          "modal": "EVENT_OR_STATE_REPORT",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "D::u1": {
+          "reference": "EVALUATIVE_ASSERTION",
+          "counts": {
+            "EVALUATIVE_ASSERTION": 6
+          },
+          "modal": "EVALUATIVE_ASSERTION",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "X::cb16adbf-agenthands-evaluation-study:action_change:1": {
+          "reference": "MEASUREMENT_PROTOCOL",
+          "counts": {
+            "MEASUREMENT_PROTOCOL": 6
+          },
+          "modal": "MEASUREMENT_PROTOCOL",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "X::cb16adbf-agenthands-evaluation-study:action_change:2": {
+          "reference": "MEASUREMENT_RESULT",
+          "counts": {
+            "MEASUREMENT_RESULT": 6
+          },
+          "modal": "MEASUREMENT_RESULT",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "X::cb16adbf-agenthands-evaluation-study:uncertainty:1": {
+          "reference": "LIMITATION_OR_UNCERTAINTY",
+          "counts": {
+            "LIMITATION_OR_UNCERTAINTY": 6
+          },
+          "modal": "LIMITATION_OR_UNCERTAINTY",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "X::neu-0005": {
+          "reference": "TECHNICAL_DESCRIPTION",
+          "counts": {
+            "TECHNICAL_DESCRIPTION": 6
+          },
+          "modal": "TECHNICAL_DESCRIPTION",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "X::neu-0008": {
+          "reference": "EVALUATIVE_ASSERTION",
+          "counts": {
+            "EVALUATIVE_ASSERTION": 6
+          },
+          "modal": "EVALUATIVE_ASSERTION",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "N4::b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:actor_object:2": {
+          "reference": "MEASUREMENT_PROTOCOL",
+          "counts": {
+            "MEASUREMENT_PROTOCOL": 6
+          },
+          "modal": "MEASUREMENT_PROTOCOL",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "N4::neu-001": {
+          "reference": "MEASUREMENT_PROTOCOL",
+          "counts": {
+            "MEASUREMENT_PROTOCOL": 6
+          },
+          "modal": "MEASUREMENT_PROTOCOL",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "N4::neu-002": {
+          "reference": "MEASUREMENT_RESULT",
+          "counts": {
+            "MEASUREMENT_PROTOCOL": 6
+          },
+          "modal": "MEASUREMENT_PROTOCOL",
+          "modal_rate": 1.0,
+          "modal_matches_reference": false
+        },
+        "N4::neu-003": {
+          "reference": "MEASUREMENT_RESULT",
+          "counts": {
+            "MEASUREMENT_RESULT": 6
+          },
+          "modal": "MEASUREMENT_RESULT",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        },
+        "N4::neu-008": {
+          "reference": "MEASUREMENT_RESULT",
+          "counts": {
+            "MEASUREMENT_RESULT": 6
+          },
+          "modal": "MEASUREMENT_RESULT",
+          "modal_rate": 1.0,
+          "modal_matches_reference": true
+        }
+      }
+    },
+    "metrics": {
+      "provenance_role": {
+        "modal_exact_agreement": 1.0,
+        "stable_5_of_6_fraction": 1.0
+      },
+      "evidence_form": {
+        "modal_exact_agreement": 0.8888888888888888,
+        "stable_5_of_6_fraction": 1.0
+      }
+    },
+    "critical_confusions": []
+  },
+  "guardrails": [
+    "No numeric confidence/strength/importance is emitted.",
+    "No Attention, relation direction, truth judgment or production policy is evaluated.",
+    "Production defaults unchanged; Phase 9A paused."
+  ]
+}
