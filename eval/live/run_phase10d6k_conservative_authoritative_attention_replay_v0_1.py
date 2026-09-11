@@ -36,7 +36,7 @@ CASES=('A','D','X','N4'); REPEATS=5
 ARMS=('K0_ALL_SUPPORT_SUFFICIENT','K1_SINGLE_SOURCE_WEAK','K2_CANONICAL_AUTHORITY')
 PROVENANCE={'A':'PRIMARY_SOURCE','D':'SECONDARY_REPORT','X':'PRIMARY_SOURCE','N4':'PRIMARY_SOURCE'}
 FIT_SEVERITY={'DIRECT':0,'PARTIAL':1,'INSUFFICIENT':2,'CONTRADICTS_OPERATION':3}
-STRATEGY_ID='pareto-multidelta-magnitude-free-anchored-open-new'
+STRATEGY_ID='pareto-multidelta-cardinal-free-anchored-open-new'
 
 def sha256(p): return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def git_head(): return subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()

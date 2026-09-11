@@ -378,9 +378,11 @@ def get_decision_strategy(strategy_id: str | None = None):
         "pareto-multidelta",
         "pareto-multidelta-magnitude-free",
         "pareto-multidelta-magnitude-free-anchored-open-new",
+        "pareto-multidelta-cardinal-free-anchored-open-new",
     } and strategy_id not in _DECISION_STRATEGIES:
         from app.services.pareto_decision_strategy import (
             ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
+            CARDINAL_FREE_ANCHORED_OPEN_NEW_PARETO_DECISION_STRATEGY,
             MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
             PARETO_MULTI_DELTA_DECISION_STRATEGY,
         )
@@ -389,6 +391,9 @@ def get_decision_strategy(strategy_id: str | None = None):
         _DECISION_STRATEGIES["pareto-multidelta-magnitude-free"] = MAGNITUDE_FREE_PARETO_DECISION_STRATEGY
         _DECISION_STRATEGIES["pareto-multidelta-magnitude-free-anchored-open-new"] = (
             ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY
+        )
+        _DECISION_STRATEGIES["pareto-multidelta-cardinal-free-anchored-open-new"] = (
+            CARDINAL_FREE_ANCHORED_OPEN_NEW_PARETO_DECISION_STRATEGY
         )
     try:
         return _DECISION_STRATEGIES[strategy_id]

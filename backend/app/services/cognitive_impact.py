@@ -561,6 +561,13 @@ def legal_public_effects(assessment: CognitiveImpactAssessment | None) -> list[C
     ]
 
 
+def legal_semantic_effects(assessment: CognitiveImpactAssessment | None) -> list[CognitiveEffect]:
+    """Legal semantic effects without using raw change magnitude as existence authority."""
+    if assessment is None:
+        return []
+    return [e for e in assessment.effects if _legal_public_effect(e)]
+
+
 def select_primary_effect(assessment: CognitiveImpactAssessment | None) -> CognitiveEffect | None:
     """The one CognitiveEffect that public Update and Attention Policy both use.
 

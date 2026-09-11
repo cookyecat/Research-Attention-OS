@@ -8,6 +8,7 @@ from app.services.cognitive_impact import (
     CognitiveEffect,
     CognitiveImpactAssessment,
     legal_public_effects,
+    legal_semantic_effects,
     normalize_frozen_transition,
     select_primary_effect,
     visible_prediction_from_frozen,
@@ -130,9 +131,10 @@ class ParetoMultiDeltaDecisionStrategy:
     version: str = "pareto-multidelta-v0.1"
     calibration_strategy: object = RAW_CARDINAL_CALIBRATION
     effect_admission_strategy: object = LEGAL_PUBLIC_EFFECT_ADMISSION
+    semantic_effect_existence: bool = False
 
     def execution_snapshot(self) -> dict:
-        return {
+        snapshot = {
             "strategy_id": self.strategy_id,
             "version": self.version,
             "selection": "ordinal-pareto-frontier-v0.1",
@@ -141,6 +143,9 @@ class ParetoMultiDeltaDecisionStrategy:
             "effect_admission": self.effect_admission_strategy.execution_snapshot(),
             "public_update_projection": "legacy-single-primary-compatibility",
         }
+        if self.semantic_effect_existence:
+            snapshot["effect_existence"] = "legal-semantic-relation-v0.1"
+        return snapshot
 
     def route(
         self,
@@ -154,7 +159,11 @@ class ParetoMultiDeltaDecisionStrategy:
         runtime = runtime or RuntimeView()
         matches = matches or []
         normalized = normalize_frozen_transition(assessment, matches).assessment
-        legal_effects = legal_public_effects(normalized)
+        legal_effects = (
+            legal_semantic_effects(normalized)
+            if self.semantic_effect_existence
+            else legal_public_effects(normalized)
+        )
         admitted_effects = self.effect_admission_strategy.admit(legal_effects, matches)
         frontier = pareto_frontier(
             admitted_effects,
@@ -201,4 +210,12 @@ ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY = ParetoMultiDeltaDeci
     version="pareto-multidelta-magnitude-free-anchored-open-new-v0.1",
     calibration_strategy=MAGNITUDE_FREE_CALIBRATION,
     effect_admission_strategy=ANCHORED_OPEN_NEW_ADMISSION,
+)
+
+CARDINAL_FREE_ANCHORED_OPEN_NEW_PARETO_DECISION_STRATEGY = ParetoMultiDeltaDecisionStrategy(
+    strategy_id="pareto-multidelta-cardinal-free-anchored-open-new",
+    version="pareto-multidelta-cardinal-free-anchored-open-new-v0.1",
+    calibration_strategy=MAGNITUDE_FREE_CALIBRATION,
+    effect_admission_strategy=ANCHORED_OPEN_NEW_ADMISSION,
+    semantic_effect_existence=True,
 )

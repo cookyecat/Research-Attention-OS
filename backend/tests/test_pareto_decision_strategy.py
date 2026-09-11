@@ -200,3 +200,31 @@ def test_anchor_admission_never_removes_targeted_effects():
     challenge = _effect(belief, CognitiveEffectKind.CHALLENGE, epi=.8, importance=.8)
     reinforce = _effect(belief, CognitiveEffectKind.REINFORCE, epi=.8, importance=.8)
     assert ANCHORED_OPEN_NEW_ADMISSION.admit([challenge, reinforce], []) == [challenge, reinforce]
+
+
+def test_cardinal_free_strategy_admits_zero_magnitude_semantic_effect_without_changing_legacy():
+    from app.services.pareto_decision_strategy import CARDINAL_FREE_ANCHORED_OPEN_NEW_PARETO_DECISION_STRATEGY
+    question = _match("QUESTION")
+    effect = _effect(question, CognitiveEffectKind.REINFORCE, change=0.0, epi=.8, importance=.8)
+    assessment = CognitiveImpactAssessment(effects=[effect])
+    legacy = route(
+        _features(), assessment=assessment, matches=[question],
+        decision_strategy=MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
+    )
+    cardinal_free = route(
+        _features(), assessment=assessment, matches=[question],
+        decision_strategy=CARDINAL_FREE_ANCHORED_OPEN_NEW_PARETO_DECISION_STRATEGY,
+    )
+    assert legacy.disposition == Disposition.DROP
+    assert cardinal_free.disposition == Disposition.WATCH
+    snap = CARDINAL_FREE_ANCHORED_OPEN_NEW_PARETO_DECISION_STRATEGY.execution_snapshot()
+    assert snap["effect_existence"] == "legal-semantic-relation-v0.1"
+    assert snap["effect_calibration"]["uses_raw_change_magnitude"] is False
+
+
+def test_cardinal_free_strategy_is_registered_without_replacing_production_strategy():
+    from app.services.pareto_decision_strategy import CARDINAL_FREE_ANCHORED_OPEN_NEW_PARETO_DECISION_STRATEGY
+    candidate = get_decision_strategy("pareto-multidelta-cardinal-free-anchored-open-new")
+    existing = get_decision_strategy("pareto-multidelta-magnitude-free-anchored-open-new")
+    assert candidate is CARDINAL_FREE_ANCHORED_OPEN_NEW_PARETO_DECISION_STRATEGY
+    assert existing is ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY
