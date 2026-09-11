@@ -18,7 +18,7 @@ from eval.live.probabilistic_cognitive_map_v0_1 import summarize_static_cognitiv
 from eval.live.run_phase10d3_real_web_static_cognitive_map_v0_1 import branch_relation_key
 from eval.live.run_phase10d4_real_web_basin_persistence_v0_1 import reconstruct_matches, selected_cases
 from eval.live.run_phase10d5_production_semantic_parity_audit_v0_1 import (
-    assert_historical_replay, calibrations, reconstruct_effects,
+    assert_historical_replay, calibrations, reconstruct_effects, freeze,
 )
 from eval.live.run_phase8c7_real_web_magnitude_free_validation_v0_1 import _matches
 from eval.live.run_phase8c13_decision_causal_core_v0_1 import features
@@ -81,7 +81,7 @@ def assert_parity_reference(label,checkpoint,projected,parity_case):
     refs={str(r.get('sample_id')):r for r in parity_case[ref_key]}
     ref=refs[str(projected.get('sample_id'))]
     for field in ('attention','necessary_core','sufficient_supports'):
-        if projected.get(field)!=ref.get(field):
+        if freeze(projected.get(field)) != freeze(ref.get(field)):
             raise RuntimeError(f'10D.5 parity replay mismatch {label}/{checkpoint}/{projected.get("sample_id")} {field}')
 
 
