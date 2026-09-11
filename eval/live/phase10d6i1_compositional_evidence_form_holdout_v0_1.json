@@ -1,0 +1,208 @@
+{
+  "version": "phase10d6i1-compositional-evidence-form-holdout-v0.1",
+  "status": "FROZEN_FRESH_MANUAL_RESEARCH_REFERENCE_NOT_HUMAN_GOLD",
+  "source_context": {
+    "B3": {
+      "title": "How Claude Code is used in practice | Anthropic",
+      "canonical_url": "https://www.anthropic.com/research/claude-code-expertise"
+    },
+    "B4": {
+      "title": "Coding agents in the social sciences | Anthropic",
+      "canonical_url": "https://www.anthropic.com/research/coding-agents-social-sciences"
+    },
+    "F3": {
+      "title": "NASA’s Hubble, Webb Find Far-out Solar System Objects ‘Remember’ Past - NASA Science",
+      "canonical_url": "https://science.nasa.gov/missions/hubble/nasas-hubble-webb-find-far-out-solar-system-objects-remember-past/"
+    },
+    "F4": {
+      "title": "Early signs of reduced fossil fuel use in Europe from Sentinel-5P NOx emissions - eo science for society",
+      "canonical_url": "https://eo4society.esa.int/2026/09/04/early-signs-of-reduced-fossil-fuel-use-in-europe-from-sentinel-5p-nox-emissions/"
+    }
+  },
+  "items": [
+    {
+      "case": "B3",
+      "unit_id": "c188e70d-claude-code-usage-study:action_change:1",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_forms": [
+        "MEASUREMENT_PROTOCOL"
+      ],
+      "rationale": "Original Anthropic research describes dataset/sample and analysis window."
+    },
+    {
+      "case": "B3",
+      "unit_id": "c188e70d-claude-code-usage-study:action_change:2",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_forms": [
+        "MEASUREMENT_RESULT"
+      ],
+      "rationale": "Original study reports observed planning/execution decision shares."
+    },
+    {
+      "case": "B3",
+      "unit_id": "nu7",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_forms": [
+        "MEASUREMENT_RESULT",
+        "LIMITATION_OR_UNCERTAINTY"
+      ],
+      "rationale": "Reports estimated value changes and explicitly states estimates are coarse."
+    },
+    {
+      "case": "B3",
+      "unit_id": "nu10",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_forms": [
+        "MEASUREMENT_PROTOCOL",
+        "TECHNICAL_DESCRIPTION"
+      ],
+      "rationale": "Describes transcript-based success classifiers and concrete verification signals."
+    },
+    {
+      "case": "B3",
+      "unit_id": "nu11",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_forms": [
+        "LIMITATION_OR_UNCERTAINTY"
+      ],
+      "rationale": "Authors explicitly enumerate external-validity and measurement limitations."
+    },
+    {
+      "case": "B4",
+      "unit_id": "06384278-ev-001:action_change:1",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_forms": [
+        "MEASUREMENT_PROTOCOL"
+      ],
+      "rationale": "Original research describes survey sample and fielding period."
+    },
+    {
+      "case": "B4",
+      "unit_id": "06384278-ev-001:action_change:3",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_forms": [
+        "MEASUREMENT_RESULT"
+      ],
+      "rationale": "Original survey reports differences in projects/working papers/journal submissions."
+    },
+    {
+      "case": "B4",
+      "unit_id": "06384278-ev-001:uncertainty:2",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_forms": [
+        "LIMITATION_OR_UNCERTAINTY"
+      ],
+      "rationale": "Explicit non-representative-sample caveat."
+    },
+    {
+      "case": "B4",
+      "unit_id": "ne-008",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_forms": [
+        "MEASUREMENT_RESULT"
+      ],
+      "rationale": "Original study reports observed early-pipeline productivity differences."
+    },
+    {
+      "case": "B4",
+      "unit_id": "ne-011",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_forms": [
+        "LIMITATION_OR_UNCERTAINTY"
+      ],
+      "rationale": "Authors caution about recruitment and expected sample bias."
+    },
+    {
+      "case": "F3",
+      "unit_id": "1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:2",
+      "provenance_role": "SECONDARY_SOURCE",
+      "evidence_forms": [
+        "MEASUREMENT_PROTOCOL",
+        "EVENT_OR_STATE_REPORT"
+      ],
+      "rationale": "NASA science communication reports the observing/survey procedure performed by research teams."
+    },
+    {
+      "case": "F3",
+      "unit_id": "1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:3",
+      "provenance_role": "SECONDARY_SOURCE",
+      "evidence_forms": [
+        "MEASUREMENT_RESULT"
+      ],
+      "rationale": "NASA summary reports an observed result: fewer small TNOs than expected."
+    },
+    {
+      "case": "F3",
+      "unit_id": "1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:4",
+      "provenance_role": "SECONDARY_SOURCE",
+      "evidence_forms": [
+        "MEASUREMENT_RESULT"
+      ],
+      "rationale": "NASA summary reports discovery/measurement of 27 dim TNOs."
+    },
+    {
+      "case": "F3",
+      "unit_id": "1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:uncertainty:1",
+      "provenance_role": "SECONDARY_SOURCE",
+      "evidence_forms": [
+        "LIMITATION_OR_UNCERTAINTY"
+      ],
+      "rationale": "Explicit missing absolute publication date."
+    },
+    {
+      "case": "F3",
+      "unit_id": "neu-04",
+      "provenance_role": "SECONDARY_SOURCE",
+      "evidence_forms": [
+        "MEASUREMENT_RESULT"
+      ],
+      "rationale": "Science summary reports observation contrasting prior collision expectation with observed colors."
+    },
+    {
+      "case": "F4",
+      "unit_id": "9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:1",
+      "provenance_role": "SECONDARY_SOURCE",
+      "evidence_forms": [
+        "MEASUREMENT_RESULT"
+      ],
+      "rationale": "ESA science communication reports satellite-derived comparison and reduction result."
+    },
+    {
+      "case": "F4",
+      "unit_id": "9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:2",
+      "provenance_role": "SECONDARY_SOURCE",
+      "evidence_forms": [
+        "MEASUREMENT_RESULT"
+      ],
+      "rationale": "Reports country-level quantitative 10–30% reductions."
+    },
+    {
+      "case": "F4",
+      "unit_id": "9c789499-a853-4218-b3e0-32e2a14c3476-evt-0002:uncertainty:1",
+      "provenance_role": "SECONDARY_SOURCE",
+      "evidence_forms": [
+        "LIMITATION_OR_UNCERTAINTY"
+      ],
+      "rationale": "Explicit unquantified regional variability caveat."
+    },
+    {
+      "case": "F4",
+      "unit_id": "9c789499-a853-4218-b3e0-32e2a14c3476-neu-0002",
+      "provenance_role": "SECONDARY_SOURCE",
+      "evidence_forms": [
+        "MEASUREMENT_RESULT"
+      ],
+      "rationale": "Reports agreement between satellite observations and external emissions/NO2 changes."
+    },
+    {
+      "case": "F4",
+      "unit_id": "9c789499-a853-4218-b3e0-32e2a14c3476-neu-0009",
+      "provenance_role": "SECONDARY_SOURCE",
+      "evidence_forms": [
+        "LIMITATION_OR_UNCERTAINTY",
+        "ANALYTIC_INFERENCE"
+      ],
+      "rationale": "States interpretive caveats/confounders required when inferring fossil-fuel reduction from NOx."
+    }
+  ]
+}
