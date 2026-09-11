@@ -1,0 +1,762 @@
+{
+  "run_version": "phase10d6j-relation-support-directness-v0.1",
+  "status": "RELATION_SUPPORT_DIRECTNESS_MEASUREMENT",
+  "measurement_sha": "342b4b9487417308c581e593a5d56799a6c9ca34",
+  "reference_path": "eval/live/phase10d6j_relation_support_directness_reference_v0_1.json",
+  "reference_sha256": "f23d0bf764365a146733f6ee714a68e24ce8892cbf5bd700000bb5208ca1b5ac",
+  "source_path": "eval/live/results/phase10d6h_cardinal_field_removal_parity_v0_1/phase10d6h_cardinal_field_removal_parity_v0.1_20260911T071632Z.json",
+  "source_sha256": "86e1dc644aa0b7a8e6f559b2fd674357268ba12ecd82b586ed626b655965e29c",
+  "classifier_version": "phase10d6j-relation-support-directness-v0.1",
+  "system_prompt_sha256": "dac3d4d2a2422ed52c08135128c5f128964c801013bf53e6fc01e97a96f3b391",
+  "n_items": 16,
+  "repeats": 6,
+  "rows": [
+    {
+      "repeat": 1,
+      "status": "OK",
+      "by_id": {
+        "A::A-1::0": {
+          "item_id": "A::A-1::0",
+          "fit": "PARTIAL",
+          "reason": "Astra's cognitive/planning/tool-use profile is relevant to separability, but it is not embodied and lacks temporal motor control evidence, so it only partially supports the embodied separability proposition."
+        },
+        "A::A-1::1": {
+          "item_id": "A::A-1::1",
+          "fit": "INSUFFICIENT",
+          "reason": "Evidence that a large unified frontier model is deployed for multi-step work and computer use does not bear on whether high-frequency motor control should depend on a large unified model."
+        },
+        "A::A-1::2": {
+          "item_id": "A::A-1::2",
+          "fit": "INSUFFICIENT",
+          "reason": "Computer-use and multi-step execution are not the fastest embodied-control loop; this evidence does not challenge the proposition about large unified models in that loop."
+        },
+        "A::A-1::3": {
+          "item_id": "A::A-1::3",
+          "fit": "INSUFFICIENT",
+          "reason": "Token efficiency, cost variability, and containment/approval requirements are not latency, energy, or task-success evaluation for high-frequency embodied control."
+        },
+        "D::D-1::0": {
+          "item_id": "D::D-1::0",
+          "fit": "INSUFFICIENT",
+          "reason": "A model enabling agents to secretly conspire is not evidence about shared world models reducing explicit multi-agent communication."
+        },
+        "D::D-1::1": {
+          "item_id": "D::D-1::1",
+          "fit": "INSUFFICIENT",
+          "reason": "A single centralized model enabling conspiracy does not bear on whether true swarm-style collective intelligence requires decentralized local intelligence."
+        },
+        "D::D-1::2": {
+          "item_id": "D::D-1::2",
+          "fit": "INSUFFICIENT",
+          "reason": "Agentic coding capabilities, opaque recurrence, and a breakout incident concern safety/control, not suitability of large unified models for the fastest embodied-control loop."
+        },
+        "D::D-1::4": {
+          "item_id": "D::D-1::4",
+          "fit": "INSUFFICIENT",
+          "reason": "Absence of latency/energy/task-success metrics in an agentic coding release is not evidence about evaluation for high-frequency embodied control."
+        },
+        "X::X-1::0": {
+          "item_id": "X::X-1::0",
+          "fit": "INSUFFICIENT",
+          "reason": "An XR gesture study reporting effectiveness without latency/energy/task-success metrics is not evidence about high-frequency embodied-control evaluation."
+        },
+        "X::X-1::1": {
+          "item_id": "X::X-1::1",
+          "fit": "PARTIAL",
+          "reason": "AgentHands shows a backend LLM driving co-speech gesture motor behavior via a local parser, which is relevant to whether high-frequency motor control should depend on a large unified model, though co-speech gesture is not the fastest embodied-control loop."
+        },
+        "X::X-1::2": {
+          "item_id": "X::X-1::2",
+          "fit": "PARTIAL",
+          "reason": "AgentHands demonstrates a large LLM can support some embodied gesture control, but co-speech gesture is not the fastest embodied-control loop, so the challenge is only partial."
+        },
+        "X::X-1::3": {
+          "item_id": "X::X-1::3",
+          "fit": "DIRECT",
+          "reason": "AgentHands explicitly separates cognitive LLM response generation from local temporal motor execution (parser, TTS, animation), directly supporting partial separability of cognitive and temporal motor intelligence."
+        },
+        "N4::N4-1::0": {
+          "item_id": "N4::N4-1::0",
+          "fit": "DIRECT",
+          "reason": "The ~83 Hz real-time requirement versus ~0.2-0.4 Hz inference and paused-simulator workaround directly reinforces the lack of latency/energy/task-success evaluation for high-frequency embodied control."
+        },
+        "N4::N4-1::1": {
+          "item_id": "N4::N4-1::1",
+          "fit": "DIRECT",
+          "reason": "The latency gap and the finding that direct joint control mostly fails while supervising pretrained controllers succeeds directly bear on whether high-frequency motor control should depend on a large unified model."
+        },
+        "N4::N4-1::2": {
+          "item_id": "N4::N4-1::2",
+          "fit": "DIRECT",
+          "reason": "Direct joint control failures, the two-order-of-magnitude latency gap, and worse RL-policy performance than code control directly support the unsuitability of large unified models for the fastest embodied-control loop."
+        },
+        "N4::N4-2::4": {
+          "item_id": "N4::N4-2::4",
+          "fit": "PARTIAL",
+          "reason": "Evidence that cognitive models can improve motor task outcomes via VLA supervision is relevant to cognitive/motor separability, but it concerns high-level supervision rather than temporal motor intelligence itself, so it only partially challenges the proposition."
+        }
+      },
+      "meta": {
+        "latency_ms": 5079,
+        "prompt_tokens": 8708,
+        "completion_tokens": 1073,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    },
+    {
+      "repeat": 2,
+      "status": "OK",
+      "by_id": {
+        "A::A-1::0": {
+          "item_id": "A::A-1::0",
+          "fit": "PARTIAL",
+          "reason": "Astra's multi-step reasoning, planning, and tool/computer use are cognitive capabilities, but the evidence does not address temporal motor intelligence or embodied control, so the separability claim requires extrapolation from non-embodied enterprise workflows."
+        },
+        "A::A-1::1": {
+          "item_id": "A::A-1::1",
+          "fit": "INSUFFICIENT",
+          "reason": "Evidence that a large unified frontier model is deployed for complex work and computer use does not bear on whether high-frequency motor control should depend on such a model; computer-use tool execution is not high-frequency motor control."
+        },
+        "A::A-1::2": {
+          "item_id": "A::A-1::2",
+          "fit": "INSUFFICIENT",
+          "reason": "Astra's computer-use and multi-step execution operate at human workflow timescales, not the fastest embodied-control loop; this does not challenge the unsuitability claim for high-frequency control."
+        },
+        "A::A-1::3": {
+          "item_id": "A::A-1::3",
+          "fit": "INSUFFICIENT",
+          "reason": "Token efficiency, cost variability, and containment/approval requirements are not latency, energy, or task-success evaluations for high-frequency embodied control; the units are topically adjacent but do not justify reinforcing this specific evaluation bottleneck."
+        },
+        "D::D-1::0": {
+          "item_id": "D::D-1::0",
+          "fit": "INSUFFICIENT",
+          "reason": "A model enabling agents to secretly conspire is not evidence about shared world models reducing explicit multi-agent communication; the mechanism and scope are unrelated to the target proposition."
+        },
+        "D::D-1::1": {
+          "item_id": "D::D-1::1",
+          "fit": "INSUFFICIENT",
+          "reason": "A single centralized model enabling agent conspiracy does not bear on whether true swarm-style collective intelligence requires decentralized local intelligence; the evidence concerns centralized agency, not swarm architecture requirements."
+        },
+        "D::D-1::2": {
+          "item_id": "D::D-1::2",
+          "fit": "INSUFFICIENT",
+          "reason": "Agentic coding capabilities, opaque recurrence, and a breakout incident concern safety and control of large models, not their suitability for the fastest embodied-control loop; no latency or motor-control evidence is provided."
+        },
+        "D::D-1::4": {
+          "item_id": "D::D-1::4",
+          "fit": "INSUFFICIENT",
+          "reason": "Absence of latency, energy, or task-success metrics in an Astra release article is not evidence of a general evaluation bottleneck for high-frequency embodied control; the article's scope is enterprise agentic capabilities."
+        },
+        "X::X-1::0": {
+          "item_id": "X::X-1::0",
+          "fit": "INSUFFICIENT",
+          "reason": "An XR gesture study reporting effectiveness across communication metrics without latency/energy/task-success values is not evidence about evaluation for high-frequency embodied control; the scope is communication effectiveness, not control-loop evaluation."
+        },
+        "X::X-1::1": {
+          "item_id": "X::X-1::1",
+          "fit": "PARTIAL",
+          "reason": "AgentHands uses a backend LLM to generate gesture events parsed locally for synchronized co-speech motion, which is relevant to whether high-frequency motor control should depend on a large model, but co-speech gesture timing is not the fastest embodied-control loop."
+        },
+        "X::X-1::2": {
+          "item_id": "X::X-1::2",
+          "fit": "PARTIAL",
+          "reason": "AgentHands shows a large LLM can drive synchronized co-speech gestures via local parsing, challenging unsuitability for some embodied-control loops, but the evidence does not address the fastest control loop."
+        },
+        "X::X-1::3": {
+          "item_id": "X::X-1::3",
+          "fit": "DIRECT",
+          "reason": "AgentHands explicitly separates cognitive LLM response generation from local temporal motor execution (parser, TTS, animation engine), directly supporting the claim that embodied intelligence contains partially separable cognitive and temporal motor components."
+        },
+        "N4::N4-1::0": {
+          "item_id": "N4::N4-1::0",
+          "fit": "DIRECT",
+          "reason": "The source directly reports pausing simulations because real-time control would require ~83 Hz versus ~0.2-0.4 Hz inference, a two-order-of-magnitude latency gap, directly reinforcing the lack of latency/energy/task-success evaluation for high-frequency embodied control."
+        },
+        "N4::N4-1::1": {
+          "item_id": "N4::N4-1::1",
+          "fit": "DIRECT",
+          "reason": "Evidence that direct joint control mostly fails while supervising pretrained controllers succeeds, combined with the ~83 Hz vs ~0.2-0.4 Hz latency gap, directly bears on whether high-frequency motor control should depend on a large unified model."
+        },
+        "N4::N4-1::2": {
+          "item_id": "N4::N4-1::2",
+          "fit": "DIRECT",
+          "reason": "Direct joint control failures, the two-order-of-magnitude latency gap, and worse RL-policy performance than code control directly support the claim that large unified models may be unsuitable for the fastest embodied-control loop."
+        },
+        "N4::N4-2::4": {
+          "item_id": "N4::N4-2::4",
+          "fit": "PARTIAL",
+          "reason": "Evidence that pairing models with a pretrained VLA improves task success and that newer models convert sensory understanding into actions challenges a strong cognitive/motor separation, but it concerns high-level supervision rather than temporal motor intelligence itself."
+        }
+      },
+      "meta": {
+        "latency_ms": 5479,
+        "prompt_tokens": 8708,
+        "completion_tokens": 1214,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    },
+    {
+      "repeat": 3,
+      "status": "OK",
+      "by_id": {
+        "A::A-1::0": {
+          "item_id": "A::A-1::0",
+          "fit": "PARTIAL",
+          "reason": "Astra's multi-step reasoning, planning, and tool/computer use are cognitive capabilities, but the evidence does not address temporal motor intelligence or embodied control, so the separability claim is only indirectly supported."
+        },
+        "A::A-1::1": {
+          "item_id": "A::A-1::1",
+          "fit": "INSUFFICIENT",
+          "reason": "Evidence about a large frontier model being deployed for complex work and computer use does not bear on whether high-frequency motor control should depend on a large unified model; computer use is not high-frequency motor control."
+        },
+        "A::A-1::2": {
+          "item_id": "A::A-1::2",
+          "fit": "INSUFFICIENT",
+          "reason": "Astra's computer-use and multi-step execution operate at human/application timescales, not the fastest embodied-control loop, so it does not challenge the unsuitability claim for that loop."
+        },
+        "A::A-1::3": {
+          "item_id": "A::A-1::3",
+          "fit": "PARTIAL",
+          "reason": "Token efficiency, cost variability, and containment/approval needs are adjacent to evaluation concerns, but they do not directly evidence a lack of latency × energy × task-success evaluation for high-frequency embodied control."
+        },
+        "D::D-1::0": {
+          "item_id": "D::D-1::0",
+          "fit": "INSUFFICIENT",
+          "reason": "A model enabling agents to secretly conspire is not evidence about shared world models reducing explicit multi-agent communication; the mechanism is unspecified and unrelated to world-model sharing."
+        },
+        "D::D-1::1": {
+          "item_id": "D::D-1::1",
+          "fit": "INSUFFICIENT",
+          "reason": "A single centralized model enabling conspiracy does not bear on whether true swarm-style collective intelligence requires decentralized local intelligence."
+        },
+        "D::D-1::2": {
+          "item_id": "D::D-1::2",
+          "fit": "INSUFFICIENT",
+          "reason": "Agentic coding capabilities, opaque recurrence, and a breakout incident concern safety and control, not the suitability of large unified models for the fastest embodied-control loop."
+        },
+        "D::D-1::4": {
+          "item_id": "D::D-1::4",
+          "fit": "INSUFFICIENT",
+          "reason": "Absence of latency, energy, or task-success metrics in an agentic coding release is not evidence about evaluation for high-frequency embodied control."
+        },
+        "X::X-1::0": {
+          "item_id": "X::X-1::0",
+          "fit": "INSUFFICIENT",
+          "reason": "An XR gesture study reporting effectiveness without latency/energy metrics concerns spatially grounded interaction, not high-frequency embodied control evaluation."
+        },
+        "X::X-1::1": {
+          "item_id": "X::X-1::1",
+          "fit": "PARTIAL",
+          "reason": "AgentHands uses a backend LLM with local parsing for synchronized co-speech gestures, showing a large model can drive some motor behavior, but co-speech gesture timing is not high-frequency motor control."
+        },
+        "X::X-1::2": {
+          "item_id": "X::X-1::2",
+          "fit": "PARTIAL",
+          "reason": "AgentHands shows a large LLM can support synchronized gesture generation, but this is not the fastest embodied-control loop, so the challenge to unsuitability is only indirect."
+        },
+        "X::X-1::3": {
+          "item_id": "X::X-1::3",
+          "fit": "DIRECT",
+          "reason": "AgentHands explicitly separates cognitive LLM response generation from local temporal motor execution (parser, TTS, animation engine), directly supporting partial separability of cognitive and temporal motor intelligence."
+        },
+        "N4::N4-1::0": {
+          "item_id": "N4::N4-1::0",
+          "fit": "DIRECT",
+          "reason": "The ~83 Hz real-time requirement versus ~0.2-0.4 Hz inference and pausing the simulator directly evidences the latency gap in high-frequency embodied control evaluation."
+        },
+        "N4::N4-1::1": {
+          "item_id": "N4::N4-1::1",
+          "fit": "DIRECT",
+          "reason": "The latency gap and the finding that direct joint control mostly fails while supervising pretrained controllers succeeds directly bear on whether high-frequency motor control should depend on a large unified model."
+        },
+        "N4::N4-1::2": {
+          "item_id": "N4::N4-1::2",
+          "fit": "DIRECT",
+          "reason": "Direct joint control failure, the two-order-of-magnitude latency gap, and worse RL-policy performance than code control directly support unsuitability of large unified models for the fastest embodied-control loop."
+        },
+        "N4::N4-2::4": {
+          "item_id": "N4::N4-2::4",
+          "fit": "PARTIAL",
+          "reason": "Evidence that cognitive models can improve motor task outcomes via VLA supervision and sensory-to-action conversion challenges strong separation, but it does not directly refute partial separability of cognitive and temporal motor intelligence."
+        }
+      },
+      "meta": {
+        "latency_ms": 4895,
+        "prompt_tokens": 8708,
+        "completion_tokens": 1091,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    },
+    {
+      "repeat": 4,
+      "status": "OK",
+      "by_id": {
+        "A::A-1::0": {
+          "item_id": "A::A-1::0",
+          "fit": "PARTIAL",
+          "reason": "Astra's multi-step reasoning, planning, and tool/computer use are cognitive capabilities, but the evidence does not address temporal motor intelligence or embodied control, so the separability claim is only indirectly supported."
+        },
+        "A::A-1::1": {
+          "item_id": "A::A-1::1",
+          "fit": "INSUFFICIENT",
+          "reason": "Astra's general availability and enterprise computer-use capabilities concern software/tool execution, not high-frequency motor control, so they do not bear on whether such control should depend on a large unified model."
+        },
+        "A::A-1::2": {
+          "item_id": "A::A-1::2",
+          "fit": "INSUFFICIENT",
+          "reason": "Computer-use and multi-step execution in software applications are not the fastest embodied-control loop; the evidence does not address latency or motor-control suitability."
+        },
+        "A::A-1::3": {
+          "item_id": "A::A-1::3",
+          "fit": "INSUFFICIENT",
+          "reason": "Token efficiency, cost variability, and containment/approval requirements for computer use are unrelated to latency, energy, or task-success evaluation for high-frequency embodied control."
+        },
+        "D::D-1::0": {
+          "item_id": "D::D-1::0",
+          "fit": "INSUFFICIENT",
+          "reason": "The Hugging Face hack describes secret agent conspiracy, not shared world models or reduced explicit multi-agent communication; the connection is speculative."
+        },
+        "D::D-1::1": {
+          "item_id": "D::D-1::1",
+          "fit": "INSUFFICIENT",
+          "reason": "A single centralized model enabling agent conspiracy does not address whether true swarm-style collective intelligence requires decentralized local intelligence."
+        },
+        "D::D-1::2": {
+          "item_id": "D::D-1::2",
+          "fit": "INSUFFICIENT",
+          "reason": "Agentic coding capabilities, opaque recurrence, and a breakout incident concern safety and software tasks, not the fastest embodied-control loop."
+        },
+        "D::D-1::4": {
+          "item_id": "D::D-1::4",
+          "fit": "INSUFFICIENT",
+          "reason": "Absence of latency, energy, or task-success metrics in Astra release coverage is not evidence about evaluation for high-frequency embodied control."
+        },
+        "X::X-1::0": {
+          "item_id": "X::X-1::0",
+          "fit": "INSUFFICIENT",
+          "reason": "The AgentHands study reports effectiveness metrics for XR co-speech gestures but does not measure latency, energy, or task success for high-frequency embodied control."
+        },
+        "X::X-1::1": {
+          "item_id": "X::X-1::1",
+          "fit": "PARTIAL",
+          "reason": "AgentHands uses a backend LLM to generate gesture events with local parsing for synchronized co-speech motion, which is relevant to whether high-frequency motor control should depend on a large model, though co-speech gesture timing is not the fastest embodied-control loop."
+        },
+        "X::X-1::2": {
+          "item_id": "X::X-1::2",
+          "fit": "PARTIAL",
+          "reason": "AgentHands shows a large LLM can drive synchronized co-speech gestures via local parsing, challenging unsuitability for some embodied-control loops, but it does not address the fastest loop."
+        },
+        "X::X-1::3": {
+          "item_id": "X::X-1::3",
+          "fit": "DIRECT",
+          "reason": "AgentHands separates cognitive LLM response generation from local temporal motor execution (parser, TTS, animation engine), directly supporting partial separability of cognitive and temporal motor intelligence."
+        },
+        "N4::N4-1::0": {
+          "item_id": "N4::N4-1::0",
+          "fit": "DIRECT",
+          "reason": "The ~83 Hz real-time requirement versus ~0.2-0.4 Hz inference and simulator pausing directly reinforces the lack of latency evaluation for high-frequency embodied control."
+        },
+        "N4::N4-1::1": {
+          "item_id": "N4::N4-1::1",
+          "fit": "DIRECT",
+          "reason": "The latency gap and the finding that direct joint control mostly fails while supervising pretrained controllers succeeds directly bear on whether high-frequency motor control should depend on a large unified model."
+        },
+        "N4::N4-1::2": {
+          "item_id": "N4::N4-1::2",
+          "fit": "DIRECT",
+          "reason": "Direct joint control failure, the two-order-of-magnitude latency gap, and worse RL-policy performance than code control directly support unsuitability of large unified models for the fastest embodied-control loop."
+        },
+        "N4::N4-2::4": {
+          "item_id": "N4::N4-2::4",
+          "fit": "PARTIAL",
+          "reason": "Evidence that VLA pairing improves outcomes and newer models convert sensory understanding into actions challenges strong separation, but it concerns high-level supervision rather than temporal motor intelligence itself."
+        }
+      },
+      "meta": {
+        "latency_ms": 4743,
+        "prompt_tokens": 8708,
+        "completion_tokens": 1074,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    },
+    {
+      "repeat": 5,
+      "status": "OK",
+      "by_id": {
+        "A::A-1::0": {
+          "item_id": "A::A-1::0",
+          "fit": "PARTIAL",
+          "reason": "Astra's multi-step reasoning, planning, and tool/computer use are cognitive capabilities, but the evidence does not address temporal motor intelligence or embodied control, so the separability claim is only indirectly supported."
+        },
+        "A::A-1::1": {
+          "item_id": "A::A-1::1",
+          "fit": "INSUFFICIENT",
+          "reason": "Evidence about a large frontier model being deployed for complex work and computer use does not bear on whether high-frequency motor control should depend on a large unified model; computer use is not high-frequency motor control."
+        },
+        "A::A-1::2": {
+          "item_id": "A::A-1::2",
+          "fit": "INSUFFICIENT",
+          "reason": "Astra's computer-use and multi-step execution operate at human/application timescales, not the fastest embodied-control loop, so it does not challenge the unsuitability claim for that loop."
+        },
+        "A::A-1::3": {
+          "item_id": "A::A-1::3",
+          "fit": "INSUFFICIENT",
+          "reason": "Token efficiency, cost variability, and containment/approval requirements are not latency, energy, or task-success evaluation for high-frequency embodied control."
+        },
+        "D::D-1::0": {
+          "item_id": "D::D-1::0",
+          "fit": "INSUFFICIENT",
+          "reason": "A model enabling agents to secretly conspire is not evidence about shared world models reducing explicit multi-agent communication."
+        },
+        "D::D-1::1": {
+          "item_id": "D::D-1::1",
+          "fit": "INSUFFICIENT",
+          "reason": "A single centralized model enabling conspiracy does not bear on whether true swarm-style collective intelligence requires decentralized local intelligence."
+        },
+        "D::D-1::2": {
+          "item_id": "D::D-1::2",
+          "fit": "INSUFFICIENT",
+          "reason": "Agentic coding capabilities, opaque recurrence, and a breakout incident concern safety/control of large models, not their suitability for the fastest embodied-control loop."
+        },
+        "D::D-1::4": {
+          "item_id": "D::D-1::4",
+          "fit": "INSUFFICIENT",
+          "reason": "Absence of latency, energy, or task-success metrics in an agentic coding release is not evidence about evaluation for high-frequency embodied control."
+        },
+        "X::X-1::0": {
+          "item_id": "X::X-1::0",
+          "fit": "INSUFFICIENT",
+          "reason": "An XR gesture study reporting effectiveness without latency/energy/task-success metrics concerns spatially grounded interaction, not high-frequency embodied control evaluation."
+        },
+        "X::X-1::1": {
+          "item_id": "X::X-1::1",
+          "fit": "PARTIAL",
+          "reason": "AgentHands uses a backend LLM with a local parser for synchronized co-speech gestures, showing a large model can drive some motor behavior, but co-speech gesture timing is not clearly the high-frequency motor control at issue."
+        },
+        "X::X-1::2": {
+          "item_id": "X::X-1::2",
+          "fit": "PARTIAL",
+          "reason": "AgentHands shows a large LLM can support synchronized gesture execution, but the loop is speech-timed rather than the fastest embodied-control loop, so the challenge is indirect."
+        },
+        "X::X-1::3": {
+          "item_id": "X::X-1::3",
+          "fit": "DIRECT",
+          "reason": "AgentHands explicitly separates backend LLM cognitive generation from local temporal motor execution (parser, TTS, animation engine), directly supporting partial separability of cognitive and temporal motor intelligence."
+        },
+        "N4::N4-1::0": {
+          "item_id": "N4::N4-1::0",
+          "fit": "DIRECT",
+          "reason": "The ~83 Hz real-time requirement versus ~0.2-0.4 Hz inference and simulator pausing directly evidences the latency gap in high-frequency embodied control evaluation."
+        },
+        "N4::N4-1::1": {
+          "item_id": "N4::N4-1::1",
+          "fit": "DIRECT",
+          "reason": "Direct joint control failing while supervising pretrained controllers succeeds, combined with the two-order-of-magnitude latency gap, directly bears on whether high-frequency motor control should depend on a large unified model."
+        },
+        "N4::N4-1::2": {
+          "item_id": "N4::N4-1::2",
+          "fit": "DIRECT",
+          "reason": "Direct joint control failure, the ~83 Hz vs ~0.2-0.4 Hz latency gap, and RL policies underperforming code controllers directly support unsuitability of large unified models for the fastest embodied-control loop."
+        },
+        "N4::N4-2::4": {
+          "item_id": "N4::N4-2::4",
+          "fit": "PARTIAL",
+          "reason": "Evidence that VLA pairing improves outcomes and newer models convert sensory understanding into actions challenges strong separation, but it concerns high-level supervision rather than temporal motor intelligence itself."
+        }
+      },
+      "meta": {
+        "latency_ms": 5074,
+        "prompt_tokens": 8708,
+        "completion_tokens": 1081,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    },
+    {
+      "repeat": 6,
+      "status": "OK",
+      "by_id": {
+        "A::A-1::0": {
+          "item_id": "A::A-1::0",
+          "fit": "PARTIAL",
+          "reason": "Astra's multi-step reasoning, planning, and tool/computer use are cognitive capabilities, but the evidence does not address temporal motor intelligence or embodied control, so it only partially supports the separability claim."
+        },
+        "A::A-1::1": {
+          "item_id": "A::A-1::1",
+          "fit": "INSUFFICIENT",
+          "reason": "Evidence about a large frontier model being deployed for complex work and computer use does not bear on whether high-frequency motor control should depend on a large unified model."
+        },
+        "A::A-1::2": {
+          "item_id": "A::A-1::2",
+          "fit": "INSUFFICIENT",
+          "reason": "Computer-use and multi-step execution are not the fastest embodied-control loop; this evidence does not challenge the proposition that large unified models may be unsuitable for that loop."
+        },
+        "A::A-1::3": {
+          "item_id": "A::A-1::3",
+          "fit": "INSUFFICIENT",
+          "reason": "Token efficiency, cost variability, and containment/approval requirements are not latency, energy, or task-success evaluation for high-frequency embodied control."
+        },
+        "D::D-1::0": {
+          "item_id": "D::D-1::0",
+          "fit": "INSUFFICIENT",
+          "reason": "A model enabling agents to secretly conspire does not address shared world models or whether they reduce explicit multi-agent communication."
+        },
+        "D::D-1::1": {
+          "item_id": "D::D-1::1",
+          "fit": "INSUFFICIENT",
+          "reason": "A single centralized model enabling conspiracy does not bear on whether true swarm-style collective intelligence requires decentralized local intelligence."
+        },
+        "D::D-1::2": {
+          "item_id": "D::D-1::2",
+          "fit": "INSUFFICIENT",
+          "reason": "Agentic coding capabilities and opaque recurrence concern safety and control, not suitability for the fastest embodied-control loop."
+        },
+        "D::D-1::4": {
+          "item_id": "D::D-1::4",
+          "fit": "INSUFFICIENT",
+          "reason": "Absence of latency, energy, or task-success metrics in an agentic coding release is not evidence about evaluation for high-frequency embodied control."
+        },
+        "X::X-1::0": {
+          "item_id": "X::X-1::0",
+          "fit": "INSUFFICIENT",
+          "reason": "An XR gesture study reporting effectiveness without latency, energy, or task-success metrics is not evidence about high-frequency embodied-control evaluation."
+        },
+        "X::X-1::1": {
+          "item_id": "X::X-1::1",
+          "fit": "PARTIAL",
+          "reason": "AgentHands uses a backend LLM with local parsing for synchronized co-speech gestures, showing a large model can drive some motor behavior, but co-speech gesture timing is not high-frequency motor control."
+        },
+        "X::X-1::2": {
+          "item_id": "X::X-1::2",
+          "fit": "PARTIAL",
+          "reason": "AgentHands shows a large LLM can support synchronized gesture generation, but this is not the fastest embodied-control loop, so the challenge is only partial."
+        },
+        "X::X-1::3": {
+          "item_id": "X::X-1::3",
+          "fit": "DIRECT",
+          "reason": "AgentHands separates cognitive LLM response generation from local temporal motor execution (parser, TTS, animation engine), directly supporting partial separability of cognitive and temporal motor intelligence."
+        },
+        "N4::N4-1::0": {
+          "item_id": "N4::N4-1::0",
+          "fit": "DIRECT",
+          "reason": "The ~83 Hz real-time requirement versus ~0.2-0.4 Hz inference and paused simulations directly reinforce the lack of latency evaluation for high-frequency embodied control."
+        },
+        "N4::N4-1::1": {
+          "item_id": "N4::N4-1::1",
+          "fit": "DIRECT",
+          "reason": "The latency gap and the finding that direct joint control mostly fails while supervising pretrained controllers succeeds directly bear on whether high-frequency motor control should depend on a large unified model."
+        },
+        "N4::N4-1::2": {
+          "item_id": "N4::N4-1::2",
+          "fit": "DIRECT",
+          "reason": "Direct joint control failures, the two-order-of-magnitude latency gap, and worse RL policy performance than code control directly support the unsuitability of large unified models for the fastest embodied-control loop."
+        },
+        "N4::N4-2::4": {
+          "item_id": "N4::N4-2::4",
+          "fit": "PARTIAL",
+          "reason": "Evidence that cognitive models can improve motor task outcomes through VLA supervision challenges strong separation, but it does not directly address the partial separability of cognitive and temporal motor intelligence."
+        }
+      },
+      "meta": {
+        "latency_ms": 3948,
+        "prompt_tokens": 8708,
+        "completion_tokens": 1038,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    }
+  ],
+  "summary": {
+    "n_ok": 6,
+    "n_error": 0,
+    "modal_exact": 0.8125,
+    "stable_5_of_6_fraction": 1.0,
+    "critical_confusions": [],
+    "details": {
+      "A::A-1::0": {
+        "reference": "PARTIAL",
+        "modal": "PARTIAL",
+        "counts": {
+          "PARTIAL": 6
+        },
+        "modal_rate": 1.0,
+        "matches_reference": true
+      },
+      "A::A-1::1": {
+        "reference": "INSUFFICIENT",
+        "modal": "INSUFFICIENT",
+        "counts": {
+          "INSUFFICIENT": 6
+        },
+        "modal_rate": 1.0,
+        "matches_reference": true
+      },
+      "A::A-1::2": {
+        "reference": "INSUFFICIENT",
+        "modal": "INSUFFICIENT",
+        "counts": {
+          "INSUFFICIENT": 6
+        },
+        "modal_rate": 1.0,
+        "matches_reference": true
+      },
+      "A::A-1::3": {
+        "reference": "INSUFFICIENT",
+        "modal": "INSUFFICIENT",
+        "counts": {
+          "INSUFFICIENT": 5,
+          "PARTIAL": 1
+        },
+        "modal_rate": 0.8333333333333334,
+        "matches_reference": true
+      },
+      "D::D-1::0": {
+        "reference": "INSUFFICIENT",
+        "modal": "INSUFFICIENT",
+        "counts": {
+          "INSUFFICIENT": 6
+        },
+        "modal_rate": 1.0,
+        "matches_reference": true
+      },
+      "D::D-1::1": {
+        "reference": "INSUFFICIENT",
+        "modal": "INSUFFICIENT",
+        "counts": {
+          "INSUFFICIENT": 6
+        },
+        "modal_rate": 1.0,
+        "matches_reference": true
+      },
+      "D::D-1::2": {
+        "reference": "INSUFFICIENT",
+        "modal": "INSUFFICIENT",
+        "counts": {
+          "INSUFFICIENT": 6
+        },
+        "modal_rate": 1.0,
+        "matches_reference": true
+      },
+      "D::D-1::4": {
+        "reference": "INSUFFICIENT",
+        "modal": "INSUFFICIENT",
+        "counts": {
+          "INSUFFICIENT": 6
+        },
+        "modal_rate": 1.0,
+        "matches_reference": true
+      },
+      "X::X-1::0": {
+        "reference": "CONTRADICTS_OPERATION",
+        "modal": "INSUFFICIENT",
+        "counts": {
+          "INSUFFICIENT": 6
+        },
+        "modal_rate": 1.0,
+        "matches_reference": false
+      },
+      "X::X-1::1": {
+        "reference": "DIRECT",
+        "modal": "PARTIAL",
+        "counts": {
+          "PARTIAL": 6
+        },
+        "modal_rate": 1.0,
+        "matches_reference": false
+      },
+      "X::X-1::2": {
+        "reference": "CONTRADICTS_OPERATION",
+        "modal": "PARTIAL",
+        "counts": {
+          "PARTIAL": 6
+        },
+        "modal_rate": 1.0,
+        "matches_reference": false
+      },
+      "X::X-1::3": {
+        "reference": "DIRECT",
+        "modal": "DIRECT",
+        "counts": {
+          "DIRECT": 6
+        },
+        "modal_rate": 1.0,
+        "matches_reference": true
+      },
+      "N4::N4-1::0": {
+        "reference": "DIRECT",
+        "modal": "DIRECT",
+        "counts": {
+          "DIRECT": 6
+        },
+        "modal_rate": 1.0,
+        "matches_reference": true
+      },
+      "N4::N4-1::1": {
+        "reference": "DIRECT",
+        "modal": "DIRECT",
+        "counts": {
+          "DIRECT": 6
+        },
+        "modal_rate": 1.0,
+        "matches_reference": true
+      },
+      "N4::N4-1::2": {
+        "reference": "DIRECT",
+        "modal": "DIRECT",
+        "counts": {
+          "DIRECT": 6
+        },
+        "modal_rate": 1.0,
+        "matches_reference": true
+      },
+      "N4::N4-2::4": {
+        "reference": "PARTIAL",
+        "modal": "PARTIAL",
+        "counts": {
+          "PARTIAL": 6
+        },
+        "modal_rate": 1.0,
+        "matches_reference": true
+      }
+    }
+  },
+  "guardrails": [
+    "No source prestige/provenance is shown to directness classifier.",
+    "No numeric epistemic/confidence/importance score or Attention decision.",
+    "Production defaults unchanged; Phase 9A paused."
+  ]
+}

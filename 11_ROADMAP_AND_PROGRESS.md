@@ -1175,3 +1175,7 @@ Result: `153_PHASE10D6I_EFFECT_SPECIFIC_EVIDENCE_FORM_AUTHORITY_RESULT.md`. A fr
 ## Phase 10D.6I.1 Compositional Evidence Form Fresh Holdout — CLOSED / NOT PROMOTED 2026-09-11
 
 Result: `155_PHASE10D6I1_COMPOSITIONAL_EVIDENCE_FORM_FRESH_HOLDOUT_RESULT.md`. Fresh B3/B4/F3/F4 holdout preserved perfect provenance-role classification but full multi-form exact-set agreement was only 70% (mean Jaccard 0.842) despite 90% stability and zero critical confusions. The remaining disagreements are mostly companion forms, so exhaustive evidence-form taxonomy is not promoted as an Attention authority. Next: relation-specific support directness/scope grounding. Production defaults unchanged; Phase 9A remains paused.
+
+## Phase 10D.6J Relation-Support Directness — CLOSED / INSTRUMENT NOT PROMOTED 2026-09-11
+
+Result: `157_PHASE10D6J_RELATION_SUPPORT_DIRECTNESS_RESULT.md`. Measurement SHA `342b4b9`; artifact SHA256 `1db72a6e068384d7eadd17fb01d22a36a4f81019a5dd21de789c17fa78fcd7c8`. Six repeated audits were structurally successful and all 16 items were stable at >=5/6 with zero critical confusions, but exact agreement was 13/16 (81.25%), below the preregistered 14/16 gate. The instrument is not promoted as a truth oracle. The next gate may use it only conservatively: DIRECT can qualify for strong epistemic authority subject to provenance; PARTIAL remains weak; INSUFFICIENT/CONTRADICTS_OPERATION are rejected. Production defaults unchanged; Phase 9A remains paused.
