@@ -536,6 +536,7 @@ def run_pipeline(
                 source,
                 persist_suggested_watches=persist_suggested_watches,
                 runtime_context_id=runtime_context_id,
+                decision_strategy=decision_strategy,
             )
         return hydrate_run(db, run)
     if kind == "existing" and run.status == "RUNNING":
@@ -865,6 +866,7 @@ def _reschedule(
     )
     score_debug = dict(orig_debug or (payload.get("attention_plan") or {}).get("score_debug") or {})
     score_debug["brain_world_model"] = brain_snapshot.as_dict()
+    score_debug["decision_strategy"] = decision_strategy_snapshot(decision_strategy)
     plan = AttentionPlan(
         candidate_type=CandidateType.SOURCE,
         candidate_id=source.id,

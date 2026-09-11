@@ -505,3 +505,22 @@ def test_decision_strategy_version_changes_execution_identity(client: TestClient
     assert first["execution_digest"] != second["execution_digest"]
     assert first["execution_snapshot"]["decision_strategy"]["version"] == "v1"
     assert second["execution_snapshot"]["decision_strategy"]["version"] == "v2"
+
+
+def test_impact_contract_and_prompt_are_part_of_execution_digest():
+    from app.cognitive.prompts import IMPACT_SYSTEM, IMPACT_SYSTEM_VNEXT
+
+    legacy = _model_provider(
+        impact_system_prompt=IMPACT_SYSTEM,
+        impact_contract_version="production-impact-v2.1-legacy",
+    )
+    vnext = _model_provider(
+        impact_system_prompt=IMPACT_SYSTEM_VNEXT,
+        impact_contract_version="canonical-impact-vnext-v0.1",
+    )
+    legacy_snapshot = analysis_execution_snapshot(legacy)
+    vnext_snapshot = analysis_execution_snapshot(vnext)
+    assert legacy_snapshot["impact_contract"]["version"] == "production-impact-v2.1-legacy"
+    assert vnext_snapshot["impact_contract"]["version"] == "canonical-impact-vnext-v0.1"
+    assert legacy_snapshot["impact_contract"]["system_prompt_sha256"] != vnext_snapshot["impact_contract"]["system_prompt_sha256"]
+    assert analysis_execution_digest(legacy) != analysis_execution_digest(vnext)

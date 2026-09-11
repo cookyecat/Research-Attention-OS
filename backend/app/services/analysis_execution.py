@@ -118,8 +118,15 @@ def analysis_execution_snapshot(provider=None) -> dict[str, Any]:
             "overlap": settings.long_source_chunk_overlap,
         },
     }
+    model_backend = _model_backend(provider)
+    if model_backend is not None:
+        impact_prompt = str(getattr(model_backend, "_impact_system_prompt", "") or "")
+        snapshot["impact_contract"] = {
+            "version": str(getattr(model_backend, "impact_contract_version", "") or ""),
+            "system_prompt_sha256": hashlib.sha256(impact_prompt.encode("utf-8")).hexdigest(),
+        }
     if _uses_model_llm(provider):
-        snapshot["llm"] = _llm_execution(_model_backend(provider))
+        snapshot["llm"] = _llm_execution(model_backend)
     if uses_embedding_retrieval(provider):
         snapshot["retrieval"] = _retrieval_execution()
     return snapshot

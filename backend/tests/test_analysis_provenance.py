@@ -335,3 +335,22 @@ def test_fresh_drop_model_delta_does_not_deny_cognition(client: TestClient, db):
     if result["disposition"] == "DROP":
         assert "downstream synthesis skipped" in summary
         assert result.get("kernel_patches") == []
+
+
+def test_completed_run_reschedule_preserves_explicit_decision_strategy(client: TestClient, db):
+    from app.services.pipeline import run_pipeline
+    from app.services.scheduler import RuntimeView, get_decision_strategy
+
+    src = add_text(client, "A technical paper about motor intelligence latency.", title="prov-explicit-strategy")
+    strategy = get_decision_strategy("pareto-multidelta-cardinal-free-anchored-open-new")
+    first = run_pipeline(db, UUID(src["id"]), decision_strategy=strategy)
+    second = run_pipeline(
+        db,
+        UUID(src["id"]),
+        runtime=RuntimeView(current_task="later"),
+        decision_strategy=strategy,
+    )
+    assert second["analysis_run"]["id"] == first["analysis_run"]["id"]
+    latest = second["attention_plan"]
+    assert latest["score_debug"]["decision_strategy"]["strategy_id"] == strategy.strategy_id
+    assert latest["score_debug"]["decision_strategy"]["version"] == strategy.version
