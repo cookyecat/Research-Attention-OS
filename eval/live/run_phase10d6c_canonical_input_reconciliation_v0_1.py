@@ -85,9 +85,9 @@ def canonical_user_prompt(units, matches, nodes) -> str:
     )
 
 
-def canonical_assess(provider, units, extraction, matches, nodes):
+def canonical_assess(provider, units, extraction, matches, nodes, *, system_prompt=IMPACT_SYSTEM):
     parsed: CognitiveImpactResponse = provider._complete(
-        IMPACT_SYSTEM, canonical_user_prompt(units, matches, nodes), CognitiveImpactResponse, stage="impact"
+        system_prompt, canonical_user_prompt(units, matches, nodes), CognitiveImpactResponse, stage="impact"
     )
     by_id = {m.node_id: m for m in matches}
     by_id.update({n.id: n for n in nodes})
