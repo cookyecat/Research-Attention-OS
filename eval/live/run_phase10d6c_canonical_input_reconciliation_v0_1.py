@@ -80,7 +80,8 @@ def canonical_user_prompt(units, matches, nodes) -> str:
         + "\n\nKernel locations:\n" + json.dumps(locations, ensure_ascii=False)
         + "\n\nEligible cognitive targets:\n" + json.dumps(eligible, ensure_ascii=False)
         + "\n\nDuplicate: false\nIndependent sources: 1\nSecondary reports: 0\n"
-        + "Return the CognitiveImpactResponse JSON schema."
+        + "\nReturn JSON:\n"
+        + '{"effects":[{"target_kernel_node_id":null,"operation":"REINFORCE","change_magnitude":0.0,"epistemic_strength":0.0,"target_importance":0.0,"reason":"","exploration_candidate":false}],"attention_cost":0.0,"exploration_candidate":false,"evidence_maturity":0.0,"threatens_active_work":false,"marketing_heavy":false,"high_quality_technical":false,"foundational_paper":false}'
     )
 
 
