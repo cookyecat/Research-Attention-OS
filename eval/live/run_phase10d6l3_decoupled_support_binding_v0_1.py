@@ -12,6 +12,10 @@ for p in (ROOT, BACKEND):
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
 
+from eval.live.run_standing_radar_fit_eval import load_repo_env
+
+load_repo_env()
+
 from pydantic import Field
 from app.cognitive.client import chat_json, chat_json_schema
 from app.cognitive.schemas import StrictModel
@@ -19,9 +23,6 @@ from app.services.cognitive_impact import node_proposition
 from eval.live.phase6b_cognitive_semantics_v0_1 import build_phase6b_mvp_kernel_nodes
 from eval.live.run_phase10d4_real_web_basin_persistence_v0_1 import selected_cases
 from eval.live.run_phase10d6b_prompt_reconciliation_shadow_v0_1 import reconstruct_prod_matches
-from eval.live.run_standing_radar_fit_eval import load_repo_env
-
-load_repo_env()
 RUN_VERSION = "phase10d6l3-decoupled-support-binding-v0.1"
 PRIMARY_ARTIFACT = ROOT / "eval/live/results/phase10d6l1_minimal_prompt_authority_shadow_v0_1/phase10d6l1_minimal_prompt_authority_shadow_v0.1_20260911T124905Z.json"
 PRIMARY_SHA256 = "444fe8bb7e0d7670411983167fade62fd638dd7f7e8ba7599303e45a5c2fd8cf"

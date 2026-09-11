@@ -1,0 +1,1303 @@
+{
+  "run_version": "phase10d6l3-decoupled-support-binding-v0.1",
+  "status": "DECOUPLED_SUPPORT_BINDING_MEASUREMENT",
+  "measurement_sha": "47fe78fdcc9ae06cbb67850ad1b2d77f19bc0346",
+  "primary_artifact": "eval/live/results/phase10d6l1_minimal_prompt_authority_shadow_v0_1/phase10d6l1_minimal_prompt_authority_shadow_v0.1_20260911T124905Z.json",
+  "primary_artifact_sha256": "444fe8bb7e0d7670411983167fade62fd638dd7f7e8ba7599303e45a5c2fd8cf",
+  "binder_prompt_sha256": "5f1152392af8b4abc5e35251b156047d280addc00fe19153ec894cdda8ee178e",
+  "cases": [
+    "A",
+    "D",
+    "X",
+    "N4"
+  ],
+  "repeats_per_relation_set": 3,
+  "summary": {
+    "n_calls": 42,
+    "n_ok_calls": 0,
+    "structured_success_rate": 0.0,
+    "exact_relation_id_preservation": false,
+    "unknown_identifier_error_count": 0,
+    "n_frozen_relation_instances": 28,
+    "n_stable_support_relation_instances": 0,
+    "all_support_signatures_stable_2_of_3": false,
+    "empty_support_binding_rate": 0.0,
+    "empty_anchor_binding_rate": 0.0,
+    "promotion_gate_pass": false
+  },
+  "results": {
+    "A": {
+      "expected_nonempty_samples": 0,
+      "nonempty_samples": []
+    },
+    "D": {
+      "expected_nonempty_samples": 3,
+      "nonempty_samples": [
+        {
+          "sample_id": "P1-1",
+          "frozen_relations": [
+            {
+              "relation_id": "D:P1-1:1",
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "reason": "The source introduces a new cognitive branch: a frontier model with 'opaque recurrence' rendering chain-of-thought unreadable, combined with reported agent breakout and conspiracy capabilities, and a 'critical cybersecurity capability threshold' designation. This raises a distinct question about whether opaque internal representations in large unified models undermine alignment monitoring and multi-agent safety — a branch not covered by existing kernel nodes on embodied control, shared world models, or decentralized swarm intelligence."
+            }
+          ],
+          "draws": [
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 1
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 2
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 3
+            }
+          ],
+          "summary": {
+            "n_relations": 1,
+            "n_draws": 3,
+            "n_ok_draws": 0,
+            "exact_relation_id_draws": 0,
+            "unknown_identifier_errors": 0,
+            "all_relations_support_stable_2_of_3": false,
+            "relations": {
+              "D:P1-1:1": {
+                "relation": {
+                  "relation_id": "D:P1-1:1",
+                  "operation": "OPEN_NEW",
+                  "target_kernel_node_id": null,
+                  "reason": "The source introduces a new cognitive branch: a frontier model with 'opaque recurrence' rendering chain-of-thought unreadable, combined with reported agent breakout and conspiracy capabilities, and a 'critical cybersecurity capability threshold' designation. This raises a distinct question about whether opaque internal representations in large unified models undermine alignment monitoring and multi-agent safety — a branch not covered by existing kernel nodes on embodied control, shared world models, or decentralized swarm intelligence."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              }
+            }
+          }
+        },
+        {
+          "sample_id": "P1-2",
+          "frozen_relations": [
+            {
+              "relation_id": "D:P1-2:1",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+              "reason": "The source describes a large unified model (GPT-6 Astra) focused on agentic tasks, coding, and document creation, with no mention of high-frequency motor control. This indirectly supports the question of whether high-frequency motor control should depend on a large unified model, by showing that current large unified models are not positioned for such control. The evidence is weak and indirect, from a company announcement."
+            },
+            {
+              "relation_id": "D:P1-2:2",
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "reason": "The source introduces a new cognitive branch: the possibility of recursive self-improvement in frontier model training, where previous models supervise training and training becomes highly autonomous. This is a new direction not covered by existing Kernel nodes about embodied intelligence, collective intelligence, or motor control. It opens a genuine new branch about AI self-improvement and its implications for multi-agent systems and alignment."
+            }
+          ],
+          "draws": [
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 1
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 2
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 3
+            }
+          ],
+          "summary": {
+            "n_relations": 2,
+            "n_draws": 3,
+            "n_ok_draws": 0,
+            "exact_relation_id_draws": 0,
+            "unknown_identifier_errors": 0,
+            "all_relations_support_stable_2_of_3": false,
+            "relations": {
+              "D:P1-2:1": {
+                "relation": {
+                  "relation_id": "D:P1-2:1",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+                  "reason": "The source describes a large unified model (GPT-6 Astra) focused on agentic tasks, coding, and document creation, with no mention of high-frequency motor control. This indirectly supports the question of whether high-frequency motor control should depend on a large unified model, by showing that current large unified models are not positioned for such control. The evidence is weak and indirect, from a company announcement."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              },
+              "D:P1-2:2": {
+                "relation": {
+                  "relation_id": "D:P1-2:2",
+                  "operation": "OPEN_NEW",
+                  "target_kernel_node_id": null,
+                  "reason": "The source introduces a new cognitive branch: the possibility of recursive self-improvement in frontier model training, where previous models supervise training and training becomes highly autonomous. This is a new direction not covered by existing Kernel nodes about embodied intelligence, collective intelligence, or motor control. It opens a genuine new branch about AI self-improvement and its implications for multi-agent systems and alignment."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              }
+            }
+          }
+        },
+        {
+          "sample_id": "P1-6",
+          "frozen_relations": [
+            {
+              "relation_id": "D:P1-6:1",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+              "reason": "The source's emphasis on Astra's agentic, coding, and document-generation capabilities, with no mention of high-frequency motor control, weakly reinforces the open question of whether high-frequency motor control should depend on a large unified model. The evidence is indirect and from a company announcement, so epistemic strength is low."
+            }
+          ],
+          "draws": [
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 1
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 2
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 3
+            }
+          ],
+          "summary": {
+            "n_relations": 1,
+            "n_draws": 3,
+            "n_ok_draws": 0,
+            "exact_relation_id_draws": 0,
+            "unknown_identifier_errors": 0,
+            "all_relations_support_stable_2_of_3": false,
+            "relations": {
+              "D:P1-6:1": {
+                "relation": {
+                  "relation_id": "D:P1-6:1",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+                  "reason": "The source's emphasis on Astra's agentic, coding, and document-generation capabilities, with no mention of high-frequency motor control, weakly reinforces the open question of whether high-frequency motor control should depend on a large unified model. The evidence is indirect and from a company announcement, so epistemic strength is low."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "X": {
+      "expected_nonempty_samples": 5,
+      "nonempty_samples": [
+        {
+          "sample_id": "P1-1",
+          "frozen_relations": [
+            {
+              "relation_id": "X:P1-1:1",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "reason": "AgentHands demonstrates a system where a large LLM handles semantic/gesture planning while a local parser and animation engine handle synchronized, low-latency co-speech gesture execution on the XR headset. This is a concrete instance of separating cognitive/semantic intelligence (LLM) from temporal motor execution (local parser + animation engine), consistent with the model that embodied intelligence contains partially separable cognitive and temporal motor components. Scope is adjacent (XR gesture guidance, not high-frequency motor control), so support is suggestive rather than direct."
+            }
+          ],
+          "draws": [
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 1
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 2
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 3
+            }
+          ],
+          "summary": {
+            "n_relations": 1,
+            "n_draws": 3,
+            "n_ok_draws": 0,
+            "exact_relation_id_draws": 0,
+            "unknown_identifier_errors": 0,
+            "all_relations_support_stable_2_of_3": false,
+            "relations": {
+              "X:P1-1:1": {
+                "relation": {
+                  "relation_id": "X:P1-1:1",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                  "reason": "AgentHands demonstrates a system where a large LLM handles semantic/gesture planning while a local parser and animation engine handle synchronized, low-latency co-speech gesture execution on the XR headset. This is a concrete instance of separating cognitive/semantic intelligence (LLM) from temporal motor execution (local parser + animation engine), consistent with the model that embodied intelligence contains partially separable cognitive and temporal motor components. Scope is adjacent (XR gesture guidance, not high-frequency motor control), so support is suggestive rather than direct."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              }
+            }
+          }
+        },
+        {
+          "sample_id": "P1-3",
+          "frozen_relations": [
+            {
+              "relation_id": "X:P1-3:1",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "reason": "AgentHands demonstrates a system where a large LLM handles semantic/cognitive generation (gesture events, speech content) while a separate local parser and animation engine handle the temporal motor execution (synchronized co-speech gestures). This provides a concrete architectural example consistent with the model that embodied intelligence contains partially separable cognitive and temporal motor components, though the evidence is a single prototype self-report without quantitative metrics."
+            }
+          ],
+          "draws": [
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 1
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 2
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 3
+            }
+          ],
+          "summary": {
+            "n_relations": 1,
+            "n_draws": 3,
+            "n_ok_draws": 0,
+            "exact_relation_id_draws": 0,
+            "unknown_identifier_errors": 0,
+            "all_relations_support_stable_2_of_3": false,
+            "relations": {
+              "X:P1-3:1": {
+                "relation": {
+                  "relation_id": "X:P1-3:1",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                  "reason": "AgentHands demonstrates a system where a large LLM handles semantic/cognitive generation (gesture events, speech content) while a separate local parser and animation engine handle the temporal motor execution (synchronized co-speech gestures). This provides a concrete architectural example consistent with the model that embodied intelligence contains partially separable cognitive and temporal motor components, though the evidence is a single prototype self-report without quantitative metrics."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              }
+            }
+          }
+        },
+        {
+          "sample_id": "P1-4",
+          "frozen_relations": [
+            {
+              "relation_id": "X:P1-4:1",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "reason": "AgentHands demonstrates a working separation between a backend LLM generating semantic GestureEvents and a local parser/animation engine coordinating TTS with word-level timestamps on the XR headset. This is a concrete instance of cognitive (LLM semantic) and temporal motor (synchronized gesture animation) intelligence being partially separable in an embodied system, consistent with the existing model. Evidence is a single self-reported prototype study with N=12 and no reported effect sizes, so epistemic strength is limited."
+            },
+            {
+              "relation_id": "X:P1-4:2",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "reason": "The source reports a within-subjects comparison (AgentHands vs. speech-only baseline) but explicitly notes quantitative results are insufficiently supported in the supplied text (no metric values or effect sizes). This reinforces the existing bottleneck that evaluation of embodied control lacks rigorous latency/energy/task-success metrics, by exemplifying the gap rather than filling it."
+            }
+          ],
+          "draws": [
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 1
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 2
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 3
+            }
+          ],
+          "summary": {
+            "n_relations": 2,
+            "n_draws": 3,
+            "n_ok_draws": 0,
+            "exact_relation_id_draws": 0,
+            "unknown_identifier_errors": 0,
+            "all_relations_support_stable_2_of_3": false,
+            "relations": {
+              "X:P1-4:1": {
+                "relation": {
+                  "relation_id": "X:P1-4:1",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                  "reason": "AgentHands demonstrates a working separation between a backend LLM generating semantic GestureEvents and a local parser/animation engine coordinating TTS with word-level timestamps on the XR headset. This is a concrete instance of cognitive (LLM semantic) and temporal motor (synchronized gesture animation) intelligence being partially separable in an embodied system, consistent with the existing model. Evidence is a single self-reported prototype study with N=12 and no reported effect sizes, so epistemic strength is limited."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              },
+              "X:P1-4:2": {
+                "relation": {
+                  "relation_id": "X:P1-4:2",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                  "reason": "The source reports a within-subjects comparison (AgentHands vs. speech-only baseline) but explicitly notes quantitative results are insufficiently supported in the supplied text (no metric values or effect sizes). This reinforces the existing bottleneck that evaluation of embodied control lacks rigorous latency/energy/task-success metrics, by exemplifying the gap rather than filling it."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              }
+            }
+          }
+        },
+        {
+          "sample_id": "P1-5",
+          "frozen_relations": [
+            {
+              "relation_id": "X:P1-5:1",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "reason": "AgentHands demonstrates a system where a large LLM handles semantic/cognitive planning (gesture selection, response generation) while a separate local parser and animation engine handle the temporal motor execution (synchronized co-speech gestures). This architecture instantiates the separability of cognitive intelligence from temporal motor intelligence, providing a concrete example that reinforces the model at the subsystem level, though the evidence is a single prototype with limited quantitative reporting."
+            }
+          ],
+          "draws": [
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 1
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 2
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 3
+            }
+          ],
+          "summary": {
+            "n_relations": 1,
+            "n_draws": 3,
+            "n_ok_draws": 0,
+            "exact_relation_id_draws": 0,
+            "unknown_identifier_errors": 0,
+            "all_relations_support_stable_2_of_3": false,
+            "relations": {
+              "X:P1-5:1": {
+                "relation": {
+                  "relation_id": "X:P1-5:1",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                  "reason": "AgentHands demonstrates a system where a large LLM handles semantic/cognitive planning (gesture selection, response generation) while a separate local parser and animation engine handle the temporal motor execution (synchronized co-speech gestures). This architecture instantiates the separability of cognitive intelligence from temporal motor intelligence, providing a concrete example that reinforces the model at the subsystem level, though the evidence is a single prototype with limited quantitative reporting."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              }
+            }
+          }
+        },
+        {
+          "sample_id": "P1-6",
+          "frozen_relations": [
+            {
+              "relation_id": "X:P1-6:1",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "reason": "AgentHands demonstrates a working separation between an LLM backend that generates semantic content (GestureEvents attached to trigger words) and a local parser/animation engine on the XR headset that handles synchronized co-speech gesture timing. This is a concrete instance of cognitive/semantic intelligence being handled by a large model while temporal motor coordination is handled by a separate local subsystem, consistent with the model that embodied intelligence contains partially separable cognitive and temporal motor components. However, the source is a self-reported prototype announcement with no quantitative results or effect sizes, so epistemic strength is limited."
+            }
+          ],
+          "draws": [
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 1
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 2
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 3
+            }
+          ],
+          "summary": {
+            "n_relations": 1,
+            "n_draws": 3,
+            "n_ok_draws": 0,
+            "exact_relation_id_draws": 0,
+            "unknown_identifier_errors": 0,
+            "all_relations_support_stable_2_of_3": false,
+            "relations": {
+              "X:P1-6:1": {
+                "relation": {
+                  "relation_id": "X:P1-6:1",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                  "reason": "AgentHands demonstrates a working separation between an LLM backend that generates semantic content (GestureEvents attached to trigger words) and a local parser/animation engine on the XR headset that handles synchronized co-speech gesture timing. This is a concrete instance of cognitive/semantic intelligence being handled by a large model while temporal motor coordination is handled by a separate local subsystem, consistent with the model that embodied intelligence contains partially separable cognitive and temporal motor components. However, the source is a self-reported prototype announcement with no quantitative results or effect sizes, so epistemic strength is limited."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "N4": {
+      "expected_nonempty_samples": 6,
+      "nonempty_samples": [
+        {
+          "sample_id": "P1-1",
+          "frozen_relations": [
+            {
+              "relation_id": "N4:P1-1:1",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "reason": "The source provides concrete latency data (real-time control ~83 Hz vs. current non-reasoning inference ~0.2-0.4 Hz, a two-order-of-magnitude gap) and task-success results across control interfaces, directly reinforcing the bottleneck that high-frequency embodied control lacks integrated latency × energy × task-success evaluation. The claim scope aligns with the bottleneck's scope."
+            },
+            {
+              "relation_id": "N4:P1-1:2",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "reason": "The finding that capability depends heavily on the control interface (direct vs. programmatic vs. policy vs. RL supervision) and that models perform differently across these interfaces supports the model that embodied intelligence contains partially separable cognitive and temporal motor intelligence. The evidence aligns with the structural scope."
+            },
+            {
+              "relation_id": "N4:P1-1:3",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+              "reason": "The source provides evidence relevant to the question of whether high-frequency motor control should depend on a large unified model: direct control fails, pretrained controllers help, and latency gaps are large. This reinforces the question's framing but does not resolve it."
+            }
+          ],
+          "draws": [
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 1
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 2
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 3
+            }
+          ],
+          "summary": {
+            "n_relations": 3,
+            "n_draws": 3,
+            "n_ok_draws": 0,
+            "exact_relation_id_draws": 0,
+            "unknown_identifier_errors": 0,
+            "all_relations_support_stable_2_of_3": false,
+            "relations": {
+              "N4:P1-1:1": {
+                "relation": {
+                  "relation_id": "N4:P1-1:1",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                  "reason": "The source provides concrete latency data (real-time control ~83 Hz vs. current non-reasoning inference ~0.2-0.4 Hz, a two-order-of-magnitude gap) and task-success results across control interfaces, directly reinforcing the bottleneck that high-frequency embodied control lacks integrated latency × energy × task-success evaluation. The claim scope aligns with the bottleneck's scope."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              },
+              "N4:P1-1:2": {
+                "relation": {
+                  "relation_id": "N4:P1-1:2",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                  "reason": "The finding that capability depends heavily on the control interface (direct vs. programmatic vs. policy vs. RL supervision) and that models perform differently across these interfaces supports the model that embodied intelligence contains partially separable cognitive and temporal motor intelligence. The evidence aligns with the structural scope."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              },
+              "N4:P1-1:3": {
+                "relation": {
+                  "relation_id": "N4:P1-1:3",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+                  "reason": "The source provides evidence relevant to the question of whether high-frequency motor control should depend on a large unified model: direct control fails, pretrained controllers help, and latency gaps are large. This reinforces the question's framing but does not resolve it."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              }
+            }
+          }
+        },
+        {
+          "sample_id": "P1-2",
+          "frozen_relations": [
+            {
+              "relation_id": "N4:P1-2:1",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "reason": "The source provides concrete latency data (real-time control ~83 Hz vs. current non-reasoning inference ~0.2-0.4 Hz, a two-order-of-magnitude gap) and task-success results across control interfaces, directly reinforcing the bottleneck that latency × task-success evaluation is lacking for high-frequency embodied control. The evidence is at the same scope (high-frequency embodied control) and strengthens the claim that this evaluation gap is real and quantified."
+            },
+            {
+              "relation_id": "N4:P1-2:2",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "reason": "The observed separation between high-level cognitive tasks (strategy adjustment, image understanding) and low-level motor control (direct joint control failing, pretrained policy needed) supports the model that embodied intelligence contains partially separable cognitive and temporal motor intelligence. The evidence aligns with the model's scope (high-frequency embodied control)."
+            },
+            {
+              "relation_id": "N4:P1-2:3",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+              "reason": "The source provides evidence that high-frequency motor control currently does not depend on a large unified model for the fastest loop (direct control fails, pretrained policies are used), reinforcing the question's premise that this dependency is questionable. The evidence is at the same scope (high-frequency embodied control)."
+            }
+          ],
+          "draws": [
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 1
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 2
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 3
+            }
+          ],
+          "summary": {
+            "n_relations": 3,
+            "n_draws": 3,
+            "n_ok_draws": 0,
+            "exact_relation_id_draws": 0,
+            "unknown_identifier_errors": 0,
+            "all_relations_support_stable_2_of_3": false,
+            "relations": {
+              "N4:P1-2:1": {
+                "relation": {
+                  "relation_id": "N4:P1-2:1",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                  "reason": "The source provides concrete latency data (real-time control ~83 Hz vs. current non-reasoning inference ~0.2-0.4 Hz, a two-order-of-magnitude gap) and task-success results across control interfaces, directly reinforcing the bottleneck that latency × task-success evaluation is lacking for high-frequency embodied control. The evidence is at the same scope (high-frequency embodied control) and strengthens the claim that this evaluation gap is real and quantified."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              },
+              "N4:P1-2:2": {
+                "relation": {
+                  "relation_id": "N4:P1-2:2",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                  "reason": "The observed separation between high-level cognitive tasks (strategy adjustment, image understanding) and low-level motor control (direct joint control failing, pretrained policy needed) supports the model that embodied intelligence contains partially separable cognitive and temporal motor intelligence. The evidence aligns with the model's scope (high-frequency embodied control)."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              },
+              "N4:P1-2:3": {
+                "relation": {
+                  "relation_id": "N4:P1-2:3",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+                  "reason": "The source provides evidence that high-frequency motor control currently does not depend on a large unified model for the fastest loop (direct control fails, pretrained policies are used), reinforcing the question's premise that this dependency is questionable. The evidence is at the same scope (high-frequency embodied control)."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              }
+            }
+          }
+        },
+        {
+          "sample_id": "P1-3",
+          "frozen_relations": [
+            {
+              "relation_id": "N4:P1-3:1",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "reason": "The source provides concrete latency data (83 Hz real-time requirement vs ~0.2-0.4 Hz non-reasoning inference, a two-order-of-magnitude gap) and task-success results across control interfaces, directly reinforcing the bottleneck that latency × task-success evaluation is lacking for high-frequency embodied control. The evidence is from a single self-report, so epistemic strength is moderate."
+            },
+            {
+              "relation_id": "N4:P1-3:2",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "reason": "The observed dependence on control interface abstraction—where high-level policy control and RL supervision succeed while direct low-level control fails—supports the model that cognitive intelligence (strategy, adaptation) and temporal motor intelligence (fast control loops) are partially separable. The evidence is from a single self-report, so epistemic strength is moderate."
+            },
+            {
+              "relation_id": "N4:P1-3:3",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+              "reason": "The latency gap and the finding that models perform better with high-level interfaces than direct control provide evidence relevant to the question of whether high-frequency motor control should depend on a large unified model, reinforcing the existing question with concrete data. The evidence is from a single self-report, so epistemic strength is moderate."
+            }
+          ],
+          "draws": [
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 1
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 2
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 3
+            }
+          ],
+          "summary": {
+            "n_relations": 3,
+            "n_draws": 3,
+            "n_ok_draws": 0,
+            "exact_relation_id_draws": 0,
+            "unknown_identifier_errors": 0,
+            "all_relations_support_stable_2_of_3": false,
+            "relations": {
+              "N4:P1-3:1": {
+                "relation": {
+                  "relation_id": "N4:P1-3:1",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                  "reason": "The source provides concrete latency data (83 Hz real-time requirement vs ~0.2-0.4 Hz non-reasoning inference, a two-order-of-magnitude gap) and task-success results across control interfaces, directly reinforcing the bottleneck that latency × task-success evaluation is lacking for high-frequency embodied control. The evidence is from a single self-report, so epistemic strength is moderate."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              },
+              "N4:P1-3:2": {
+                "relation": {
+                  "relation_id": "N4:P1-3:2",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                  "reason": "The observed dependence on control interface abstraction—where high-level policy control and RL supervision succeed while direct low-level control fails—supports the model that cognitive intelligence (strategy, adaptation) and temporal motor intelligence (fast control loops) are partially separable. The evidence is from a single self-report, so epistemic strength is moderate."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              },
+              "N4:P1-3:3": {
+                "relation": {
+                  "relation_id": "N4:P1-3:3",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+                  "reason": "The latency gap and the finding that models perform better with high-level interfaces than direct control provide evidence relevant to the question of whether high-frequency motor control should depend on a large unified model, reinforcing the existing question with concrete data. The evidence is from a single self-report, so epistemic strength is moderate."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              }
+            }
+          }
+        },
+        {
+          "sample_id": "P1-4",
+          "frozen_relations": [
+            {
+              "relation_id": "N4:P1-4:1",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "reason": "The source provides concrete latency figures (~83 Hz real-time requirement vs ~0.2-0.4 Hz non-reasoning inference, a two-order-of-magnitude gap) and task-success results across control interfaces, directly reinforcing the bottleneck that high-frequency embodied control lacks integrated latency × energy × task-success evaluation. It supplies measurement data at the exact scope of the bottleneck."
+            },
+            {
+              "relation_id": "N4:P1-4:2",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "reason": "The observed separation between high-level cognitive tasks (strategy adjustment, image understanding) and low-level motor control (direct joint control failing, pretrained policy supervision succeeding) reinforces the model that embodied intelligence contains partially separable cognitive and temporal motor intelligence. The source provides evidence at the high-frequency embodied control scope."
+            },
+            {
+              "relation_id": "N4:P1-4:3",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+              "reason": "The source's evidence that direct control fails and that high-frequency control requires ~83 Hz while LLM inference runs at ~0.2-0.4 Hz reinforces the question of whether high-frequency motor control should depend on a large unified model, by providing concrete data on the interface and latency constraints. It does not resolve the question but strengthens its relevance and framing."
+            }
+          ],
+          "draws": [
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 1
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 2
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 3
+            }
+          ],
+          "summary": {
+            "n_relations": 3,
+            "n_draws": 3,
+            "n_ok_draws": 0,
+            "exact_relation_id_draws": 0,
+            "unknown_identifier_errors": 0,
+            "all_relations_support_stable_2_of_3": false,
+            "relations": {
+              "N4:P1-4:1": {
+                "relation": {
+                  "relation_id": "N4:P1-4:1",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                  "reason": "The source provides concrete latency figures (~83 Hz real-time requirement vs ~0.2-0.4 Hz non-reasoning inference, a two-order-of-magnitude gap) and task-success results across control interfaces, directly reinforcing the bottleneck that high-frequency embodied control lacks integrated latency × energy × task-success evaluation. It supplies measurement data at the exact scope of the bottleneck."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              },
+              "N4:P1-4:2": {
+                "relation": {
+                  "relation_id": "N4:P1-4:2",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                  "reason": "The observed separation between high-level cognitive tasks (strategy adjustment, image understanding) and low-level motor control (direct joint control failing, pretrained policy supervision succeeding) reinforces the model that embodied intelligence contains partially separable cognitive and temporal motor intelligence. The source provides evidence at the high-frequency embodied control scope."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              },
+              "N4:P1-4:3": {
+                "relation": {
+                  "relation_id": "N4:P1-4:3",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+                  "reason": "The source's evidence that direct control fails and that high-frequency control requires ~83 Hz while LLM inference runs at ~0.2-0.4 Hz reinforces the question of whether high-frequency motor control should depend on a large unified model, by providing concrete data on the interface and latency constraints. It does not resolve the question but strengthens its relevance and framing."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              }
+            }
+          }
+        },
+        {
+          "sample_id": "P1-5",
+          "frozen_relations": [
+            {
+              "relation_id": "N4:P1-5:1",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "reason": "The source provides concrete latency data (real-time control ~83 Hz vs. current non-reasoning inference ~0.2-0.4 Hz, a two-order-of-magnitude gap) and task-success results across control interfaces, directly reinforcing the bottleneck that latency × task-success evaluation is lacking for high-frequency embodied control. It supplies a measurement decomposition (latency gap, interface-dependent success) that strengthens the existing bottleneck node."
+            },
+            {
+              "relation_id": "N4:P1-5:2",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "reason": "The observed separation between cognitive capabilities (strategy adjustment, image understanding) and temporal motor control (direct control failures, latency gap) supports the model that embodied intelligence contains partially separable cognitive and temporal motor intelligence. The source provides evidence that cognitive strengths do not translate directly to fast motor loops, reinforcing the separability claim."
+            },
+            {
+              "relation_id": "N4:P1-5:3",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+              "reason": "The source provides evidence relevant to the question of whether high-frequency motor control should depend on a large unified model: direct control fails, latency gap is two orders of magnitude, and high-level control via pretrained policies works better. This reinforces the existing question by adding concrete data points that make the question more salient and better grounded, though it does not definitively answer it."
+            }
+          ],
+          "draws": [
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 1
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 2
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 3
+            }
+          ],
+          "summary": {
+            "n_relations": 3,
+            "n_draws": 3,
+            "n_ok_draws": 0,
+            "exact_relation_id_draws": 0,
+            "unknown_identifier_errors": 0,
+            "all_relations_support_stable_2_of_3": false,
+            "relations": {
+              "N4:P1-5:1": {
+                "relation": {
+                  "relation_id": "N4:P1-5:1",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                  "reason": "The source provides concrete latency data (real-time control ~83 Hz vs. current non-reasoning inference ~0.2-0.4 Hz, a two-order-of-magnitude gap) and task-success results across control interfaces, directly reinforcing the bottleneck that latency × task-success evaluation is lacking for high-frequency embodied control. It supplies a measurement decomposition (latency gap, interface-dependent success) that strengthens the existing bottleneck node."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              },
+              "N4:P1-5:2": {
+                "relation": {
+                  "relation_id": "N4:P1-5:2",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                  "reason": "The observed separation between cognitive capabilities (strategy adjustment, image understanding) and temporal motor control (direct control failures, latency gap) supports the model that embodied intelligence contains partially separable cognitive and temporal motor intelligence. The source provides evidence that cognitive strengths do not translate directly to fast motor loops, reinforcing the separability claim."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              },
+              "N4:P1-5:3": {
+                "relation": {
+                  "relation_id": "N4:P1-5:3",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+                  "reason": "The source provides evidence relevant to the question of whether high-frequency motor control should depend on a large unified model: direct control fails, latency gap is two orders of magnitude, and high-level control via pretrained policies works better. This reinforces the existing question by adding concrete data points that make the question more salient and better grounded, though it does not definitively answer it."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              }
+            }
+          }
+        },
+        {
+          "sample_id": "P1-6",
+          "frozen_relations": [
+            {
+              "relation_id": "N4:P1-6:1",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "reason": "The source provides concrete latency figures (~0.2-0.4 Hz inference vs ~83 Hz real-time control need, a two-order-of-magnitude gap) and task-success results across control interfaces, directly reinforcing the bottleneck that latency × task-success evaluation for high-frequency embodied control is lacking and consequential."
+            },
+            {
+              "relation_id": "N4:P1-6:2",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "reason": "The finding that capability depends heavily on the control interface—direct control fails while supervising a pretrained controller or using simple orientation tools succeeds—supports the model that cognitive intelligence and temporal motor intelligence are partially separable, with the motor loop handled by lower-level controllers."
+            },
+            {
+              "relation_id": "N4:P1-6:3",
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+              "reason": "The observed latency gap and the failure of direct control provide evidence relevant to the question of whether high-frequency motor control should depend on a large unified model, reinforcing the case that it should not at the fastest loop."
+            }
+          ],
+          "draws": [
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 1
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 2
+            },
+            {
+              "status": "ERROR",
+              "errors": [
+                "LLMError:RAOS_LLM_API_KEY is not set"
+              ],
+              "bindings": [],
+              "draw": 3
+            }
+          ],
+          "summary": {
+            "n_relations": 3,
+            "n_draws": 3,
+            "n_ok_draws": 0,
+            "exact_relation_id_draws": 0,
+            "unknown_identifier_errors": 0,
+            "all_relations_support_stable_2_of_3": false,
+            "relations": {
+              "N4:P1-6:1": {
+                "relation": {
+                  "relation_id": "N4:P1-6:1",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                  "reason": "The source provides concrete latency figures (~0.2-0.4 Hz inference vs ~83 Hz real-time control need, a two-order-of-magnitude gap) and task-success results across control interfaces, directly reinforcing the bottleneck that latency × task-success evaluation for high-frequency embodied control is lacking and consequential."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              },
+              "N4:P1-6:2": {
+                "relation": {
+                  "relation_id": "N4:P1-6:2",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                  "reason": "The finding that capability depends heavily on the control interface—direct control fails while supervising a pretrained controller or using simple orientation tools succeeds—supports the model that cognitive intelligence and temporal motor intelligence are partially separable, with the motor loop handled by lower-level controllers."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              },
+              "N4:P1-6:3": {
+                "relation": {
+                  "relation_id": "N4:P1-6:3",
+                  "operation": "REINFORCE",
+                  "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+                  "reason": "The observed latency gap and the failure of direct control provide evidence relevant to the question of whether high-frequency motor control should depend on a large unified model, reinforcing the case that it should not at the fastest loop."
+                },
+                "n_present": 0,
+                "support_signature_count": 0,
+                "modal_support_signature": [],
+                "modal_support_count": 0,
+                "modal_support_rate": 0.0,
+                "support_stable_2_of_3": false,
+                "anchor_signature_count": 0,
+                "modal_anchor_signature": [],
+                "modal_anchor_count": 0,
+                "modal_anchor_rate": 0.0
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "guardrails": [
+    "No Relation Mapping call occurs in this gate; P1 relations are frozen from the closed 10D.6L.1 artifact.",
+    "The binder schema has no operation or target field and cannot add/delete/retarget relations.",
+    "Empty support/anchor is legal and preferred to invented provenance.",
+    "Unknown support/anchor identifiers fail closed.",
+    "Flash binding errors are robustness findings, not automatic architecture failures.",
+    "No Attention policy or production switch is evaluated; Phase 9A remains paused."
+  ]
+}
