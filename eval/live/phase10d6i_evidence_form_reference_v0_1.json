@@ -1,0 +1,167 @@
+{
+  "version": "phase10d6i-evidence-form-reference-v0.1",
+  "status": "FROZEN_MANUAL_RESEARCH_REFERENCE_NOT_HUMAN_GOLD",
+  "taxonomy": {
+    "provenance_role": [
+      "PRIMARY_SOURCE",
+      "SECONDARY_SOURCE",
+      "DERIVED",
+      "UNKNOWN"
+    ],
+    "evidence_form": [
+      "MEASUREMENT_RESULT",
+      "MEASUREMENT_PROTOCOL",
+      "TECHNICAL_DESCRIPTION",
+      "EVENT_OR_STATE_REPORT",
+      "EVALUATIVE_ASSERTION",
+      "LIMITATION_OR_UNCERTAINTY",
+      "ANALYTIC_INFERENCE"
+    ]
+  },
+  "source_context": {
+    "A": {
+      "title": "GPT-6 Astra: Frontier intelligence for work, now available in Microsoft Foundry | Microsoft Azure Blog",
+      "canonical_url": "https://azure.microsoft.com/en-us/blog/gpt-6-astra-frontier-intelligence-for-work-now-generally-available-in-microsoft-foundry/"
+    },
+    "D": {
+      "title": "OpenAI’s next big AI model has ‘entered the AGI era’ | The Verge",
+      "canonical_url": "https://www.theverge.com/ai-artificial-intelligence/989601/openai-gpt-6-astra-release"
+    },
+    "X": {
+      "title": "AgentHands: Generating interactive hand gestures for spatially grounded agent conversations in XR",
+      "canonical_url": "https://research.google/blog/agenthands-generating-interactive-hand-gestures-for-spatially-grounded-agent-conversations-in-xr/"
+    },
+    "N4": {
+      "title": "How Claude performs on robotics tasks | Anthropic",
+      "canonical_url": "https://www.anthropic.com/research/claude-plays-robotics"
+    }
+  },
+  "items": [
+    {
+      "case": "A",
+      "unit_id": "7e66a038-04de-455a-86d8-2b3577a08950-evt-001:action_change:1",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_form": "EVENT_OR_STATE_REPORT",
+      "rationale": "First-party platform availability announcement."
+    },
+    {
+      "case": "A",
+      "unit_id": "neu-003",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_form": "EVALUATIVE_ASSERTION",
+      "rationale": "First-party capability description claiming open-ended reasoning/planning/tool use, not a reported measurement."
+    },
+    {
+      "case": "A",
+      "unit_id": "neu-005",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_form": "TECHNICAL_DESCRIPTION",
+      "rationale": "First-party description of how computer-use interacts with approved interfaces."
+    },
+    {
+      "case": "A",
+      "unit_id": "7e66a038-04de-455a-86d8-2b3577a08950-evt-003:uncertainty:1",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_form": "LIMITATION_OR_UNCERTAINTY",
+      "rationale": "Explicit unknown publication timing."
+    },
+    {
+      "case": "D",
+      "unit_id": "de274e78-astra-release:action_change:1",
+      "provenance_role": "SECONDARY_SOURCE",
+      "evidence_form": "EVENT_OR_STATE_REPORT",
+      "rationale": "News outlet reports product announcement and rollout."
+    },
+    {
+      "case": "D",
+      "unit_id": "de274e78-astra-release:action_change:2",
+      "provenance_role": "SECONDARY_SOURCE",
+      "evidence_form": "EVALUATIVE_ASSERTION",
+      "rationale": "News outlet relays OpenAI capability claims; no independent measurement in the support."
+    },
+    {
+      "case": "D",
+      "unit_id": "de274e78-huggingface-hack:action_change:1",
+      "provenance_role": "SECONDARY_SOURCE",
+      "evidence_form": "EVENT_OR_STATE_REPORT",
+      "rationale": "Secondary report of an alleged incident/event."
+    },
+    {
+      "case": "D",
+      "unit_id": "u1",
+      "provenance_role": "SECONDARY_SOURCE",
+      "evidence_form": "EVALUATIVE_ASSERTION",
+      "rationale": "Secondary source quotes an executive’s AGI-era judgment/opinion."
+    },
+    {
+      "case": "X",
+      "unit_id": "cb16adbf-agenthands-evaluation-study:action_change:1",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_form": "MEASUREMENT_PROTOCOL",
+      "rationale": "Original research source describes within-subjects N=12 comparative study design."
+    },
+    {
+      "case": "X",
+      "unit_id": "cb16adbf-agenthands-evaluation-study:action_change:2",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_form": "MEASUREMENT_RESULT",
+      "rationale": "Original study reports observed comparative evaluation result, albeit without numeric effect size in supplied text."
+    },
+    {
+      "case": "X",
+      "unit_id": "cb16adbf-agenthands-evaluation-study:uncertainty:1",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_form": "LIMITATION_OR_UNCERTAINTY",
+      "rationale": "Audited unit explicitly records missing quantitative values/effect sizes."
+    },
+    {
+      "case": "X",
+      "unit_id": "neu-0005",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_form": "TECHNICAL_DESCRIPTION",
+      "rationale": "Original research source describes concrete LLM→GestureEvent→local parser/TTS-animation architecture."
+    },
+    {
+      "case": "X",
+      "unit_id": "neu-0008",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_form": "EVALUATIVE_ASSERTION",
+      "rationale": "Authors’ forward-looking interpretation about reducing cognitive load / future systems, not direct measurement in this unit."
+    },
+    {
+      "case": "N4",
+      "unit_id": "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:actor_object:2",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_form": "MEASUREMENT_PROTOCOL",
+      "rationale": "Original research source states the evaluated model population: twelve models across five providers."
+    },
+    {
+      "case": "N4",
+      "unit_id": "neu-001",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_form": "MEASUREMENT_PROTOCOL",
+      "rationale": "Original study specifies the four control interfaces used in evaluation."
+    },
+    {
+      "case": "N4",
+      "unit_id": "neu-002",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_form": "MEASUREMENT_RESULT",
+      "rationale": "Original study provides concrete real-time requirement and measured inference-rate gap plus evaluation handling."
+    },
+    {
+      "case": "N4",
+      "unit_id": "neu-003",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_form": "MEASUREMENT_RESULT",
+      "rationale": "Original benchmark source reports cross-model task performance differences."
+    },
+    {
+      "case": "N4",
+      "unit_id": "neu-008",
+      "provenance_role": "PRIMARY_SOURCE",
+      "evidence_form": "MEASUREMENT_RESULT",
+      "rationale": "Original benchmark reports LIBERO task success/progress comparison with pretrained VLA."
+    }
+  ]
+}
