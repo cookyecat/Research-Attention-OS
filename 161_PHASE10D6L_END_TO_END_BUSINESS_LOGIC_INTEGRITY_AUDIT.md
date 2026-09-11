@@ -80,3 +80,10 @@ Focused regressions for these repairs have passed; no new cognitive outcome samp
 ## Current audit decision
 
 The major P0 plumbing defects that could make measurement, public update, or side effects disagree with the selected Attention cause have been repaired. The audit is still ACTIVE because the production Impact prompt remains semantically inconsistent with the downstream Pareto contract. No 10D.6K or Phase 9A cognitive outcome should be interpreted until that prompt seam is resolved or explicitly excluded by the frozen experimental path.
+
+
+## Evaluator-capacity bracketing — 2026-09-12
+
+Architecture conclusions must not be inferred from isolated weak-model errors. DeepSeek-Flash is treated as a robustness lower-bound evaluator; GPT-5.6 Sol manual adjudication on the same frozen evidence/Kernel is used as a qualitative upper-bound reference when needed. A weak-model-only failure is a robustness boundary unless it survives strong-model adjudication or violates a deterministic invariant.
+
+Strong-reference file: `164_PHASE10D6L2_MODEL_CAPACITY_BRACKETING_STRONG_REFERENCE.md`. It was frozen before the 10D.6L.1 support-binding diagnostic outcome.
