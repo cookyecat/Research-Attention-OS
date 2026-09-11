@@ -797,6 +797,7 @@ def run_pipeline(
             fallback_used=fallback_used,
             meta=getattr(provider, "last_meta", None),
             stage_provenance=stage_provenance,
+            actual_provider_type=getattr(provider, "provider_type", provider_type),
         )
         payload["analysis_run"] = run_public(run)
         return payload

@@ -314,6 +314,7 @@ def complete_run(
     fallback_used: bool = False,
     meta: dict | None = None,
     stage_provenance: dict | None = None,
+    actual_provider_type: str | None = None,
 ) -> None:
     if run.status == "COMPLETED" and run.result_payload:
         raise RuntimeError("AnalysisRun is immutable after COMPLETED")
@@ -322,6 +323,10 @@ def complete_run(
     run.completed_at = datetime.now(timezone.utc)
     run.result_payload = payload
     run.fallback_used = fallback_used
+    if actual_provider_type:
+        # identity_key remains the planned execution contract; this field records
+        # the path that actually completed the run (e.g. model+rule-fallback).
+        run.provider_type = str(actual_provider_type)
     run.latency_ms = meta.get("latency_ms")
     run.prompt_tokens = meta.get("prompt_tokens")
     run.completion_tokens = meta.get("completion_tokens")

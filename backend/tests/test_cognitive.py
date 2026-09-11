@@ -114,6 +114,7 @@ def test_model_failure_falls_back_to_rule(client: TestClient, monkeypatch):
     result = analyze(client, src["id"])
     assert result["attention_plan"]
     assert result["analysis_run"]["fallback_used"] is True
+    assert result["analysis_run"]["provider_type"] == "model+rule-fallback"
     got = client.get(f"/sources/{src['id']}")
     assert got.status_code == 200
 
