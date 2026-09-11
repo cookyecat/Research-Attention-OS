@@ -1201,3 +1201,8 @@ Evaluator-capacity rule added 2026-09-12: DeepSeek-Flash is a weak-model robustn
 ## Phase 10D.6L.1 Minimal Prompt Authority Removal Shadow — CLOSED / NOT PROMOTED 2026-09-11
 
 Result: `163_PHASE10D6L1_MINIMAL_PROMPT_AUTHORITY_REMOVAL_RESULT.md`. Measurement SHA `f757402`; artifact SHA256 `444fe8bb7e0d7670411983167fade62fd638dd7f7e8ba7599303e45a5c2fd8cf`. 48/48 production-style prompt-shadow calls succeeded. Deleting only the stale OPEN_NEW magnitude-threshold and single-winner instructions did not cause global collapse (A unchanged DROP6; N4 unchanged WATCH6) but materially changed D/X/N4 relation topology and D Attention (P0 DROP6 vs P1 DROP3/WATCH2/AWARE1). The two prompt lines are therefore genuinely upstream decision-bearing, but deletion-only P1 is not promoted because weak D relations are released. Next: preregistered same-arm support/jurisdiction-binding diagnostic; production default unchanged, 10D.6K and Phase 9A remain paused.
+
+
+## Phase 10D.6L.2 Model-Capacity Bracketing / 10D.6L.3 Decoupled Support Binding — ACTIVE 2026-09-12
+
+Strong-model manual reference is frozen in `164_PHASE10D6L2_MODEL_CAPACITY_BRACKETING_STRONG_REFERENCE.md`. Combined relation+support binding under DeepSeek-Flash is closed as instruction-coupled and not promoted (`165_PHASE10D6L1_SUPPORT_BINDING_DIAGNOSTIC_RESULT.md`). Next gate `166_PHASE10D6L3_DECOUPLED_SUPPORT_BINDING_PREREGISTRATION.md` freezes Relation Mapping first and allows the binder only to attach provenance; it cannot alter relation topology.
