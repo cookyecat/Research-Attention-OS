@@ -1110,3 +1110,5 @@ The first controlled pilot uses frozen RS05 information with three isolated Kern
 Preregistration / audit plan: `132_PHASE10D5_PRODUCTION_SEMANTIC_PARITY_PREREGISTRATION.md`. Phase 9A outcome sampling remains paused. A pre-formal diagnostic discovered that Phase-10 native research cognition copied LLM `target_importance` directly, while deployed production `ModelProvider` resolves targeted importance through explicit Kernel importance/priority, then node-type prior, then LLM estimate.
 
 The 10D.5 formal audit will deterministically replay the exact 168 stored Phase 10D.4 real-web samples. Arm R must reproduce historical Attention and Decision-Causal Core exactly before Arm P rebinds only targeted importance with production authority. No acquisition, Sensor, Auditor, Locate, or LLM call is permitted.
+
+Pre-measurement scope amendment: `133_PHASE10D5_SCOPE_AUDIT_AND_REPLAY_BOUNDARY.md`. Static code audit also found production-only Impact prompting and `ground_effects`; therefore v0.1 isolates only the discovered target-importance authority seam. Full native-vs-production prompt/grounding parity is explicitly not claimed by this replay.
