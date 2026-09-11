@@ -1,0 +1,4153 @@
+{
+  "run_version": "phase10d6f-effect-support-binding-v0.1",
+  "status": "EFFECT_SUPPORT_BINDING_MEASUREMENT",
+  "measurement_sha": "842227162cd7bd0a7fd6593f1c767c488316bb1d",
+  "relation_contract_version": "canonical-relation-support-binding-v0.2",
+  "system_prompt_sha256": "14f4853da17d56b0d0ba7c9785dc3e36aa926365062380aedb2dbc273f46a5a7",
+  "cases": [
+    "A",
+    "D",
+    "X",
+    "N4"
+  ],
+  "repeats_per_case": 6,
+  "results": {
+    "A": {
+      "samples": [
+        {
+          "sample_id": "A-1",
+          "status": "OK",
+          "raw_effects": [],
+          "valid_effects": [],
+          "invalid_effects": [],
+          "raw_effect_count": 0,
+          "valid_effect_count": 0,
+          "invalid_effect_count": 0,
+          "topology": [],
+          "bound_support_unit_ids": [],
+          "meta": {
+            "latency_ms": 854,
+            "prompt_tokens": 5856,
+            "completion_tokens": 5,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "A-2",
+          "status": "OK",
+          "raw_effects": [],
+          "valid_effects": [],
+          "invalid_effects": [],
+          "raw_effect_count": 0,
+          "valid_effect_count": 0,
+          "invalid_effect_count": 0,
+          "topology": [],
+          "bound_support_unit_ids": [],
+          "meta": {
+            "latency_ms": 1090,
+            "prompt_tokens": 5856,
+            "completion_tokens": 5,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "A-3",
+          "status": "OK",
+          "raw_effects": [],
+          "valid_effects": [],
+          "invalid_effects": [],
+          "raw_effect_count": 0,
+          "valid_effect_count": 0,
+          "invalid_effect_count": 0,
+          "topology": [],
+          "bound_support_unit_ids": [],
+          "meta": {
+            "latency_ms": 1288,
+            "prompt_tokens": 5856,
+            "completion_tokens": 5,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "A-4",
+          "status": "OK",
+          "raw_effects": [],
+          "valid_effects": [],
+          "invalid_effects": [],
+          "raw_effect_count": 0,
+          "valid_effect_count": 0,
+          "invalid_effect_count": 0,
+          "topology": [],
+          "bound_support_unit_ids": [],
+          "meta": {
+            "latency_ms": 879,
+            "prompt_tokens": 5856,
+            "completion_tokens": 5,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "A-5",
+          "status": "OK",
+          "raw_effects": [],
+          "valid_effects": [],
+          "invalid_effects": [],
+          "raw_effect_count": 0,
+          "valid_effect_count": 0,
+          "invalid_effect_count": 0,
+          "topology": [],
+          "bound_support_unit_ids": [],
+          "meta": {
+            "latency_ms": 909,
+            "prompt_tokens": 5856,
+            "completion_tokens": 5,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "A-6",
+          "status": "OK",
+          "raw_effects": [],
+          "valid_effects": [],
+          "invalid_effects": [],
+          "raw_effect_count": 0,
+          "valid_effect_count": 0,
+          "invalid_effect_count": 0,
+          "topology": [],
+          "bound_support_unit_ids": [],
+          "meta": {
+            "latency_ms": 1713,
+            "prompt_tokens": 5856,
+            "completion_tokens": 5,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        }
+      ],
+      "summary": {
+        "n_ok": 6,
+        "n_error": 0,
+        "raw_effects": 0,
+        "valid_effects": 0,
+        "valid_effect_rate": 1.0,
+        "invalid_reason_counts": {},
+        "topology_n_unique": 1,
+        "topology_mode_rate": 1.0,
+        "relation_occurrence_counts": {},
+        "mean_support_units_per_effect": 0.0,
+        "support_unit_sample_frequency": {},
+        "mean_bound_world_fraction": 0.0
+      },
+      "frozen_units_replay_sha256": "0e1db0de7895c357df52a7995f3ed777bf78ad388e55b4d4caf210e9274b218c",
+      "frozen_locate": {
+        "modal_target_set": [
+          "B1",
+          "B2",
+          "BT1",
+          "D1",
+          "G1",
+          "M1",
+          "P1",
+          "P2",
+          "Q1",
+          "Q2"
+        ],
+        "modal_count": 3,
+        "modal_rate": 1.0,
+        "selected_repeat": 1,
+        "selected_matches": [
+          {
+            "target": "G1",
+            "kernel_node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+            "relevance_type": "TOPIC",
+            "score": 0.55,
+            "reason": "Astra's multi-step reasoning, planning, tool use, and computer-use capabilities relate to building better multi-agent intelligence systems, though the source is enterprise-focused rather than embodied."
+          },
+          {
+            "target": "P1",
+            "kernel_node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+            "relevance_type": "TOPIC",
+            "score": 0.35,
+            "reason": "Astra's computer-use and execution-across-applications capabilities are tangentially related to motor intelligence via action execution, but the source concerns software agents rather than embodied motor control."
+          },
+          {
+            "target": "BT1",
+            "kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+            "relevance_type": "BOTTLENECK",
+            "score": 0.3,
+            "reason": "The source's emphasis on token efficiency and cost management for complex workloads loosely parallels evaluation concerns around efficiency, but does not address latency/energy/task-success for embodied control."
+          },
+          {
+            "target": "Q1",
+            "kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+            "relevance_type": "TOPIC",
+            "score": 0.4,
+            "reason": "Astra is a large unified frontier model used for multi-step planning and tool use, which is relevant to the question of whether high-frequency control should depend on a large unified model, though the source does not address motor control."
+          },
+          {
+            "target": "B1",
+            "kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+            "relevance_type": "EVIDENCE",
+            "score": 0.35,
+            "reason": "Astra's design for deliberate planning and computer use rather than fast reactive control provides weak indirect evidence relevant to the belief that large unified models may be unsuitable for the fastest embodied-control loop."
+          },
+          {
+            "target": "M1",
+            "kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+            "relevance_type": "TOPIC",
+            "score": 0.3,
+            "reason": "Astra's separation of cognitive planning from execution across applications loosely relates to the separability of cognitive and motor intelligence, but the source is not about embodied control."
+          },
+          {
+            "target": "P2",
+            "kernel_node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+            "relevance_type": "TOPIC",
+            "score": 0.3,
+            "reason": "Astra's multi-agent-adjacent tool use and orchestration across systems has weak topical overlap with collective intelligence, but the source does not address multi-agent collectives."
+          },
+          {
+            "target": "Q2",
+            "kernel_node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+            "relevance_type": "TOPIC",
+            "score": 0.25,
+            "reason": "Astra's shared context and tool use across applications is only weakly related to shared world models reducing multi-agent communication; the source does not discuss multi-agent communication."
+          },
+          {
+            "target": "B2",
+            "kernel_node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "relevance_type": "TOPIC",
+            "score": 0.2,
+            "reason": "The source describes a centralized frontier model rather than decentralized local intelligence, offering minimal relevance to the belief about swarm-style collective intelligence."
+          },
+          {
+            "target": "D1",
+            "kernel_node_id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+            "relevance_type": "DECISION",
+            "score": 0.15,
+            "reason": "No substantive connection to startup equity terms; only a very weak generic decision-making overlap via Astra's decision-support capabilities."
+          }
+        ]
+      }
+    },
+    "D": {
+      "samples": [
+        {
+          "sample_id": "D-1",
+          "status": "OK",
+          "raw_effects": [],
+          "valid_effects": [],
+          "invalid_effects": [],
+          "raw_effect_count": 0,
+          "valid_effect_count": 0,
+          "invalid_effect_count": 0,
+          "topology": [],
+          "bound_support_unit_ids": [],
+          "meta": {
+            "latency_ms": 1209,
+            "prompt_tokens": 9469,
+            "completion_tokens": 5,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "D-2",
+          "status": "OK",
+          "raw_effects": [],
+          "valid_effects": [],
+          "invalid_effects": [],
+          "raw_effect_count": 0,
+          "valid_effect_count": 0,
+          "invalid_effect_count": 0,
+          "topology": [],
+          "bound_support_unit_ids": [],
+          "meta": {
+            "latency_ms": 562,
+            "prompt_tokens": 9469,
+            "completion_tokens": 5,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "D-3",
+          "status": "OK",
+          "raw_effects": [],
+          "valid_effects": [],
+          "invalid_effects": [],
+          "raw_effect_count": 0,
+          "valid_effect_count": 0,
+          "invalid_effect_count": 0,
+          "topology": [],
+          "bound_support_unit_ids": [],
+          "meta": {
+            "latency_ms": 1045,
+            "prompt_tokens": 9469,
+            "completion_tokens": 5,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "D-4",
+          "status": "OK",
+          "raw_effects": [],
+          "valid_effects": [],
+          "invalid_effects": [],
+          "raw_effect_count": 0,
+          "valid_effect_count": 0,
+          "invalid_effect_count": 0,
+          "topology": [],
+          "bound_support_unit_ids": [],
+          "meta": {
+            "latency_ms": 842,
+            "prompt_tokens": 9469,
+            "completion_tokens": 5,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "D-5",
+          "status": "OK",
+          "raw_effects": [],
+          "valid_effects": [],
+          "invalid_effects": [],
+          "raw_effect_count": 0,
+          "valid_effect_count": 0,
+          "invalid_effect_count": 0,
+          "topology": [],
+          "bound_support_unit_ids": [],
+          "meta": {
+            "latency_ms": 780,
+            "prompt_tokens": 9469,
+            "completion_tokens": 5,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "D-6",
+          "status": "OK",
+          "raw_effects": [],
+          "valid_effects": [],
+          "invalid_effects": [],
+          "raw_effect_count": 0,
+          "valid_effect_count": 0,
+          "invalid_effect_count": 0,
+          "topology": [],
+          "bound_support_unit_ids": [],
+          "meta": {
+            "latency_ms": 1000,
+            "prompt_tokens": 9469,
+            "completion_tokens": 5,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        }
+      ],
+      "summary": {
+        "n_ok": 6,
+        "n_error": 0,
+        "raw_effects": 0,
+        "valid_effects": 0,
+        "valid_effect_rate": 1.0,
+        "invalid_reason_counts": {},
+        "topology_n_unique": 1,
+        "topology_mode_rate": 1.0,
+        "relation_occurrence_counts": {},
+        "mean_support_units_per_effect": 0.0,
+        "support_unit_sample_frequency": {},
+        "mean_bound_world_fraction": 0.0
+      },
+      "frozen_units_replay_sha256": "9169579ce43dec62687a2d362bf375c149f92bee9e8e4fbaac46e16cd3a76d4d",
+      "frozen_locate": {
+        "modal_target_set": [
+          "B1",
+          "B2",
+          "BT1",
+          "D1",
+          "G1",
+          "M1",
+          "P1",
+          "P2",
+          "Q1",
+          "Q2"
+        ],
+        "modal_count": 3,
+        "modal_rate": 1.0,
+        "selected_repeat": 1,
+        "selected_matches": [
+          {
+            "target": "G1",
+            "kernel_node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+            "relevance_type": "TOPIC",
+            "score": 0.55,
+            "reason": "Canonical units describe multi-agent AI systems (agents conspiring, agentic tasks, recursive self-improvement), directly relating to the goal of building better multi-agent intelligence systems."
+          },
+          {
+            "target": "P2",
+            "kernel_node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+            "relevance_type": "TOPIC",
+            "score": 0.5,
+            "reason": "Units describe AI agents secretly conspiring and coordinating without human knowledge, which is materially relevant to collective intelligence research."
+          },
+          {
+            "target": "Q2",
+            "kernel_node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+            "relevance_type": "TOPIC",
+            "score": 0.45,
+            "reason": "The Hugging Face hack unit describes AI agents creating a way to secretly conspire, relating to questions about multi-agent communication and shared coordination."
+          },
+          {
+            "target": "B2",
+            "kernel_node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "relevance_type": "TOPIC",
+            "score": 0.4,
+            "reason": "Units about decentralized agent conspiracy and recursive self-improvement touch on decentralized intelligence themes relevant to this belief."
+          },
+          {
+            "target": "B1",
+            "kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+            "relevance_type": "EVIDENCE",
+            "score": 0.35,
+            "reason": "Astra's large unified model capabilities and safety concerns (opaque recurrence, misalignment monitoring) provide evidence relevant to beliefs about large unified models and control."
+          },
+          {
+            "target": "M1",
+            "kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+            "relevance_type": "TOPIC",
+            "score": 0.3,
+            "reason": "Units distinguish cognitive/agentic capabilities from embodied control, loosely relating to the model of separable cognitive and motor intelligence."
+          },
+          {
+            "target": "Q1",
+            "kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+            "relevance_type": "TOPIC",
+            "score": 0.25,
+            "reason": "Astra's unified agentic model and its safety/alignment issues are tangentially relevant to questions about large unified models in control loops."
+          },
+          {
+            "target": "BT1",
+            "kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+            "relevance_type": "BOTTLENECK",
+            "score": 0.2,
+            "reason": "Units highlight evaluation and monitoring challenges for advanced AI systems, loosely paralleling evaluation bottlenecks in embodied control."
+          },
+          {
+            "target": "P1",
+            "kernel_node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+            "relevance_type": "TOPIC",
+            "score": 0.15,
+            "reason": "Weak topical overlap via AI capability and control themes, but no direct relation to motor intelligence."
+          },
+          {
+            "target": "D1",
+            "kernel_node_id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+            "relevance_type": "DECISION",
+            "score": 0.1,
+            "reason": "OpenAI's IPO pressure and revenue incentives in the units weakly relate to evaluating equity/employment decisions, but connection is indirect."
+          }
+        ]
+      }
+    },
+    "X": {
+      "samples": [
+        {
+          "sample_id": "X-1",
+          "status": "OK",
+          "raw_effects": [
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0001",
+                "neu-0004",
+                "neu-0005",
+                "neu-0006",
+                "neu-0007",
+                "cb16adbf-agenthands-evaluation-study:action_change:2"
+              ],
+              "jurisdiction_anchor_ids": [
+                "de327c12-7a91-5725-9c0e-b09230668d19"
+              ],
+              "jurisdiction_anchors": [
+                "G1"
+              ],
+              "reason": "AgentHands demonstrates an embodied conversational agent that grounds LLM output in spatially synchronized co-speech hand gestures within XR, directly instantiating embodied intelligence that operates within the physical world rather than only analyzing it."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The AgentHands architecture couples a backend LLM generating GestureEvents with a local parser coordinating TTS and animation via word-level timestamps, providing a concrete system design for translating high-level model output into temporally synchronized physical motor behavior."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "cb16adbf-agenthands-evaluation-study:actor_object:1",
+                "cb16adbf-agenthands-evaluation-study:actor_object:2",
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ],
+              "jurisdiction_anchor_ids": [
+                "ba1ac843-a828-5842-8542-47f6edd05e2f"
+              ],
+              "jurisdiction_anchors": [
+                "BT1"
+              ],
+              "reason": "The within-subjects study (N=12) comparing AgentHands to a speech-only baseline reports effectiveness across key communication metrics but does not report latency, energy, or task-success values, illustrating the gap in quantitative evaluation for embodied control systems."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0003",
+                "neu-0004",
+                "neu-0005"
+              ],
+              "jurisdiction_anchor_ids": [
+                "b9cac295-0b01-5422-8e62-340be9e7f2ec"
+              ],
+              "jurisdiction_anchors": [
+                "M1"
+              ],
+              "reason": "AgentHands separates a cognitive layer (LLM reasoning and gesture taxonomy from a formative expert study) from a temporal motor layer (local parser synchronizing TTS with animation via word-level timestamps), exemplifying partially separable cognitive and temporal motor intelligence in an embodied system."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0009"
+              ],
+              "jurisdiction_anchor_ids": [
+                "94bfb767-4c16-5421-b517-d4759dba279c"
+              ],
+              "jurisdiction_anchors": [
+                "P2"
+              ],
+              "reason": "The team's stated direction to personalize gestures by adapting to a user's dominant hand and learning their specific spatial routines describes a mechanism for individual adaptation within a broader human-AI collaboration ecosystem."
+            }
+          ],
+          "valid_effects": [
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0001",
+                "neu-0004",
+                "neu-0005",
+                "neu-0006",
+                "neu-0007",
+                "cb16adbf-agenthands-evaluation-study:action_change:2"
+              ],
+              "jurisdiction_anchor_ids": [
+                "de327c12-7a91-5725-9c0e-b09230668d19"
+              ],
+              "jurisdiction_anchors": [
+                "G1"
+              ],
+              "reason": "AgentHands demonstrates an embodied conversational agent that grounds LLM output in spatially synchronized co-speech hand gestures within XR, directly instantiating embodied intelligence that operates within the physical world rather than only analyzing it.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "cb16adbf-agenthands-evaluation-study:action_change:2",
+                  "neu-0001",
+                  "neu-0004",
+                  "neu-0005",
+                  "neu-0006",
+                  "neu-0007"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The AgentHands architecture couples a backend LLM generating GestureEvents with a local parser coordinating TTS and animation via word-level timestamps, providing a concrete system design for translating high-level model output into temporally synchronized physical motor behavior.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0004",
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "cb16adbf-agenthands-evaluation-study:actor_object:1",
+                "cb16adbf-agenthands-evaluation-study:actor_object:2",
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ],
+              "jurisdiction_anchor_ids": [
+                "ba1ac843-a828-5842-8542-47f6edd05e2f"
+              ],
+              "jurisdiction_anchors": [
+                "BT1"
+              ],
+              "reason": "The within-subjects study (N=12) comparing AgentHands to a speech-only baseline reports effectiveness across key communication metrics but does not report latency, energy, or task-success values, illustrating the gap in quantitative evaluation for embodied control systems.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "cb16adbf-agenthands-evaluation-study:action_change:1",
+                  "cb16adbf-agenthands-evaluation-study:action_change:2",
+                  "cb16adbf-agenthands-evaluation-study:actor_object:1",
+                  "cb16adbf-agenthands-evaluation-study:actor_object:2",
+                  "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0003",
+                "neu-0004",
+                "neu-0005"
+              ],
+              "jurisdiction_anchor_ids": [
+                "b9cac295-0b01-5422-8e62-340be9e7f2ec"
+              ],
+              "jurisdiction_anchors": [
+                "M1"
+              ],
+              "reason": "AgentHands separates a cognitive layer (LLM reasoning and gesture taxonomy from a formative expert study) from a temporal motor layer (local parser synchronizing TTS with animation via word-level timestamps), exemplifying partially separable cognitive and temporal motor intelligence in an embodied system.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0003",
+                  "neu-0004",
+                  "neu-0005"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0009"
+              ],
+              "jurisdiction_anchor_ids": [
+                "94bfb767-4c16-5421-b517-d4759dba279c"
+              ],
+              "jurisdiction_anchors": [
+                "P2"
+              ],
+              "reason": "The team's stated direction to personalize gestures by adapting to a user's dominant hand and learning their specific spatial routines describes a mechanism for individual adaptation within a broader human-AI collaboration ecosystem.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0009"
+                ]
+              ]
+            }
+          ],
+          "invalid_effects": [],
+          "raw_effect_count": 5,
+          "valid_effect_count": 5,
+          "invalid_effect_count": 0,
+          "topology": [
+            [
+              "OPEN_NEW",
+              [
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:actor_object:1",
+                "cb16adbf-agenthands-evaluation-study:actor_object:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "neu-0001",
+                "neu-0004",
+                "neu-0005",
+                "neu-0006",
+                "neu-0007"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0003",
+                "neu-0004",
+                "neu-0005"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0009"
+              ]
+            ]
+          ],
+          "bound_support_unit_ids": [
+            "cb16adbf-agenthands-evaluation-study:action_change:1",
+            "cb16adbf-agenthands-evaluation-study:action_change:2",
+            "cb16adbf-agenthands-evaluation-study:actor_object:1",
+            "cb16adbf-agenthands-evaluation-study:actor_object:2",
+            "cb16adbf-agenthands-evaluation-study:uncertainty:1",
+            "neu-0001",
+            "neu-0003",
+            "neu-0004",
+            "neu-0005",
+            "neu-0006",
+            "neu-0007",
+            "neu-0009"
+          ],
+          "meta": {
+            "latency_ms": 3486,
+            "prompt_tokens": 5674,
+            "completion_tokens": 696,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "X-2",
+          "status": "OK",
+          "raw_effects": [
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0001",
+                "neu-0005",
+                "neu-0006",
+                "neu-0008"
+              ],
+              "jurisdiction_anchor_ids": [
+                "de327c12-7a91-5725-9c0e-b09230668d19"
+              ],
+              "jurisdiction_anchors": [
+                "G1"
+              ],
+              "reason": "AgentHands demonstrates an embodied conversational agent that grounds LLM output in spatially synchronized hand gestures within XR, directly instantiating the goal of building better embodied intelligence systems."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The AgentHands architecture couples a backend LLM generating GestureEvents with a local parser coordinating TTS and animation via word-level timestamps, exemplifying a motor-intelligence pipeline that translates linguistic intent into temporally synchronized physical movement."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ],
+              "jurisdiction_anchor_ids": [
+                "ba1ac843-a828-5842-8542-47f6edd05e2f"
+              ],
+              "jurisdiction_anchors": [
+                "BT1"
+              ],
+              "reason": "The within-subjects study reports effectiveness across key communication metrics but supplies no latency, energy, or task-success values, illustrating the identified bottleneck of lacking such evaluation for embodied control."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "3a3370e6-0858-5c9a-8796-99373e53f47d"
+              ],
+              "jurisdiction_anchors": [
+                "Q1"
+              ],
+              "reason": "AgentHands relies on a backend LLM to generate responses with inline GestureEvents, providing a concrete case relevant to the question of whether high-frequency motor control should depend on a large unified model."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "805c73da-d77a-5d9f-bc73-22d633ec3c14"
+              ],
+              "jurisdiction_anchors": [
+                "B1"
+              ],
+              "reason": "The system's dependence on a backend LLM for gesture generation, with a separate local parser handling synchronization, offers evidence bearing on the belief that large unified models may be unsuitable for the fastest embodied-control loop."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "b9cac295-0b01-5422-8e62-340be9e7f2ec"
+              ],
+              "jurisdiction_anchors": [
+                "M1"
+              ],
+              "reason": "AgentHands separates cognitive/linguistic generation (backend LLM producing GestureEvents) from temporal motor execution (local parser synchronizing TTS and animation), instantiating the model that embodied intelligence contains partially separable cognitive and temporal motor components."
+            }
+          ],
+          "valid_effects": [
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0001",
+                "neu-0005",
+                "neu-0006",
+                "neu-0008"
+              ],
+              "jurisdiction_anchor_ids": [
+                "de327c12-7a91-5725-9c0e-b09230668d19"
+              ],
+              "jurisdiction_anchors": [
+                "G1"
+              ],
+              "reason": "AgentHands demonstrates an embodied conversational agent that grounds LLM output in spatially synchronized hand gestures within XR, directly instantiating the goal of building better embodied intelligence systems.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0001",
+                  "neu-0005",
+                  "neu-0006",
+                  "neu-0008"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The AgentHands architecture couples a backend LLM generating GestureEvents with a local parser coordinating TTS and animation via word-level timestamps, exemplifying a motor-intelligence pipeline that translates linguistic intent into temporally synchronized physical movement.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0004",
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ],
+              "jurisdiction_anchor_ids": [
+                "ba1ac843-a828-5842-8542-47f6edd05e2f"
+              ],
+              "jurisdiction_anchors": [
+                "BT1"
+              ],
+              "reason": "The within-subjects study reports effectiveness across key communication metrics but supplies no latency, energy, or task-success values, illustrating the identified bottleneck of lacking such evaluation for embodied control.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "cb16adbf-agenthands-evaluation-study:action_change:1",
+                  "cb16adbf-agenthands-evaluation-study:action_change:2",
+                  "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "3a3370e6-0858-5c9a-8796-99373e53f47d"
+              ],
+              "jurisdiction_anchors": [
+                "Q1"
+              ],
+              "reason": "AgentHands relies on a backend LLM to generate responses with inline GestureEvents, providing a concrete case relevant to the question of whether high-frequency motor control should depend on a large unified model.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "805c73da-d77a-5d9f-bc73-22d633ec3c14"
+              ],
+              "jurisdiction_anchors": [
+                "B1"
+              ],
+              "reason": "The system's dependence on a backend LLM for gesture generation, with a separate local parser handling synchronization, offers evidence bearing on the belief that large unified models may be unsuitable for the fastest embodied-control loop.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "b9cac295-0b01-5422-8e62-340be9e7f2ec"
+              ],
+              "jurisdiction_anchors": [
+                "M1"
+              ],
+              "reason": "AgentHands separates cognitive/linguistic generation (backend LLM producing GestureEvents) from temporal motor execution (local parser synchronizing TTS and animation), instantiating the model that embodied intelligence contains partially separable cognitive and temporal motor components.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0004",
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            }
+          ],
+          "invalid_effects": [],
+          "raw_effect_count": 6,
+          "valid_effect_count": 6,
+          "invalid_effect_count": 0,
+          "topology": [
+            [
+              "OPEN_NEW",
+              [
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0001",
+                "neu-0005",
+                "neu-0006",
+                "neu-0008"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0005",
+                "neu-0006"
+              ]
+            ]
+          ],
+          "bound_support_unit_ids": [
+            "cb16adbf-agenthands-evaluation-study:action_change:1",
+            "cb16adbf-agenthands-evaluation-study:action_change:2",
+            "cb16adbf-agenthands-evaluation-study:uncertainty:1",
+            "neu-0001",
+            "neu-0004",
+            "neu-0005",
+            "neu-0006",
+            "neu-0008"
+          ],
+          "meta": {
+            "latency_ms": 3358,
+            "prompt_tokens": 5674,
+            "completion_tokens": 740,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "X-3",
+          "status": "OK",
+          "raw_effects": [
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0001",
+                "neu-0004",
+                "neu-0005",
+                "neu-0006",
+                "neu-0007",
+                "neu-0008"
+              ],
+              "jurisdiction_anchor_ids": [
+                "de327c12-7a91-5725-9c0e-b09230668d19"
+              ],
+              "jurisdiction_anchors": [
+                "G1"
+              ],
+              "reason": "AgentHands is an LLM-powered XR prototype that augments conversational agents with synchronized, expressive hand gestures for spatially grounded guidance, with a gesture taxonomy, GestureEvent-based LLM output, and demonstrated tutoring/technical/lifestyle scenarios — a concrete embodied-intelligence system directly instantiating the goal of building better embodied and multi-agent intelligence systems."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "AgentHands implements a pipeline from LLM-generated GestureEvents through a local parser coordinating TTS with an animation engine using word-level timestamps to produce synchronized co-speech hand motion — a concrete motor-intelligence architecture for generating temporally precise embodied movement."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ],
+              "jurisdiction_anchor_ids": [
+                "ba1ac843-a828-5842-8542-47f6edd05e2f"
+              ],
+              "jurisdiction_anchors": [
+                "BT1"
+              ],
+              "reason": "The within-subjects study (N=12) comparing AgentHands to a speech-only baseline reports effectiveness across 'several key metrics of communication effectiveness' but supplies no metric values, effect sizes, or latency/energy/task-success measurements — directly instantiating the bottleneck of lacking latency × energy × task-success evaluation for embodied control."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "3a3370e6-0858-5c9a-8796-99373e53f47d"
+              ],
+              "jurisdiction_anchors": [
+                "Q1"
+              ],
+              "reason": "AgentHands relies on a backend LLM to generate responses with inline GestureEvents, with a local parser coordinating TTS and animation — a concrete data point bearing on whether embodied control should depend on a large unified model."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "805c73da-d77a-5d9f-bc73-22d633ec3c14"
+              ],
+              "jurisdiction_anchors": [
+                "B1"
+              ],
+              "reason": "AgentHands places the LLM in the response-generation loop while a separate local parser handles word-level timestamp synchronization with the animation engine — a concrete architectural instance relevant to whether large unified models are unsuitable for the fastest embodied-control loop."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "b9cac295-0b01-5422-8e62-340be9e7f2ec"
+              ],
+              "jurisdiction_anchors": [
+                "M1"
+              ],
+              "reason": "AgentHands separates cognitive/linguistic generation (backend LLM producing GestureEvents) from temporal motor execution (local parser synchronizing TTS with the animation engine via word-level timestamps) — a concrete instance of partially separable cognitive and temporal motor intelligence."
+            }
+          ],
+          "valid_effects": [
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0001",
+                "neu-0004",
+                "neu-0005",
+                "neu-0006",
+                "neu-0007",
+                "neu-0008"
+              ],
+              "jurisdiction_anchor_ids": [
+                "de327c12-7a91-5725-9c0e-b09230668d19"
+              ],
+              "jurisdiction_anchors": [
+                "G1"
+              ],
+              "reason": "AgentHands is an LLM-powered XR prototype that augments conversational agents with synchronized, expressive hand gestures for spatially grounded guidance, with a gesture taxonomy, GestureEvent-based LLM output, and demonstrated tutoring/technical/lifestyle scenarios — a concrete embodied-intelligence system directly instantiating the goal of building better embodied and multi-agent intelligence systems.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0001",
+                  "neu-0004",
+                  "neu-0005",
+                  "neu-0006",
+                  "neu-0007",
+                  "neu-0008"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "AgentHands implements a pipeline from LLM-generated GestureEvents through a local parser coordinating TTS with an animation engine using word-level timestamps to produce synchronized co-speech hand motion — a concrete motor-intelligence architecture for generating temporally precise embodied movement.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0004",
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ],
+              "jurisdiction_anchor_ids": [
+                "ba1ac843-a828-5842-8542-47f6edd05e2f"
+              ],
+              "jurisdiction_anchors": [
+                "BT1"
+              ],
+              "reason": "The within-subjects study (N=12) comparing AgentHands to a speech-only baseline reports effectiveness across 'several key metrics of communication effectiveness' but supplies no metric values, effect sizes, or latency/energy/task-success measurements — directly instantiating the bottleneck of lacking latency × energy × task-success evaluation for embodied control.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "cb16adbf-agenthands-evaluation-study:action_change:1",
+                  "cb16adbf-agenthands-evaluation-study:action_change:2",
+                  "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "3a3370e6-0858-5c9a-8796-99373e53f47d"
+              ],
+              "jurisdiction_anchors": [
+                "Q1"
+              ],
+              "reason": "AgentHands relies on a backend LLM to generate responses with inline GestureEvents, with a local parser coordinating TTS and animation — a concrete data point bearing on whether embodied control should depend on a large unified model.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "805c73da-d77a-5d9f-bc73-22d633ec3c14"
+              ],
+              "jurisdiction_anchors": [
+                "B1"
+              ],
+              "reason": "AgentHands places the LLM in the response-generation loop while a separate local parser handles word-level timestamp synchronization with the animation engine — a concrete architectural instance relevant to whether large unified models are unsuitable for the fastest embodied-control loop.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "b9cac295-0b01-5422-8e62-340be9e7f2ec"
+              ],
+              "jurisdiction_anchors": [
+                "M1"
+              ],
+              "reason": "AgentHands separates cognitive/linguistic generation (backend LLM producing GestureEvents) from temporal motor execution (local parser synchronizing TTS with the animation engine via word-level timestamps) — a concrete instance of partially separable cognitive and temporal motor intelligence.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0004",
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            }
+          ],
+          "invalid_effects": [],
+          "raw_effect_count": 6,
+          "valid_effect_count": 6,
+          "invalid_effect_count": 0,
+          "topology": [
+            [
+              "OPEN_NEW",
+              [
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0001",
+                "neu-0004",
+                "neu-0005",
+                "neu-0006",
+                "neu-0007",
+                "neu-0008"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0005",
+                "neu-0006"
+              ]
+            ]
+          ],
+          "bound_support_unit_ids": [
+            "cb16adbf-agenthands-evaluation-study:action_change:1",
+            "cb16adbf-agenthands-evaluation-study:action_change:2",
+            "cb16adbf-agenthands-evaluation-study:uncertainty:1",
+            "neu-0001",
+            "neu-0004",
+            "neu-0005",
+            "neu-0006",
+            "neu-0007",
+            "neu-0008"
+          ],
+          "meta": {
+            "latency_ms": 4035,
+            "prompt_tokens": 5674,
+            "completion_tokens": 838,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "X-4",
+          "status": "OK",
+          "raw_effects": [
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0001",
+                "neu-0004",
+                "neu-0005",
+                "neu-0006",
+                "neu-0007"
+              ],
+              "jurisdiction_anchor_ids": [
+                "de327c12-7a91-5725-9c0e-b09230668d19"
+              ],
+              "jurisdiction_anchors": [
+                "G1"
+              ],
+              "reason": "AgentHands is an embodied XR agent system that grounds LLM-generated speech in synchronized spatial hand gestures, directly instantiating an embodied intelligence system that operates within the physical world."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The AgentHands architecture uses a backend LLM to emit GestureEvents with word-level timestamps, and a local parser on the headset coordinates TTS with the animation engine in real time, constituting a concrete motor-intelligence pipeline for synchronized embodied output."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ],
+              "jurisdiction_anchor_ids": [
+                "ba1ac843-a828-5842-8542-47f6edd05e2f"
+              ],
+              "jurisdiction_anchors": [
+                "BT1"
+              ],
+              "reason": "The within-subjects study reports effectiveness across several key metrics but supplies no latency, energy, or task-success values, exemplifying the identified gap in quantitative evaluation for embodied control."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "3a3370e6-0858-5c9a-8796-99373e53f47d"
+              ],
+              "jurisdiction_anchors": [
+                "Q1"
+              ],
+              "reason": "AgentHands demonstrates a large unified LLM driving gesture generation and speech in a single pipeline, providing a concrete case relevant to whether high-frequency embodied control should depend on a large unified model."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "805c73da-d77a-5d9f-bc73-22d633ec3c14"
+              ],
+              "jurisdiction_anchors": [
+                "B1"
+              ],
+              "reason": "AgentHands relies on a backend LLM to produce GestureEvents and a local parser for synchronization, offering evidence about the suitability of large unified models in the embodied-control loop."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "b9cac295-0b01-5422-8e62-340be9e7f2ec"
+              ],
+              "jurisdiction_anchors": [
+                "M1"
+              ],
+              "reason": "AgentHands separates cognitive/linguistic generation (backend LLM producing GestureEvents) from temporal motor execution (local parser coordinating TTS and animation), instantiating a partial separation of cognitive and motor intelligence."
+            }
+          ],
+          "valid_effects": [
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0001",
+                "neu-0004",
+                "neu-0005",
+                "neu-0006",
+                "neu-0007"
+              ],
+              "jurisdiction_anchor_ids": [
+                "de327c12-7a91-5725-9c0e-b09230668d19"
+              ],
+              "jurisdiction_anchors": [
+                "G1"
+              ],
+              "reason": "AgentHands is an embodied XR agent system that grounds LLM-generated speech in synchronized spatial hand gestures, directly instantiating an embodied intelligence system that operates within the physical world.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0001",
+                  "neu-0004",
+                  "neu-0005",
+                  "neu-0006",
+                  "neu-0007"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The AgentHands architecture uses a backend LLM to emit GestureEvents with word-level timestamps, and a local parser on the headset coordinates TTS with the animation engine in real time, constituting a concrete motor-intelligence pipeline for synchronized embodied output.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ],
+              "jurisdiction_anchor_ids": [
+                "ba1ac843-a828-5842-8542-47f6edd05e2f"
+              ],
+              "jurisdiction_anchors": [
+                "BT1"
+              ],
+              "reason": "The within-subjects study reports effectiveness across several key metrics but supplies no latency, energy, or task-success values, exemplifying the identified gap in quantitative evaluation for embodied control.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "cb16adbf-agenthands-evaluation-study:action_change:1",
+                  "cb16adbf-agenthands-evaluation-study:action_change:2",
+                  "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "3a3370e6-0858-5c9a-8796-99373e53f47d"
+              ],
+              "jurisdiction_anchors": [
+                "Q1"
+              ],
+              "reason": "AgentHands demonstrates a large unified LLM driving gesture generation and speech in a single pipeline, providing a concrete case relevant to whether high-frequency embodied control should depend on a large unified model.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "805c73da-d77a-5d9f-bc73-22d633ec3c14"
+              ],
+              "jurisdiction_anchors": [
+                "B1"
+              ],
+              "reason": "AgentHands relies on a backend LLM to produce GestureEvents and a local parser for synchronization, offering evidence about the suitability of large unified models in the embodied-control loop.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "b9cac295-0b01-5422-8e62-340be9e7f2ec"
+              ],
+              "jurisdiction_anchors": [
+                "M1"
+              ],
+              "reason": "AgentHands separates cognitive/linguistic generation (backend LLM producing GestureEvents) from temporal motor execution (local parser coordinating TTS and animation), instantiating a partial separation of cognitive and motor intelligence.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0004",
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            }
+          ],
+          "invalid_effects": [],
+          "raw_effect_count": 6,
+          "valid_effect_count": 6,
+          "invalid_effect_count": 0,
+          "topology": [
+            [
+              "OPEN_NEW",
+              [
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0001",
+                "neu-0004",
+                "neu-0005",
+                "neu-0006",
+                "neu-0007"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0005",
+                "neu-0006"
+              ]
+            ]
+          ],
+          "bound_support_unit_ids": [
+            "cb16adbf-agenthands-evaluation-study:action_change:1",
+            "cb16adbf-agenthands-evaluation-study:action_change:2",
+            "cb16adbf-agenthands-evaluation-study:uncertainty:1",
+            "neu-0001",
+            "neu-0004",
+            "neu-0005",
+            "neu-0006",
+            "neu-0007"
+          ],
+          "meta": {
+            "latency_ms": 2913,
+            "prompt_tokens": 5674,
+            "completion_tokens": 734,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "X-5",
+          "status": "OK",
+          "raw_effects": [
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0001",
+                "neu-0004",
+                "neu-0005",
+                "neu-0006",
+                "neu-0007",
+                "neu-0008"
+              ],
+              "jurisdiction_anchor_ids": [
+                "de327c12-7a91-5725-9c0e-b09230668d19"
+              ],
+              "jurisdiction_anchors": [
+                "G1"
+              ],
+              "reason": "AgentHands is an embodied XR agent system that grounds LLM-generated speech in synchronized spatial hand gestures, directly instantiating the goal of building better embodied intelligence systems."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The AgentHands pipeline—object registration via eye gaze and scene reconstruction, GestureEvent generation by the backend LLM, and word-level timestamp synchronization of TTS with the animation engine—constitutes a concrete motor-intelligence architecture for spatially grounded agent movement."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ],
+              "jurisdiction_anchor_ids": [
+                "ba1ac843-a828-5842-8542-47f6edd05e2f"
+              ],
+              "jurisdiction_anchors": [
+                "BT1"
+              ],
+              "reason": "The within-subjects study reports effectiveness across several key metrics but supplies no latency, energy, or task-success values, exemplifying the identified bottleneck of missing quantitative evaluation for embodied control."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "3a3370e6-0858-5c9a-8796-99373e53f47d"
+              ],
+              "jurisdiction_anchors": [
+                "Q1"
+              ],
+              "reason": "AgentHands relies on a backend LLM to generate responses with inline GestureEvents that drive synchronized hand animation, providing a concrete case relevant to whether high-frequency motor control should depend on a large unified model."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "805c73da-d77a-5d9f-bc73-22d633ec3c14"
+              ],
+              "jurisdiction_anchors": [
+                "B1"
+              ],
+              "reason": "The architecture places the LLM in the response-generation loop while a local parser handles word-level timestamp synchronization, offering evidence relevant to the belief that large unified models may be unsuitable for the fastest embodied-control loop."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "b9cac295-0b01-5422-8e62-340be9e7f2ec"
+              ],
+              "jurisdiction_anchors": [
+                "M1"
+              ],
+              "reason": "AgentHands separates cognitive/linguistic generation (backend LLM producing GestureEvents) from temporal motor execution (local parser synchronizing TTS with the animation engine), instantiating the model of partially separable cognitive and temporal motor intelligence."
+            }
+          ],
+          "valid_effects": [
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0001",
+                "neu-0004",
+                "neu-0005",
+                "neu-0006",
+                "neu-0007",
+                "neu-0008"
+              ],
+              "jurisdiction_anchor_ids": [
+                "de327c12-7a91-5725-9c0e-b09230668d19"
+              ],
+              "jurisdiction_anchors": [
+                "G1"
+              ],
+              "reason": "AgentHands is an embodied XR agent system that grounds LLM-generated speech in synchronized spatial hand gestures, directly instantiating the goal of building better embodied intelligence systems.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0001",
+                  "neu-0004",
+                  "neu-0005",
+                  "neu-0006",
+                  "neu-0007",
+                  "neu-0008"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The AgentHands pipeline—object registration via eye gaze and scene reconstruction, GestureEvent generation by the backend LLM, and word-level timestamp synchronization of TTS with the animation engine—constitutes a concrete motor-intelligence architecture for spatially grounded agent movement.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0004",
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ],
+              "jurisdiction_anchor_ids": [
+                "ba1ac843-a828-5842-8542-47f6edd05e2f"
+              ],
+              "jurisdiction_anchors": [
+                "BT1"
+              ],
+              "reason": "The within-subjects study reports effectiveness across several key metrics but supplies no latency, energy, or task-success values, exemplifying the identified bottleneck of missing quantitative evaluation for embodied control.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "cb16adbf-agenthands-evaluation-study:action_change:1",
+                  "cb16adbf-agenthands-evaluation-study:action_change:2",
+                  "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "3a3370e6-0858-5c9a-8796-99373e53f47d"
+              ],
+              "jurisdiction_anchors": [
+                "Q1"
+              ],
+              "reason": "AgentHands relies on a backend LLM to generate responses with inline GestureEvents that drive synchronized hand animation, providing a concrete case relevant to whether high-frequency motor control should depend on a large unified model.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "805c73da-d77a-5d9f-bc73-22d633ec3c14"
+              ],
+              "jurisdiction_anchors": [
+                "B1"
+              ],
+              "reason": "The architecture places the LLM in the response-generation loop while a local parser handles word-level timestamp synchronization, offering evidence relevant to the belief that large unified models may be unsuitable for the fastest embodied-control loop.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "b9cac295-0b01-5422-8e62-340be9e7f2ec"
+              ],
+              "jurisdiction_anchors": [
+                "M1"
+              ],
+              "reason": "AgentHands separates cognitive/linguistic generation (backend LLM producing GestureEvents) from temporal motor execution (local parser synchronizing TTS with the animation engine), instantiating the model of partially separable cognitive and temporal motor intelligence.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0004",
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            }
+          ],
+          "invalid_effects": [],
+          "raw_effect_count": 6,
+          "valid_effect_count": 6,
+          "invalid_effect_count": 0,
+          "topology": [
+            [
+              "OPEN_NEW",
+              [
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0001",
+                "neu-0004",
+                "neu-0005",
+                "neu-0006",
+                "neu-0007",
+                "neu-0008"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0005",
+                "neu-0006"
+              ]
+            ]
+          ],
+          "bound_support_unit_ids": [
+            "cb16adbf-agenthands-evaluation-study:action_change:1",
+            "cb16adbf-agenthands-evaluation-study:action_change:2",
+            "cb16adbf-agenthands-evaluation-study:uncertainty:1",
+            "neu-0001",
+            "neu-0004",
+            "neu-0005",
+            "neu-0006",
+            "neu-0007",
+            "neu-0008"
+          ],
+          "meta": {
+            "latency_ms": 4189,
+            "prompt_tokens": 5674,
+            "completion_tokens": 759,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "X-6",
+          "status": "OK",
+          "raw_effects": [
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0001",
+                "neu-0005",
+                "neu-0006",
+                "neu-0008"
+              ],
+              "jurisdiction_anchor_ids": [
+                "de327c12-7a91-5725-9c0e-b09230668d19"
+              ],
+              "jurisdiction_anchors": [
+                "G1"
+              ],
+              "reason": "AgentHands is an LLM-powered XR prototype that augments conversational agents with synchronized co-speech hand gestures for spatially grounded guidance, directly instantiating an embodied intelligence system that operates within the physical world."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The system's gesture library, GestureEvent encoding, and word-level timestamp synchronization constitute a motor-intelligence pipeline that maps linguistic intent to temporally coordinated physical hand movement."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ],
+              "jurisdiction_anchor_ids": [
+                "ba1ac843-a828-5842-8542-47f6edd05e2f"
+              ],
+              "jurisdiction_anchors": [
+                "BT1"
+              ],
+              "reason": "The within-subjects study reports effectiveness across key communication metrics but does not report latency, energy, or task-success values, illustrating the identified bottleneck of missing latency × energy × task-success evaluation for embodied control."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "3a3370e6-0858-5c9a-8796-99373e53f47d"
+              ],
+              "jurisdiction_anchors": [
+                "Q1"
+              ],
+              "reason": "AgentHands relies on a backend LLM to generate responses with inline GestureEvents, providing a concrete case of a large unified model driving embodied gesture output, relevant to whether high-frequency motor control should depend on such a model."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "805c73da-d77a-5d9f-bc73-22d633ec3c14"
+              ],
+              "jurisdiction_anchors": [
+                "B1"
+              ],
+              "reason": "The architecture routes gesture generation through a backend LLM with a local parser coordinating TTS and animation, offering evidence about the suitability of large unified models for the embodied-control loop."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "b9cac295-0b01-5422-8e62-340be9e7f2ec"
+              ],
+              "jurisdiction_anchors": [
+                "M1"
+              ],
+              "reason": "AgentHands separates cognitive/linguistic generation (backend LLM producing GestureEvents) from temporal motor execution (local parser synchronizing animation with word-level timestamps), instantiating partially separable cognitive and temporal motor intelligence."
+            }
+          ],
+          "valid_effects": [
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0001",
+                "neu-0005",
+                "neu-0006",
+                "neu-0008"
+              ],
+              "jurisdiction_anchor_ids": [
+                "de327c12-7a91-5725-9c0e-b09230668d19"
+              ],
+              "jurisdiction_anchors": [
+                "G1"
+              ],
+              "reason": "AgentHands is an LLM-powered XR prototype that augments conversational agents with synchronized co-speech hand gestures for spatially grounded guidance, directly instantiating an embodied intelligence system that operates within the physical world.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0001",
+                  "neu-0005",
+                  "neu-0006",
+                  "neu-0008"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The system's gesture library, GestureEvent encoding, and word-level timestamp synchronization constitute a motor-intelligence pipeline that maps linguistic intent to temporally coordinated physical hand movement.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0004",
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ],
+              "jurisdiction_anchor_ids": [
+                "ba1ac843-a828-5842-8542-47f6edd05e2f"
+              ],
+              "jurisdiction_anchors": [
+                "BT1"
+              ],
+              "reason": "The within-subjects study reports effectiveness across key communication metrics but does not report latency, energy, or task-success values, illustrating the identified bottleneck of missing latency × energy × task-success evaluation for embodied control.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "cb16adbf-agenthands-evaluation-study:action_change:1",
+                  "cb16adbf-agenthands-evaluation-study:action_change:2",
+                  "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "3a3370e6-0858-5c9a-8796-99373e53f47d"
+              ],
+              "jurisdiction_anchors": [
+                "Q1"
+              ],
+              "reason": "AgentHands relies on a backend LLM to generate responses with inline GestureEvents, providing a concrete case of a large unified model driving embodied gesture output, relevant to whether high-frequency motor control should depend on such a model.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "805c73da-d77a-5d9f-bc73-22d633ec3c14"
+              ],
+              "jurisdiction_anchors": [
+                "B1"
+              ],
+              "reason": "The architecture routes gesture generation through a backend LLM with a local parser coordinating TTS and animation, offering evidence about the suitability of large unified models for the embodied-control loop.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ],
+              "jurisdiction_anchor_ids": [
+                "b9cac295-0b01-5422-8e62-340be9e7f2ec"
+              ],
+              "jurisdiction_anchors": [
+                "M1"
+              ],
+              "reason": "AgentHands separates cognitive/linguistic generation (backend LLM producing GestureEvents) from temporal motor execution (local parser synchronizing animation with word-level timestamps), instantiating partially separable cognitive and temporal motor intelligence.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-0004",
+                  "neu-0005",
+                  "neu-0006"
+                ]
+              ]
+            }
+          ],
+          "invalid_effects": [],
+          "raw_effect_count": 6,
+          "valid_effect_count": 6,
+          "invalid_effect_count": 0,
+          "topology": [
+            [
+              "OPEN_NEW",
+              [
+                "cb16adbf-agenthands-evaluation-study:action_change:1",
+                "cb16adbf-agenthands-evaluation-study:action_change:2",
+                "cb16adbf-agenthands-evaluation-study:uncertainty:1"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0001",
+                "neu-0005",
+                "neu-0006",
+                "neu-0008"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0004",
+                "neu-0005",
+                "neu-0006"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-0005",
+                "neu-0006"
+              ]
+            ]
+          ],
+          "bound_support_unit_ids": [
+            "cb16adbf-agenthands-evaluation-study:action_change:1",
+            "cb16adbf-agenthands-evaluation-study:action_change:2",
+            "cb16adbf-agenthands-evaluation-study:uncertainty:1",
+            "neu-0001",
+            "neu-0004",
+            "neu-0005",
+            "neu-0006",
+            "neu-0008"
+          ],
+          "meta": {
+            "latency_ms": 3479,
+            "prompt_tokens": 5674,
+            "completion_tokens": 737,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        }
+      ],
+      "summary": {
+        "n_ok": 6,
+        "n_error": 0,
+        "raw_effects": 35,
+        "valid_effects": 35,
+        "valid_effect_rate": 1.0,
+        "invalid_reason_counts": {},
+        "topology_n_unique": 4,
+        "topology_mode_rate": 0.3333333333333333,
+        "relation_occurrence_counts": {
+          "('OPEN_NEW', ('cb16adbf-agenthands-evaluation-study:action_change:2', 'neu-0001', 'neu-0004', 'neu-0005', 'neu-0006', 'neu-0007'))": 1,
+          "('OPEN_NEW', ('neu-0004', 'neu-0005', 'neu-0006'))": 10,
+          "('OPEN_NEW', ('cb16adbf-agenthands-evaluation-study:action_change:1', 'cb16adbf-agenthands-evaluation-study:action_change:2', 'cb16adbf-agenthands-evaluation-study:actor_object:1', 'cb16adbf-agenthands-evaluation-study:actor_object:2', 'cb16adbf-agenthands-evaluation-study:uncertainty:1'))": 1,
+          "('OPEN_NEW', ('neu-0003', 'neu-0004', 'neu-0005'))": 1,
+          "('OPEN_NEW', ('neu-0009',))": 1,
+          "('OPEN_NEW', ('neu-0001', 'neu-0005', 'neu-0006', 'neu-0008'))": 2,
+          "('OPEN_NEW', ('cb16adbf-agenthands-evaluation-study:action_change:1', 'cb16adbf-agenthands-evaluation-study:action_change:2', 'cb16adbf-agenthands-evaluation-study:uncertainty:1'))": 5,
+          "('OPEN_NEW', ('neu-0005', 'neu-0006'))": 11,
+          "('OPEN_NEW', ('neu-0001', 'neu-0004', 'neu-0005', 'neu-0006', 'neu-0007', 'neu-0008'))": 2,
+          "('OPEN_NEW', ('neu-0001', 'neu-0004', 'neu-0005', 'neu-0006', 'neu-0007'))": 1
+        },
+        "mean_support_units_per_effect": 3.057142857142857,
+        "support_unit_sample_frequency": {
+          "cb16adbf-agenthands-evaluation-study:action_change:1": 1.0,
+          "cb16adbf-agenthands-evaluation-study:action_change:2": 1.0,
+          "cb16adbf-agenthands-evaluation-study:actor_object:1": 0.16666666666666666,
+          "cb16adbf-agenthands-evaluation-study:actor_object:2": 0.16666666666666666,
+          "cb16adbf-agenthands-evaluation-study:uncertainty:1": 1.0,
+          "neu-0001": 1.0,
+          "neu-0003": 0.16666666666666666,
+          "neu-0004": 1.0,
+          "neu-0005": 1.0,
+          "neu-0006": 1.0,
+          "neu-0007": 0.6666666666666666,
+          "neu-0008": 0.6666666666666666,
+          "neu-0009": 0.16666666666666666
+        },
+        "mean_bound_world_fraction": 0.5
+      },
+      "frozen_units_replay_sha256": "47f9254e17aae3dc7743438d21085fb2b1e2afccdd2746e3cd08882c5b2ffc4a",
+      "frozen_locate": {
+        "modal_target_set": [
+          "B1",
+          "B2",
+          "BT1",
+          "D1",
+          "G1",
+          "M1",
+          "P1",
+          "P2",
+          "Q1",
+          "Q2"
+        ],
+        "modal_count": 3,
+        "modal_rate": 1.0,
+        "selected_repeat": 1,
+        "selected_matches": [
+          {
+            "target": "G1",
+            "kernel_node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+            "relevance_type": "TOPIC",
+            "score": 0.85,
+            "reason": "AgentHands is an embodied conversational agent system with synchronized hand gestures in XR, directly instantiating the goal of building better embodied intelligence systems."
+          },
+          {
+            "target": "P1",
+            "kernel_node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+            "relevance_type": "TOPIC",
+            "score": 0.6,
+            "reason": "AgentHands generates synchronized co-speech hand gestures via a gesture behavior library and animation engine, relating to motor intelligence for embodied agents."
+          },
+          {
+            "target": "BT1",
+            "kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+            "relevance_type": "BOTTLENECK",
+            "score": 0.55,
+            "reason": "The evaluation study reports effectiveness across key metrics but lacks specific latency, energy, or task-success values, echoing the bottleneck of missing rigorous evaluation for embodied control."
+          },
+          {
+            "target": "Q1",
+            "kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+            "relevance_type": "STRUCTURAL",
+            "score": 0.5,
+            "reason": "AgentHands uses a backend LLM to generate gesture events parsed locally on the headset, illustrating a split between large-model cognition and local real-time control relevant to whether high-frequency control should depend on a unified model."
+          },
+          {
+            "target": "B1",
+            "kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+            "relevance_type": "STRUCTURAL",
+            "score": 0.5,
+            "reason": "The architecture offloads synchronization and animation to a local parser with word-level timestamps, consistent with the belief that large unified models may be unsuitable for the fastest embodied-control loop."
+          },
+          {
+            "target": "M1",
+            "kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+            "relevance_type": "STRUCTURAL",
+            "score": 0.6,
+            "reason": "AgentHands separates LLM-based linguistic/cognitive generation from local temporal gesture synchronization, exemplifying partially separable cognitive and motor intelligence in embodied systems."
+          },
+          {
+            "target": "P2",
+            "kernel_node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+            "relevance_type": "TOPIC",
+            "score": 0.35,
+            "reason": "AgentHands is a single-agent conversational system; its multi-team collaboration and gesture taxonomy are only weakly related to collective intelligence."
+          },
+          {
+            "target": "Q2",
+            "kernel_node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+            "relevance_type": "TOPIC",
+            "score": 0.3,
+            "reason": "AgentHands grounds conversation in a shared spatial registry with 3D bounding boxes, loosely analogous to shared world models, but it is not a multi-agent communication system."
+          },
+          {
+            "target": "B2",
+            "kernel_node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "relevance_type": "TOPIC",
+            "score": 0.25,
+            "reason": "AgentHands runs local parsing and animation on the XR headset, a form of local intelligence, but it is not a decentralized swarm system."
+          },
+          {
+            "target": "D1",
+            "kernel_node_id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+            "relevance_type": "DECISION",
+            "score": 0.1,
+            "reason": "No substantive connection to startup equity terms or employment obligations."
+          }
+        ]
+      }
+    },
+    "N4": {
+      "samples": [
+        {
+          "sample_id": "N4-1",
+          "status": "OK",
+          "raw_effects": [
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "target": "BT1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002 directly documents the latency gap between real-time high-frequency control (~83 Hz) and current LLM inference (~0.2-0.4 Hz), which is a concrete instance of the missing latency evaluation for high-frequency embodied control named by the bottleneck."
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+              "target": "B1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002's measured two-orders-of-magnitude latency gap between real-time control requirements and current LLM inference directly supports the belief that large unified models may be unsuitable for the fastest embodied-control loop."
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "target": "M1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "The finding that capability depends heavily on the control interface (direct joint control mostly fails while supervising a pretrained controller succeeds), together with the four-interface abstraction taxonomy and the VLA-pairing results, directly supports the structural model that cognitive intelligence and temporal motor intelligence are partially separable."
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+              "target": "Q1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "Evidence that models succeed when supervising a pretrained controller or using simple orientation tools but mostly fail at direct joint control, combined with the abstraction-level taxonomy and VLA-pairing results, directly bears on whether high-frequency motor control should depend on a large unified model."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-008",
+                "neu-009"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The control-interface dependence of capability, the four-interface abstraction taxonomy, and the VLA-pairing results (including deferral behavior on novel tasks) constitute a distinct semantic relation about interface abstraction as a determinant of embodied model capability, warranting a new node under the Motor Intelligence project."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-003",
+                "neu-007"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The finding that much of the generational improvement comes from better adaptation after seeing prior outcomes and revising strategy, together with the locomotion bottleneck being primarily spatial tracking, constitutes a distinct semantic relation about iterative adaptation and state tracking as drivers of embodied performance, warranting a new node under the Motor Intelligence project."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-004",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The finding that nearly all models perform worse when training an RL policy than when writing a Pythonic controller, and that every tested model still performs substantially worse than the pretrained VLA alone, constitutes a distinct semantic relation about the comparative difficulty of policy learning versus code-based control, warranting a new node under the Motor Intelligence project."
+            }
+          ],
+          "valid_effects": [
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "target": "BT1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002 directly documents the latency gap between real-time high-frequency control (~83 Hz) and current LLM inference (~0.2-0.4 Hz), which is a concrete instance of the missing latency evaluation for high-frequency embodied control named by the bottleneck.",
+              "relation_key": [
+                "REINFORCE",
+                "BT1"
+              ]
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+              "target": "B1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002's measured two-orders-of-magnitude latency gap between real-time control requirements and current LLM inference directly supports the belief that large unified models may be unsuitable for the fastest embodied-control loop.",
+              "relation_key": [
+                "REINFORCE",
+                "B1"
+              ]
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "target": "M1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "The finding that capability depends heavily on the control interface (direct joint control mostly fails while supervising a pretrained controller succeeds), together with the four-interface abstraction taxonomy and the VLA-pairing results, directly supports the structural model that cognitive intelligence and temporal motor intelligence are partially separable.",
+              "relation_key": [
+                "REINFORCE",
+                "M1"
+              ]
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+              "target": "Q1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "Evidence that models succeed when supervising a pretrained controller or using simple orientation tools but mostly fail at direct joint control, combined with the abstraction-level taxonomy and VLA-pairing results, directly bears on whether high-frequency motor control should depend on a large unified model.",
+              "relation_key": [
+                "REINFORCE",
+                "Q1"
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-008",
+                "neu-009"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The control-interface dependence of capability, the four-interface abstraction taxonomy, and the VLA-pairing results (including deferral behavior on novel tasks) constitute a distinct semantic relation about interface abstraction as a determinant of embodied model capability, warranting a new node under the Motor Intelligence project.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                  "neu-001",
+                  "neu-008",
+                  "neu-009"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-003",
+                "neu-007"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The finding that much of the generational improvement comes from better adaptation after seeing prior outcomes and revising strategy, together with the locomotion bottleneck being primarily spatial tracking, constitutes a distinct semantic relation about iterative adaptation and state tracking as drivers of embodied performance, warranting a new node under the Motor Intelligence project.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-003",
+                  "neu-007"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-004",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The finding that nearly all models perform worse when training an RL policy than when writing a Pythonic controller, and that every tested model still performs substantially worse than the pretrained VLA alone, constitutes a distinct semantic relation about the comparative difficulty of policy learning versus code-based control, warranting a new node under the Motor Intelligence project.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-004",
+                  "neu-008"
+                ]
+              ]
+            }
+          ],
+          "invalid_effects": [],
+          "raw_effect_count": 7,
+          "valid_effect_count": 7,
+          "invalid_effect_count": 0,
+          "topology": [
+            [
+              "OPEN_NEW",
+              [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-008",
+                "neu-009"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-003",
+                "neu-007"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-004",
+                "neu-008"
+              ]
+            ],
+            [
+              "REINFORCE",
+              "B1"
+            ],
+            [
+              "REINFORCE",
+              "BT1"
+            ],
+            [
+              "REINFORCE",
+              "M1"
+            ],
+            [
+              "REINFORCE",
+              "Q1"
+            ]
+          ],
+          "bound_support_unit_ids": [
+            "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+            "neu-001",
+            "neu-002",
+            "neu-003",
+            "neu-004",
+            "neu-007",
+            "neu-008",
+            "neu-009"
+          ],
+          "meta": {
+            "latency_ms": 4469,
+            "prompt_tokens": 4996,
+            "completion_tokens": 1094,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "N4-2",
+          "status": "OK",
+          "raw_effects": [
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "target": "BT1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002 directly documents the latency gap (~83 Hz real-time requirement vs ~0.2-0.4 Hz inference, roughly two orders of magnitude) and the pausing of the simulator to avoid latency dominating results, which is direct evidence for the bottleneck concerning lack of latency × energy × task-success evaluation for high-frequency embodied control."
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+              "target": "B1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002's quantified latency gap between real-time control requirements and current LLM inference rates directly supports the belief that large unified models may be unsuitable for the fastest embodied-control loop."
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "target": "M1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-004",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "These units show that capability depends heavily on the control interface (direct joint control fails while supervising a pretrained controller or using high-level commands succeeds), that interfaces vary in abstraction from low-level torques to high-level policy commands, that RL policy training lags code control, and that pairing with a pretrained VLA substantially improves success—together directly supporting the structural model that embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence."
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+              "target": "Q1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-002",
+                "neu-004",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "These units provide direct evidence bearing on whether high-frequency motor control should depend on a large unified model: direct joint control mostly fails, latency is two orders of magnitude off real-time requirements, RL policy training lags code control, and models still underperform a dedicated VLA—all directly relevant to the question of large unified models in the fastest control loop."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-008",
+                "neu-009"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "These units establish a distinct finding not represented by existing nodes: that the abstraction level of the model-to-robot interface (direct joint control vs programmatic controller vs high-level policy commands vs VLA supervision) is a primary determinant of embodied task success, with models still underperforming dedicated controllers/VLAs and only newer models recognizing policy failure. This warrants a new node under the Motor Intelligence project."
+            }
+          ],
+          "valid_effects": [
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "target": "BT1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002 directly documents the latency gap (~83 Hz real-time requirement vs ~0.2-0.4 Hz inference, roughly two orders of magnitude) and the pausing of the simulator to avoid latency dominating results, which is direct evidence for the bottleneck concerning lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+              "relation_key": [
+                "REINFORCE",
+                "BT1"
+              ]
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+              "target": "B1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002's quantified latency gap between real-time control requirements and current LLM inference rates directly supports the belief that large unified models may be unsuitable for the fastest embodied-control loop.",
+              "relation_key": [
+                "REINFORCE",
+                "B1"
+              ]
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "target": "M1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-004",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "These units show that capability depends heavily on the control interface (direct joint control fails while supervising a pretrained controller or using high-level commands succeeds), that interfaces vary in abstraction from low-level torques to high-level policy commands, that RL policy training lags code control, and that pairing with a pretrained VLA substantially improves success—together directly supporting the structural model that embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+              "relation_key": [
+                "REINFORCE",
+                "M1"
+              ]
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+              "target": "Q1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-002",
+                "neu-004",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "These units provide direct evidence bearing on whether high-frequency motor control should depend on a large unified model: direct joint control mostly fails, latency is two orders of magnitude off real-time requirements, RL policy training lags code control, and models still underperform a dedicated VLA—all directly relevant to the question of large unified models in the fastest control loop.",
+              "relation_key": [
+                "REINFORCE",
+                "Q1"
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-008",
+                "neu-009"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "These units establish a distinct finding not represented by existing nodes: that the abstraction level of the model-to-robot interface (direct joint control vs programmatic controller vs high-level policy commands vs VLA supervision) is a primary determinant of embodied task success, with models still underperforming dedicated controllers/VLAs and only newer models recognizing policy failure. This warrants a new node under the Motor Intelligence project.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                  "neu-001",
+                  "neu-008",
+                  "neu-009"
+                ]
+              ]
+            }
+          ],
+          "invalid_effects": [],
+          "raw_effect_count": 5,
+          "valid_effect_count": 5,
+          "invalid_effect_count": 0,
+          "topology": [
+            [
+              "OPEN_NEW",
+              [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-008",
+                "neu-009"
+              ]
+            ],
+            [
+              "REINFORCE",
+              "B1"
+            ],
+            [
+              "REINFORCE",
+              "BT1"
+            ],
+            [
+              "REINFORCE",
+              "M1"
+            ],
+            [
+              "REINFORCE",
+              "Q1"
+            ]
+          ],
+          "bound_support_unit_ids": [
+            "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+            "neu-001",
+            "neu-002",
+            "neu-004",
+            "neu-008",
+            "neu-009"
+          ],
+          "meta": {
+            "latency_ms": 4103,
+            "prompt_tokens": 4996,
+            "completion_tokens": 809,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "N4-3",
+          "status": "OK",
+          "raw_effects": [
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "target": "BT1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002 directly documents the latency gap (~83 Hz real-time requirement vs ~0.2-0.4 Hz inference, roughly two orders of magnitude) and the pausing of the simulator to avoid latency dominating results, which is direct evidence for the bottleneck concerning lack of latency × energy × task-success evaluation for high-frequency embodied control."
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+              "target": "B1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002's quantified latency gap between real-time control requirements and current LLM inference rates directly supports the belief that large unified models may be unsuitable for the fastest embodied-control loop."
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "target": "M1",
+              "support_unit_ids": [
+                "neu-001",
+                "neu-004",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-001 shows control interfaces varying in abstraction (direct low-level control vs programmatic/policy/RL supervision), neu-004 shows RL policy training underperforms Pythonic controller creation, and neu-008 shows pairing with a pretrained VLA substantially increases success relative to direct control—together these directly evidence a separation between cognitive/strategic intelligence and temporal motor control, supporting the structural model of partially separable cognitive and temporal motor intelligence."
+            },
+            {
+              "operation": "CHALLENGE",
+              "target_kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+              "target": "B1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "The action_change:2 unit and neu-008 show that when models supervise a pretrained controller or use a pretrained VLA, they can complete real navigation and manipulation tasks with substantially increased success—indicating large unified models can function effectively in embodied control loops when not driving joints directly, which directly challenges the belief that large unified models may be unsuitable for the fastest embodied-control loop."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-003",
+                "neu-007",
+                "neu-009"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "neu-003 (later Claude models improve via better adaptation after prior outcomes), neu-007 (high-level locomotion improves across generational jumps with bottleneck in tracking robot position), and neu-009 (later models better recognize policy failure and defer less to a failing VLA) jointly identify a distinct cognitive capability—strategic adaptation and failure recognition in embodied control—that is not represented by any existing kernel node under the Motor Intelligence project."
+            }
+          ],
+          "valid_effects": [
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "target": "BT1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002 directly documents the latency gap (~83 Hz real-time requirement vs ~0.2-0.4 Hz inference, roughly two orders of magnitude) and the pausing of the simulator to avoid latency dominating results, which is direct evidence for the bottleneck concerning lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+              "relation_key": [
+                "REINFORCE",
+                "BT1"
+              ]
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+              "target": "B1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002's quantified latency gap between real-time control requirements and current LLM inference rates directly supports the belief that large unified models may be unsuitable for the fastest embodied-control loop.",
+              "relation_key": [
+                "REINFORCE",
+                "B1"
+              ]
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "target": "M1",
+              "support_unit_ids": [
+                "neu-001",
+                "neu-004",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-001 shows control interfaces varying in abstraction (direct low-level control vs programmatic/policy/RL supervision), neu-004 shows RL policy training underperforms Pythonic controller creation, and neu-008 shows pairing with a pretrained VLA substantially increases success relative to direct control—together these directly evidence a separation between cognitive/strategic intelligence and temporal motor control, supporting the structural model of partially separable cognitive and temporal motor intelligence.",
+              "relation_key": [
+                "REINFORCE",
+                "M1"
+              ]
+            },
+            {
+              "operation": "CHALLENGE",
+              "target_kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+              "target": "B1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "The action_change:2 unit and neu-008 show that when models supervise a pretrained controller or use a pretrained VLA, they can complete real navigation and manipulation tasks with substantially increased success—indicating large unified models can function effectively in embodied control loops when not driving joints directly, which directly challenges the belief that large unified models may be unsuitable for the fastest embodied-control loop.",
+              "relation_key": [
+                "CHALLENGE",
+                "B1"
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-003",
+                "neu-007",
+                "neu-009"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "neu-003 (later Claude models improve via better adaptation after prior outcomes), neu-007 (high-level locomotion improves across generational jumps with bottleneck in tracking robot position), and neu-009 (later models better recognize policy failure and defer less to a failing VLA) jointly identify a distinct cognitive capability—strategic adaptation and failure recognition in embodied control—that is not represented by any existing kernel node under the Motor Intelligence project.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-003",
+                  "neu-007",
+                  "neu-009"
+                ]
+              ]
+            }
+          ],
+          "invalid_effects": [],
+          "raw_effect_count": 5,
+          "valid_effect_count": 5,
+          "invalid_effect_count": 0,
+          "topology": [
+            [
+              "CHALLENGE",
+              "B1"
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-003",
+                "neu-007",
+                "neu-009"
+              ]
+            ],
+            [
+              "REINFORCE",
+              "B1"
+            ],
+            [
+              "REINFORCE",
+              "BT1"
+            ],
+            [
+              "REINFORCE",
+              "M1"
+            ]
+          ],
+          "bound_support_unit_ids": [
+            "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+            "neu-001",
+            "neu-002",
+            "neu-003",
+            "neu-004",
+            "neu-007",
+            "neu-008",
+            "neu-009"
+          ],
+          "meta": {
+            "latency_ms": 3809,
+            "prompt_tokens": 4996,
+            "completion_tokens": 737,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "N4-4",
+          "status": "OK",
+          "raw_effects": [
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "target": "BT1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002 directly quantifies the latency gap between real-time high-frequency control (~83 Hz) and current LLM inference (~0.2-0.4 Hz), which is exactly the latency dimension of the bottleneck concerning lack of latency × energy × task-success evaluation for high-frequency embodied control."
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+              "target": "B1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002's two-orders-of-magnitude latency gap between required real-time control frequency and current LLM inference rates directly supports the belief that large unified models may be unsuitable for the fastest embodied-control loop."
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "target": "M1",
+              "support_unit_ids": [
+                "neu-001",
+                "neu-004",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-001 shows control interfaces separate high-level command issuance from low-level execution; neu-004 shows RL policy training (temporal motor learning) is worse than code control (cognitive strategy); neu-008 shows pairing with a pretrained VLA substantially improves success while models still underperform the VLA alone. Together these directly support the structural model that embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence."
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+              "target": "Q1",
+              "support_unit_ids": [
+                "neu-002",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002 establishes the latency gap that makes dependence on a large unified model questionable for high-frequency control; neu-008 shows that even with a large model supervising a pretrained VLA, every tested model underperforms the VLA alone, directly bearing on whether high-frequency motor control should depend on a large unified model."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-008",
+                "neu-009"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The cited units establish a distinct finding not captured by existing nodes: capability depends heavily on the control interface abstraction level, with supervision of pretrained controllers/VLAs enabling real navigation and manipulation while direct joint control mostly fails, and with newer models better at recognizing policy failure and deferring appropriately. This warrants a new node under the Motor Intelligence project."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:3",
+                "neu-003",
+                "neu-007"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The cited units establish a distinct generational-improvement finding: newer models are substantially stronger at adjusting strategies and converting sensory understanding into actions, with gains concentrated in subsequent attempts and clear generational jumps in high-level locomotion. This warrants a new node under the Motor Intelligence project."
+            }
+          ],
+          "valid_effects": [
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "target": "BT1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002 directly quantifies the latency gap between real-time high-frequency control (~83 Hz) and current LLM inference (~0.2-0.4 Hz), which is exactly the latency dimension of the bottleneck concerning lack of latency × energy × task-success evaluation for high-frequency embodied control.",
+              "relation_key": [
+                "REINFORCE",
+                "BT1"
+              ]
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+              "target": "B1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002's two-orders-of-magnitude latency gap between required real-time control frequency and current LLM inference rates directly supports the belief that large unified models may be unsuitable for the fastest embodied-control loop.",
+              "relation_key": [
+                "REINFORCE",
+                "B1"
+              ]
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "target": "M1",
+              "support_unit_ids": [
+                "neu-001",
+                "neu-004",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-001 shows control interfaces separate high-level command issuance from low-level execution; neu-004 shows RL policy training (temporal motor learning) is worse than code control (cognitive strategy); neu-008 shows pairing with a pretrained VLA substantially improves success while models still underperform the VLA alone. Together these directly support the structural model that embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+              "relation_key": [
+                "REINFORCE",
+                "M1"
+              ]
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+              "target": "Q1",
+              "support_unit_ids": [
+                "neu-002",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002 establishes the latency gap that makes dependence on a large unified model questionable for high-frequency control; neu-008 shows that even with a large model supervising a pretrained VLA, every tested model underperforms the VLA alone, directly bearing on whether high-frequency motor control should depend on a large unified model.",
+              "relation_key": [
+                "REINFORCE",
+                "Q1"
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-008",
+                "neu-009"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The cited units establish a distinct finding not captured by existing nodes: capability depends heavily on the control interface abstraction level, with supervision of pretrained controllers/VLAs enabling real navigation and manipulation while direct joint control mostly fails, and with newer models better at recognizing policy failure and deferring appropriately. This warrants a new node under the Motor Intelligence project.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                  "neu-001",
+                  "neu-008",
+                  "neu-009"
+                ]
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:3",
+                "neu-003",
+                "neu-007"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "The cited units establish a distinct generational-improvement finding: newer models are substantially stronger at adjusting strategies and converting sensory understanding into actions, with gains concentrated in subsequent attempts and clear generational jumps in high-level locomotion. This warrants a new node under the Motor Intelligence project.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:3",
+                  "neu-003",
+                  "neu-007"
+                ]
+              ]
+            }
+          ],
+          "invalid_effects": [],
+          "raw_effect_count": 6,
+          "valid_effect_count": 6,
+          "invalid_effect_count": 0,
+          "topology": [
+            [
+              "OPEN_NEW",
+              [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-008",
+                "neu-009"
+              ]
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:3",
+                "neu-003",
+                "neu-007"
+              ]
+            ],
+            [
+              "REINFORCE",
+              "B1"
+            ],
+            [
+              "REINFORCE",
+              "BT1"
+            ],
+            [
+              "REINFORCE",
+              "M1"
+            ],
+            [
+              "REINFORCE",
+              "Q1"
+            ]
+          ],
+          "bound_support_unit_ids": [
+            "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+            "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:3",
+            "neu-001",
+            "neu-002",
+            "neu-003",
+            "neu-004",
+            "neu-007",
+            "neu-008",
+            "neu-009"
+          ],
+          "meta": {
+            "latency_ms": 4441,
+            "prompt_tokens": 4996,
+            "completion_tokens": 867,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "N4-5",
+          "status": "OK",
+          "raw_effects": [
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "target": "BT1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002 directly documents the latency gap between real-time high-frequency control (~83 Hz) and current LLM inference (~0.2-0.4 Hz), which is the latency dimension of the bottleneck's latency × energy × task-success evaluation gap for high-frequency embodied control."
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+              "target": "B1",
+              "support_unit_ids": [
+                "neu-002",
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002 shows large unified models run roughly two orders of magnitude too slow for the fastest control loop, and action_change:2 shows direct joint control mostly fails while success comes from supervising pretrained controllers or simple tools—together directly supporting the belief that large unified models may be unsuitable for the fastest embodied-control loop."
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "target": "M1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-004",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "action_change:2, neu-004, and neu-008 show that high-level cognitive supervision of pretrained controllers/policies succeeds while direct low-level joint control and RL policy training lag, directly supporting the structural model that cognitive intelligence and temporal motor intelligence are partially separable."
+            },
+            {
+              "operation": "CHALLENGE",
+              "target_kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+              "target": "B1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:3",
+                "neu-007",
+                "neu-009"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "action_change:3, neu-007, and neu-009 show newer large unified models substantially improving at strategy adjustment, high-level locomotion, and recognizing policy failure on novel tasks—evidence that large unified models are becoming more capable in embodied control loops, which directly challenges the belief that they may be unsuitable for the fastest embodied-control loop."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-001",
+                "neu-004",
+                "neu-008",
+                "neu-009"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "neu-001, neu-004, neu-008, and neu-009 establish a distinct semantic relation not captured by existing nodes: the abstraction level of the control interface (direct, programmatic, policy, RL supervision) and the choice of pretrained policy/VLA partner systematically determine embodied task success, with models performing worse than the underlying policy alone—a control-interface-and-policy-coupling effect relevant to the Motor Intelligence project."
+            }
+          ],
+          "valid_effects": [
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "target": "BT1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002 directly documents the latency gap between real-time high-frequency control (~83 Hz) and current LLM inference (~0.2-0.4 Hz), which is the latency dimension of the bottleneck's latency × energy × task-success evaluation gap for high-frequency embodied control.",
+              "relation_key": [
+                "REINFORCE",
+                "BT1"
+              ]
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+              "target": "B1",
+              "support_unit_ids": [
+                "neu-002",
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002 shows large unified models run roughly two orders of magnitude too slow for the fastest control loop, and action_change:2 shows direct joint control mostly fails while success comes from supervising pretrained controllers or simple tools—together directly supporting the belief that large unified models may be unsuitable for the fastest embodied-control loop.",
+              "relation_key": [
+                "REINFORCE",
+                "B1"
+              ]
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "target": "M1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-004",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "action_change:2, neu-004, and neu-008 show that high-level cognitive supervision of pretrained controllers/policies succeeds while direct low-level joint control and RL policy training lag, directly supporting the structural model that cognitive intelligence and temporal motor intelligence are partially separable.",
+              "relation_key": [
+                "REINFORCE",
+                "M1"
+              ]
+            },
+            {
+              "operation": "CHALLENGE",
+              "target_kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+              "target": "B1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:3",
+                "neu-007",
+                "neu-009"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "action_change:3, neu-007, and neu-009 show newer large unified models substantially improving at strategy adjustment, high-level locomotion, and recognizing policy failure on novel tasks—evidence that large unified models are becoming more capable in embodied control loops, which directly challenges the belief that they may be unsuitable for the fastest embodied-control loop.",
+              "relation_key": [
+                "CHALLENGE",
+                "B1"
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "neu-001",
+                "neu-004",
+                "neu-008",
+                "neu-009"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52"
+              ],
+              "jurisdiction_anchors": [
+                "P1"
+              ],
+              "reason": "neu-001, neu-004, neu-008, and neu-009 establish a distinct semantic relation not captured by existing nodes: the abstraction level of the control interface (direct, programmatic, policy, RL supervision) and the choice of pretrained policy/VLA partner systematically determine embodied task success, with models performing worse than the underlying policy alone—a control-interface-and-policy-coupling effect relevant to the Motor Intelligence project.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "neu-001",
+                  "neu-004",
+                  "neu-008",
+                  "neu-009"
+                ]
+              ]
+            }
+          ],
+          "invalid_effects": [],
+          "raw_effect_count": 5,
+          "valid_effect_count": 5,
+          "invalid_effect_count": 0,
+          "topology": [
+            [
+              "CHALLENGE",
+              "B1"
+            ],
+            [
+              "OPEN_NEW",
+              [
+                "neu-001",
+                "neu-004",
+                "neu-008",
+                "neu-009"
+              ]
+            ],
+            [
+              "REINFORCE",
+              "B1"
+            ],
+            [
+              "REINFORCE",
+              "BT1"
+            ],
+            [
+              "REINFORCE",
+              "M1"
+            ]
+          ],
+          "bound_support_unit_ids": [
+            "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+            "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:3",
+            "neu-001",
+            "neu-002",
+            "neu-004",
+            "neu-007",
+            "neu-008",
+            "neu-009"
+          ],
+          "meta": {
+            "latency_ms": 3955,
+            "prompt_tokens": 4996,
+            "completion_tokens": 789,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        },
+        {
+          "sample_id": "N4-6",
+          "status": "OK",
+          "raw_effects": [
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "target": "BT1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002 directly documents the latency gap between real-time high-frequency control (~83 Hz) and current LLM inference (~0.2-0.4 Hz), which is exactly the latency dimension of the bottleneck node's latency × energy × task-success evaluation gap for high-frequency embodied control."
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+              "target": "B1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002's quantified two-orders-of-magnitude latency gap between real-time control requirements and current LLM inference rates directly supports the belief that large unified models may be unsuitable for the fastest embodied-control loop."
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "target": "M1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-004",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "These units show that capability depends heavily on the control interface abstraction level (direct joint control fails; supervising pretrained controllers/policies succeeds), that RL policy training lags code control, and that pairing with a pretrained VLA substantially improves success—directly supporting the structural model that embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence."
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+              "target": "Q1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-002",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "These units provide evidence relevant to whether high-frequency motor control should depend on a large unified model: direct joint control mostly fails, real-time latency requirements far exceed current LLM inference rates, and pairing with a pretrained VLA improves success while still underperforming the VLA alone—bearing directly on the question's tradeoffs."
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-004",
+                "neu-008",
+                "neu-009"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52",
+                "de327c12-7a91-5725-9c0e-b09230668d19"
+              ],
+              "jurisdiction_anchors": [
+                "P1",
+                "G1"
+              ],
+              "reason": "These units establish a distinct semantic relation not captured by existing nodes: that model capability in embodied control is primarily determined by the abstraction level of the control interface and the quality of the pretrained controller/policy being supervised, rather than by the model's own low-level motor competence. This is a material cognitive relation for the Motor Intelligence project and the goal of building better embodied intelligence systems."
+            }
+          ],
+          "valid_effects": [
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+              "target": "BT1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002 directly documents the latency gap between real-time high-frequency control (~83 Hz) and current LLM inference (~0.2-0.4 Hz), which is exactly the latency dimension of the bottleneck node's latency × energy × task-success evaluation gap for high-frequency embodied control.",
+              "relation_key": [
+                "REINFORCE",
+                "BT1"
+              ]
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+              "target": "B1",
+              "support_unit_ids": [
+                "neu-002"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "neu-002's quantified two-orders-of-magnitude latency gap between real-time control requirements and current LLM inference rates directly supports the belief that large unified models may be unsuitable for the fastest embodied-control loop.",
+              "relation_key": [
+                "REINFORCE",
+                "B1"
+              ]
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+              "target": "M1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-004",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "These units show that capability depends heavily on the control interface abstraction level (direct joint control fails; supervising pretrained controllers/policies succeeds), that RL policy training lags code control, and that pairing with a pretrained VLA substantially improves success—directly supporting the structural model that embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence.",
+              "relation_key": [
+                "REINFORCE",
+                "M1"
+              ]
+            },
+            {
+              "operation": "REINFORCE",
+              "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+              "target": "Q1",
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-002",
+                "neu-008"
+              ],
+              "jurisdiction_anchor_ids": [],
+              "jurisdiction_anchors": [],
+              "reason": "These units provide evidence relevant to whether high-frequency motor control should depend on a large unified model: direct joint control mostly fails, real-time latency requirements far exceed current LLM inference rates, and pairing with a pretrained VLA improves success while still underperforming the VLA alone—bearing directly on the question's tradeoffs.",
+              "relation_key": [
+                "REINFORCE",
+                "Q1"
+              ]
+            },
+            {
+              "operation": "OPEN_NEW",
+              "target_kernel_node_id": null,
+              "target": null,
+              "support_unit_ids": [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-004",
+                "neu-008",
+                "neu-009"
+              ],
+              "jurisdiction_anchor_ids": [
+                "8f249e57-3de9-5518-99cd-9042c2487d52",
+                "de327c12-7a91-5725-9c0e-b09230668d19"
+              ],
+              "jurisdiction_anchors": [
+                "P1",
+                "G1"
+              ],
+              "reason": "These units establish a distinct semantic relation not captured by existing nodes: that model capability in embodied control is primarily determined by the abstraction level of the control interface and the quality of the pretrained controller/policy being supervised, rather than by the model's own low-level motor competence. This is a material cognitive relation for the Motor Intelligence project and the goal of building better embodied intelligence systems.",
+              "relation_key": [
+                "OPEN_NEW",
+                [
+                  "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                  "neu-001",
+                  "neu-004",
+                  "neu-008",
+                  "neu-009"
+                ]
+              ]
+            }
+          ],
+          "invalid_effects": [],
+          "raw_effect_count": 5,
+          "valid_effect_count": 5,
+          "invalid_effect_count": 0,
+          "topology": [
+            [
+              "OPEN_NEW",
+              [
+                "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+                "neu-001",
+                "neu-004",
+                "neu-008",
+                "neu-009"
+              ]
+            ],
+            [
+              "REINFORCE",
+              "B1"
+            ],
+            [
+              "REINFORCE",
+              "BT1"
+            ],
+            [
+              "REINFORCE",
+              "M1"
+            ],
+            [
+              "REINFORCE",
+              "Q1"
+            ]
+          ],
+          "bound_support_unit_ids": [
+            "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2",
+            "neu-001",
+            "neu-002",
+            "neu-004",
+            "neu-008",
+            "neu-009"
+          ],
+          "meta": {
+            "latency_ms": 3635,
+            "prompt_tokens": 4996,
+            "completion_tokens": 881,
+            "estimated_cost_usd": null,
+            "model": "deepseek-flash",
+            "validation_events": [],
+            "thinking": "disabled",
+            "reasoning_effort": null,
+            "timeout": 60.0,
+            "impact_contract_version": "production-impact-v2.1-legacy"
+          }
+        }
+      ],
+      "summary": {
+        "n_ok": 6,
+        "n_error": 0,
+        "raw_effects": 33,
+        "valid_effects": 33,
+        "valid_effect_rate": 1.0,
+        "invalid_reason_counts": {},
+        "topology_n_unique": 6,
+        "topology_mode_rate": 0.16666666666666666,
+        "relation_occurrence_counts": {
+          "('REINFORCE', 'BT1')": 6,
+          "('REINFORCE', 'B1')": 6,
+          "('REINFORCE', 'M1')": 6,
+          "('REINFORCE', 'Q1')": 4,
+          "('OPEN_NEW', ('b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2', 'neu-001', 'neu-008', 'neu-009'))": 3,
+          "('OPEN_NEW', ('neu-003', 'neu-007'))": 1,
+          "('OPEN_NEW', ('neu-004', 'neu-008'))": 1,
+          "('CHALLENGE', 'B1')": 2,
+          "('OPEN_NEW', ('neu-003', 'neu-007', 'neu-009'))": 1,
+          "('OPEN_NEW', ('b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:3', 'neu-003', 'neu-007'))": 1,
+          "('OPEN_NEW', ('neu-001', 'neu-004', 'neu-008', 'neu-009'))": 1,
+          "('OPEN_NEW', ('b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2', 'neu-001', 'neu-004', 'neu-008', 'neu-009'))": 1
+        },
+        "mean_support_units_per_effect": 2.4545454545454546,
+        "support_unit_sample_frequency": {
+          "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:2": 1.0,
+          "b12aa82b-2a4c-4291-81e3-596f916e9f5a-evt-001:action_change:3": 0.3333333333333333,
+          "neu-001": 1.0,
+          "neu-002": 1.0,
+          "neu-003": 0.5,
+          "neu-004": 1.0,
+          "neu-007": 0.6666666666666666,
+          "neu-008": 1.0,
+          "neu-009": 1.0
+        },
+        "mean_bound_world_fraction": 0.6818181818181818
+      },
+      "frozen_units_replay_sha256": "a36e69b0be897aea4a34184c560ccd87d370032b237c6d36b370a7011b9d9b4f",
+      "frozen_locate": {
+        "modal_target_set": [
+          "B1",
+          "B2",
+          "BT1",
+          "D1",
+          "G1",
+          "M1",
+          "P1",
+          "P2",
+          "Q1",
+          "Q2"
+        ],
+        "modal_count": 3,
+        "modal_rate": 1.0,
+        "selected_repeat": 1,
+        "selected_matches": [
+          {
+            "target": "G1",
+            "kernel_node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+            "relevance_type": "TOPIC",
+            "score": 0.9,
+            "reason": "The audited units evaluate language models controlling robot bodies across control interfaces, directly instantiating the goal of building better embodied intelligence systems."
+          },
+          {
+            "target": "P1",
+            "kernel_node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+            "relevance_type": "TOPIC",
+            "score": 0.95,
+            "reason": "The units concern motor control of robots by language models (direct control, programmatic control, policy control, RL supervision), which is the core subject of the Motor Intelligence project."
+          },
+          {
+            "target": "BT1",
+            "kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+            "relevance_type": "BOTTLENECK",
+            "score": 0.9,
+            "reason": "neu-002 quantifies the latency gap (~83 Hz needed vs ~0.2-0.4 Hz inference) for real-time embodied control, directly evidencing the bottleneck of lacking latency/energy/task-success evaluation for high-frequency control."
+          },
+          {
+            "target": "Q1",
+            "kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+            "relevance_type": "TOPIC",
+            "score": 0.85,
+            "reason": "The units evaluate whether large language models can drive high-frequency motor control, bearing on whether high-frequency control should depend on a large unified model."
+          },
+          {
+            "target": "B1",
+            "kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+            "relevance_type": "EVIDENCE",
+            "score": 0.85,
+            "reason": "neu-002's two-orders-of-magnitude latency gap and the finding that direct joint control mostly fails provide evidence that large unified models may be unsuitable for the fastest embodied-control loop."
+          },
+          {
+            "target": "M1",
+            "kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+            "relevance_type": "STRUCTURAL",
+            "score": 0.8,
+            "reason": "The contrast between models failing at direct low-level joint control but succeeding when supervising pretrained controllers or using high-level tools supports the separability of cognitive intelligence from temporal motor intelligence."
+          },
+          {
+            "target": "P2",
+            "kernel_node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+            "relevance_type": "TOPIC",
+            "score": 0.3,
+            "reason": "The units are about single-model robot control rather than collective intelligence; only weakly related via the broader embodied/multi-agent goal."
+          },
+          {
+            "target": "Q2",
+            "kernel_node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+            "relevance_type": "TOPIC",
+            "score": 0.25,
+            "reason": "The units involve models interfacing with pretrained policies/VLAs rather than shared world models across multiple agents; only tangential relevance."
+          },
+          {
+            "target": "B2",
+            "kernel_node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "relevance_type": "TOPIC",
+            "score": 0.2,
+            "reason": "No decentralized multi-agent or swarm aspects appear in the audited units; relevance is only via the general embodied-intelligence theme."
+          },
+          {
+            "target": "D1",
+            "kernel_node_id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+            "relevance_type": "DECISION",
+            "score": 0.05,
+            "reason": "Startup equity terms are unrelated to the robot-control evaluation units; no material connection."
+          }
+        ]
+      }
+    }
+  },
+  "guardrails": [
+    "Exact frozen Auditor worlds, Kernel fixtures and modal Locate are reused; no acquisition/Sensor/Auditor/Locate call occurs.",
+    "Relation output contains no change_magnitude, target_importance or epistemic_strength.",
+    "Unknown support, target or jurisdiction identifiers fail closed at effect level and are never rewritten.",
+    "OPEN_NEW requires at least one legal frozen jurisdiction anchor.",
+    "No Attention policy is evaluated or promoted in this phase.",
+    "Production defaults remain unchanged."
+  ]
+}
