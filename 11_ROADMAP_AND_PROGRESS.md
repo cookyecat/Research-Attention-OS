@@ -1148,3 +1148,7 @@ Preregistration: `140_PHASE10D6D_CANONICAL_PROMPT_INTERACTION_PREREGISTRATION.md
 ## Phase 10D.6D Canonical Input × Reconciled Prompt — CLOSED / NOT PROMOTED 2026-09-11
 
 Result: `141_PHASE10D6D_CANONICAL_PROMPT_INTERACTION_RESULT.md`. Combined canonical input + reconciled prompt did not produce a promotable candidate: A remained DROP 6/6, D became more DROP-heavy, X gained richer topology but less stable Attention, and N4 remained WATCH 6/6. Raw/grounded attribution exposed a deeper legacy coupling: production `ground_effects` can delete canonical targeted relations and caps single-source/no-observation epistemic strength at 0.35, directly forcing the Magnitude-Free epistemic band low. Next gate shifts from prompt tuning to canonical authority enrichment for both importance and epistemic bands.
+
+## Phase 10D.6E Canonical Authority Enrichment — PREREGISTERED 2026-09-11
+
+Preregistration: `142_PHASE10D6E_CANONICAL_AUTHORITY_ENRICHMENT_PREREGISTRATION.md`. 10D.6D exposed that remaining divergence is no longer safely described as a prompt problem: production grounding can delete canonical targeted relations and forces single-source/no-observation epistemic values to 0.35, while the current importance resolver also collapses most update-eligible node-type priors above the Magnitude-Free 0.55 high/low boundary. 10D.6E therefore moves LLM responsibility toward semantic-only operation/target/support references/reason and requires authoritative deterministic enrichment for importance and epistemic bands before any production promotion.
