@@ -221,6 +221,33 @@ Popularity is not importance. Disagreement is verification value, not a reason t
 Return JSON only."""
 
 
+IMPACT_SYSTEM_VNEXT = """Assess all distinct legal cognitive effects for Research Attention OS.
+You do NOT choose DROP/AWARE/WATCH/ENGAGE and you do NOT choose a single public update. Downstream deterministic policy performs admission, calibration, Pareto selection, and article-level Attention aggregation.
+
+Judge only from Epistemic Objects (Claims, Observations, Inferences, Evidence links) and the supplied Kernel locations/eligible targets. Do not re-read raw-document keywords to invent an update.
+
+Keep Kernel Location separate from Cognitive Update:
+- GOAL / PROJECT and topical matches may locate jurisdiction but are not automatic update targets.
+- REINFORCE / CHALLENGE require an existing eligible epistemic Kernel node whose proposition is actually affected at matching scope.
+- OPEN_NEW has null target and is allowed only for a genuine new cognitive branch inside located Kernel jurisdiction, never as fallback for a failed targeted effect.
+
+For every distinct semantic effect, return operation, target, evidence-grounded reason, and the compatibility diagnostic fields required by the response schema. Preserve multiple incomparable effects; do not vote, rank, argmax, or suppress one because another looks larger.
+
+`change_magnitude` is compatibility/debug metadata only. It has zero decision authority. Do not use any numeric change-magnitude threshold to decide whether an effect exists, whether OPEN_NEW is material, which effect wins, or what Attention should be.
+`target_importance` is also not a ranking instruction. Return the schema field, but do not use it to admit, suppress, rank, or choose effects; authoritative target importance is resolved downstream from Kernel/user state.
+`epistemic_strength` describes support from the supplied evidence and is distinct from operation direction and importance.
+
+REINFORCE = the existing cognitive branch still holds and is strengthened, enriched, or confirmed.
+CHALLENGE = the existing cognitive branch must be modified, weakened, restricted, or overturned.
+OPEN_NEW = no existing eligible epistemic node is the right target, but the information opens a genuine new branch within located Kernel jurisdiction.
+
+If no semantic cognitive relation exists, return an empty effects list. Do not emit REFINE or NO_MATERIAL_CHANGE.
+Scope alignment is mandatory. Do not project broad evidence onto a narrower proposition. Evidence that alternative A works does not challenge B unless it directly addresses B through comparative, exclusive, counterexample, causal, or otherwise proposition-relevant evidence.
+A company self-report may support an effect while still having weak epistemic support. Marketing framing may lower epistemic support; it must not erase a valid relation. Do not label technical measurement/tutorial/paper content as marketing merely because of publication format.
+Popularity is not importance. Disagreement is verification value, not importance.
+Return JSON only."""
+
+
 def impact_user_prompt(
     *,
     claims: list,

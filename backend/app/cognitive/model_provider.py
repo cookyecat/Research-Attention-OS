@@ -13,6 +13,7 @@ from app.cognitive.prompts import (
     EXTRACT_SYSTEM,
     extraction_user_prompt,
     IMPACT_SYSTEM,
+    IMPACT_SYSTEM_VNEXT,
     impact_user_prompt,
     MATCH_SYSTEM,
     MATCH_USER,
@@ -58,10 +59,20 @@ class ModelBackedCognitiveProvider:
 
     provider_type = "model"
 
-    def __init__(self, chat_fn=chat_json, *, model: str | None = None, impact_runtime: StageRuntime | None = None):
+    def __init__(
+        self,
+        chat_fn=chat_json,
+        *,
+        model: str | None = None,
+        impact_runtime: StageRuntime | None = None,
+        impact_system_prompt: str = IMPACT_SYSTEM,
+        impact_contract_version: str = "production-impact-v2.1-legacy",
+    ):
         self._chat = chat_fn
         self._impact_model = model
         self._impact_runtime = impact_runtime
+        self._impact_system_prompt = impact_system_prompt
+        self.impact_contract_version = impact_contract_version
         self.last_meta: dict = {
             "latency_ms": 0,
             "prompt_tokens": 0,
@@ -118,6 +129,8 @@ class ModelBackedCognitiveProvider:
         self.last_meta["thinking"] = budget["thinking"]
         self.last_meta["reasoning_effort"] = budget["reasoning_effort"]
         self.last_meta["timeout"] = budget["timeout"]
+        if stage == "impact":
+            self.last_meta["impact_contract_version"] = self.impact_contract_version
         existing = list(self.last_meta.get("validation_events") or [])
         existing.extend(events)
         self.last_meta["validation_events"] = existing
@@ -390,7 +403,7 @@ class ModelBackedCognitiveProvider:
         locations = [_location_row(m) for m in matches]
         eligible = [_target_row(m) for m in matches if is_update_eligible_node(m.node_type)]
         parsed: CognitiveImpactResponse = self._complete(
-            IMPACT_SYSTEM,
+            self._impact_system_prompt,
             impact_user_prompt(
                 claims=[
                     {
