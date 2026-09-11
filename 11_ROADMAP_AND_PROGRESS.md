@@ -1206,3 +1206,11 @@ Result: `163_PHASE10D6L1_MINIMAL_PROMPT_AUTHORITY_REMOVAL_RESULT.md`. Measuremen
 ## Phase 10D.6L.2 Model-Capacity Bracketing / 10D.6L.3 Decoupled Support Binding — ACTIVE 2026-09-12
 
 Strong-model manual reference is frozen in `164_PHASE10D6L2_MODEL_CAPACITY_BRACKETING_STRONG_REFERENCE.md`. Combined relation+support binding under DeepSeek-Flash is closed as instruction-coupled and not promoted (`165_PHASE10D6L1_SUPPORT_BINDING_DIAGNOSTIC_RESULT.md`). Next gate `166_PHASE10D6L3_DECOUPLED_SUPPORT_BINDING_PREREGISTRATION.md` freezes Relation Mapping first and allows the binder only to attach provenance; it cannot alter relation topology.
+
+## Phase 10D.6L.3 Decoupled Support Binding — CLOSED / STRUCTURAL PASS / STRICT STABILITY GATE FAIL 2026-09-12
+
+Result: `168_PHASE10D6L3_DECOUPLED_SUPPORT_BINDING_RESULT.md`. Valid rerun at SHA `ae0c4e9` completed 42/42 binding calls with 100% frozen relation-id preservation and zero unknown identifiers. Because Binding had no operation/target fields, Relation Mapping topology was immutable by construction. Exact support-signature stability reached 24/28 relation instances at >=2/3, below the preregistered all-item gate, so the weak binder is not promoted as a stable provenance oracle. The four misses separate into weak/upstream relation errors or optional companion evidence rather than a single architecture failure. Next: 10D.6L.4 Grounding capacity bracketing.
+
+## Phase 10D.6L.4 Grounding Capacity Bracketing — PREREGISTERED 2026-09-12
+
+Preregistration: `169_PHASE10D6L4_GROUNDING_CAPACITY_BRACKETING_PREREGISTRATION.md`. Strong-model manual reference frozen before Flash outcomes in `170_PHASE10D6L4_STRONG_GROUNDING_REFERENCE.md` and `eval/live/phase10d6l4_strong_grounding_reference_v0_1.json`: 28 items = 11 DIRECT, 12 PARTIAL, 5 INSUFFICIENT. Flash is evaluated only as robustness lower bound; isolated weak-model disagreement does not justify architecture changes. Production defaults unchanged; 10D.6K and Phase 9A remain paused.
