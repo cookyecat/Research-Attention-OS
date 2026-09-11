@@ -95,7 +95,7 @@ Core invariants:
 | Phase 6 — Integrated Cognitive Attention Loop | Raw Source → Sensor/Auditor → D/S/P + Δ → four Attention Actions → human-gated Kernel proposal | **CLOSED** |
 | Phase 7 — Perception Fidelity | External World Model fidelity, dynamic P evidence, minimal trusted Brain World Model | **CLOSED / WORKING BASELINE** |
 | Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **CLOSED / OPERATIONAL BASELINE ESTABLISHED** |
-| Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **NEXT — 9A KERNEL CAUSAL ALIGNMENT** |
+| Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **ACTIVE — 9A PREREGISTERED** |
 | Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence | **10D.4 COMPLETE / THEORY V1.0 FORMALIZED** |
 | Phase 11 — Personalization / Scale | Questionnaire prior + trajectory residuals + multi-user/product validation | **NOT STARTED** |
 
@@ -109,7 +109,7 @@ $$
 \boxed{RAOS\ Distributional\ Cognitive\ Stability\ Theory\ V1.0\ FORMALIZED}
 $$
 
-Current handoff order: `synchronize roadmap/archive → promote Anchored + Magnitude-Free + Pareto for direct production dogfooding → tag the promoted baseline for rollback → open Phase 9A Kernel Causal Alignment`. The frozen `one-delta-v1` strategy remains preserved for historical replay and rollback.
+Current research position: `Phase 10D.4 production checkpoint frozen/tagged → Phase 9A Kernel Causal Alignment preregistered`. Phase 9A now tests whether explicit accepted Kernel changes produce directionally correct shifts beyond the fixed-K stochastic basin. The frozen `one-delta-v1` strategy remains preserved for historical replay and rollback.
 
 D semantic research is closed. The v3 D estimator has attributable implementation residuals and is not certified as a passed estimator; do not expand D into another offline synthetic benchmark now.
 
@@ -1098,3 +1098,10 @@ The combined research strategy `Anchored OPEN_NEW + Magnitude-Free + Pareto Mult
 A fresh live API smoke analysis confirmed the running `AnalysisRun.execution_snapshot.decision_strategy` is `pareto-multidelta-magnitude-free-anchored-open-new-v0.1`, with `magnitude-free-v0.1` and `anchored-open-new-v0.1` recorded explicitly. Focused regression: `78 passed / 1 warning`. Full backend regression: `616 passed / 63 skipped / 1 historical Case K failure`; no new regression.
 
 Current handoff is now **Phase 9A — Kernel Causal Alignment**. First question: after an explicit human-authorized `K0 -> K1` change, does the same frozen information interaction move from `M(E,K0)` to `M(E,K1)` in a semantically expected way that exceeds the fixed-K stochastic basin? Do not introduce Markov/HMM/attractor machinery at this gate.
+
+## Phase 9A Kernel Causal Alignment — PREREGISTERED 2026-09-11
+
+Preregistration: `130_PHASE9A_KERNEL_CAUSAL_ALIGNMENT_PREREGISTRATION.md`. Parent rollback checkpoint: `phase10d4-production-dogfood-v1` at `7054029599b5e3302e6748c3dc7e90ef0473b278`.
+
+The first controlled pilot uses frozen RS05 information with three isolated Kernel arms: unchanged K0; K1-S semantic assimilation through an accepted MODIFY KernelPatch; and K1-I importance-only downshift through an accepted MODIFY KernelPatch. Sensor, Auditor and Locate target identity remain frozen. Primary question: can RAOS distinguish legitimate `K0 -> K1` change from fixed-K stochastic variation using the existing Cognitive Probability Map, Decision-Causal Core, JSD and permutation-null chips?
+
