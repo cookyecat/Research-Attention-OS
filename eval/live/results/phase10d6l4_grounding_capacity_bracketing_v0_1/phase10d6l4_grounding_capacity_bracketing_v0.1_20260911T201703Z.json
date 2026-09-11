@@ -1,0 +1,971 @@
+{
+  "run_version": "phase10d6l4-grounding-capacity-bracketing-v0.1",
+  "status": "GROUNDING_CAPACITY_BRACKETING_WEAK_BOUND",
+  "measurement_sha": "8de852d4dc068d0490a505d2938a4bd5f3dcfca3",
+  "strong_reference": "eval/live/phase10d6l4_strong_grounding_reference_v0_1.json",
+  "strong_reference_sha256": "b9843211eeea3145843e23a6fc091c290df5339e7db9036173e2a915a708b6cf",
+  "grounding_prompt_sha256": "d1cd66c9b823f9d6d656fd4eb945351e3653a6d504df30d0ce6826fc8d92b44f",
+  "cases": [
+    "D",
+    "X",
+    "N4"
+  ],
+  "repeats_per_case": 3,
+  "summary": {
+    "n_calls": 9,
+    "n_structured_ok_calls": 9,
+    "structured_success_rate": 1.0,
+    "n_items": 28,
+    "n_stable_items": 28,
+    "n_exact_modal_matches": 8,
+    "modal_exact_agreement": 0.2857142857142857,
+    "critical_modal_errors": 3,
+    "confusion": {
+      "DIRECT->DIRECT": 6,
+      "DIRECT->PARTIAL": 5,
+      "INSUFFICIENT->DIRECT": 3,
+      "INSUFFICIENT->INSUFFICIENT": 2,
+      "PARTIAL->DIRECT": 12
+    },
+    "per_item": {
+      "D:P1-1:1": {
+        "strong_class": "INSUFFICIENT",
+        "weak_vote_counts": {
+          "DIRECT": 3
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": true
+      },
+      "D:P1-2:1": {
+        "strong_class": "INSUFFICIENT",
+        "weak_vote_counts": {
+          "INSUFFICIENT": 3
+        },
+        "weak_modal_class": "INSUFFICIENT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": true,
+        "critical_modal_error": false
+      },
+      "D:P1-2:2": {
+        "strong_class": "INSUFFICIENT",
+        "weak_vote_counts": {
+          "DIRECT": 3
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": true
+      },
+      "D:P1-6:1": {
+        "strong_class": "INSUFFICIENT",
+        "weak_vote_counts": {
+          "INSUFFICIENT": 3
+        },
+        "weak_modal_class": "INSUFFICIENT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": true,
+        "critical_modal_error": false
+      },
+      "X:P1-1:1": {
+        "strong_class": "DIRECT",
+        "weak_vote_counts": {
+          "PARTIAL": 3
+        },
+        "weak_modal_class": "PARTIAL",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      },
+      "X:P1-3:1": {
+        "strong_class": "DIRECT",
+        "weak_vote_counts": {
+          "PARTIAL": 3
+        },
+        "weak_modal_class": "PARTIAL",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      },
+      "X:P1-4:1": {
+        "strong_class": "DIRECT",
+        "weak_vote_counts": {
+          "PARTIAL": 3
+        },
+        "weak_modal_class": "PARTIAL",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      },
+      "X:P1-4:2": {
+        "strong_class": "INSUFFICIENT",
+        "weak_vote_counts": {
+          "DIRECT": 3
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": true
+      },
+      "X:P1-5:1": {
+        "strong_class": "DIRECT",
+        "weak_vote_counts": {
+          "PARTIAL": 3
+        },
+        "weak_modal_class": "PARTIAL",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      },
+      "X:P1-6:1": {
+        "strong_class": "DIRECT",
+        "weak_vote_counts": {
+          "PARTIAL": 3
+        },
+        "weak_modal_class": "PARTIAL",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      },
+      "N4:P1-1:1": {
+        "strong_class": "PARTIAL",
+        "weak_vote_counts": {
+          "DIRECT": 3
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      },
+      "N4:P1-1:2": {
+        "strong_class": "DIRECT",
+        "weak_vote_counts": {
+          "DIRECT": 3
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": true,
+        "critical_modal_error": false
+      },
+      "N4:P1-1:3": {
+        "strong_class": "PARTIAL",
+        "weak_vote_counts": {
+          "DIRECT": 2,
+          "PARTIAL": 1
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 2,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      },
+      "N4:P1-2:1": {
+        "strong_class": "PARTIAL",
+        "weak_vote_counts": {
+          "DIRECT": 3
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      },
+      "N4:P1-2:2": {
+        "strong_class": "DIRECT",
+        "weak_vote_counts": {
+          "DIRECT": 3
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": true,
+        "critical_modal_error": false
+      },
+      "N4:P1-2:3": {
+        "strong_class": "PARTIAL",
+        "weak_vote_counts": {
+          "DIRECT": 2,
+          "PARTIAL": 1
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 2,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      },
+      "N4:P1-3:1": {
+        "strong_class": "PARTIAL",
+        "weak_vote_counts": {
+          "DIRECT": 3
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      },
+      "N4:P1-3:2": {
+        "strong_class": "DIRECT",
+        "weak_vote_counts": {
+          "DIRECT": 3
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": true,
+        "critical_modal_error": false
+      },
+      "N4:P1-3:3": {
+        "strong_class": "PARTIAL",
+        "weak_vote_counts": {
+          "DIRECT": 2,
+          "PARTIAL": 1
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 2,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      },
+      "N4:P1-4:1": {
+        "strong_class": "PARTIAL",
+        "weak_vote_counts": {
+          "DIRECT": 3
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      },
+      "N4:P1-4:2": {
+        "strong_class": "DIRECT",
+        "weak_vote_counts": {
+          "DIRECT": 3
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": true,
+        "critical_modal_error": false
+      },
+      "N4:P1-4:3": {
+        "strong_class": "PARTIAL",
+        "weak_vote_counts": {
+          "DIRECT": 2,
+          "PARTIAL": 1
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 2,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      },
+      "N4:P1-5:1": {
+        "strong_class": "PARTIAL",
+        "weak_vote_counts": {
+          "DIRECT": 3
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      },
+      "N4:P1-5:2": {
+        "strong_class": "DIRECT",
+        "weak_vote_counts": {
+          "DIRECT": 3
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": true,
+        "critical_modal_error": false
+      },
+      "N4:P1-5:3": {
+        "strong_class": "PARTIAL",
+        "weak_vote_counts": {
+          "DIRECT": 2,
+          "PARTIAL": 1
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 2,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      },
+      "N4:P1-6:1": {
+        "strong_class": "PARTIAL",
+        "weak_vote_counts": {
+          "DIRECT": 3
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      },
+      "N4:P1-6:2": {
+        "strong_class": "DIRECT",
+        "weak_vote_counts": {
+          "DIRECT": 3
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": true,
+        "critical_modal_error": false
+      },
+      "N4:P1-6:3": {
+        "strong_class": "PARTIAL",
+        "weak_vote_counts": {
+          "DIRECT": 2,
+          "PARTIAL": 1
+        },
+        "weak_modal_class": "DIRECT",
+        "weak_modal_count": 2,
+        "stable_2_of_3": true,
+        "exact_modal_match": false,
+        "critical_modal_error": false
+      }
+    }
+  },
+  "runs_by_case": {
+    "D": [
+      {
+        "status": "OK",
+        "errors": [],
+        "items": [
+          {
+            "relation_id": "D:P1-1:1",
+            "grounding_class": "DIRECT",
+            "reason": "Support directly addresses the frozen branch: an unreleased OpenAI model with breakout/conspiracy/hacking capabilities, a critical cybersecurity capability threshold designation, alignment monitoring difficulties, and opaque recurrence rendering chain-of-thought unreadable — all matching the new branch on opaque internal representations undermining alignment monitoring and multi-agent safety."
+          },
+          {
+            "relation_id": "D:P1-2:1",
+            "grounding_class": "INSUFFICIENT",
+            "reason": "Support describes Astra's agentic, coding, and document capabilities but does not address high-frequency motor control or whether such control should depend on a large unified model; it is only topically adjacent and does not license the REINFORCE relation."
+          },
+          {
+            "relation_id": "D:P1-2:2",
+            "grounding_class": "DIRECT",
+            "reason": "Support directly introduces the frozen new branch: previous models playing a large role in supervising Astra's training and highly autonomous training progress, explicitly referencing recursive self-improvement, matching the new branch on AI self-improvement and its implications."
+          },
+          {
+            "relation_id": "D:P1-6:1",
+            "grounding_class": "INSUFFICIENT",
+            "reason": "Support covers Astra's rollout and agentic/coding/document capabilities but contains no content on high-frequency motor control or dependence on a large unified model, so it does not license the REINFORCE relation."
+          }
+        ],
+        "meta": {
+          "latency_ms": 2083,
+          "prompt_tokens": 1563,
+          "completion_tokens": 315,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": [],
+        "repeat": 1
+      },
+      {
+        "status": "OK",
+        "errors": [],
+        "items": [
+          {
+            "relation_id": "D:P1-1:1",
+            "grounding_class": "DIRECT",
+            "reason": "Support directly addresses the frozen branch: opaque recurrence rendering chain-of-thought unreadable, agent breakout/conspiracy, and critical cybersecurity capability threshold, all at matching scope for opening a new branch on opaque representations undermining alignment monitoring and multi-agent safety."
+          },
+          {
+            "relation_id": "D:P1-2:1",
+            "grounding_class": "INSUFFICIENT",
+            "reason": "Support describes Astra's agentic/coding/document capabilities with no mention of high-frequency motor control, so it is only topically adjacent and does not license reinforcement of the motor-control dependency question."
+          },
+          {
+            "relation_id": "D:P1-2:2",
+            "grounding_class": "DIRECT",
+            "reason": "Support directly describes previous models supervising training and highly autonomous training progress, matching the frozen new branch on recursive self-improvement and its implications for multi-agent systems and alignment."
+          },
+          {
+            "relation_id": "D:P1-6:1",
+            "grounding_class": "INSUFFICIENT",
+            "reason": "Support covers Astra rollout and agentic/coding/document capabilities with no reference to high-frequency motor control, so it does not license reinforcement of the motor-control dependency question."
+          }
+        ],
+        "meta": {
+          "latency_ms": 1775,
+          "prompt_tokens": 1563,
+          "completion_tokens": 273,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": [],
+        "repeat": 2
+      },
+      {
+        "status": "OK",
+        "errors": [],
+        "items": [
+          {
+            "relation_id": "D:P1-1:1",
+            "grounding_class": "DIRECT",
+            "reason": "Support directly addresses the frozen branch: opaque recurrence rendering chain-of-thought unreadable (u6), alignment/monitoring difficulty (u5), agent breakout/conspiracy/hacking (de274e78 units), and critical cybersecurity capability threshold (u11), all at matching scope for opening a new branch on opaque representations undermining alignment monitoring and multi-agent safety."
+          },
+          {
+            "relation_id": "D:P1-2:1",
+            "grounding_class": "INSUFFICIENT",
+            "reason": "Support describes Astra's agentic/coding/document capabilities but contains no content about high-frequency motor control, so it does not license reinforcement of the target proposition beyond topical adjacency."
+          },
+          {
+            "relation_id": "D:P1-2:2",
+            "grounding_class": "DIRECT",
+            "reason": "Support directly addresses recursive self-improvement via previous models supervising training (u9) and autonomous training progress (u10), matching the frozen new branch at the stated jurisdiction anchors P2/G1."
+          },
+          {
+            "relation_id": "D:P1-6:1",
+            "grounding_class": "INSUFFICIENT",
+            "reason": "Support covers Astra rollout and agentic/coding/document capabilities with no reference to high-frequency motor control, so it does not license reinforcement of the target proposition."
+          }
+        ],
+        "meta": {
+          "latency_ms": 1672,
+          "prompt_tokens": 1563,
+          "completion_tokens": 296,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": [],
+        "repeat": 3
+      }
+    ],
+    "X": [
+      {
+        "status": "OK",
+        "errors": [],
+        "items": [
+          {
+            "relation_id": "X:P1-1:1",
+            "grounding_class": "PARTIAL",
+            "reason": "Support shows LLM semantic/gesture planning separated from local parser/animation execution, directionally consistent with separable cognitive and temporal motor intelligence, but scope is adjacent (XR co-speech gesture guidance, not high-frequency motor control), so only part of the target scope is licensed."
+          },
+          {
+            "relation_id": "X:P1-3:1",
+            "grounding_class": "PARTIAL",
+            "reason": "Support provides a concrete architectural example of LLM semantic generation separated from local temporal gesture execution, but it is a single prototype self-report without quantitative metrics and only adjacent to the full embodied-intelligence scope."
+          },
+          {
+            "relation_id": "X:P1-4:1",
+            "grounding_class": "PARTIAL",
+            "reason": "Support demonstrates separation between backend LLM semantic GestureEvents and local parser/animation timing, directionally compatible, but evidence is a single self-reported prototype with limited epistemic strength and adjacent scope."
+          },
+          {
+            "relation_id": "X:P1-4:2",
+            "grounding_class": "DIRECT",
+            "reason": "Support directly addresses the evaluation bottleneck by reporting a within-subjects comparison while explicitly noting insufficient quantitative results with no metric values or effect sizes, reinforcing the lack of rigorous latency/energy/task-success evaluation."
+          },
+          {
+            "relation_id": "X:P1-5:1",
+            "grounding_class": "PARTIAL",
+            "reason": "Support instantiates separability of LLM cognitive planning from local temporal motor execution, but only at subsystem level in a single prototype with limited quantitative reporting, licensing part of the target scope."
+          },
+          {
+            "relation_id": "X:P1-6:1",
+            "grounding_class": "PARTIAL",
+            "reason": "Support shows LLM semantic content generation separated from local synchronized gesture timing, consistent with partially separable cognitive and temporal motor components, but source is a self-reported prototype announcement with no quantitative results, limiting scope and strength."
+          }
+        ],
+        "meta": {
+          "latency_ms": 1846,
+          "prompt_tokens": 2489,
+          "completion_tokens": 421,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": [],
+        "repeat": 1
+      },
+      {
+        "status": "OK",
+        "errors": [],
+        "items": [
+          {
+            "relation_id": "X:P1-1:1",
+            "grounding_class": "PARTIAL",
+            "reason": "Support shows LLM semantic planning separated from local parser/animation engine for synchronized gesture execution, which is directionally compatible with separable cognitive and temporal motor components, but the scope is adjacent (XR co-speech gesture guidance, not high-frequency motor control), so only part of the target scope is licensed."
+          },
+          {
+            "relation_id": "X:P1-3:1",
+            "grounding_class": "PARTIAL",
+            "reason": "Support provides a concrete architectural example of LLM semantic generation separated from local temporal gesture execution, consistent with the frozen relation, but it is a single prototype self-report without quantitative metrics and only partially addresses the broader embodied-intelligence scope."
+          },
+          {
+            "relation_id": "X:P1-4:1",
+            "grounding_class": "PARTIAL",
+            "reason": "Support describes AgentHands as an LLM-powered XR prototype with backend LLM semantic GestureEvents and local parser/animation timing, directionally supporting separability of cognitive and temporal motor intelligence, but evidence is limited to a single self-reported prototype and only partially licenses the full target scope."
+          },
+          {
+            "relation_id": "X:P1-4:2",
+            "grounding_class": "DIRECT",
+            "reason": "Support directly addresses the evaluation bottleneck by reporting a within-subjects comparison while explicitly noting insufficient quantitative results with no metric values or effect sizes, which directly reinforces the lack of rigorous latency/energy/task-success evaluation."
+          },
+          {
+            "relation_id": "X:P1-5:1",
+            "grounding_class": "PARTIAL",
+            "reason": "Support shows LLM semantic planning separated from local parser/animation temporal execution, consistent with the frozen relation at the subsystem level, but it is a single prototype with limited quantitative reporting and only partially covers the target proposition."
+          },
+          {
+            "relation_id": "X:P1-6:1",
+            "grounding_class": "PARTIAL",
+            "reason": "Support provides a concrete instance of semantic content generation by an LLM separated from local synchronized gesture timing, directionally compatible with partially separable cognitive and temporal motor components, but the source is a self-reported prototype announcement with no quantitative results, so only part of the target scope is licensed."
+          }
+        ],
+        "meta": {
+          "latency_ms": 2190,
+          "prompt_tokens": 2489,
+          "completion_tokens": 473,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": [],
+        "repeat": 2
+      },
+      {
+        "status": "OK",
+        "errors": [],
+        "items": [
+          {
+            "relation_id": "X:P1-1:1",
+            "grounding_class": "PARTIAL",
+            "reason": "Support shows LLM semantic planning separated from local parser/animation execution, directionally consistent with separable cognitive and temporal motor intelligence, but scope is adjacent (XR co-speech gesture guidance, not high-frequency motor control), so only part of the target scope is licensed."
+          },
+          {
+            "relation_id": "X:P1-3:1",
+            "grounding_class": "PARTIAL",
+            "reason": "Support provides a concrete architectural example of LLM semantic generation separated from local temporal gesture execution, consistent with the model, but it is a single prototype self-report without quantitative metrics and only partially addresses the broader embodied-intelligence scope."
+          },
+          {
+            "relation_id": "X:P1-4:1",
+            "grounding_class": "PARTIAL",
+            "reason": "Support describes AgentHands as an LLM-powered XR prototype with backend LLM GestureEvents and local parser/animation synchronization, directionally supporting separable cognitive and temporal motor components, but evidence is limited to a single self-reported prototype and does not fully license the general target proposition."
+          },
+          {
+            "relation_id": "X:P1-4:2",
+            "grounding_class": "DIRECT",
+            "reason": "Support directly addresses the evaluation bottleneck by reporting a within-subjects study with insufficient quantitative results, no metric values or effect sizes, thereby reinforcing the lack of rigorous latency/energy/task-success evaluation for embodied control."
+          },
+          {
+            "relation_id": "X:P1-5:1",
+            "grounding_class": "PARTIAL",
+            "reason": "Support shows LLM semantic/cognitive planning separated from local parser and animation temporal execution, consistent with the separability model, but is a single prototype with limited quantitative reporting and only partially covers the target scope."
+          },
+          {
+            "relation_id": "X:P1-6:1",
+            "grounding_class": "PARTIAL",
+            "reason": "Support demonstrates LLM backend semantic content generation separated from local parser/animation timing for synchronized gestures, directionally consistent with separable cognitive and temporal motor intelligence, but the self-reported prototype announcement without quantitative results only partially licenses the target."
+          }
+        ],
+        "meta": {
+          "latency_ms": 2356,
+          "prompt_tokens": 2489,
+          "completion_tokens": 450,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": [],
+        "repeat": 3
+      }
+    ],
+    "N4": [
+      {
+        "status": "OK",
+        "errors": [],
+        "items": [
+          {
+            "relation_id": "N4:P1-1:1",
+            "grounding_class": "DIRECT",
+            "reason": "Support provides concrete latency figures (83 Hz vs 0.2-0.4 Hz) and task-success results across control interfaces, directly addressing the bottleneck's latency × task-success evaluation gap at the high-frequency embodied control scope."
+          },
+          {
+            "relation_id": "N4:P1-1:2",
+            "grounding_class": "DIRECT",
+            "reason": "Support shows capability depends on control interface abstraction (direct vs programmatic vs policy vs RL) and differential performance across interfaces, directly licensing the separability of cognitive and temporal motor intelligence."
+          },
+          {
+            "relation_id": "N4:P1-1:3",
+            "grounding_class": "DIRECT",
+            "reason": "Support provides interface-dependence, latency gap, and pretrained-controller evidence that directly bears on whether high-frequency motor control should depend on a large unified model, reinforcing the question's framing."
+          },
+          {
+            "relation_id": "N4:P1-2:1",
+            "grounding_class": "DIRECT",
+            "reason": "Latency data and task-success results across interfaces directly reinforce the latency × task-success evaluation gap at the high-frequency embodied control scope."
+          },
+          {
+            "relation_id": "N4:P1-2:2",
+            "grounding_class": "DIRECT",
+            "reason": "Interface-dependent control failures plus newer models' cognitive strengths (strategy adjustment, image understanding) directly support partial separability of cognitive and temporal motor intelligence."
+          },
+          {
+            "relation_id": "N4:P1-2:3",
+            "grounding_class": "DIRECT",
+            "reason": "Evidence that direct control fails while pretrained policies succeed directly reinforces the question of whether high-frequency motor control should depend on a large unified model."
+          },
+          {
+            "relation_id": "N4:P1-3:1",
+            "grounding_class": "DIRECT",
+            "reason": "Concrete latency gap and task-success results directly reinforce the bottleneck at the high-frequency embodied control scope."
+          },
+          {
+            "relation_id": "N4:P1-3:2",
+            "grounding_class": "DIRECT",
+            "reason": "Interface-abstraction dependence with high-level success and low-level failure directly supports partial separability of cognitive and temporal motor intelligence."
+          },
+          {
+            "relation_id": "N4:P1-3:3",
+            "grounding_class": "DIRECT",
+            "reason": "Latency gap and interface-dependence evidence directly reinforce the question of whether high-frequency motor control should depend on a large unified model."
+          },
+          {
+            "relation_id": "N4:P1-4:1",
+            "grounding_class": "DIRECT",
+            "reason": "Latency figures, task-success results, and locomotion bottleneck evidence directly reinforce the latency × task-success evaluation gap at the high-frequency embodied control scope."
+          },
+          {
+            "relation_id": "N4:P1-4:2",
+            "grounding_class": "DIRECT",
+            "reason": "Interface-dependent control failures, cognitive strengths, and pretrained-policy success directly support partial separability of cognitive and temporal motor intelligence."
+          },
+          {
+            "relation_id": "N4:P1-4:3",
+            "grounding_class": "DIRECT",
+            "reason": "Interface and latency constraint evidence directly reinforces the question of whether high-frequency motor control should depend on a large unified model."
+          },
+          {
+            "relation_id": "N4:P1-5:1",
+            "grounding_class": "DIRECT",
+            "reason": "Latency gap, interface-dependent success, and control-interface decomposition directly reinforce the bottleneck at the high-frequency embodied control scope."
+          },
+          {
+            "relation_id": "N4:P1-5:2",
+            "grounding_class": "DIRECT",
+            "reason": "Cognitive strengths not translating to fast motor loops plus latency gap directly support partial separability of cognitive and temporal motor intelligence."
+          },
+          {
+            "relation_id": "N4:P1-5:3",
+            "grounding_class": "DIRECT",
+            "reason": "Direct-control failure, latency gap, and pretrained-policy success directly reinforce the question of whether high-frequency motor control should depend on a large unified model."
+          },
+          {
+            "relation_id": "N4:P1-6:1",
+            "grounding_class": "DIRECT",
+            "reason": "Latency figures, task-success results, and locomotion bottleneck evidence directly reinforce the latency × task-success evaluation gap at the high-frequency embodied control scope."
+          },
+          {
+            "relation_id": "N4:P1-6:2",
+            "grounding_class": "DIRECT",
+            "reason": "Interface-dependent control failures and pretrained-controller success directly support partial separability of cognitive and temporal motor intelligence."
+          },
+          {
+            "relation_id": "N4:P1-6:3",
+            "grounding_class": "DIRECT",
+            "reason": "Latency gap and direct-control failure directly reinforce the question of whether high-frequency motor control should depend on a large unified model."
+          }
+        ],
+        "meta": {
+          "latency_ms": 4529,
+          "prompt_tokens": 7080,
+          "completion_tokens": 1017,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": [],
+        "repeat": 1
+      },
+      {
+        "status": "OK",
+        "errors": [],
+        "items": [
+          {
+            "relation_id": "N4:P1-1:1",
+            "grounding_class": "DIRECT",
+            "reason": "Support provides concrete latency figures (83 Hz vs 0.2-0.4 Hz) and task-success results across control interfaces, directly addressing the latency × task-success evaluation gap at the high-frequency embodied control scope."
+          },
+          {
+            "relation_id": "N4:P1-1:2",
+            "grounding_class": "DIRECT",
+            "reason": "Multiple units show capability depends on control interface abstraction (direct control fails, pretrained policy supervision succeeds), directly supporting partial separability of cognitive and temporal motor intelligence."
+          },
+          {
+            "relation_id": "N4:P1-1:3",
+            "grounding_class": "DIRECT",
+            "reason": "Support directly addresses whether high-frequency motor control should depend on a large unified model via interface-dependence and latency-gap evidence at matching scope."
+          },
+          {
+            "relation_id": "N4:P1-2:1",
+            "grounding_class": "DIRECT",
+            "reason": "Latency data and task-success results across interfaces directly reinforce the latency × task-success evaluation gap for high-frequency embodied control."
+          },
+          {
+            "relation_id": "N4:P1-2:2",
+            "grounding_class": "DIRECT",
+            "reason": "Evidence of separation between high-level cognitive tasks and low-level motor control directly supports partial separability of cognitive and temporal motor intelligence."
+          },
+          {
+            "relation_id": "N4:P1-2:3",
+            "grounding_class": "DIRECT",
+            "reason": "Direct control failure and pretrained-policy success directly bear on whether high-frequency motor control should depend on a large unified model."
+          },
+          {
+            "relation_id": "N4:P1-3:1",
+            "grounding_class": "DIRECT",
+            "reason": "Concrete latency gap and task-success results directly reinforce the evaluation-gap bottleneck at the high-frequency embodied control scope."
+          },
+          {
+            "relation_id": "N4:P1-3:2",
+            "grounding_class": "DIRECT",
+            "reason": "Interface-abstraction dependence evidence directly supports partial separability of cognitive and temporal motor intelligence."
+          },
+          {
+            "relation_id": "N4:P1-3:3",
+            "grounding_class": "DIRECT",
+            "reason": "Latency gap and interface-dependent performance directly address the question of whether high-frequency motor control should depend on a large unified model."
+          },
+          {
+            "relation_id": "N4:P1-4:1",
+            "grounding_class": "DIRECT",
+            "reason": "Latency figures, locomotion bottleneck, and task-success results directly reinforce the latency × task-success evaluation gap for high-frequency embodied control."
+          },
+          {
+            "relation_id": "N4:P1-4:2",
+            "grounding_class": "DIRECT",
+            "reason": "Separation between cognitive tasks and low-level motor control directly supports partial separability of cognitive and temporal motor intelligence."
+          },
+          {
+            "relation_id": "N4:P1-4:3",
+            "grounding_class": "DIRECT",
+            "reason": "Interface and latency evidence directly addresses whether high-frequency motor control should depend on a large unified model."
+          },
+          {
+            "relation_id": "N4:P1-5:1",
+            "grounding_class": "DIRECT",
+            "reason": "Latency gap and interface-dependent success directly reinforce the latency × task-success evaluation bottleneck at matching scope."
+          },
+          {
+            "relation_id": "N4:P1-5:2",
+            "grounding_class": "DIRECT",
+            "reason": "Evidence that cognitive strengths do not translate to fast motor loops directly supports partial separability of cognitive and temporal motor intelligence."
+          },
+          {
+            "relation_id": "N4:P1-5:3",
+            "grounding_class": "DIRECT",
+            "reason": "Direct control failure, latency gap, and pretrained-policy success directly address whether high-frequency motor control should depend on a large unified model."
+          },
+          {
+            "relation_id": "N4:P1-6:1",
+            "grounding_class": "DIRECT",
+            "reason": "Latency figures, locomotion bottleneck, and task-success results directly reinforce the latency × task-success evaluation gap for high-frequency embodied control."
+          },
+          {
+            "relation_id": "N4:P1-6:2",
+            "grounding_class": "DIRECT",
+            "reason": "Interface-dependent capability evidence directly supports partial separability of cognitive and temporal motor intelligence."
+          },
+          {
+            "relation_id": "N4:P1-6:3",
+            "grounding_class": "DIRECT",
+            "reason": "Latency gap and direct-control failure directly address whether high-frequency motor control should depend on a large unified model."
+          }
+        ],
+        "meta": {
+          "latency_ms": 3726,
+          "prompt_tokens": 7080,
+          "completion_tokens": 955,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": [],
+        "repeat": 2
+      },
+      {
+        "status": "OK",
+        "errors": [],
+        "items": [
+          {
+            "relation_id": "N4:P1-1:1",
+            "grounding_class": "DIRECT",
+            "reason": "Support provides concrete latency figures (~83 Hz vs ~0.2-0.4 Hz) and task-success results across control interfaces, directly addressing the bottleneck of lacking latency × task-success evaluation for high-frequency embodied control at matching scope."
+          },
+          {
+            "relation_id": "N4:P1-1:2",
+            "grounding_class": "DIRECT",
+            "reason": "Support shows capability depends on control interface abstraction (direct vs programmatic vs policy vs RL) and differential performance, directly licensing the claim that cognitive and temporal motor intelligence are partially separable."
+          },
+          {
+            "relation_id": "N4:P1-1:3",
+            "grounding_class": "PARTIAL",
+            "reason": "Support provides relevant evidence (direct control fails, pretrained controllers help, latency gap) that frames the question but does not resolve whether high-frequency motor control should depend on a large unified model."
+          },
+          {
+            "relation_id": "N4:P1-2:1",
+            "grounding_class": "DIRECT",
+            "reason": "Support supplies latency data and task-success results across interfaces, directly reinforcing the bottleneck of lacking latency × task-success evaluation for high-frequency embodied control."
+          },
+          {
+            "relation_id": "N4:P1-2:2",
+            "grounding_class": "DIRECT",
+            "reason": "Support shows separation between high-level cognitive tasks and low-level motor control failures, directly licensing the partial separability model."
+          },
+          {
+            "relation_id": "N4:P1-2:3",
+            "grounding_class": "PARTIAL",
+            "reason": "Support provides evidence that direct control fails and pretrained policies are used, relevant to the question but not fully resolving whether high-frequency motor control should depend on a large unified model."
+          },
+          {
+            "relation_id": "N4:P1-3:1",
+            "grounding_class": "DIRECT",
+            "reason": "Support provides concrete latency and task-success data directly reinforcing the bottleneck at matching scope."
+          },
+          {
+            "relation_id": "N4:P1-3:2",
+            "grounding_class": "DIRECT",
+            "reason": "Support shows interface-dependent success (high-level succeeds, direct low-level fails), directly licensing the partial separability model."
+          },
+          {
+            "relation_id": "N4:P1-3:3",
+            "grounding_class": "PARTIAL",
+            "reason": "Support provides latency gap and interface evidence relevant to the question but does not resolve whether high-frequency motor control should depend on a large unified model."
+          },
+          {
+            "relation_id": "N4:P1-4:1",
+            "grounding_class": "DIRECT",
+            "reason": "Support supplies latency figures and task-success results across interfaces, directly reinforcing the bottleneck at the exact scope."
+          },
+          {
+            "relation_id": "N4:P1-4:2",
+            "grounding_class": "DIRECT",
+            "reason": "Support shows separation between cognitive tasks and low-level motor control, directly licensing the partial separability model."
+          },
+          {
+            "relation_id": "N4:P1-4:3",
+            "grounding_class": "PARTIAL",
+            "reason": "Support provides interface and latency evidence relevant to the question but does not resolve whether high-frequency motor control should depend on a large unified model."
+          },
+          {
+            "relation_id": "N4:P1-5:1",
+            "grounding_class": "DIRECT",
+            "reason": "Support provides latency data and interface-dependent task-success results, directly reinforcing the bottleneck at matching scope."
+          },
+          {
+            "relation_id": "N4:P1-5:2",
+            "grounding_class": "DIRECT",
+            "reason": "Support shows cognitive strengths do not translate to fast motor loops, directly licensing the partial separability model."
+          },
+          {
+            "relation_id": "N4:P1-5:3",
+            "grounding_class": "PARTIAL",
+            "reason": "Support provides relevant evidence (direct control fails, latency gap, high-level control works better) but does not resolve whether high-frequency motor control should depend on a large unified model."
+          },
+          {
+            "relation_id": "N4:P1-6:1",
+            "grounding_class": "DIRECT",
+            "reason": "Support supplies latency figures and task-success results across interfaces, directly reinforcing the bottleneck at matching scope."
+          },
+          {
+            "relation_id": "N4:P1-6:2",
+            "grounding_class": "DIRECT",
+            "reason": "Support shows capability depends on control interface with motor loop handled by lower-level controllers, directly licensing the partial separability model."
+          },
+          {
+            "relation_id": "N4:P1-6:3",
+            "grounding_class": "PARTIAL",
+            "reason": "Support provides latency gap and direct-control failure evidence relevant to the question but does not fully resolve whether high-frequency motor control should depend on a large unified model."
+          }
+        ],
+        "meta": {
+          "latency_ms": 4070,
+          "prompt_tokens": 7080,
+          "completion_tokens": 998,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": [],
+        "repeat": 3
+      }
+    ]
+  },
+  "guardrails": [
+    "Strong-model labels were frozen before any Flash grounding outcome.",
+    "Strong labels/rationales are not included in the Flash prompt payload.",
+    "Relation, support binding, target and jurisdiction are frozen; Grounding cannot alter them.",
+    "Flash is a robustness lower bound, not Grounding truth Gold.",
+    "No Attention policy or production switch is evaluated; Phase 9A remains paused."
+  ]
+}
