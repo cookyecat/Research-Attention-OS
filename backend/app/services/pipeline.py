@@ -342,14 +342,25 @@ def _fulfill_watch_obligation(
 ) -> list[Watch]:
     """Create at least one Watch from the Plan's own watch semantics."""
     triggers = list(draft.watch_triggers or ["NEW_EVIDENCE"])
-    title = next((m.title for m in matches if m.title), None)
+    scoped_matches = list(matches or [])
+    if bool(getattr(draft, "decision_effect_bound", False)):
+        effect = getattr(draft, "decision_effect", None)
+        target_id = getattr(effect, "target_kernel_node_id", None) if effect is not None else None
+        if target_id is not None:
+            scoped_matches = [m for m in scoped_matches if str(m.node_id) == str(target_id)]
+        elif effect is not None:
+            from app.services.effect_admission import jurisdiction_anchor_matches
+            scoped_matches = jurisdiction_anchor_matches(scoped_matches)
+        else:
+            scoped_matches = []
+    title = next((m.title for m in scoped_matches if m.title), None)
     target_ref = title or source.title or str(source.id)
     watch = Watch(
-        target_type="KERNEL" if matches else "SOURCE",
+        target_type="KERNEL" if scoped_matches else "SOURCE",
         target_ref=str(target_ref),
         status="ACTIVE",
         created_reason=draft.reason or "AttentionPlan assumed future attention responsibility.",
-        kernel_target_ids=[str(m.node_id) for m in matches],
+        kernel_target_ids=[str(m.node_id) for m in scoped_matches],
         analysis_run_id=analysis_run_id,
         attention_plan_id=plan.id,
     )

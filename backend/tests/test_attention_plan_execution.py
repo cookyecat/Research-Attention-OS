@@ -322,3 +322,52 @@ def test_watch_expected_output_implies_watch_after_processing(client: TestClient
     assert result["kernel_patches"] == []
     watches = _watches_for_plan(db, UUID(result["attention_plan"]["id"]))
     assert len(watches) >= 1
+
+
+def test_policy_watch_binds_to_targeted_decision_cause_not_all_locate_matches(client: TestClient, db, monkeypatch):
+    import app.services.pipeline as pipeline_mod
+    from app.enums import CognitiveEffectKind
+    from app.services.cognitive_impact import CognitiveEffect, is_update_eligible_node
+
+    chosen = {}
+
+    def causal_watch_route(_features, _runtime=None, *, assessment=None, matches=None, **_kwargs):
+        matches = list(matches or [])
+        target = next((m for m in matches if is_update_eligible_node(m.node_type)), None)
+        assert target is not None
+        chosen["id"] = str(target.node_id)
+        chosen["title"] = target.title
+        draft = PlanDraft(
+            disposition=Disposition.WATCH,
+            expected_output=ExpectedOutput.WATCH,
+            reason="causal targeted watch",
+            watch_after_processing=True,
+            watch_triggers=["NEW_EVIDENCE"],
+            cognitive_budget_minutes=1,
+        )
+        draft.decision_effect = CognitiveEffect(
+            target_kernel_node_id=target.node_id,
+            operation=CognitiveEffectKind.REINFORCE,
+            change_magnitude=.5,
+            epistemic_strength=.8,
+            target_importance=.8,
+            reason="causal target",
+            target_node_type=target.node_type,
+        )
+        draft.decision_effect_bound = True
+        return validate_plan(draft)
+
+    monkeypatch.setattr(pipeline_mod, "route", causal_watch_route)
+    src = add_text(client, PATCH_SOURCE, title="causal-watch-scope")
+    result = analyze(client, src["id"])
+    all_locate_ids = {
+        str(m["node_id"])
+        for m in ((result["attention_plan"].get("score_debug") or {}).get("matches") or [])
+    }
+    assert chosen["id"] in all_locate_ids
+    assert len(all_locate_ids) > 1
+
+    watches = _watches_for_plan(db, UUID(result["attention_plan"]["id"]))
+    assert len(watches) == 1
+    assert watches[0].kernel_target_ids == [chosen["id"]]
+    assert watches[0].target_ref == chosen["title"]

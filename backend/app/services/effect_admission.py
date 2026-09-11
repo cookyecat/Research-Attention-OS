@@ -12,17 +12,22 @@ def _kind(effect) -> CognitiveEffectKind:
     return CognitiveEffectKind(str(getattr(op, "value", op)))
 
 
-def has_jurisdiction_anchor(matches) -> bool:
+def jurisdiction_anchor_matches(matches) -> list:
+    anchors = []
     for match in matches or []:
         node_type = str(getattr(match, "node_type", "") or "").upper()
         relevance = str(getattr(match, "relevance_type", "") or "").upper()
-        if node_type in {"GOAL", "PROJECT"}:
-            return True
-        if relevance in {"STRUCTURAL", "DECISION", "BOTTLENECK", "EVIDENCE"}:
-            return True
-        if bool(getattr(match, "structural", False)):
-            return True
-    return False
+        if (
+            node_type in {"GOAL", "PROJECT"}
+            or relevance in {"STRUCTURAL", "DECISION", "BOTTLENECK", "EVIDENCE"}
+            or bool(getattr(match, "structural", False))
+        ):
+            anchors.append(match)
+    return anchors
+
+
+def has_jurisdiction_anchor(matches) -> bool:
+    return bool(jurisdiction_anchor_matches(matches))
 
 
 @dataclass(frozen=True)
