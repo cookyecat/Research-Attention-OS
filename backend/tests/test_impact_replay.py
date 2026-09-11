@@ -491,3 +491,36 @@ def test_rule_twice_still_requires_stage_identity(client: TestClient):
     assert report["stages_identical"] is True
     assert report["deterministic"] is True
     assert report["harness_ok"] is True
+
+
+def test_replay_separates_legacy_primary_from_persisted_decision_cause(client: TestClient, db):
+    """Impact-only replay must not relabel legacy single-primary as the Attention cause."""
+    result = _analyze_run(client)
+    run_id = result["analysis_run"]["id"]
+    db.expire_all()
+    run = db.get(AnalysisRun, UUID(run_id))
+    payload = dict(run.result_payload or {})
+    plan = dict(payload.get("attention_plan") or {})
+    debug = dict(plan.get("score_debug") or {})
+    effects = list((debug.get("cognitive_impact") or {}).get("effects") or [])
+    assert effects
+    persisted_cause = dict(effects[-1])
+    persisted_cause["reason"] = "persisted strategy-selected cause sentinel"
+    debug["decision_cause"] = persisted_cause
+    debug["decision_cause_bound"] = True
+    debug["decision_strategy"] = {"strategy_id": "pareto-test", "version": "v-test"}
+    plan["score_debug"] = debug
+    payload["attention_plan"] = plan
+    run.result_payload = payload
+    flag_modified(run, "result_payload")
+    db.commit()
+
+    resp = client.post(f"/analysis/{run_id}/impact-replay", json={"provider": "rule"})
+    assert resp.status_code == 200, resp.text
+    body = resp.json()
+    assert body["decision_stage_reexecuted"] is False
+    assert body["stage_semantics"]["primary_update"] == "legacy-impact-single-primary-projection"
+    assert body["stages"]["legacy_primary_projection"] == body["stages"]["primary_update"]
+    assert body["original_decision_projection"]["decision_cause_bound"] is True
+    assert body["original_decision_projection"]["decision_cause"]["reason"] == "persisted strategy-selected cause sentinel"
+    assert body["attribution"]["observed"]["primary_update_semantics"] == "legacy-impact-single-primary-projection"

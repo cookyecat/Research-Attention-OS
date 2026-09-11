@@ -209,6 +209,7 @@ def attribute_stages(
     matches_original_primary = canonical_json(primary) == canonical_json(orig_p)
     matches_original_raw = None if orig_r is None else canonical_json(raw) == canonical_json(orig_r)
     observed = {
+        "primary_update_semantics": "legacy-impact-single-primary-projection",
         "raw_count": len(raw),
         "grounded_count": len(grounded),
         "discarded_count": len(discarded),
@@ -415,6 +416,8 @@ def replay_frozen_impact(
     original_grounded = original_stages.get("grounded_effects") or (original.get("cognitive_impact") or {}).get("effects") or []
     original_raw = original_stages.get("raw_effects")
     original_primary = original_stages.get("primary_update") or original.get("update")
+    original_decision_cause = original.get("decision_cause")
+    decision_cause_bound = bool(original.get("decision_cause_bound"))
     runtime = _runtime_from_provider(provider)
     config_dict = config.as_dict()
     attribution = attribute_stages(
@@ -438,12 +441,28 @@ def replay_frozen_impact(
             "frozen_input": fingerprint,
             "raw_effects": raw,
             "grounded_effects": grounded,
+            # Historical compatibility alias. This is an Impact-local single-primary
+            # projection, not necessarily the selected Attention/side-effect cause.
             "primary_update": primary,
+            "legacy_primary_projection": primary,
+        },
+        "stage_semantics": {
+            "primary_update": "legacy-impact-single-primary-projection",
+            "legacy_primary_projection": "legacy-impact-single-primary-projection",
+            "decision_cause": "not-reexecuted-by-impact-only-replay",
+        },
+        "original_decision_projection": {
+            "decision_cause": original_decision_cause,
+            "decision_cause_bound": decision_cause_bound,
+            "decision_strategy": original.get("decision_strategy"),
+            "update": original.get("update"),
         },
         "attribution": attribution,
         "runtime": runtime,
         "config": config_dict,
         "original_primary_update": _stringify_update(original_primary),
+        "original_decision_cause": original_decision_cause,
+        "decision_stage_reexecuted": False,
         "repeatability": {
             "deterministic": is_deterministic_replay(config_dict, runtime),
             "input_identity_required": True,
