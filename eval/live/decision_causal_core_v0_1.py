@@ -91,7 +91,8 @@ def analyze_decision_causal_core(
 ) -> DecisionCausalCoreReport:
     runtime = runtime or RuntimeView()
     normalized = normalize_frozen_transition(assessment, matches).assessment
-    legal = legal_public_effects(normalized)
+    selector = getattr(decision_strategy, "legal_effects", None)
+    legal = selector(normalized) if callable(selector) else legal_public_effects(normalized)
     relations = sorted({relation_key(effect) for effect in legal}, key=repr)
 
     def decide(effects) -> Hashable:

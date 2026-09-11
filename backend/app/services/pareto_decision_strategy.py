@@ -147,6 +147,13 @@ class ParetoMultiDeltaDecisionStrategy:
             snapshot["effect_existence"] = "legal-semantic-relation-v0.1"
         return snapshot
 
+    def legal_effects(self, normalized):
+        return (
+            legal_semantic_effects(normalized)
+            if self.semantic_effect_existence
+            else legal_public_effects(normalized)
+        )
+
     def route(
         self,
         features,
@@ -159,11 +166,7 @@ class ParetoMultiDeltaDecisionStrategy:
         runtime = runtime or RuntimeView()
         matches = matches or []
         normalized = normalize_frozen_transition(assessment, matches).assessment
-        legal_effects = (
-            legal_semantic_effects(normalized)
-            if self.semantic_effect_existence
-            else legal_public_effects(normalized)
-        )
+        legal_effects = self.legal_effects(normalized)
         admitted_effects = self.effect_admission_strategy.admit(legal_effects, matches)
         frontier = pareto_frontier(
             admitted_effects,

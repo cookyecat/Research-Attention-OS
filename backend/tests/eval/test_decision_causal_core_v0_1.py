@@ -74,3 +74,17 @@ def test_rejected_relation_cannot_be_sufficient_for_null_drop_baseline():
     assert report.necessary_core == ()
     assert report.sufficient_supports == ()
     assert report.relations[0].classification == "PERIPHERAL"
+
+
+def test_causal_core_respects_cardinal_free_strategy_legality():
+    from app.enums import CognitiveEffectKind
+    from app.services.cognitive_impact import CognitiveEffect, CognitiveImpactAssessment
+    from app.services.pareto_decision_strategy import CARDINAL_FREE_ANCHORED_OPEN_NEW_PARETO_DECISION_STRATEGY
+    from app.services.matching import KernelMatch
+    from uuid import uuid4
+    node_id=uuid4()
+    match=KernelMatch(node_id=node_id,node_type="QUESTION",title="Q",score=.8,reason="test",structural=False,relevance_type="TOPIC")
+    effect=CognitiveEffect(target_kernel_node_id=node_id,operation=CognitiveEffectKind.REINFORCE,change_magnitude=0.0,epistemic_strength=1.0,target_importance=1.0,reason="test",target_node_type="QUESTION")
+    report=analyze_decision_causal_core(assessment=CognitiveImpactAssessment(effects=[effect]),matches=[match],features=features(),decision_strategy=CARDINAL_FREE_ANCHORED_OPEN_NEW_PARETO_DECISION_STRATEGY)
+    assert report.baseline_decision == "WATCH"
+    assert len(report.relations) == 1
