@@ -9,6 +9,9 @@ ROOT=Path(__file__).resolve().parents[2]; BACKEND=ROOT/'backend'
 for p in (ROOT,BACKEND):
     if str(p) not in sys.path: sys.path.insert(0,str(p))
 
+from eval.live.run_standing_radar_fit_eval import load_repo_env
+load_repo_env()
+
 from app.cognitive.client import chat_json
 from app.cognitive.model_provider import ModelBackedCognitiveProvider
 from eval.live.phase6b_cognitive_semantics_v0_1 import build_phase6b_mvp_kernel_nodes

@@ -1,0 +1,600 @@
+{
+  "run_version": "phase10d6f-effect-support-binding-v0.1",
+  "status": "EFFECT_SUPPORT_BINDING_MEASUREMENT",
+  "measurement_sha": "64eefffad1f56df90311029e98c3fc16cc7858d2",
+  "relation_contract_version": "canonical-relation-support-binding-v0.2",
+  "system_prompt_sha256": "14f4853da17d56b0d0ba7c9785dc3e36aa926365062380aedb2dbc273f46a5a7",
+  "cases": [
+    "A",
+    "D",
+    "X",
+    "N4"
+  ],
+  "repeats_per_case": 6,
+  "results": {
+    "A": {
+      "samples": [
+        {
+          "sample_id": "A-1",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "A-2",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "A-3",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "A-4",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "A-5",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "A-6",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        }
+      ],
+      "summary": {
+        "n_ok": 0,
+        "n_error": 6,
+        "raw_effects": 0,
+        "valid_effects": 0,
+        "valid_effect_rate": 1.0,
+        "invalid_reason_counts": {},
+        "topology_n_unique": 0,
+        "topology_mode_rate": 1.0,
+        "relation_occurrence_counts": {},
+        "mean_support_units_per_effect": 0.0,
+        "support_unit_sample_frequency": {},
+        "mean_bound_world_fraction": 0.0
+      },
+      "frozen_units_replay_sha256": "0e1db0de7895c357df52a7995f3ed777bf78ad388e55b4d4caf210e9274b218c",
+      "frozen_locate": {
+        "modal_target_set": [
+          "B1",
+          "B2",
+          "BT1",
+          "D1",
+          "G1",
+          "M1",
+          "P1",
+          "P2",
+          "Q1",
+          "Q2"
+        ],
+        "modal_count": 3,
+        "modal_rate": 1.0,
+        "selected_repeat": 1,
+        "selected_matches": [
+          {
+            "target": "G1",
+            "kernel_node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+            "relevance_type": "TOPIC",
+            "score": 0.55,
+            "reason": "Astra's multi-step reasoning, planning, tool use, and computer-use capabilities relate to building better multi-agent intelligence systems, though the source is enterprise-focused rather than embodied."
+          },
+          {
+            "target": "P1",
+            "kernel_node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+            "relevance_type": "TOPIC",
+            "score": 0.35,
+            "reason": "Astra's computer-use and execution-across-applications capabilities are tangentially related to motor intelligence via action execution, but the source concerns software agents rather than embodied motor control."
+          },
+          {
+            "target": "BT1",
+            "kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+            "relevance_type": "BOTTLENECK",
+            "score": 0.3,
+            "reason": "The source's emphasis on token efficiency and cost management for complex workloads loosely parallels evaluation concerns around efficiency, but does not address latency/energy/task-success for embodied control."
+          },
+          {
+            "target": "Q1",
+            "kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+            "relevance_type": "TOPIC",
+            "score": 0.4,
+            "reason": "Astra is a large unified frontier model used for multi-step planning and tool use, which is relevant to the question of whether high-frequency control should depend on a large unified model, though the source does not address motor control."
+          },
+          {
+            "target": "B1",
+            "kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+            "relevance_type": "EVIDENCE",
+            "score": 0.35,
+            "reason": "Astra's design for deliberate planning and computer use rather than fast reactive control provides weak indirect evidence relevant to the belief that large unified models may be unsuitable for the fastest embodied-control loop."
+          },
+          {
+            "target": "M1",
+            "kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+            "relevance_type": "TOPIC",
+            "score": 0.3,
+            "reason": "Astra's separation of cognitive planning from execution across applications loosely relates to the separability of cognitive and motor intelligence, but the source is not about embodied control."
+          },
+          {
+            "target": "P2",
+            "kernel_node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+            "relevance_type": "TOPIC",
+            "score": 0.3,
+            "reason": "Astra's multi-agent-adjacent tool use and orchestration across systems has weak topical overlap with collective intelligence, but the source does not address multi-agent collectives."
+          },
+          {
+            "target": "Q2",
+            "kernel_node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+            "relevance_type": "TOPIC",
+            "score": 0.25,
+            "reason": "Astra's shared context and tool use across applications is only weakly related to shared world models reducing multi-agent communication; the source does not discuss multi-agent communication."
+          },
+          {
+            "target": "B2",
+            "kernel_node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "relevance_type": "TOPIC",
+            "score": 0.2,
+            "reason": "The source describes a centralized frontier model rather than decentralized local intelligence, offering minimal relevance to the belief about swarm-style collective intelligence."
+          },
+          {
+            "target": "D1",
+            "kernel_node_id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+            "relevance_type": "DECISION",
+            "score": 0.15,
+            "reason": "No substantive connection to startup equity terms; only a very weak generic decision-making overlap via Astra's decision-support capabilities."
+          }
+        ]
+      }
+    },
+    "D": {
+      "samples": [
+        {
+          "sample_id": "D-1",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "D-2",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "D-3",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "D-4",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "D-5",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "D-6",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        }
+      ],
+      "summary": {
+        "n_ok": 0,
+        "n_error": 6,
+        "raw_effects": 0,
+        "valid_effects": 0,
+        "valid_effect_rate": 1.0,
+        "invalid_reason_counts": {},
+        "topology_n_unique": 0,
+        "topology_mode_rate": 1.0,
+        "relation_occurrence_counts": {},
+        "mean_support_units_per_effect": 0.0,
+        "support_unit_sample_frequency": {},
+        "mean_bound_world_fraction": 0.0
+      },
+      "frozen_units_replay_sha256": "9169579ce43dec62687a2d362bf375c149f92bee9e8e4fbaac46e16cd3a76d4d",
+      "frozen_locate": {
+        "modal_target_set": [
+          "B1",
+          "B2",
+          "BT1",
+          "D1",
+          "G1",
+          "M1",
+          "P1",
+          "P2",
+          "Q1",
+          "Q2"
+        ],
+        "modal_count": 3,
+        "modal_rate": 1.0,
+        "selected_repeat": 1,
+        "selected_matches": [
+          {
+            "target": "G1",
+            "kernel_node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+            "relevance_type": "TOPIC",
+            "score": 0.55,
+            "reason": "Canonical units describe multi-agent AI systems (agents conspiring, agentic tasks, recursive self-improvement), directly relating to the goal of building better multi-agent intelligence systems."
+          },
+          {
+            "target": "P2",
+            "kernel_node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+            "relevance_type": "TOPIC",
+            "score": 0.5,
+            "reason": "Units describe AI agents secretly conspiring and coordinating without human knowledge, which is materially relevant to collective intelligence research."
+          },
+          {
+            "target": "Q2",
+            "kernel_node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+            "relevance_type": "TOPIC",
+            "score": 0.45,
+            "reason": "The Hugging Face hack unit describes AI agents creating a way to secretly conspire, relating to questions about multi-agent communication and shared coordination."
+          },
+          {
+            "target": "B2",
+            "kernel_node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "relevance_type": "TOPIC",
+            "score": 0.4,
+            "reason": "Units about decentralized agent conspiracy and recursive self-improvement touch on decentralized intelligence themes relevant to this belief."
+          },
+          {
+            "target": "B1",
+            "kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+            "relevance_type": "EVIDENCE",
+            "score": 0.35,
+            "reason": "Astra's large unified model capabilities and safety concerns (opaque recurrence, misalignment monitoring) provide evidence relevant to beliefs about large unified models and control."
+          },
+          {
+            "target": "M1",
+            "kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+            "relevance_type": "TOPIC",
+            "score": 0.3,
+            "reason": "Units distinguish cognitive/agentic capabilities from embodied control, loosely relating to the model of separable cognitive and motor intelligence."
+          },
+          {
+            "target": "Q1",
+            "kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+            "relevance_type": "TOPIC",
+            "score": 0.25,
+            "reason": "Astra's unified agentic model and its safety/alignment issues are tangentially relevant to questions about large unified models in control loops."
+          },
+          {
+            "target": "BT1",
+            "kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+            "relevance_type": "BOTTLENECK",
+            "score": 0.2,
+            "reason": "Units highlight evaluation and monitoring challenges for advanced AI systems, loosely paralleling evaluation bottlenecks in embodied control."
+          },
+          {
+            "target": "P1",
+            "kernel_node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+            "relevance_type": "TOPIC",
+            "score": 0.15,
+            "reason": "Weak topical overlap via AI capability and control themes, but no direct relation to motor intelligence."
+          },
+          {
+            "target": "D1",
+            "kernel_node_id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+            "relevance_type": "DECISION",
+            "score": 0.1,
+            "reason": "OpenAI's IPO pressure and revenue incentives in the units weakly relate to evaluating equity/employment decisions, but connection is indirect."
+          }
+        ]
+      }
+    },
+    "X": {
+      "samples": [
+        {
+          "sample_id": "X-1",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "X-2",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "X-3",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "X-4",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "X-5",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "X-6",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        }
+      ],
+      "summary": {
+        "n_ok": 0,
+        "n_error": 6,
+        "raw_effects": 0,
+        "valid_effects": 0,
+        "valid_effect_rate": 1.0,
+        "invalid_reason_counts": {},
+        "topology_n_unique": 0,
+        "topology_mode_rate": 1.0,
+        "relation_occurrence_counts": {},
+        "mean_support_units_per_effect": 0.0,
+        "support_unit_sample_frequency": {},
+        "mean_bound_world_fraction": 0.0
+      },
+      "frozen_units_replay_sha256": "47f9254e17aae3dc7743438d21085fb2b1e2afccdd2746e3cd08882c5b2ffc4a",
+      "frozen_locate": {
+        "modal_target_set": [
+          "B1",
+          "B2",
+          "BT1",
+          "D1",
+          "G1",
+          "M1",
+          "P1",
+          "P2",
+          "Q1",
+          "Q2"
+        ],
+        "modal_count": 3,
+        "modal_rate": 1.0,
+        "selected_repeat": 1,
+        "selected_matches": [
+          {
+            "target": "G1",
+            "kernel_node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+            "relevance_type": "TOPIC",
+            "score": 0.85,
+            "reason": "AgentHands is an embodied conversational agent system with synchronized hand gestures in XR, directly instantiating the goal of building better embodied intelligence systems."
+          },
+          {
+            "target": "P1",
+            "kernel_node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+            "relevance_type": "TOPIC",
+            "score": 0.6,
+            "reason": "AgentHands generates synchronized co-speech hand gestures via a gesture behavior library and animation engine, relating to motor intelligence for embodied agents."
+          },
+          {
+            "target": "BT1",
+            "kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+            "relevance_type": "BOTTLENECK",
+            "score": 0.55,
+            "reason": "The evaluation study reports effectiveness across key metrics but lacks specific latency, energy, or task-success values, echoing the bottleneck of missing rigorous evaluation for embodied control."
+          },
+          {
+            "target": "Q1",
+            "kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+            "relevance_type": "STRUCTURAL",
+            "score": 0.5,
+            "reason": "AgentHands uses a backend LLM to generate gesture events parsed locally on the headset, illustrating a split between large-model cognition and local real-time control relevant to whether high-frequency control should depend on a unified model."
+          },
+          {
+            "target": "B1",
+            "kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+            "relevance_type": "STRUCTURAL",
+            "score": 0.5,
+            "reason": "The architecture offloads synchronization and animation to a local parser with word-level timestamps, consistent with the belief that large unified models may be unsuitable for the fastest embodied-control loop."
+          },
+          {
+            "target": "M1",
+            "kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+            "relevance_type": "STRUCTURAL",
+            "score": 0.6,
+            "reason": "AgentHands separates LLM-based linguistic/cognitive generation from local temporal gesture synchronization, exemplifying partially separable cognitive and motor intelligence in embodied systems."
+          },
+          {
+            "target": "P2",
+            "kernel_node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+            "relevance_type": "TOPIC",
+            "score": 0.35,
+            "reason": "AgentHands is a single-agent conversational system; its multi-team collaboration and gesture taxonomy are only weakly related to collective intelligence."
+          },
+          {
+            "target": "Q2",
+            "kernel_node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+            "relevance_type": "TOPIC",
+            "score": 0.3,
+            "reason": "AgentHands grounds conversation in a shared spatial registry with 3D bounding boxes, loosely analogous to shared world models, but it is not a multi-agent communication system."
+          },
+          {
+            "target": "B2",
+            "kernel_node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "relevance_type": "TOPIC",
+            "score": 0.25,
+            "reason": "AgentHands runs local parsing and animation on the XR headset, a form of local intelligence, but it is not a decentralized swarm system."
+          },
+          {
+            "target": "D1",
+            "kernel_node_id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+            "relevance_type": "DECISION",
+            "score": 0.1,
+            "reason": "No substantive connection to startup equity terms or employment obligations."
+          }
+        ]
+      }
+    },
+    "N4": {
+      "samples": [
+        {
+          "sample_id": "N4-1",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "N4-2",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "N4-3",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "N4-4",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "N4-5",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        },
+        {
+          "sample_id": "N4-6",
+          "status": "ERROR",
+          "error_type": "LLMError",
+          "error": "RAOS_LLM_API_KEY is not set"
+        }
+      ],
+      "summary": {
+        "n_ok": 0,
+        "n_error": 6,
+        "raw_effects": 0,
+        "valid_effects": 0,
+        "valid_effect_rate": 1.0,
+        "invalid_reason_counts": {},
+        "topology_n_unique": 0,
+        "topology_mode_rate": 1.0,
+        "relation_occurrence_counts": {},
+        "mean_support_units_per_effect": 0.0,
+        "support_unit_sample_frequency": {},
+        "mean_bound_world_fraction": 0.0
+      },
+      "frozen_units_replay_sha256": "a36e69b0be897aea4a34184c560ccd87d370032b237c6d36b370a7011b9d9b4f",
+      "frozen_locate": {
+        "modal_target_set": [
+          "B1",
+          "B2",
+          "BT1",
+          "D1",
+          "G1",
+          "M1",
+          "P1",
+          "P2",
+          "Q1",
+          "Q2"
+        ],
+        "modal_count": 3,
+        "modal_rate": 1.0,
+        "selected_repeat": 1,
+        "selected_matches": [
+          {
+            "target": "G1",
+            "kernel_node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+            "relevance_type": "TOPIC",
+            "score": 0.9,
+            "reason": "The audited units evaluate language models controlling robot bodies across control interfaces, directly instantiating the goal of building better embodied intelligence systems."
+          },
+          {
+            "target": "P1",
+            "kernel_node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+            "relevance_type": "TOPIC",
+            "score": 0.95,
+            "reason": "The units concern motor control of robots by language models (direct control, programmatic control, policy control, RL supervision), which is the core subject of the Motor Intelligence project."
+          },
+          {
+            "target": "BT1",
+            "kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+            "relevance_type": "BOTTLENECK",
+            "score": 0.9,
+            "reason": "neu-002 quantifies the latency gap (~83 Hz needed vs ~0.2-0.4 Hz inference) for real-time embodied control, directly evidencing the bottleneck of lacking latency/energy/task-success evaluation for high-frequency control."
+          },
+          {
+            "target": "Q1",
+            "kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+            "relevance_type": "TOPIC",
+            "score": 0.85,
+            "reason": "The units evaluate whether large language models can drive high-frequency motor control, bearing on whether high-frequency control should depend on a large unified model."
+          },
+          {
+            "target": "B1",
+            "kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+            "relevance_type": "EVIDENCE",
+            "score": 0.85,
+            "reason": "neu-002's two-orders-of-magnitude latency gap and the finding that direct joint control mostly fails provide evidence that large unified models may be unsuitable for the fastest embodied-control loop."
+          },
+          {
+            "target": "M1",
+            "kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+            "relevance_type": "STRUCTURAL",
+            "score": 0.8,
+            "reason": "The contrast between models failing at direct low-level joint control but succeeding when supervising pretrained controllers or using high-level tools supports the separability of cognitive intelligence from temporal motor intelligence."
+          },
+          {
+            "target": "P2",
+            "kernel_node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+            "relevance_type": "TOPIC",
+            "score": 0.3,
+            "reason": "The units are about single-model robot control rather than collective intelligence; only weakly related via the broader embodied/multi-agent goal."
+          },
+          {
+            "target": "Q2",
+            "kernel_node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+            "relevance_type": "TOPIC",
+            "score": 0.25,
+            "reason": "The units involve models interfacing with pretrained policies/VLAs rather than shared world models across multiple agents; only tangential relevance."
+          },
+          {
+            "target": "B2",
+            "kernel_node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "relevance_type": "TOPIC",
+            "score": 0.2,
+            "reason": "No decentralized multi-agent or swarm aspects appear in the audited units; relevance is only via the general embodied-intelligence theme."
+          },
+          {
+            "target": "D1",
+            "kernel_node_id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+            "relevance_type": "DECISION",
+            "score": 0.05,
+            "reason": "Startup equity terms are unrelated to the robot-control evaluation units; no material connection."
+          }
+        ]
+      }
+    }
+  },
+  "guardrails": [
+    "Exact frozen Auditor worlds, Kernel fixtures and modal Locate are reused; no acquisition/Sensor/Auditor/Locate call occurs.",
+    "Relation output contains no change_magnitude, target_importance or epistemic_strength.",
+    "Unknown support, target or jurisdiction identifiers fail closed at effect level and are never rewritten.",
+    "OPEN_NEW requires at least one legal frozen jurisdiction anchor.",
+    "No Attention policy is evaluated or promoted in this phase.",
+    "Production defaults remain unchanged."
+  ]
+}
