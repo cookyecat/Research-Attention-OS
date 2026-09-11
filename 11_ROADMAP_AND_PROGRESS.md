@@ -1179,3 +1179,7 @@ Result: `155_PHASE10D6I1_COMPOSITIONAL_EVIDENCE_FORM_FRESH_HOLDOUT_RESULT.md`. F
 ## Phase 10D.6J Relation-Support Directness — CLOSED / INSTRUMENT NOT PROMOTED 2026-09-11
 
 Result: `157_PHASE10D6J_RELATION_SUPPORT_DIRECTNESS_RESULT.md`. Measurement SHA `342b4b9`; artifact SHA256 `1db72a6e068384d7eadd17fb01d22a36a4f81019a5dd21de789c17fa78fcd7c8`. Six repeated audits were structurally successful and all 16 items were stable at >=5/6 with zero critical confusions, but exact agreement was 13/16 (81.25%), below the preregistered 14/16 gate. The instrument is not promoted as a truth oracle. The next gate may use it only conservatively: DIRECT can qualify for strong epistemic authority subject to provenance; PARTIAL remains weak; INSUFFICIENT/CONTRADICTS_OPERATION are rejected. Production defaults unchanged; Phase 9A remains paused.
+
+## Phase 10D.6K Conservative Authoritative Attention Replay — PREREGISTERED 2026-09-11
+
+Preregistration: `158_PHASE10D6K_CONSERVATIVE_AUTHORITATIVE_ATTENTION_REPLAY_PREREGISTRATION.md`. Frozen input is the 24-sample 10D.6H cardinal-free/support-bound artifact. The gate reconnects authoritative importance/epistemic bands to the unchanged Anchored + Magnitude-Free + Pareto stack. Three same-topology arms isolate epistemic authority: all-support sufficient upper bound, single-source-weak conservative baseline, and canonical directness+provenance authority. No production promotion is permitted from this gate; Phase 9A remains paused.
