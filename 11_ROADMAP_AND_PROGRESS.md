@@ -1128,3 +1128,7 @@ Preregistration: `135_PHASE10D6_COGNITIVE_PATH_RECONCILIATION_PREREGISTRATION.md
 ## Phase 10D.6B Prompt Reconciliation — CLOSED / NOT PROMOTED 2026-09-11
 
 Result: `136_PHASE10D6B_PROMPT_RECONCILIATION_RESULT.md`. Prompt-only shadow A/B on frozen real-web A/D/X/N4 found that removing stale single-winner/cardinal instructions is necessary but not sufficient. P1 over-suppressed X to DROP 6/6, while both P0 and P1 produced empty effects / DROP 6/6 on A and D. N4 remained WATCH 6/6. Attribution moved upstream: the audited-units -> `ExtractionResult` seam flattens Phase-10 canonical unit/support structure before Impact. Do not promote P1 and do not calibrate importance yet. Next: 10D.6C Canonical Input Reconciliation with production grounding/safeguards preserved.
+
+## Phase 10D.6C Canonical Input Reconciliation — PREREGISTERED 2026-09-11
+
+Preregistration: `137_PHASE10D6C_CANONICAL_INPUT_RECONCILIATION_PREREGISTRATION.md`. After 10D.6B exposed empty-effect DROP on A/D in both prompt arms, the next controlled gate moves to the earlier representation seam. B0 uses the audited-units -> `ExtractionResult` Impact payload; C1 gives the same Auditor-admitted canonical units directly to Relation Mapping. The production system prompt, grounding, importance resolver, feature projection, decision strategy and runtime remain frozen. Raw pre-grounding and grounded effects are both persisted for causal attribution.
