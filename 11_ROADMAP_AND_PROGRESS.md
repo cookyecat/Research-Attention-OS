@@ -1171,3 +1171,7 @@ Result: `151_PHASE10D6H_CARDINAL_FIELD_REMOVAL_PARITY_RESULT.md`. At measurement
 ## Phase 10D.6I Effect-Specific Evidence-Form Authority — CLOSED / NEAR-PASS 2026-09-11
 
 Result: `153_PHASE10D6I_EFFECT_SPECIFIC_EVIDENCE_FORM_AUTHORITY_RESULT.md`. A frozen 18-unit manual research reference tested categorical provenance role and evidence form with six batch classifications. Provenance role was exact and stable 18/18; evidence form was stable 18/18 but exact on 16/18 (88.9%), missing the preregistered 90% gate with zero critical measurement/assertion or primary/secondary confusions. Both disagreements were genuinely mixed units, so single-form classification is not promoted. Next: compositional evidence-form representation on fresh held-out B3/B4/F3/F4 units. Production defaults unchanged; Phase 9A remains paused.
+
+## Phase 10D.6I.1 Compositional Evidence Form Fresh Holdout — CLOSED / NOT PROMOTED 2026-09-11
+
+Result: `155_PHASE10D6I1_COMPOSITIONAL_EVIDENCE_FORM_FRESH_HOLDOUT_RESULT.md`. Fresh B3/B4/F3/F4 holdout preserved perfect provenance-role classification but full multi-form exact-set agreement was only 70% (mean Jaccard 0.842) despite 90% stability and zero critical confusions. The remaining disagreements are mostly companion forms, so exhaustive evidence-form taxonomy is not promoted as an Attention authority. Next: relation-specific support directness/scope grounding. Production defaults unchanged; Phase 9A remains paused.

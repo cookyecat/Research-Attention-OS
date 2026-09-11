@@ -1,0 +1,157 @@
+{
+  "version": "phase10d6j-relation-support-directness-reference-v0.1",
+  "status": "FROZEN_MANUAL_RESEARCH_REFERENCE_NOT_HUMAN_GOLD",
+  "classes": [
+    "DIRECT",
+    "PARTIAL",
+    "INSUFFICIENT",
+    "CONTRADICTS_OPERATION"
+  ],
+  "source_artifact": "eval/live/results/phase10d6h_cardinal_field_removal_parity_v0_1/phase10d6h_cardinal_field_removal_parity_v0.1_20260911T071632Z.json",
+  "items": [
+    {
+      "case": "A",
+      "sample_id": "A-1",
+      "effect_index": 0,
+      "operation": "REINFORCE",
+      "target": "M1",
+      "fit": "PARTIAL",
+      "rationale": "Product architecture/capability description is relevant to cognitive-vs-motor separation but does not directly establish temporal motor separation."
+    },
+    {
+      "case": "A",
+      "sample_id": "A-1",
+      "effect_index": 1,
+      "operation": "CHALLENGE",
+      "target": "Q1",
+      "fit": "INSUFFICIENT",
+      "rationale": "General computer-use capability does not directly answer the high-frequency motor-control dependence question."
+    },
+    {
+      "case": "A",
+      "sample_id": "A-1",
+      "effect_index": 2,
+      "operation": "CHALLENGE",
+      "target": "B1",
+      "fit": "INSUFFICIENT",
+      "rationale": "Complex multi-step computer use does not address the fastest embodied-control loop."
+    },
+    {
+      "case": "A",
+      "sample_id": "A-1",
+      "effect_index": 3,
+      "operation": "REINFORCE",
+      "target": "BT1",
+      "fit": "INSUFFICIENT",
+      "rationale": "Token/cost/containment discussion and absent latency metrics do not directly establish the stated evaluation bottleneck."
+    },
+    {
+      "case": "D",
+      "sample_id": "D-1",
+      "effect_index": 0,
+      "operation": "REINFORCE",
+      "target": "Q2",
+      "fit": "INSUFFICIENT",
+      "rationale": "Reported covert agent conspiracy does not establish that shared world models reduce explicit communication."
+    },
+    {
+      "case": "D",
+      "sample_id": "D-1",
+      "effect_index": 1,
+      "operation": "CHALLENGE",
+      "target": "B2",
+      "fit": "INSUFFICIENT",
+      "rationale": "A centralized-model incident is not evidence about true swarm-style collective intelligence requiring decentralized local intelligence."
+    },
+    {
+      "case": "D",
+      "sample_id": "D-1",
+      "effect_index": 2,
+      "operation": "REINFORCE",
+      "target": "B1",
+      "fit": "INSUFFICIENT",
+      "rationale": "Safety/control incidents do not directly address fastest-loop suitability/latency architecture."
+    },
+    {
+      "case": "D",
+      "sample_id": "D-1",
+      "effect_index": 4,
+      "operation": "REINFORCE",
+      "target": "BT1",
+      "fit": "INSUFFICIENT",
+      "rationale": "Absence of reported latency/energy/task-success metrics in a product news item does not directly establish the bottleneck."
+    },
+    {
+      "case": "X",
+      "sample_id": "X-1",
+      "effect_index": 0,
+      "operation": "CHALLENGE",
+      "target": "BT1",
+      "fit": "CONTRADICTS_OPERATION",
+      "rationale": "The study lacking latency/energy/task-success metrics supports the existence of the evaluation gap rather than challenges it."
+    },
+    {
+      "case": "X",
+      "sample_id": "X-1",
+      "effect_index": 1,
+      "operation": "REINFORCE",
+      "target": "Q1",
+      "fit": "DIRECT",
+      "rationale": "The split between backend LLM event generation and local synchronized execution directly bears on whether high-frequency motor control should depend on the large model."
+    },
+    {
+      "case": "X",
+      "sample_id": "X-1",
+      "effect_index": 2,
+      "operation": "CHALLENGE",
+      "target": "B1",
+      "fit": "CONTRADICTS_OPERATION",
+      "rationale": "Local timing/execution actually supports concern about using a large model in the fastest loop rather than challenging it."
+    },
+    {
+      "case": "X",
+      "sample_id": "X-1",
+      "effect_index": 3,
+      "operation": "REINFORCE",
+      "target": "M1",
+      "fit": "DIRECT",
+      "rationale": "Backend semantic generation separated from local temporal gesture execution is a direct architectural instance of partial separability."
+    },
+    {
+      "case": "N4",
+      "sample_id": "N4-1",
+      "effect_index": 0,
+      "operation": "REINFORCE",
+      "target": "BT1",
+      "fit": "DIRECT",
+      "rationale": "83 Hz required versus ~0.2–0.4 Hz inference directly instantiates the latency component of the bottleneck."
+    },
+    {
+      "case": "N4",
+      "sample_id": "N4-1",
+      "effect_index": 1,
+      "operation": "REINFORCE",
+      "target": "Q1",
+      "fit": "DIRECT",
+      "rationale": "Direct-control failure and two-order latency gap directly bear on high-frequency-control dependence."
+    },
+    {
+      "case": "N4",
+      "sample_id": "N4-1",
+      "effect_index": 2,
+      "operation": "REINFORCE",
+      "target": "B1",
+      "fit": "DIRECT",
+      "rationale": "Direct low-level failure, latency gap, and controller-interface dependence directly support unsuitability for the fastest loop."
+    },
+    {
+      "case": "N4",
+      "sample_id": "N4-2",
+      "effect_index": 4,
+      "operation": "CHALLENGE",
+      "target": "M1",
+      "fit": "PARTIAL",
+      "rationale": "VLA pairing and improved sensory-to-action performance show coupling but do not overturn a claim of partial separability."
+    }
+  ]
+}

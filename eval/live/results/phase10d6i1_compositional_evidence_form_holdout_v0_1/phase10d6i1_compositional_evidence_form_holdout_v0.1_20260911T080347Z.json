@@ -1,0 +1,1510 @@
+{
+  "run_version": "phase10d6i1-compositional-evidence-form-holdout-v0.1",
+  "status": "COMPOSITIONAL_FRESH_HOLDOUT_MEASUREMENT",
+  "measurement_sha": "359fcf082a20605bb57751ea4071f000dcb63fc9",
+  "reference_path": "eval/live/phase10d6i1_compositional_evidence_form_holdout_v0_1.json",
+  "reference_sha256": "e791ba55ccba63f6a39f0e049224f96f3110318d3a0b67d83890c88df5bafcef",
+  "source_path": "eval/live/results/phase10d3_real_web_static_cognitive_map_v0_1/phase10d3_real_web_static_cognitive_map_v0.1_20260910T151143Z.json",
+  "source_sha256": "a40f2a6e4690a34552232c7e63c473e87ad7d5b846304a5a89108544b8b63f89",
+  "classifier_version": "phase10d6i1-compositional-evidence-form-classifier-v0.1",
+  "system_prompt_sha256": "f3e4bf7e3422f5131e243923eb5d342c157342aa2a203d4897356a61794ba67f",
+  "n_items": 20,
+  "repeats": 6,
+  "rows": [
+    {
+      "repeat": 1,
+      "status": "OK",
+      "by_id": {
+        "B3::c188e70d-claude-code-usage-study:action_change:1": {
+          "item_id": "B3::c188e70d-claude-code-usage-study:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "EVENT_OR_STATE_REPORT",
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Anthropic describes its own privacy-preserving analysis setup and sample scope."
+        },
+        "B3::c188e70d-claude-code-usage-study:action_change:2": {
+          "item_id": "B3::c188e70d-claude-code-usage-study:action_change:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported observed planning/execution decision proportions from own study."
+        },
+        "B3::nu7": {
+          "item_id": "B3::nu7",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY",
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported value growth estimates plus explicit caveat that price estimates are coarse."
+        },
+        "B3::nu10": {
+          "item_id": "B3::nu10",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Describes transcript-based success classifiers and exclusion criteria."
+        },
+        "B3::nu11": {
+          "item_id": "B3::nu11",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Explicit preliminary-findings caveats and scope constraints."
+        },
+        "B4::06384278-ev-001:action_change:1": {
+          "item_id": "B4::06384278-ev-001:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "EVENT_OR_STATE_REPORT",
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Anthropic describes its own survey fielding and sample."
+        },
+        "B4::06384278-ev-001:action_change:3": {
+          "item_id": "B4::06384278-ev-001:action_change:3",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported survey findings on productivity measures."
+        },
+        "B4::06384278-ev-001:uncertainty:2": {
+          "item_id": "B4::06384278-ev-001:uncertainty:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Explicit non-representative sample caveat."
+        },
+        "B4::ne-008": {
+          "item_id": "B4::ne-008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported productivity differences and null journal-submission finding."
+        },
+        "B4::ne-011": {
+          "item_id": "B4::ne-011",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Explicit cautions about survey recruitment, respondent bias, and descriptive interpretation."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:2": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVENT_OR_STATE_REPORT",
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "NASA science communication describing teams' deepest TNO survey setup."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:3": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:3",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "NASA summarizing observed fewer small TNOs than expected."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:4": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:4",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "NASA reporting Webb discovery counts and size measurement."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:uncertainty:1": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:uncertainty:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Notes missing absolute publication date in supplied material."
+        },
+        "F3::neu-04": {
+          "item_id": "F3::neu-04",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVALUATIVE_ASSERTION",
+            "LIMITATION_OR_UNCERTAINTY",
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reports observed surface similarity, prior expectation contrast, and unresolved mystery."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:1": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "ESA science communication reporting derived NOx emission comparison result."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:2": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported country-level NOx reduction estimates."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0002:uncertainty:1": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0002:uncertainty:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Notes unquantified regional meteorological variability."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0002": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0002",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVALUATIVE_ASSERTION",
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reports alignment with EEA/emissions data and interprets as independent evidence."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0009": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0009",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Explicit interpretive caveat about confounders affecting NOx independently of CO2."
+        }
+      },
+      "meta": {
+        "latency_ms": 5286,
+        "prompt_tokens": 6964,
+        "completion_tokens": 1374,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    },
+    {
+      "repeat": 2,
+      "status": "OK",
+      "by_id": {
+        "B3::c188e70d-claude-code-usage-study:action_change:1": {
+          "item_id": "B3::c188e70d-claude-code-usage-study:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "EVENT_OR_STATE_REPORT",
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Anthropic describes its own privacy-preserving analysis setup and sample scope."
+        },
+        "B3::c188e70d-claude-code-usage-study:action_change:2": {
+          "item_id": "B3::c188e70d-claude-code-usage-study:action_change:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported observed average decision-share result from own study."
+        },
+        "B3::nu7": {
+          "item_id": "B3::nu7",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY",
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported value-change measurements plus explicit caveat that price estimates are coarse."
+        },
+        "B3::nu10": {
+          "item_id": "B3::nu10",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Describes transcript-based success classifiers and exclusion criteria."
+        },
+        "B3::nu11": {
+          "item_id": "B3::nu11",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Authors state preliminary nature and measurement limitations."
+        },
+        "B4::06384278-ev-001:action_change:1": {
+          "item_id": "B4::06384278-ev-001:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "EVENT_OR_STATE_REPORT",
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Anthropic describes its own survey fielding and sample."
+        },
+        "B4::06384278-ev-001:action_change:3": {
+          "item_id": "B4::06384278-ev-001:action_change:3",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported survey findings on productivity differences."
+        },
+        "B4::06384278-ev-001:uncertainty:2": {
+          "item_id": "B4::06384278-ev-001:uncertainty:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Explicit caveat about non-representative sample."
+        },
+        "B4::ne-008": {
+          "item_id": "B4::ne-008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported survey productivity measurements and null result."
+        },
+        "B4::ne-011": {
+          "item_id": "B4::ne-011",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Authors caution about survey design and interpretation."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:2": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVENT_OR_STATE_REPORT",
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "NASA science communication describes teams' survey setup."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:3": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:3",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "NASA communication reports observed TNO population finding."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:4": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:4",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported discovery count and size measurement."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:uncertainty:1": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:uncertainty:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Notes missing absolute publication date."
+        },
+        "F3::neu-04": {
+          "item_id": "F3::neu-04",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVALUATIVE_ASSERTION",
+            "LIMITATION_OR_UNCERTAINTY",
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reports observation contradicting prior expectation and notes unresolved mystery."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:1": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "ESA science communication reports derived NOx emission comparison."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:2": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported country-level emission reduction estimates."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0002:uncertainty:1": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0002:uncertainty:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Notes unquantified regional meteorological variability."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0002": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0002",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVALUATIVE_ASSERTION",
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reports alignment with other datasets and interprets as independent evidence."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0009": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0009",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Caveat about confounders in interpreting NOx decline."
+        }
+      },
+      "meta": {
+        "latency_ms": 4494,
+        "prompt_tokens": 6964,
+        "completion_tokens": 1340,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    },
+    {
+      "repeat": 3,
+      "status": "OK",
+      "by_id": {
+        "B3::c188e70d-claude-code-usage-study:action_change:1": {
+          "item_id": "B3::c188e70d-claude-code-usage-study:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "EVENT_OR_STATE_REPORT",
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Anthropic describes its own privacy-preserving analysis setup and sample scope for its study."
+        },
+        "B3::c188e70d-claude-code-usage-study:action_change:2": {
+          "item_id": "B3::c188e70d-claude-code-usage-study:action_change:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Anthropic reports observed average planning/execution decision shares from its own analysis."
+        },
+        "B3::nu7": {
+          "item_id": "B3::nu7",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY",
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Anthropic reports estimated session value growth and task-type growth, with caveat that price estimates are coarse."
+        },
+        "B3::nu10": {
+          "item_id": "B3::nu10",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Anthropic describes its transcript-based success measurement classifiers and exclusion criteria."
+        },
+        "B3::nu11": {
+          "item_id": "B3::nu11",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Anthropic states preliminary nature, inability to measure real-world outcomes, exclusions, and classifier dependence."
+        },
+        "B4::06384278-ev-001:action_change:1": {
+          "item_id": "B4::06384278-ev-001:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "EVENT_OR_STATE_REPORT",
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Anthropic describes its own survey fielding period and sample size."
+        },
+        "B4::06384278-ev-001:action_change:3": {
+          "item_id": "B4::06384278-ev-001:action_change:3",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Anthropic reports observed survey findings on project starts, working papers, and journal submissions."
+        },
+        "B4::06384278-ev-001:uncertainty:2": {
+          "item_id": "B4::06384278-ev-001:uncertainty:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Anthropic notes non-representative sample and selection tilt toward AI-curious researchers."
+        },
+        "B4::ne-008": {
+          "item_id": "B4::ne-008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Anthropic reports survey-based productivity differences and absence of evidence on journal submissions."
+        },
+        "B4::ne-011": {
+          "item_id": "B4::ne-011",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Anthropic cautions about survey recruitment, respondent bias, and descriptive interpretation of early-stage differences."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:2": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVENT_OR_STATE_REPORT",
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "NASA science communication describes the teams' deepest TNO survey setup and simultaneous Hubble/Webb observations."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:3": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:3",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "NASA reports researchers found fewer very small TNOs than expected from some formation models."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:4": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:4",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "NASA reports Webb discovery of 27 new dim TNOs and smallest observed diameter."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:uncertainty:1": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:uncertainty:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "NASA source lacks an absolute publication date, leaving event time unresolved in supplied material."
+        },
+        "F3::neu-04": {
+          "item_id": "F3::neu-04",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVALUATIVE_ASSERTION",
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "NASA summarizes prior expectations, observed implications, possible explanations, and unresolved mystery."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:1": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "ESA science communication reports comparison of Sentinel-5P-derived annual NOx emissions showing reduction."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:2": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "ESA reports country-level estimated fossil fuel-related NOx emission reductions of about 10% to 30%."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0002:uncertainty:1": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0002:uncertainty:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "ESA notes substantial regional-scale meteorological variability without quantification."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0002": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0002",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVALUATIVE_ASSERTION"
+          ],
+          "reason": "ESA interprets alignment with other emissions and air-quality reports as independent evidence of decarbonisation progress."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0009": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0009",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "ESA cautions that interpreting NOx declines as fossil fuel combustion fingerprints requires accounting for confounders."
+        }
+      },
+      "meta": {
+        "latency_ms": 7102,
+        "prompt_tokens": 6964,
+        "completion_tokens": 1749,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    },
+    {
+      "repeat": 4,
+      "status": "OK",
+      "by_id": {
+        "B3::c188e70d-claude-code-usage-study:action_change:1": {
+          "item_id": "B3::c188e70d-claude-code-usage-study:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "EVENT_OR_STATE_REPORT",
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Anthropic describes its own privacy-preserving analysis setup and sample scope for its study."
+        },
+        "B3::c188e70d-claude-code-usage-study:action_change:2": {
+          "item_id": "B3::c188e70d-claude-code-usage-study:action_change:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Anthropic reports observed planning/execution decision shares from its own session analysis."
+        },
+        "B3::nu7": {
+          "item_id": "B3::nu7",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY",
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Anthropic reports estimated session value growth and task-type growth, with caveat that price estimates are coarse."
+        },
+        "B3::nu10": {
+          "item_id": "B3::nu10",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Anthropic describes its transcript-based success measurement classifiers and exclusion criteria."
+        },
+        "B3::nu11": {
+          "item_id": "B3::nu11",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Anthropic states preliminary nature, inability to measure real-world outcomes, exclusions, and classifier dependence."
+        },
+        "B4::06384278-ev-001:action_change:1": {
+          "item_id": "B4::06384278-ev-001:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "EVENT_OR_STATE_REPORT",
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Anthropic describes its own survey fielding period and sample size."
+        },
+        "B4::06384278-ev-001:action_change:3": {
+          "item_id": "B4::06384278-ev-001:action_change:3",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Anthropic reports observed survey findings on project starts, working papers, and journal submissions."
+        },
+        "B4::06384278-ev-001:uncertainty:2": {
+          "item_id": "B4::06384278-ev-001:uncertainty:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Anthropic explicitly notes non-representative sample and selection tilt toward AI-curious researchers."
+        },
+        "B4::ne-008": {
+          "item_id": "B4::ne-008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Anthropic reports survey-based productivity differences and absence of evidence on journal submissions."
+        },
+        "B4::ne-011": {
+          "item_id": "B4::ne-011",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Anthropic cautions about survey recruitment, respondent bias, and descriptive interpretation of early-stage differences."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:2": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVENT_OR_STATE_REPORT",
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "NASA science communication summarizes the teams' deepest TNO survey and simultaneous Hubble/Webb observation setup."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:3": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:3",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "NASA summarizes the researchers' finding of fewer very small TNOs than expected."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:4": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:4",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "NASA summarizes Webb's discovery of 27 new dim TNOs and smallest observed diameter."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:uncertainty:1": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:uncertainty:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "NASA source lacks an absolute publication date, leaving event time unresolved in supplied material."
+        },
+        "F3::neu-04": {
+          "item_id": "F3::neu-04",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVALUATIVE_ASSERTION",
+            "LIMITATION_OR_UNCERTAINTY",
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "NASA summarizes observed surface similarity, prior expectation, possible explanations, and unresolved mystery."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:1": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "ESA science communication summarizes Sentinel-5P-derived comparison showing reduced anthropogenic NOx emissions."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:2": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "ESA summarizes country-level estimated fossil fuel-related NOx emission reductions."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0002:uncertainty:1": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0002:uncertainty:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "ESA notes substantial regional-scale meteorological variability without quantification."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0002": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0002",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVALUATIVE_ASSERTION",
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "ESA summarizes alignment with GHG and EEA surface NO2 reductions and interprets this as independent evidence of progress."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0009": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0009",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "ESA notes interpretation caveats from technology, policy, and combustion efficiency affecting NOx independently of CO2."
+        }
+      },
+      "meta": {
+        "latency_ms": 5895,
+        "prompt_tokens": 6964,
+        "completion_tokens": 1761,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    },
+    {
+      "repeat": 5,
+      "status": "OK",
+      "by_id": {
+        "B3::c188e70d-claude-code-usage-study:action_change:1": {
+          "item_id": "B3::c188e70d-claude-code-usage-study:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "EVENT_OR_STATE_REPORT",
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Anthropic describes its own privacy-preserving analysis setup and sample scope."
+        },
+        "B3::c188e70d-claude-code-usage-study:action_change:2": {
+          "item_id": "B3::c188e70d-claude-code-usage-study:action_change:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported observed average decision-share result from own study."
+        },
+        "B3::nu7": {
+          "item_id": "B3::nu7",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY",
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported value-change measurements plus explicit caveat that price estimates are coarse."
+        },
+        "B3::nu10": {
+          "item_id": "B3::nu10",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Describes success measurement classifiers and exclusion criteria."
+        },
+        "B3::nu11": {
+          "item_id": "B3::nu11",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Explicit preliminary-findings caveats and scope constraints."
+        },
+        "B4::06384278-ev-001:action_change:1": {
+          "item_id": "B4::06384278-ev-001:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "EVENT_OR_STATE_REPORT",
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Anthropic describes its own survey fielding and sample."
+        },
+        "B4::06384278-ev-001:action_change:3": {
+          "item_id": "B4::06384278-ev-001:action_change:3",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported observed productivity comparison results from own survey."
+        },
+        "B4::06384278-ev-001:uncertainty:2": {
+          "item_id": "B4::06384278-ev-001:uncertainty:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Explicit sample representativeness caveat."
+        },
+        "B4::ne-008": {
+          "item_id": "B4::ne-008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported productivity measurements and null result from own survey."
+        },
+        "B4::ne-011": {
+          "item_id": "B4::ne-011",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Explicit caveats on sample, respondents, and descriptive interpretation."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:2": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVENT_OR_STATE_REPORT",
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "NASA science communication describing teams' survey setup."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:3": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:3",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "NASA summarizing researchers' observed TNO findings."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:4": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:4",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "NASA summarizing Webb discovery counts and size measurement."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:uncertainty:1": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:uncertainty:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Notes missing absolute publication date in supplied material."
+        },
+        "F3::neu-04": {
+          "item_id": "F3::neu-04",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVALUATIVE_ASSERTION",
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Interpretation of prior expectations versus observations plus unresolved mystery."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:1": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "ESA science communication summarizing derived NOx emission comparison."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:2": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported country-level emission reduction estimates."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0002:uncertainty:1": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0002:uncertainty:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Notes unquantified regional meteorological variability."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0002": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0002",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVALUATIVE_ASSERTION"
+          ],
+          "reason": "Interpretive alignment claim about independent evidence for decarbonisation."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0009": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0009",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Explicit interpretive caveat about confounders in NOx attribution."
+        }
+      },
+      "meta": {
+        "latency_ms": 4959,
+        "prompt_tokens": 6964,
+        "completion_tokens": 1342,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    },
+    {
+      "repeat": 6,
+      "status": "OK",
+      "by_id": {
+        "B3::c188e70d-claude-code-usage-study:action_change:1": {
+          "item_id": "B3::c188e70d-claude-code-usage-study:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Anthropic describes its own privacy-preserving analysis setup and sample scope."
+        },
+        "B3::c188e70d-claude-code-usage-study:action_change:2": {
+          "item_id": "B3::c188e70d-claude-code-usage-study:action_change:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported observed average planning/execution decision shares from own study."
+        },
+        "B3::nu7": {
+          "item_id": "B3::nu7",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY",
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported value-change measurements plus explicit caveat that price estimates are coarse."
+        },
+        "B3::nu10": {
+          "item_id": "B3::nu10",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Describes transcript-based success classifiers and exclusion criteria."
+        },
+        "B3::nu11": {
+          "item_id": "B3::nu11",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Authors state preliminary findings and multiple scope/method limitations."
+        },
+        "B4::06384278-ev-001:action_change:1": {
+          "item_id": "B4::06384278-ev-001:action_change:1",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "Anthropic describes its own survey fielding and sample."
+        },
+        "B4::06384278-ev-001:action_change:3": {
+          "item_id": "B4::06384278-ev-001:action_change:3",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported survey findings on project starts, working papers, and journal submissions."
+        },
+        "B4::06384278-ev-001:uncertainty:2": {
+          "item_id": "B4::06384278-ev-001:uncertainty:2",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Explicit caveat that sample was not representative and likely tilted."
+        },
+        "B4::ne-008": {
+          "item_id": "B4::ne-008",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reported productivity comparisons and null journal-submission finding."
+        },
+        "B4::ne-011": {
+          "item_id": "B4::ne-011",
+          "provenance_role": "PRIMARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Authors caution about survey recruitment, respondent bias, and descriptive interpretation."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:2": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_PROTOCOL"
+          ],
+          "reason": "NASA science communication describes the teams' deepest TNO survey setup."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:3": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:3",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "NASA reports researchers found fewer small TNOs than expected."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:4": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:4",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "NASA reports Webb discovery count and smallest observed diameter."
+        },
+        "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:uncertainty:1": {
+          "item_id": "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:uncertainty:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Notes missing absolute publication date in supplied material."
+        },
+        "F3::neu-04": {
+          "item_id": "F3::neu-04",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVALUATIVE_ASSERTION",
+            "LIMITATION_OR_UNCERTAINTY",
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reports observed surface similarity, prior expectation contrast, and unresolved mystery."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:1": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "ESA science communication reports derived NOx emission comparison result."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:2": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:2",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reports country-level estimated NOx reduction range."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0002:uncertainty:1": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0002:uncertainty:1",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Notes unquantified regional-scale meteorological variability."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0002": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0002",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "EVALUATIVE_ASSERTION",
+            "MEASUREMENT_RESULT"
+          ],
+          "reason": "Reports alignment with EEA/GHG figures and interprets as independent evidence of progress."
+        },
+        "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0009": {
+          "item_id": "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0009",
+          "provenance_role": "SECONDARY_SOURCE",
+          "evidence_forms": [
+            "LIMITATION_OR_UNCERTAINTY"
+          ],
+          "reason": "Caveat that NOx interpretation requires accounting for confounders."
+        }
+      },
+      "meta": {
+        "latency_ms": 5238,
+        "prompt_tokens": 6964,
+        "completion_tokens": 1482,
+        "estimated_cost_usd": null,
+        "model": "deepseek-flash",
+        "validation_events": [],
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "impact_contract_version": "production-impact-v2.1-legacy"
+      }
+    }
+  ],
+  "summary": {
+    "n_ok": 6,
+    "n_error": 0,
+    "provenance_modal_exact": 1.0,
+    "evidence_form_modal_exact_set": 0.7,
+    "mean_modal_jaccard": 0.8416666666666666,
+    "stable_5_of_6_fraction": 0.9,
+    "critical_confusions": [],
+    "details": {
+      "B3::c188e70d-claude-code-usage-study:action_change:1": {
+        "reference_provenance": "PRIMARY_SOURCE",
+        "modal_provenance": "PRIMARY_SOURCE",
+        "provenance_counts": {
+          "PRIMARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "MEASUREMENT_PROTOCOL"
+        ],
+        "modal_forms": [
+          "EVENT_OR_STATE_REPORT",
+          "MEASUREMENT_PROTOCOL"
+        ],
+        "form_counts": {
+          "('EVENT_OR_STATE_REPORT', 'MEASUREMENT_PROTOCOL')": 5,
+          "('MEASUREMENT_PROTOCOL',)": 1
+        },
+        "modal_form_rate": 0.8333333333333334,
+        "jaccard": 0.5
+      },
+      "B3::c188e70d-claude-code-usage-study:action_change:2": {
+        "reference_provenance": "PRIMARY_SOURCE",
+        "modal_provenance": "PRIMARY_SOURCE",
+        "provenance_counts": {
+          "PRIMARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "MEASUREMENT_RESULT"
+        ],
+        "modal_forms": [
+          "MEASUREMENT_RESULT"
+        ],
+        "form_counts": {
+          "('MEASUREMENT_RESULT',)": 6
+        },
+        "modal_form_rate": 1.0,
+        "jaccard": 1.0
+      },
+      "B3::nu7": {
+        "reference_provenance": "PRIMARY_SOURCE",
+        "modal_provenance": "PRIMARY_SOURCE",
+        "provenance_counts": {
+          "PRIMARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "LIMITATION_OR_UNCERTAINTY",
+          "MEASUREMENT_RESULT"
+        ],
+        "modal_forms": [
+          "LIMITATION_OR_UNCERTAINTY",
+          "MEASUREMENT_RESULT"
+        ],
+        "form_counts": {
+          "('LIMITATION_OR_UNCERTAINTY', 'MEASUREMENT_RESULT')": 6
+        },
+        "modal_form_rate": 1.0,
+        "jaccard": 1.0
+      },
+      "B3::nu10": {
+        "reference_provenance": "PRIMARY_SOURCE",
+        "modal_provenance": "PRIMARY_SOURCE",
+        "provenance_counts": {
+          "PRIMARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "MEASUREMENT_PROTOCOL",
+          "TECHNICAL_DESCRIPTION"
+        ],
+        "modal_forms": [
+          "MEASUREMENT_PROTOCOL"
+        ],
+        "form_counts": {
+          "('MEASUREMENT_PROTOCOL',)": 6
+        },
+        "modal_form_rate": 1.0,
+        "jaccard": 0.5
+      },
+      "B3::nu11": {
+        "reference_provenance": "PRIMARY_SOURCE",
+        "modal_provenance": "PRIMARY_SOURCE",
+        "provenance_counts": {
+          "PRIMARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "LIMITATION_OR_UNCERTAINTY"
+        ],
+        "modal_forms": [
+          "LIMITATION_OR_UNCERTAINTY"
+        ],
+        "form_counts": {
+          "('LIMITATION_OR_UNCERTAINTY',)": 6
+        },
+        "modal_form_rate": 1.0,
+        "jaccard": 1.0
+      },
+      "B4::06384278-ev-001:action_change:1": {
+        "reference_provenance": "PRIMARY_SOURCE",
+        "modal_provenance": "PRIMARY_SOURCE",
+        "provenance_counts": {
+          "PRIMARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "MEASUREMENT_PROTOCOL"
+        ],
+        "modal_forms": [
+          "EVENT_OR_STATE_REPORT",
+          "MEASUREMENT_PROTOCOL"
+        ],
+        "form_counts": {
+          "('EVENT_OR_STATE_REPORT', 'MEASUREMENT_PROTOCOL')": 5,
+          "('MEASUREMENT_PROTOCOL',)": 1
+        },
+        "modal_form_rate": 0.8333333333333334,
+        "jaccard": 0.5
+      },
+      "B4::06384278-ev-001:action_change:3": {
+        "reference_provenance": "PRIMARY_SOURCE",
+        "modal_provenance": "PRIMARY_SOURCE",
+        "provenance_counts": {
+          "PRIMARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "MEASUREMENT_RESULT"
+        ],
+        "modal_forms": [
+          "MEASUREMENT_RESULT"
+        ],
+        "form_counts": {
+          "('MEASUREMENT_RESULT',)": 6
+        },
+        "modal_form_rate": 1.0,
+        "jaccard": 1.0
+      },
+      "B4::06384278-ev-001:uncertainty:2": {
+        "reference_provenance": "PRIMARY_SOURCE",
+        "modal_provenance": "PRIMARY_SOURCE",
+        "provenance_counts": {
+          "PRIMARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "LIMITATION_OR_UNCERTAINTY"
+        ],
+        "modal_forms": [
+          "LIMITATION_OR_UNCERTAINTY"
+        ],
+        "form_counts": {
+          "('LIMITATION_OR_UNCERTAINTY',)": 6
+        },
+        "modal_form_rate": 1.0,
+        "jaccard": 1.0
+      },
+      "B4::ne-008": {
+        "reference_provenance": "PRIMARY_SOURCE",
+        "modal_provenance": "PRIMARY_SOURCE",
+        "provenance_counts": {
+          "PRIMARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "MEASUREMENT_RESULT"
+        ],
+        "modal_forms": [
+          "MEASUREMENT_RESULT"
+        ],
+        "form_counts": {
+          "('MEASUREMENT_RESULT',)": 6
+        },
+        "modal_form_rate": 1.0,
+        "jaccard": 1.0
+      },
+      "B4::ne-011": {
+        "reference_provenance": "PRIMARY_SOURCE",
+        "modal_provenance": "PRIMARY_SOURCE",
+        "provenance_counts": {
+          "PRIMARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "LIMITATION_OR_UNCERTAINTY"
+        ],
+        "modal_forms": [
+          "LIMITATION_OR_UNCERTAINTY"
+        ],
+        "form_counts": {
+          "('LIMITATION_OR_UNCERTAINTY',)": 6
+        },
+        "modal_form_rate": 1.0,
+        "jaccard": 1.0
+      },
+      "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:2": {
+        "reference_provenance": "SECONDARY_SOURCE",
+        "modal_provenance": "SECONDARY_SOURCE",
+        "provenance_counts": {
+          "SECONDARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "EVENT_OR_STATE_REPORT",
+          "MEASUREMENT_PROTOCOL"
+        ],
+        "modal_forms": [
+          "EVENT_OR_STATE_REPORT",
+          "MEASUREMENT_PROTOCOL"
+        ],
+        "form_counts": {
+          "('EVENT_OR_STATE_REPORT', 'MEASUREMENT_PROTOCOL')": 5,
+          "('MEASUREMENT_PROTOCOL',)": 1
+        },
+        "modal_form_rate": 0.8333333333333334,
+        "jaccard": 1.0
+      },
+      "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:3": {
+        "reference_provenance": "SECONDARY_SOURCE",
+        "modal_provenance": "SECONDARY_SOURCE",
+        "provenance_counts": {
+          "SECONDARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "MEASUREMENT_RESULT"
+        ],
+        "modal_forms": [
+          "MEASUREMENT_RESULT"
+        ],
+        "form_counts": {
+          "('MEASUREMENT_RESULT',)": 6
+        },
+        "modal_form_rate": 1.0,
+        "jaccard": 1.0
+      },
+      "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:action_change:4": {
+        "reference_provenance": "SECONDARY_SOURCE",
+        "modal_provenance": "SECONDARY_SOURCE",
+        "provenance_counts": {
+          "SECONDARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "MEASUREMENT_RESULT"
+        ],
+        "modal_forms": [
+          "MEASUREMENT_RESULT"
+        ],
+        "form_counts": {
+          "('MEASUREMENT_RESULT',)": 6
+        },
+        "modal_form_rate": 1.0,
+        "jaccard": 1.0
+      },
+      "F3::1318f044-8a7d-4bba-8850-3a4f99e3c2e5-event-01:uncertainty:1": {
+        "reference_provenance": "SECONDARY_SOURCE",
+        "modal_provenance": "SECONDARY_SOURCE",
+        "provenance_counts": {
+          "SECONDARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "LIMITATION_OR_UNCERTAINTY"
+        ],
+        "modal_forms": [
+          "LIMITATION_OR_UNCERTAINTY"
+        ],
+        "form_counts": {
+          "('LIMITATION_OR_UNCERTAINTY',)": 6
+        },
+        "modal_form_rate": 1.0,
+        "jaccard": 1.0
+      },
+      "F3::neu-04": {
+        "reference_provenance": "SECONDARY_SOURCE",
+        "modal_provenance": "SECONDARY_SOURCE",
+        "provenance_counts": {
+          "SECONDARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "MEASUREMENT_RESULT"
+        ],
+        "modal_forms": [
+          "EVALUATIVE_ASSERTION",
+          "LIMITATION_OR_UNCERTAINTY",
+          "MEASUREMENT_RESULT"
+        ],
+        "form_counts": {
+          "('EVALUATIVE_ASSERTION', 'LIMITATION_OR_UNCERTAINTY', 'MEASUREMENT_RESULT')": 4,
+          "('EVALUATIVE_ASSERTION', 'LIMITATION_OR_UNCERTAINTY')": 2
+        },
+        "modal_form_rate": 0.6666666666666666,
+        "jaccard": 0.3333333333333333
+      },
+      "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:1": {
+        "reference_provenance": "SECONDARY_SOURCE",
+        "modal_provenance": "SECONDARY_SOURCE",
+        "provenance_counts": {
+          "SECONDARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "MEASUREMENT_RESULT"
+        ],
+        "modal_forms": [
+          "MEASUREMENT_RESULT"
+        ],
+        "form_counts": {
+          "('MEASUREMENT_RESULT',)": 6
+        },
+        "modal_form_rate": 1.0,
+        "jaccard": 1.0
+      },
+      "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0001:action_change:2": {
+        "reference_provenance": "SECONDARY_SOURCE",
+        "modal_provenance": "SECONDARY_SOURCE",
+        "provenance_counts": {
+          "SECONDARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "MEASUREMENT_RESULT"
+        ],
+        "modal_forms": [
+          "MEASUREMENT_RESULT"
+        ],
+        "form_counts": {
+          "('MEASUREMENT_RESULT',)": 6
+        },
+        "modal_form_rate": 1.0,
+        "jaccard": 1.0
+      },
+      "F4::9c789499-a853-4218-b3e0-32e2a14c3476-evt-0002:uncertainty:1": {
+        "reference_provenance": "SECONDARY_SOURCE",
+        "modal_provenance": "SECONDARY_SOURCE",
+        "provenance_counts": {
+          "SECONDARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "LIMITATION_OR_UNCERTAINTY"
+        ],
+        "modal_forms": [
+          "LIMITATION_OR_UNCERTAINTY"
+        ],
+        "form_counts": {
+          "('LIMITATION_OR_UNCERTAINTY',)": 6
+        },
+        "modal_form_rate": 1.0,
+        "jaccard": 1.0
+      },
+      "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0002": {
+        "reference_provenance": "SECONDARY_SOURCE",
+        "modal_provenance": "SECONDARY_SOURCE",
+        "provenance_counts": {
+          "SECONDARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "MEASUREMENT_RESULT"
+        ],
+        "modal_forms": [
+          "EVALUATIVE_ASSERTION",
+          "MEASUREMENT_RESULT"
+        ],
+        "form_counts": {
+          "('EVALUATIVE_ASSERTION', 'MEASUREMENT_RESULT')": 4,
+          "('EVALUATIVE_ASSERTION',)": 2
+        },
+        "modal_form_rate": 0.6666666666666666,
+        "jaccard": 0.5
+      },
+      "F4::9c789499-a853-4218-b3e0-32e2a14c3476-neu-0009": {
+        "reference_provenance": "SECONDARY_SOURCE",
+        "modal_provenance": "SECONDARY_SOURCE",
+        "provenance_counts": {
+          "SECONDARY_SOURCE": 6
+        },
+        "reference_forms": [
+          "ANALYTIC_INFERENCE",
+          "LIMITATION_OR_UNCERTAINTY"
+        ],
+        "modal_forms": [
+          "LIMITATION_OR_UNCERTAINTY"
+        ],
+        "form_counts": {
+          "('LIMITATION_OR_UNCERTAINTY',)": 6
+        },
+        "modal_form_rate": 1.0,
+        "jaccard": 0.5
+      }
+    }
+  },
+  "guardrails": [
+    "Fresh B3/B4/F3/F4 units only; none were in 10D.6I reference.",
+    "No numeric authority fields or Attention decisions.",
+    "Production defaults unchanged; Phase 9A paused."
+  ]
+}
