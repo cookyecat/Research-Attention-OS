@@ -221,6 +221,18 @@ Popularity is not importance. Disagreement is verification value, not a reason t
 Return JSON only."""
 
 
+# Minimal multi-effect compatibility contract for controlled shadowing.  This keeps
+# the mature production semantic instructions intact and removes only the two
+# lines that assign downstream decision-policy authority to Relation Mapping.
+_IMPACT_DOWNSTREAM_POLICY_LINES = (
+    "Set OPEN_NEW change_magnitude >= 0.55 only for a real new cognitive branch worth keeping in view (a paper, method, or located near current Goal/Project without updating existing cognition). Changelog, leaderboard, minor-version news, and unsourced media hype should be empty effects or well below 0.55.\n",
+    "When several legal effects exist, the public update is the single coherent effect with the largest useful cognitive change (change_magnitude × target_importance). An existing target does not outrank OPEN_NEW by default.\n",
+)
+IMPACT_SYSTEM_PARETO_COMPAT = IMPACT_SYSTEM
+for _line in _IMPACT_DOWNSTREAM_POLICY_LINES:
+    IMPACT_SYSTEM_PARETO_COMPAT = IMPACT_SYSTEM_PARETO_COMPAT.replace(_line, "")
+
+
 IMPACT_SYSTEM_VNEXT = """Assess all distinct legal cognitive effects for Research Attention OS.
 You do NOT choose DROP/AWARE/WATCH/ENGAGE and you do NOT choose a single public update. Downstream deterministic policy performs admission, calibration, Pareto selection, and article-level Attention aggregation.
 
