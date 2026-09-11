@@ -1124,3 +1124,7 @@ Interpretation: 10D.4's exact Attention frequencies belong to the native researc
 ## Phase 10D.6 Cognitive Path Reconciliation — PREREGISTERED 2026-09-11
 
 Preregistration: `135_PHASE10D6_COGNITIVE_PATH_RECONCILIATION_PREREGISTRATION.md`. Re-review established that deployed `ModelProvider` contains important post-v2.1 safeguards and is not replaced wholesale by `native_assess()`, while its Impact prompt still contains stale pre-Pareto/pre-Magnitude-Free single-winner/cardinal instructions. 10D.6 therefore reconciles the paths sequentially: A authority contract, B prompt-only shadow A/B, C target-importance authority calibration, D combined promotion gate. Phase 9A remains paused.
+
+## Phase 10D.6B Prompt Reconciliation — CLOSED / NOT PROMOTED 2026-09-11
+
+Result: `136_PHASE10D6B_PROMPT_RECONCILIATION_RESULT.md`. Prompt-only shadow A/B on frozen real-web A/D/X/N4 found that removing stale single-winner/cardinal instructions is necessary but not sufficient. P1 over-suppressed X to DROP 6/6, while both P0 and P1 produced empty effects / DROP 6/6 on A and D. N4 remained WATCH 6/6. Attribution moved upstream: the audited-units -> `ExtractionResult` seam flattens Phase-10 canonical unit/support structure before Impact. Do not promote P1 and do not calibrate importance yet. Next: 10D.6C Canonical Input Reconciliation with production grounding/safeguards preserved.

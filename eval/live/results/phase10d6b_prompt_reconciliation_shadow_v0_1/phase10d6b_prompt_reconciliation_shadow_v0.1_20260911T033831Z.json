@@ -1,0 +1,4234 @@
+{
+  "run_version": "phase10d6b-prompt-reconciliation-shadow-v0.1",
+  "status": "PROMPT_ONLY_SHADOW_AB",
+  "measurement_sha": "9ed3fad8599455c77c270853a2d12ca5f9367810",
+  "repeats_per_arm": 6,
+  "cases": [
+    "A",
+    "D",
+    "X",
+    "N4"
+  ],
+  "prompt_sha256": {
+    "P0": "10d9ff897aadc5bbc01cd159834b56b0565a9a14fc851c5897cf9b0c33c5660c",
+    "P1": "455e593c9f54e8adee3e89bcdd5a3696661cf435e8ca1fbcb2d444f285e37d59"
+  },
+  "decision_strategy": {
+    "strategy_id": "pareto-multidelta-magnitude-free-anchored-open-new",
+    "version": "pareto-multidelta-magnitude-free-anchored-open-new-v0.1",
+    "selection": "ordinal-pareto-frontier-v0.1",
+    "article_aggregation": "attention-join-v0.1",
+    "effect_calibration": {
+      "calibration_id": "magnitude-free",
+      "version": "magnitude-free-v0.1",
+      "uses_raw_change_magnitude": false,
+      "authority": "operation+epistemic-band+importance-band+active-role-band"
+    },
+    "effect_admission": {
+      "admission_id": "anchored-open-new",
+      "version": "anchored-open-new-v0.1",
+      "open_new_requires_kernel_jurisdiction_anchor": true,
+      "uses_raw_change_magnitude": false
+    },
+    "public_update_projection": "legacy-single-primary-compatibility"
+  },
+  "controlled_variable": "impact_system_prompt_only",
+  "results": {
+    "A": {
+      "source_batch": "10D1",
+      "frozen_units_replay_sha256": "0e1db0de7895c357df52a7995f3ed777bf78ad388e55b4d4caf210e9274b218c",
+      "frozen_locate": {
+        "modal_target_set": [
+          "B1",
+          "B2",
+          "BT1",
+          "D1",
+          "G1",
+          "M1",
+          "P1",
+          "P2",
+          "Q1",
+          "Q2"
+        ],
+        "modal_count": 3,
+        "modal_rate": 1.0,
+        "selected_repeat": 1,
+        "selected_matches": [
+          {
+            "target": "G1",
+            "kernel_node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+            "relevance_type": "TOPIC",
+            "score": 0.55,
+            "reason": "Astra's multi-step reasoning, planning, tool use, and computer-use capabilities relate to building better multi-agent intelligence systems, though the source is enterprise-focused rather than embodied."
+          },
+          {
+            "target": "P1",
+            "kernel_node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+            "relevance_type": "TOPIC",
+            "score": 0.35,
+            "reason": "Astra's computer-use and execution-across-applications capabilities are tangentially related to motor intelligence via action execution, but the source concerns software agents rather than embodied motor control."
+          },
+          {
+            "target": "BT1",
+            "kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+            "relevance_type": "BOTTLENECK",
+            "score": 0.3,
+            "reason": "The source's emphasis on token efficiency and cost management for complex workloads loosely parallels evaluation concerns around efficiency, but does not address latency/energy/task-success for embodied control."
+          },
+          {
+            "target": "Q1",
+            "kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+            "relevance_type": "TOPIC",
+            "score": 0.4,
+            "reason": "Astra is a large unified frontier model used for multi-step planning and tool use, which is relevant to the question of whether high-frequency control should depend on a large unified model, though the source does not address motor control."
+          },
+          {
+            "target": "B1",
+            "kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+            "relevance_type": "EVIDENCE",
+            "score": 0.35,
+            "reason": "Astra's design for deliberate planning and computer use rather than fast reactive control provides weak indirect evidence relevant to the belief that large unified models may be unsuitable for the fastest embodied-control loop."
+          },
+          {
+            "target": "M1",
+            "kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+            "relevance_type": "TOPIC",
+            "score": 0.3,
+            "reason": "Astra's separation of cognitive planning from execution across applications loosely relates to the separability of cognitive and motor intelligence, but the source is not about embodied control."
+          },
+          {
+            "target": "P2",
+            "kernel_node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+            "relevance_type": "TOPIC",
+            "score": 0.3,
+            "reason": "Astra's multi-agent-adjacent tool use and orchestration across systems has weak topical overlap with collective intelligence, but the source does not address multi-agent collectives."
+          },
+          {
+            "target": "Q2",
+            "kernel_node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+            "relevance_type": "TOPIC",
+            "score": 0.25,
+            "reason": "Astra's shared context and tool use across applications is only weakly related to shared world models reducing multi-agent communication; the source does not discuss multi-agent communication."
+          },
+          {
+            "target": "B2",
+            "kernel_node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "relevance_type": "TOPIC",
+            "score": 0.2,
+            "reason": "The source describes a centralized frontier model rather than decentralized local intelligence, offering minimal relevance to the belief about swarm-style collective intelligence."
+          },
+          {
+            "target": "D1",
+            "kernel_node_id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+            "relevance_type": "DECISION",
+            "score": 0.15,
+            "reason": "No substantive connection to startup equity terms; only a very weak generic decision-making overlap via Astra's decision-support capabilities."
+          }
+        ]
+      },
+      "arms": {
+        "P0": [
+          {
+            "sample_id": "P0-1",
+            "arm": "P0",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1522,
+              "prompt_tokens": 3965,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-2",
+            "arm": "P0",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1548,
+              "prompt_tokens": 3965,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-3",
+            "arm": "P0",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1056,
+              "prompt_tokens": 3965,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-4",
+            "arm": "P0",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1095,
+              "prompt_tokens": 3965,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-5",
+            "arm": "P0",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 879,
+              "prompt_tokens": 3965,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-6",
+            "arm": "P0",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1451,
+              "prompt_tokens": 3965,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          }
+        ],
+        "P1": [
+          {
+            "sample_id": "P1-1",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1097,
+              "prompt_tokens": 3560,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-2",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1163,
+              "prompt_tokens": 3560,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-3",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1026,
+              "prompt_tokens": 3560,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-4",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 813,
+              "prompt_tokens": 3560,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-5",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 739,
+              "prompt_tokens": 3560,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-6",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1068,
+              "prompt_tokens": 3560,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          }
+        ]
+      },
+      "summary": {
+        "P0": {
+          "n_ok": 6,
+          "n_error": 0,
+          "attention_counts": {
+            "DROP": 6
+          },
+          "effect_count_mean": 0.0,
+          "map": {
+            "version": "static-probabilistic-cognitive-map-v0.1",
+            "n": 6,
+            "relation_map": {},
+            "topology_distribution": {
+              "n_unique": 1,
+              "mode_rate": 1.0,
+              "entropy_bits": -0.0
+            },
+            "load_bearing_distribution": {
+              "n_unique": 1,
+              "mode_rate": 1.0,
+              "entropy_bits": -0.0
+            },
+            "attention_distribution": {
+              "counts": {
+                "DROP": 6
+              },
+              "probabilities": {
+                "DROP": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                }
+              },
+              "entropy_bits": -0.0,
+              "normalized_entropy": -0.0,
+              "dominant_action": "DROP",
+              "concentration": 1.0,
+              "dominant_wilson95": [
+                0.6096657120978346,
+                1.0
+              ]
+            },
+            "semantics": {
+              "topology_probability": "P(r in T)",
+              "necessary_probability": "P(r in N_pi(T))",
+              "sufficient_probability": "P(r in S_pi(T))",
+              "load_bearing_probability": "P(r in B_pi(T)), B_pi=N_pi union S_pi",
+              "attention_probability": "P(A)",
+              "guardrail": "empirical bounded-epoch distribution; not a stochastic-process model"
+            }
+          }
+        },
+        "P1": {
+          "n_ok": 6,
+          "n_error": 0,
+          "attention_counts": {
+            "DROP": 6
+          },
+          "effect_count_mean": 0.0,
+          "map": {
+            "version": "static-probabilistic-cognitive-map-v0.1",
+            "n": 6,
+            "relation_map": {},
+            "topology_distribution": {
+              "n_unique": 1,
+              "mode_rate": 1.0,
+              "entropy_bits": -0.0
+            },
+            "load_bearing_distribution": {
+              "n_unique": 1,
+              "mode_rate": 1.0,
+              "entropy_bits": -0.0
+            },
+            "attention_distribution": {
+              "counts": {
+                "DROP": 6
+              },
+              "probabilities": {
+                "DROP": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                }
+              },
+              "entropy_bits": -0.0,
+              "normalized_entropy": -0.0,
+              "dominant_action": "DROP",
+              "concentration": 1.0,
+              "dominant_wilson95": [
+                0.6096657120978346,
+                1.0
+              ]
+            },
+            "semantics": {
+              "topology_probability": "P(r in T)",
+              "necessary_probability": "P(r in N_pi(T))",
+              "sufficient_probability": "P(r in S_pi(T))",
+              "load_bearing_probability": "P(r in B_pi(T)), B_pi=N_pi union S_pi",
+              "attention_probability": "P(A)",
+              "guardrail": "empirical bounded-epoch distribution; not a stochastic-process model"
+            }
+          }
+        }
+      }
+    },
+    "D": {
+      "source_batch": "10D1",
+      "frozen_units_replay_sha256": "9169579ce43dec62687a2d362bf375c149f92bee9e8e4fbaac46e16cd3a76d4d",
+      "frozen_locate": {
+        "modal_target_set": [
+          "B1",
+          "B2",
+          "BT1",
+          "D1",
+          "G1",
+          "M1",
+          "P1",
+          "P2",
+          "Q1",
+          "Q2"
+        ],
+        "modal_count": 3,
+        "modal_rate": 1.0,
+        "selected_repeat": 1,
+        "selected_matches": [
+          {
+            "target": "G1",
+            "kernel_node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+            "relevance_type": "TOPIC",
+            "score": 0.55,
+            "reason": "Canonical units describe multi-agent AI systems (agents conspiring, agentic tasks, recursive self-improvement), directly relating to the goal of building better multi-agent intelligence systems."
+          },
+          {
+            "target": "P2",
+            "kernel_node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+            "relevance_type": "TOPIC",
+            "score": 0.5,
+            "reason": "Units describe AI agents secretly conspiring and coordinating without human knowledge, which is materially relevant to collective intelligence research."
+          },
+          {
+            "target": "Q2",
+            "kernel_node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+            "relevance_type": "TOPIC",
+            "score": 0.45,
+            "reason": "The Hugging Face hack unit describes AI agents creating a way to secretly conspire, relating to questions about multi-agent communication and shared coordination."
+          },
+          {
+            "target": "B2",
+            "kernel_node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "relevance_type": "TOPIC",
+            "score": 0.4,
+            "reason": "Units about decentralized agent conspiracy and recursive self-improvement touch on decentralized intelligence themes relevant to this belief."
+          },
+          {
+            "target": "B1",
+            "kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+            "relevance_type": "EVIDENCE",
+            "score": 0.35,
+            "reason": "Astra's large unified model capabilities and safety concerns (opaque recurrence, misalignment monitoring) provide evidence relevant to beliefs about large unified models and control."
+          },
+          {
+            "target": "M1",
+            "kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+            "relevance_type": "TOPIC",
+            "score": 0.3,
+            "reason": "Units distinguish cognitive/agentic capabilities from embodied control, loosely relating to the model of separable cognitive and motor intelligence."
+          },
+          {
+            "target": "Q1",
+            "kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+            "relevance_type": "TOPIC",
+            "score": 0.25,
+            "reason": "Astra's unified agentic model and its safety/alignment issues are tangentially relevant to questions about large unified models in control loops."
+          },
+          {
+            "target": "BT1",
+            "kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+            "relevance_type": "BOTTLENECK",
+            "score": 0.2,
+            "reason": "Units highlight evaluation and monitoring challenges for advanced AI systems, loosely paralleling evaluation bottlenecks in embodied control."
+          },
+          {
+            "target": "P1",
+            "kernel_node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+            "relevance_type": "TOPIC",
+            "score": 0.15,
+            "reason": "Weak topical overlap via AI capability and control themes, but no direct relation to motor intelligence."
+          },
+          {
+            "target": "D1",
+            "kernel_node_id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+            "relevance_type": "DECISION",
+            "score": 0.1,
+            "reason": "OpenAI's IPO pressure and revenue incentives in the units weakly relate to evaluating equity/employment decisions, but connection is indirect."
+          }
+        ]
+      },
+      "arms": {
+        "P0": [
+          {
+            "sample_id": "P0-1",
+            "arm": "P0",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1157,
+              "prompt_tokens": 4673,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-2",
+            "arm": "P0",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1176,
+              "prompt_tokens": 4673,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-3",
+            "arm": "P0",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 979,
+              "prompt_tokens": 4673,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-4",
+            "arm": "P0",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 897,
+              "prompt_tokens": 4673,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-5",
+            "arm": "P0",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1052,
+              "prompt_tokens": 4673,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-6",
+            "arm": "P0",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 908,
+              "prompt_tokens": 4673,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          }
+        ],
+        "P1": [
+          {
+            "sample_id": "P1-1",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 830,
+              "prompt_tokens": 4268,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-2",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 971,
+              "prompt_tokens": 4268,
+              "completion_tokens": 66,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-3",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 805,
+              "prompt_tokens": 4268,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-4",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1077,
+              "prompt_tokens": 4268,
+              "completion_tokens": 66,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-5",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 549,
+              "prompt_tokens": 4268,
+              "completion_tokens": 66,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-6",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1122,
+              "prompt_tokens": 4268,
+              "completion_tokens": 66,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          }
+        ]
+      },
+      "summary": {
+        "P0": {
+          "n_ok": 6,
+          "n_error": 0,
+          "attention_counts": {
+            "DROP": 6
+          },
+          "effect_count_mean": 0.0,
+          "map": {
+            "version": "static-probabilistic-cognitive-map-v0.1",
+            "n": 6,
+            "relation_map": {},
+            "topology_distribution": {
+              "n_unique": 1,
+              "mode_rate": 1.0,
+              "entropy_bits": -0.0
+            },
+            "load_bearing_distribution": {
+              "n_unique": 1,
+              "mode_rate": 1.0,
+              "entropy_bits": -0.0
+            },
+            "attention_distribution": {
+              "counts": {
+                "DROP": 6
+              },
+              "probabilities": {
+                "DROP": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                }
+              },
+              "entropy_bits": -0.0,
+              "normalized_entropy": -0.0,
+              "dominant_action": "DROP",
+              "concentration": 1.0,
+              "dominant_wilson95": [
+                0.6096657120978346,
+                1.0
+              ]
+            },
+            "semantics": {
+              "topology_probability": "P(r in T)",
+              "necessary_probability": "P(r in N_pi(T))",
+              "sufficient_probability": "P(r in S_pi(T))",
+              "load_bearing_probability": "P(r in B_pi(T)), B_pi=N_pi union S_pi",
+              "attention_probability": "P(A)",
+              "guardrail": "empirical bounded-epoch distribution; not a stochastic-process model"
+            }
+          }
+        },
+        "P1": {
+          "n_ok": 6,
+          "n_error": 0,
+          "attention_counts": {
+            "DROP": 6
+          },
+          "effect_count_mean": 0.0,
+          "map": {
+            "version": "static-probabilistic-cognitive-map-v0.1",
+            "n": 6,
+            "relation_map": {},
+            "topology_distribution": {
+              "n_unique": 1,
+              "mode_rate": 1.0,
+              "entropy_bits": -0.0
+            },
+            "load_bearing_distribution": {
+              "n_unique": 1,
+              "mode_rate": 1.0,
+              "entropy_bits": -0.0
+            },
+            "attention_distribution": {
+              "counts": {
+                "DROP": 6
+              },
+              "probabilities": {
+                "DROP": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                }
+              },
+              "entropy_bits": -0.0,
+              "normalized_entropy": -0.0,
+              "dominant_action": "DROP",
+              "concentration": 1.0,
+              "dominant_wilson95": [
+                0.6096657120978346,
+                1.0
+              ]
+            },
+            "semantics": {
+              "topology_probability": "P(r in T)",
+              "necessary_probability": "P(r in N_pi(T))",
+              "sufficient_probability": "P(r in S_pi(T))",
+              "load_bearing_probability": "P(r in B_pi(T)), B_pi=N_pi union S_pi",
+              "attention_probability": "P(A)",
+              "guardrail": "empirical bounded-epoch distribution; not a stochastic-process model"
+            }
+          }
+        }
+      }
+    },
+    "X": {
+      "source_batch": "10D1",
+      "frozen_units_replay_sha256": "47f9254e17aae3dc7743438d21085fb2b1e2afccdd2746e3cd08882c5b2ffc4a",
+      "frozen_locate": {
+        "modal_target_set": [
+          "B1",
+          "B2",
+          "BT1",
+          "D1",
+          "G1",
+          "M1",
+          "P1",
+          "P2",
+          "Q1",
+          "Q2"
+        ],
+        "modal_count": 3,
+        "modal_rate": 1.0,
+        "selected_repeat": 1,
+        "selected_matches": [
+          {
+            "target": "G1",
+            "kernel_node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+            "relevance_type": "TOPIC",
+            "score": 0.85,
+            "reason": "AgentHands is an embodied conversational agent system with synchronized hand gestures in XR, directly instantiating the goal of building better embodied intelligence systems."
+          },
+          {
+            "target": "P1",
+            "kernel_node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+            "relevance_type": "TOPIC",
+            "score": 0.6,
+            "reason": "AgentHands generates synchronized co-speech hand gestures via a gesture behavior library and animation engine, relating to motor intelligence for embodied agents."
+          },
+          {
+            "target": "BT1",
+            "kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+            "relevance_type": "BOTTLENECK",
+            "score": 0.55,
+            "reason": "The evaluation study reports effectiveness across key metrics but lacks specific latency, energy, or task-success values, echoing the bottleneck of missing rigorous evaluation for embodied control."
+          },
+          {
+            "target": "Q1",
+            "kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+            "relevance_type": "STRUCTURAL",
+            "score": 0.5,
+            "reason": "AgentHands uses a backend LLM to generate gesture events parsed locally on the headset, illustrating a split between large-model cognition and local real-time control relevant to whether high-frequency control should depend on a unified model."
+          },
+          {
+            "target": "B1",
+            "kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+            "relevance_type": "STRUCTURAL",
+            "score": 0.5,
+            "reason": "The architecture offloads synchronization and animation to a local parser with word-level timestamps, consistent with the belief that large unified models may be unsuitable for the fastest embodied-control loop."
+          },
+          {
+            "target": "M1",
+            "kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+            "relevance_type": "STRUCTURAL",
+            "score": 0.6,
+            "reason": "AgentHands separates LLM-based linguistic/cognitive generation from local temporal gesture synchronization, exemplifying partially separable cognitive and motor intelligence in embodied systems."
+          },
+          {
+            "target": "P2",
+            "kernel_node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+            "relevance_type": "TOPIC",
+            "score": 0.35,
+            "reason": "AgentHands is a single-agent conversational system; its multi-team collaboration and gesture taxonomy are only weakly related to collective intelligence."
+          },
+          {
+            "target": "Q2",
+            "kernel_node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+            "relevance_type": "TOPIC",
+            "score": 0.3,
+            "reason": "AgentHands grounds conversation in a shared spatial registry with 3D bounding boxes, loosely analogous to shared world models, but it is not a multi-agent communication system."
+          },
+          {
+            "target": "B2",
+            "kernel_node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "relevance_type": "TOPIC",
+            "score": 0.25,
+            "reason": "AgentHands runs local parsing and animation on the XR headset, a form of local intelligence, but it is not a decentralized swarm system."
+          },
+          {
+            "target": "D1",
+            "kernel_node_id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+            "relevance_type": "DECISION",
+            "score": 0.1,
+            "reason": "No substantive connection to startup equity terms or employment obligations."
+          }
+        ]
+      },
+      "arms": {
+        "P0": [
+          {
+            "sample_id": "P0-1",
+            "arm": "P0",
+            "topology": [
+              [
+                "OPEN_NEW",
+                [
+                  "UNRESOLVED"
+                ]
+              ]
+            ],
+            "necessary_core": [
+              [
+                "OPEN_NEW",
+                [
+                  "UNRESOLVED"
+                ]
+              ]
+            ],
+            "sufficient_supports": [
+              [
+                "OPEN_NEW",
+                [
+                  "UNRESOLVED"
+                ]
+              ]
+            ],
+            "attention": "WATCH",
+            "effects": [
+              {
+                "operation": "OPEN_NEW",
+                "target": null,
+                "target_kernel_node_id": null,
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.6,
+                "reason": "AgentHands introduces a concrete architectural pattern for spatially grounded, gesture-synchronized LLM output in XR (object registration via gaze/scene reconstruction, GestureEvent-tagged LLM output, word-level timestamp synchronization). This is a new cognitive branch near the Motor Intelligence / embodied-intelligence Goal but does not modify any existing Kernel proposition about high-frequency motor control, unified-model suitability, or cognitive/motor separability. It is a distinct direction: co-speech gesture grounding as an interface between cognitive LLM output and spatial embodiment."
+              }
+            ],
+            "effect_count": 1,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "WATCH",
+              "necessary_core": [
+                [
+                  "OPEN_NEW",
+                  [
+                    "UNRESOLVED"
+                  ]
+                ]
+              ],
+              "sufficient_supports": [
+                [
+                  "OPEN_NEW",
+                  [
+                    "UNRESOLVED"
+                  ]
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "OPEN_NEW",
+                    [
+                      "UNRESOLVED"
+                    ]
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "DROP",
+                  "alone_decision": "WATCH",
+                  "necessary": true,
+                  "sufficient": true,
+                  "classification": "SINGULAR_LOAD_BEARING"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1987,
+              "prompt_tokens": 3883,
+              "completion_tokens": 260,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-2",
+            "arm": "P0",
+            "topology": [
+              [
+                "OPEN_NEW",
+                [
+                  "UNRESOLVED"
+                ]
+              ]
+            ],
+            "necessary_core": [
+              [
+                "OPEN_NEW",
+                [
+                  "UNRESOLVED"
+                ]
+              ]
+            ],
+            "sufficient_supports": [
+              [
+                "OPEN_NEW",
+                [
+                  "UNRESOLVED"
+                ]
+              ]
+            ],
+            "attention": "WATCH",
+            "effects": [
+              {
+                "operation": "OPEN_NEW",
+                "target": null,
+                "target_kernel_node_id": null,
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.6,
+                "reason": "AgentHands introduces a concrete architectural pattern for spatially grounded, gesture-synchronized LLM output in XR (object registration via eye gaze + scene reconstruction, GestureEvents attached to trigger words, word-level timestamp synchronization between TTS and animation). This is a new cognitive branch near the Motor Intelligence / embodied intelligence Goal: it concerns how a large model's output can be decomposed into a spatially grounded multimodal performance rather than a high-frequency motor control loop. No existing Kernel node's proposition is directly reinforced or challenged — the source does not address latency/energy/task-success evaluation, the suitability of unified models for fast control loops, or the separability of cognitive vs. motor intelligence. It opens a distinct branch about gesture-grounded agent output in XR."
+              }
+            ],
+            "effect_count": 1,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "WATCH",
+              "necessary_core": [
+                [
+                  "OPEN_NEW",
+                  [
+                    "UNRESOLVED"
+                  ]
+                ]
+              ],
+              "sufficient_supports": [
+                [
+                  "OPEN_NEW",
+                  [
+                    "UNRESOLVED"
+                  ]
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "OPEN_NEW",
+                    [
+                      "UNRESOLVED"
+                    ]
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "DROP",
+                  "alone_decision": "WATCH",
+                  "necessary": true,
+                  "sufficient": true,
+                  "classification": "SINGULAR_LOAD_BEARING"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 2212,
+              "prompt_tokens": 3883,
+              "completion_tokens": 304,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-3",
+            "arm": "P0",
+            "topology": [
+              [
+                "OPEN_NEW",
+                [
+                  "UNRESOLVED"
+                ]
+              ]
+            ],
+            "necessary_core": [
+              [
+                "OPEN_NEW",
+                [
+                  "UNRESOLVED"
+                ]
+              ]
+            ],
+            "sufficient_supports": [
+              [
+                "OPEN_NEW",
+                [
+                  "UNRESOLVED"
+                ]
+              ]
+            ],
+            "attention": "WATCH",
+            "effects": [
+              {
+                "operation": "OPEN_NEW",
+                "target": null,
+                "target_kernel_node_id": null,
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.6,
+                "reason": "AgentHands introduces a concrete architectural pattern for spatially grounded, gesture-synchronized LLM output in XR (object registration via gaze/scene reconstruction, GestureEvent-tagged LLM output, word-level timestamp synchronization). This is a new cognitive branch near the Motor Intelligence / embodied intelligence Goal but does not modify any existing Kernel proposition about high-frequency motor control, unified models, or multi-agent communication. It opens a distinct direction: co-speech gesture grounding as a mechanism for embodied agent interaction, with a small within-subjects study (N=12) and no reported effect sizes."
+              }
+            ],
+            "effect_count": 1,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "WATCH",
+              "necessary_core": [
+                [
+                  "OPEN_NEW",
+                  [
+                    "UNRESOLVED"
+                  ]
+                ]
+              ],
+              "sufficient_supports": [
+                [
+                  "OPEN_NEW",
+                  [
+                    "UNRESOLVED"
+                  ]
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "OPEN_NEW",
+                    [
+                      "UNRESOLVED"
+                    ]
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "DROP",
+                  "alone_decision": "WATCH",
+                  "necessary": true,
+                  "sufficient": true,
+                  "classification": "SINGULAR_LOAD_BEARING"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 2249,
+              "prompt_tokens": 3883,
+              "completion_tokens": 270,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-4",
+            "arm": "P0",
+            "topology": [
+              [
+                "REINFORCE",
+                "M1"
+              ]
+            ],
+            "necessary_core": [
+              [
+                "REINFORCE",
+                "M1"
+              ]
+            ],
+            "sufficient_supports": [
+              [
+                "REINFORCE",
+                "M1"
+              ]
+            ],
+            "attention": "AWARE",
+            "effects": [
+              {
+                "operation": "REINFORCE",
+                "target": "M1",
+                "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                "change_magnitude_debug_only": 0.35,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.75,
+                "reason": "AgentHands demonstrates a system where a large LLM handles semantic/cognitive planning (gesture event generation, spatial registry) while a separate local parser and animation engine handle synchronized, low-latency co-speech gesture execution on the XR headset. This is a concrete instance of separating cognitive intelligence from temporal motor execution, reinforcing the model that embodied intelligence contains partially separable cognitive and temporal motor components. However, the source is a self-reported prototype description with no quantitative latency/energy metrics, so epistemic strength is moderate."
+              }
+            ],
+            "effect_count": 1,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "AWARE",
+              "necessary_core": [
+                [
+                  "REINFORCE",
+                  "M1"
+                ]
+              ],
+              "sufficient_supports": [
+                [
+                  "REINFORCE",
+                  "M1"
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "M1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "AWARE",
+                  "without_decision": "DROP",
+                  "alone_decision": "AWARE",
+                  "necessary": true,
+                  "sufficient": true,
+                  "classification": "SINGULAR_LOAD_BEARING"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 2013,
+              "prompt_tokens": 3883,
+              "completion_tokens": 283,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-5",
+            "arm": "P0",
+            "topology": [
+              [
+                "OPEN_NEW",
+                [
+                  "UNRESOLVED"
+                ]
+              ]
+            ],
+            "necessary_core": [
+              [
+                "OPEN_NEW",
+                [
+                  "UNRESOLVED"
+                ]
+              ]
+            ],
+            "sufficient_supports": [
+              [
+                "OPEN_NEW",
+                [
+                  "UNRESOLVED"
+                ]
+              ]
+            ],
+            "attention": "WATCH",
+            "effects": [
+              {
+                "operation": "OPEN_NEW",
+                "target": null,
+                "target_kernel_node_id": null,
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.6,
+                "reason": "AgentHands introduces a concrete architectural pattern for spatially grounded, gesture-synchronized LLM output in XR (object registration via gaze/scene reconstruction, GestureEvent-tagged LLM output, word-level timestamp synchronization). This is a new cognitive branch near the Motor Intelligence / embodied intelligence Goal but does not modify any existing Kernel proposition about high-frequency motor control, unified models, or multi-agent communication. It opens a distinct direction: co-speech gesture grounding as a mechanism for embodied agent interaction, which is worth tracking as a new branch."
+              }
+            ],
+            "effect_count": 1,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "WATCH",
+              "necessary_core": [
+                [
+                  "OPEN_NEW",
+                  [
+                    "UNRESOLVED"
+                  ]
+                ]
+              ],
+              "sufficient_supports": [
+                [
+                  "OPEN_NEW",
+                  [
+                    "UNRESOLVED"
+                  ]
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "OPEN_NEW",
+                    [
+                      "UNRESOLVED"
+                    ]
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "DROP",
+                  "alone_decision": "WATCH",
+                  "necessary": true,
+                  "sufficient": true,
+                  "classification": "SINGULAR_LOAD_BEARING"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1855,
+              "prompt_tokens": 3883,
+              "completion_tokens": 261,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-6",
+            "arm": "P0",
+            "topology": [
+              [
+                "REINFORCE",
+                "M1"
+              ]
+            ],
+            "necessary_core": [
+              [
+                "REINFORCE",
+                "M1"
+              ]
+            ],
+            "sufficient_supports": [
+              [
+                "REINFORCE",
+                "M1"
+              ]
+            ],
+            "attention": "AWARE",
+            "effects": [
+              {
+                "operation": "REINFORCE",
+                "target": "M1",
+                "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                "change_magnitude_debug_only": 0.35,
+                "epistemic_strength": 0.3,
+                "target_importance": 0.75,
+                "reason": "AgentHands demonstrates a system where a large LLM handles semantic/cognitive planning (gesture selection, response generation) while a separate local parser and animation engine handle synchronized, spatially grounded motor execution on the XR headset. This architecture instantiates the model's proposition that embodied intelligence contains partially separable cognitive and temporal motor components, providing a concrete example at the XR interaction scope. However, the source is a self-report prototype description with no quantitative results, limiting epistemic strength."
+              }
+            ],
+            "effect_count": 1,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "AWARE",
+              "necessary_core": [
+                [
+                  "REINFORCE",
+                  "M1"
+                ]
+              ],
+              "sufficient_supports": [
+                [
+                  "REINFORCE",
+                  "M1"
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "M1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "AWARE",
+                  "without_decision": "DROP",
+                  "alone_decision": "AWARE",
+                  "necessary": true,
+                  "sufficient": true,
+                  "classification": "SINGULAR_LOAD_BEARING"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 2091,
+              "prompt_tokens": 3883,
+              "completion_tokens": 275,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          }
+        ],
+        "P1": [
+          {
+            "sample_id": "P1-1",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 986,
+              "prompt_tokens": 3478,
+              "completion_tokens": 76,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-2",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 930,
+              "prompt_tokens": 3478,
+              "completion_tokens": 66,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-3",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1513,
+              "prompt_tokens": 3478,
+              "completion_tokens": 66,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-4",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1016,
+              "prompt_tokens": 3478,
+              "completion_tokens": 66,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-5",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 600,
+              "prompt_tokens": 3478,
+              "completion_tokens": 66,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-6",
+            "arm": "P1",
+            "topology": [],
+            "necessary_core": [],
+            "sufficient_supports": [],
+            "attention": "DROP",
+            "effects": [],
+            "effect_count": 0,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "DROP",
+              "necessary_core": [],
+              "sufficient_supports": [],
+              "relations": [],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 1092,
+              "prompt_tokens": 3478,
+              "completion_tokens": 66,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          }
+        ]
+      },
+      "summary": {
+        "P0": {
+          "n_ok": 6,
+          "n_error": 0,
+          "attention_counts": {
+            "AWARE": 2,
+            "WATCH": 4
+          },
+          "effect_count_mean": 1.0,
+          "map": {
+            "version": "static-probabilistic-cognitive-map-v0.1",
+            "n": 6,
+            "relation_map": {
+              "('OPEN_NEW', ('UNRESOLVED',))": {
+                "relation": [
+                  "OPEN_NEW",
+                  [
+                    "UNRESOLVED"
+                  ]
+                ],
+                "topology": {
+                  "count": 4,
+                  "p": 0.6666666666666666,
+                  "wilson95": [
+                    0.299993315138392,
+                    0.9032285888942195
+                  ],
+                  "half_width": 0.30161763687791376
+                },
+                "necessary": {
+                  "count": 4,
+                  "p": 0.6666666666666666,
+                  "wilson95": [
+                    0.299993315138392,
+                    0.9032285888942195
+                  ],
+                  "half_width": 0.30161763687791376
+                },
+                "sufficient": {
+                  "count": 4,
+                  "p": 0.6666666666666666,
+                  "wilson95": [
+                    0.299993315138392,
+                    0.9032285888942195
+                  ],
+                  "half_width": 0.30161763687791376
+                },
+                "load_bearing": {
+                  "count": 4,
+                  "p": 0.6666666666666666,
+                  "wilson95": [
+                    0.299993315138392,
+                    0.9032285888942195
+                  ],
+                  "half_width": 0.30161763687791376
+                },
+                "load_bearing_given_present": {
+                  "count": 4,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.5101091635454027,
+                    1.0
+                  ],
+                  "half_width": 0.24494541822729865
+                }
+              },
+              "('REINFORCE', 'M1')": {
+                "relation": [
+                  "REINFORCE",
+                  "M1"
+                ],
+                "topology": {
+                  "count": 2,
+                  "p": 0.3333333333333333,
+                  "wilson95": [
+                    0.09677141110578041,
+                    0.700006684861608
+                  ],
+                  "half_width": 0.30161763687791376
+                },
+                "necessary": {
+                  "count": 2,
+                  "p": 0.3333333333333333,
+                  "wilson95": [
+                    0.09677141110578041,
+                    0.700006684861608
+                  ],
+                  "half_width": 0.30161763687791376
+                },
+                "sufficient": {
+                  "count": 2,
+                  "p": 0.3333333333333333,
+                  "wilson95": [
+                    0.09677141110578041,
+                    0.700006684861608
+                  ],
+                  "half_width": 0.30161763687791376
+                },
+                "load_bearing": {
+                  "count": 2,
+                  "p": 0.3333333333333333,
+                  "wilson95": [
+                    0.09677141110578041,
+                    0.700006684861608
+                  ],
+                  "half_width": 0.30161763687791376
+                },
+                "load_bearing_given_present": {
+                  "count": 2,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.34238022750665303,
+                    1.0
+                  ],
+                  "half_width": 0.3288098862466735
+                }
+              }
+            },
+            "topology_distribution": {
+              "n_unique": 2,
+              "mode_rate": 0.6666666666666666,
+              "entropy_bits": 0.9182958340544896
+            },
+            "load_bearing_distribution": {
+              "n_unique": 2,
+              "mode_rate": 0.6666666666666666,
+              "entropy_bits": 0.9182958340544896
+            },
+            "attention_distribution": {
+              "counts": {
+                "AWARE": 2,
+                "WATCH": 4
+              },
+              "probabilities": {
+                "AWARE": {
+                  "count": 2,
+                  "p": 0.3333333333333333,
+                  "wilson95": [
+                    0.09677141110578041,
+                    0.700006684861608
+                  ],
+                  "half_width": 0.30161763687791376
+                },
+                "WATCH": {
+                  "count": 4,
+                  "p": 0.6666666666666666,
+                  "wilson95": [
+                    0.299993315138392,
+                    0.9032285888942195
+                  ],
+                  "half_width": 0.30161763687791376
+                }
+              },
+              "entropy_bits": 0.9182958340544896,
+              "normalized_entropy": 0.4591479170272448,
+              "dominant_action": "WATCH",
+              "concentration": 0.6666666666666666,
+              "dominant_wilson95": [
+                0.299993315138392,
+                0.9032285888942195
+              ]
+            },
+            "semantics": {
+              "topology_probability": "P(r in T)",
+              "necessary_probability": "P(r in N_pi(T))",
+              "sufficient_probability": "P(r in S_pi(T))",
+              "load_bearing_probability": "P(r in B_pi(T)), B_pi=N_pi union S_pi",
+              "attention_probability": "P(A)",
+              "guardrail": "empirical bounded-epoch distribution; not a stochastic-process model"
+            }
+          }
+        },
+        "P1": {
+          "n_ok": 6,
+          "n_error": 0,
+          "attention_counts": {
+            "DROP": 6
+          },
+          "effect_count_mean": 0.0,
+          "map": {
+            "version": "static-probabilistic-cognitive-map-v0.1",
+            "n": 6,
+            "relation_map": {},
+            "topology_distribution": {
+              "n_unique": 1,
+              "mode_rate": 1.0,
+              "entropy_bits": -0.0
+            },
+            "load_bearing_distribution": {
+              "n_unique": 1,
+              "mode_rate": 1.0,
+              "entropy_bits": -0.0
+            },
+            "attention_distribution": {
+              "counts": {
+                "DROP": 6
+              },
+              "probabilities": {
+                "DROP": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                }
+              },
+              "entropy_bits": -0.0,
+              "normalized_entropy": -0.0,
+              "dominant_action": "DROP",
+              "concentration": 1.0,
+              "dominant_wilson95": [
+                0.6096657120978346,
+                1.0
+              ]
+            },
+            "semantics": {
+              "topology_probability": "P(r in T)",
+              "necessary_probability": "P(r in N_pi(T))",
+              "sufficient_probability": "P(r in S_pi(T))",
+              "load_bearing_probability": "P(r in B_pi(T)), B_pi=N_pi union S_pi",
+              "attention_probability": "P(A)",
+              "guardrail": "empirical bounded-epoch distribution; not a stochastic-process model"
+            }
+          }
+        }
+      }
+    },
+    "N4": {
+      "source_batch": "10D3",
+      "frozen_units_replay_sha256": "a36e69b0be897aea4a34184c560ccd87d370032b237c6d36b370a7011b9d9b4f",
+      "frozen_locate": {
+        "modal_target_set": [
+          "B1",
+          "B2",
+          "BT1",
+          "D1",
+          "G1",
+          "M1",
+          "P1",
+          "P2",
+          "Q1",
+          "Q2"
+        ],
+        "modal_count": 3,
+        "modal_rate": 1.0,
+        "selected_repeat": 1,
+        "selected_matches": [
+          {
+            "target": "G1",
+            "kernel_node_id": "de327c12-7a91-5725-9c0e-b09230668d19",
+            "relevance_type": "TOPIC",
+            "score": 0.9,
+            "reason": "The audited units evaluate language models controlling robot bodies across control interfaces, directly instantiating the goal of building better embodied intelligence systems."
+          },
+          {
+            "target": "P1",
+            "kernel_node_id": "8f249e57-3de9-5518-99cd-9042c2487d52",
+            "relevance_type": "TOPIC",
+            "score": 0.95,
+            "reason": "The units concern motor control of robots by language models (direct control, programmatic control, policy control, RL supervision), which is the core subject of the Motor Intelligence project."
+          },
+          {
+            "target": "BT1",
+            "kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+            "relevance_type": "BOTTLENECK",
+            "score": 0.9,
+            "reason": "neu-002 quantifies the latency gap (~83 Hz needed vs ~0.2-0.4 Hz inference) for real-time embodied control, directly evidencing the bottleneck of lacking latency/energy/task-success evaluation for high-frequency control."
+          },
+          {
+            "target": "Q1",
+            "kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+            "relevance_type": "TOPIC",
+            "score": 0.85,
+            "reason": "The units evaluate whether large language models can drive high-frequency motor control, bearing on whether high-frequency control should depend on a large unified model."
+          },
+          {
+            "target": "B1",
+            "kernel_node_id": "805c73da-d77a-5d9f-bc73-22d633ec3c14",
+            "relevance_type": "EVIDENCE",
+            "score": 0.85,
+            "reason": "neu-002's two-orders-of-magnitude latency gap and the finding that direct joint control mostly fails provide evidence that large unified models may be unsuitable for the fastest embodied-control loop."
+          },
+          {
+            "target": "M1",
+            "kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+            "relevance_type": "STRUCTURAL",
+            "score": 0.8,
+            "reason": "The contrast between models failing at direct low-level joint control but succeeding when supervising pretrained controllers or using high-level tools supports the separability of cognitive intelligence from temporal motor intelligence."
+          },
+          {
+            "target": "P2",
+            "kernel_node_id": "94bfb767-4c16-5421-b517-d4759dba279c",
+            "relevance_type": "TOPIC",
+            "score": 0.3,
+            "reason": "The units are about single-model robot control rather than collective intelligence; only weakly related via the broader embodied/multi-agent goal."
+          },
+          {
+            "target": "Q2",
+            "kernel_node_id": "e4479777-8d47-5c24-aaed-0d085a985598",
+            "relevance_type": "TOPIC",
+            "score": 0.25,
+            "reason": "The units involve models interfacing with pretrained policies/VLAs rather than shared world models across multiple agents; only tangential relevance."
+          },
+          {
+            "target": "B2",
+            "kernel_node_id": "a91c0106-c9d1-5421-806b-931885718e2a",
+            "relevance_type": "TOPIC",
+            "score": 0.2,
+            "reason": "No decentralized multi-agent or swarm aspects appear in the audited units; relevance is only via the general embodied-intelligence theme."
+          },
+          {
+            "target": "D1",
+            "kernel_node_id": "2ea3e742-2a5c-5bdc-ad4a-a304aa3a55f1",
+            "relevance_type": "DECISION",
+            "score": 0.05,
+            "reason": "Startup equity terms are unrelated to the robot-control evaluation units; no material connection."
+          }
+        ]
+      },
+      "arms": {
+        "P0": [
+          {
+            "sample_id": "P0-1",
+            "arm": "P0",
+            "topology": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "M1"
+              ]
+            ],
+            "necessary_core": [
+              [
+                "REINFORCE",
+                "BT1"
+              ]
+            ],
+            "sufficient_supports": [
+              [
+                "REINFORCE",
+                "BT1"
+              ]
+            ],
+            "attention": "WATCH",
+            "effects": [
+              {
+                "operation": "REINFORCE",
+                "target": "BT1",
+                "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.8,
+                "reason": "The source provides concrete latency figures (~83 Hz real-time requirement vs ~0.2–0.4 Hz non-reasoning inference) and a task-success comparison across control interfaces, directly reinforcing the bottleneck that high-frequency embodied control lacks integrated latency × energy × task-success evaluation. The evidence is at the same scope (high-frequency embodied control) and strengthens the claim that this evaluation gap is real and consequential."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "M1",
+                "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                "change_magnitude_debug_only": 0.5,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.75,
+                "reason": "The finding that capability depends heavily on the control interface—direct control fails while supervising a pretrained controller or using simple orientation tools succeeds—supports the model that embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence. The source shows that high-level cognitive strategies can be decoupled from low-level motor execution, reinforcing the separability claim at the same scope."
+              }
+            ],
+            "effect_count": 2,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "WATCH",
+              "necessary_core": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ]
+              ],
+              "sufficient_supports": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "BT1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "AWARE",
+                  "alone_decision": "WATCH",
+                  "necessary": true,
+                  "sufficient": true,
+                  "classification": "SINGULAR_LOAD_BEARING"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "M1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "AWARE",
+                  "necessary": false,
+                  "sufficient": false,
+                  "classification": "PERIPHERAL"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 2989,
+              "prompt_tokens": 3661,
+              "completion_tokens": 590,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-2",
+            "arm": "P0",
+            "topology": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "M1"
+              ]
+            ],
+            "necessary_core": [
+              [
+                "REINFORCE",
+                "BT1"
+              ]
+            ],
+            "sufficient_supports": [
+              [
+                "REINFORCE",
+                "BT1"
+              ]
+            ],
+            "attention": "WATCH",
+            "effects": [
+              {
+                "operation": "REINFORCE",
+                "target": "BT1",
+                "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                "change_magnitude_debug_only": 0.5,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.8,
+                "reason": "The source explicitly measures latency (83 Hz requirement vs 0.2-0.4 Hz inference) and task success across control interfaces, directly addressing the bottleneck of lacking latency × energy × task-success evaluation for high-frequency embodied control. It reinforces the bottleneck by providing concrete latency and task-success data, though energy is not covered."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "M1",
+                "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                "change_magnitude_debug_only": 0.55,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.75,
+                "reason": "The finding that capability depends heavily on the control interface—direct joint control fails while supervising a pretrained controller or using simple orientation tools succeeds—supports the model that embodied intelligence contains partially separable cognitive intelligence (strategy, adaptation) and temporal motor intelligence (low-level control). The separation is evidenced by the different performance across abstraction levels."
+              }
+            ],
+            "effect_count": 2,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "WATCH",
+              "necessary_core": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ]
+              ],
+              "sufficient_supports": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "BT1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "AWARE",
+                  "alone_decision": "WATCH",
+                  "necessary": true,
+                  "sufficient": true,
+                  "classification": "SINGULAR_LOAD_BEARING"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "M1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "AWARE",
+                  "necessary": false,
+                  "sufficient": false,
+                  "classification": "PERIPHERAL"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 3402,
+              "prompt_tokens": 3661,
+              "completion_tokens": 586,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-3",
+            "arm": "P0",
+            "topology": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "M1"
+              ]
+            ],
+            "necessary_core": [
+              [
+                "REINFORCE",
+                "BT1"
+              ]
+            ],
+            "sufficient_supports": [
+              [
+                "REINFORCE",
+                "BT1"
+              ]
+            ],
+            "attention": "WATCH",
+            "effects": [
+              {
+                "operation": "REINFORCE",
+                "target": "BT1",
+                "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.8,
+                "reason": "The source provides concrete latency measurements (83 Hz real-time requirement vs ~0.2-0.4 Hz non-reasoning inference, a two-order-of-magnitude gap) and task-success results across control interfaces, directly reinforcing the bottleneck that high-frequency embodied control lacks integrated latency × energy × task-success evaluation. The claim scope aligns with the bottleneck's scope."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "M1",
+                "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                "change_magnitude_debug_only": 0.55,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.75,
+                "reason": "The finding that capability depends heavily on the control interface—direct control fails while supervising pretrained controllers or using simple orientation tools succeeds—supports the model that embodied intelligence contains partially separable cognitive intelligence (strategy, image understanding) and temporal motor intelligence (low-level control). The source demonstrates that cognitive components can be effective when decoupled from high-frequency motor control."
+              }
+            ],
+            "effect_count": 2,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "WATCH",
+              "necessary_core": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ]
+              ],
+              "sufficient_supports": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "BT1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "AWARE",
+                  "alone_decision": "WATCH",
+                  "necessary": true,
+                  "sufficient": true,
+                  "classification": "SINGULAR_LOAD_BEARING"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "M1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "AWARE",
+                  "necessary": false,
+                  "sufficient": false,
+                  "classification": "PERIPHERAL"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 2866,
+              "prompt_tokens": 3661,
+              "completion_tokens": 592,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-4",
+            "arm": "P0",
+            "topology": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "M1"
+              ]
+            ],
+            "necessary_core": [
+              [
+                "REINFORCE",
+                "BT1"
+              ]
+            ],
+            "sufficient_supports": [
+              [
+                "REINFORCE",
+                "BT1"
+              ]
+            ],
+            "attention": "WATCH",
+            "effects": [
+              {
+                "operation": "REINFORCE",
+                "target": "BT1",
+                "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                "change_magnitude_debug_only": 0.5,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.8,
+                "reason": "The source provides concrete latency figures (83 Hz requirement vs. 0.2-0.4 Hz inference) and task-success outcomes across control interfaces, directly addressing the bottleneck of lacking latency × energy × task-success evaluation for high-frequency embodied control. It strengthens the bottleneck by supplying measurement data and decomposition of the latency gap."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "M1",
+                "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                "change_magnitude_debug_only": 0.45,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.75,
+                "reason": "The finding that capability depends heavily on the control interface—direct control fails while supervising pretrained controllers or using simple orientation tools succeeds—supports the model that embodied intelligence contains partially separable cognitive intelligence (strategy, adaptation) and temporal motor intelligence (low-level control). The latency gap and interface-dependent performance reinforce this separation."
+              }
+            ],
+            "effect_count": 2,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "WATCH",
+              "necessary_core": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ]
+              ],
+              "sufficient_supports": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "BT1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "AWARE",
+                  "alone_decision": "WATCH",
+                  "necessary": true,
+                  "sufficient": true,
+                  "classification": "SINGULAR_LOAD_BEARING"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "M1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "AWARE",
+                  "necessary": false,
+                  "sufficient": false,
+                  "classification": "PERIPHERAL"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 2717,
+              "prompt_tokens": 3661,
+              "completion_tokens": 595,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-5",
+            "arm": "P0",
+            "topology": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "M1"
+              ]
+            ],
+            "necessary_core": [
+              [
+                "REINFORCE",
+                "BT1"
+              ]
+            ],
+            "sufficient_supports": [
+              [
+                "REINFORCE",
+                "BT1"
+              ]
+            ],
+            "attention": "WATCH",
+            "effects": [
+              {
+                "operation": "REINFORCE",
+                "target": "BT1",
+                "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                "change_magnitude_debug_only": 0.55,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.8,
+                "reason": "The source provides concrete latency measurements (83 Hz requirement vs. 0.2-0.4 Hz inference) and task-success results across control interfaces, directly addressing the bottleneck of lacking latency × energy × task-success evaluation for high-frequency embodied control. It reinforces the bottleneck by supplying a structured evaluation framework and data, though energy is not covered."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "M1",
+                "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                "change_magnitude_debug_only": 0.5,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.75,
+                "reason": "The finding that capability depends heavily on the control interface—direct control fails while supervising pretrained controllers or using simple orientation tools succeeds—supports the model that embodied intelligence contains partially separable cognitive intelligence (strategy, adaptation) and temporal motor intelligence (low-level control). The separation is evidenced by models performing well at high-level planning but poorly at direct joint control."
+              }
+            ],
+            "effect_count": 2,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "WATCH",
+              "necessary_core": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ]
+              ],
+              "sufficient_supports": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "BT1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "AWARE",
+                  "alone_decision": "WATCH",
+                  "necessary": true,
+                  "sufficient": true,
+                  "classification": "SINGULAR_LOAD_BEARING"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "M1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "AWARE",
+                  "necessary": false,
+                  "sufficient": false,
+                  "classification": "PERIPHERAL"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 2989,
+              "prompt_tokens": 3661,
+              "completion_tokens": 610,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P0-6",
+            "arm": "P0",
+            "topology": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "M1"
+              ]
+            ],
+            "necessary_core": [
+              [
+                "REINFORCE",
+                "BT1"
+              ]
+            ],
+            "sufficient_supports": [
+              [
+                "REINFORCE",
+                "BT1"
+              ]
+            ],
+            "attention": "WATCH",
+            "effects": [
+              {
+                "operation": "REINFORCE",
+                "target": "BT1",
+                "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.8,
+                "reason": "The source provides concrete latency figures (~0.2-0.4 Hz inference vs ~83 Hz real-time control requirement, a two-order-of-magnitude gap) and a structured evaluation across four control interfaces with task-success outcomes. This directly reinforces the bottleneck proposition that latency × task-success evaluation for high-frequency embodied control is lacking, by supplying a partial measurement framework and quantified gap."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "M1",
+                "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                "change_magnitude_debug_only": 0.55,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.75,
+                "reason": "The observed separation between high-level strategy/adaptation (cognitive intelligence) and low-level control interfaces (temporal motor intelligence) — where models succeed via pretrained policies or code controllers but fail at direct joint control — reinforces the model that embodied intelligence contains partially separable cognitive and temporal motor components."
+              }
+            ],
+            "effect_count": 2,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "WATCH",
+              "necessary_core": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ]
+              ],
+              "sufficient_supports": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "BT1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "AWARE",
+                  "alone_decision": "WATCH",
+                  "necessary": true,
+                  "sufficient": true,
+                  "classification": "SINGULAR_LOAD_BEARING"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "M1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "AWARE",
+                  "necessary": false,
+                  "sufficient": false,
+                  "classification": "PERIPHERAL"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 3320,
+              "prompt_tokens": 3661,
+              "completion_tokens": 569,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "production-impact-v2.1-legacy"
+            },
+            "impact_contract_version": "production-impact-v2.1-legacy",
+            "status": "OK"
+          }
+        ],
+        "P1": [
+          {
+            "sample_id": "P1-1",
+            "arm": "P1",
+            "topology": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "M1"
+              ],
+              [
+                "REINFORCE",
+                "Q1"
+              ]
+            ],
+            "necessary_core": [],
+            "sufficient_supports": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "Q1"
+              ]
+            ],
+            "attention": "WATCH",
+            "effects": [
+              {
+                "operation": "REINFORCE",
+                "target": "BT1",
+                "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.8,
+                "reason": "The evaluation explicitly measures task success across control interfaces and notes the latency gap (83 Hz vs ~0.2-0.4 Hz) and the pause between LLM calls in direct-control simulations. This directly addresses the bottleneck of lacking latency × energy × task-success evaluation for high-frequency embodied control, reinforcing that such evaluation is indeed missing or constrained."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "Q1",
+                "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+                "change_magnitude_debug_only": 0.5,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.7,
+                "reason": "The finding that capability depends heavily on the control interface—direct joint control mostly fails while supervising a pretrained controller or using simple orientation tools enables real tasks—provides evidence relevant to whether high-frequency motor control should depend on a large unified model. It supports the negative side of the question by showing that direct low-level control by large models is currently impractical."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "M1",
+                "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.75,
+                "reason": "The observation that models perform better when supervising a pretrained controller or using high-level commands than when directly controlling joints, and that RL policy training lags code control, supports the structural model that embodied intelligence contains partially separable cognitive intelligence (strategy, adaptation) and temporal motor intelligence (low-level control). The evidence aligns with the proposition's scope."
+              }
+            ],
+            "effect_count": 3,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "WATCH",
+              "necessary_core": [],
+              "sufficient_supports": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ],
+                [
+                  "REINFORCE",
+                  "Q1"
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "BT1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "WATCH",
+                  "necessary": false,
+                  "sufficient": true,
+                  "classification": "REDUNDANT_LOAD_BEARING"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "M1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "AWARE",
+                  "necessary": false,
+                  "sufficient": false,
+                  "classification": "PERIPHERAL"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "Q1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "WATCH",
+                  "necessary": false,
+                  "sufficient": true,
+                  "classification": "REDUNDANT_LOAD_BEARING"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 3490,
+              "prompt_tokens": 3256,
+              "completion_tokens": 762,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-2",
+            "arm": "P1",
+            "topology": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "M1"
+              ],
+              [
+                "REINFORCE",
+                "Q1"
+              ]
+            ],
+            "necessary_core": [],
+            "sufficient_supports": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "Q1"
+              ]
+            ],
+            "attention": "WATCH",
+            "effects": [
+              {
+                "operation": "REINFORCE",
+                "target": "BT1",
+                "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.8,
+                "reason": "The evaluation explicitly measures task success across four control interfaces and notes that direct-control simulations paused the simulator to avoid real-time latency dominating results, while real-time control would require ~83 Hz versus ~0.2-0.4 Hz inference. This directly reinforces the identified bottleneck: lack of latency × energy × task-success evaluation for high-frequency embodied control, by providing concrete latency and task-success data points that highlight the evaluation gap."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "Q1",
+                "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+                "change_magnitude_debug_only": 0.65,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.7,
+                "reason": "The finding that capability depends heavily on the control interface—direct joint control mostly fails while supervising a pretrained controller or using simple orientation tools enables real navigation and manipulation—provides evidence relevant to the question of whether high-frequency motor control should depend on a large unified model. It reinforces the position that large unified models are not currently suitable for the fastest loop, supporting the 'no' side of the question."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "M1",
+                "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                "change_magnitude_debug_only": 0.55,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.75,
+                "reason": "The observation that models perform better when supervising a pretrained controller or using high-level commands than when directly controlling joints, and that RL policy training lags code control, supports the structural model that embodied intelligence contains partially separable cognitive intelligence (strategy, adaptation) and temporal motor intelligence (low-level control). The evidence shows cognitive components can be decoupled from fast motor loops."
+              }
+            ],
+            "effect_count": 3,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "WATCH",
+              "necessary_core": [],
+              "sufficient_supports": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ],
+                [
+                  "REINFORCE",
+                  "Q1"
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "BT1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "WATCH",
+                  "necessary": false,
+                  "sufficient": true,
+                  "classification": "REDUNDANT_LOAD_BEARING"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "M1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "AWARE",
+                  "necessary": false,
+                  "sufficient": false,
+                  "classification": "PERIPHERAL"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "Q1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "WATCH",
+                  "necessary": false,
+                  "sufficient": true,
+                  "classification": "REDUNDANT_LOAD_BEARING"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 3439,
+              "prompt_tokens": 3256,
+              "completion_tokens": 793,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-3",
+            "arm": "P1",
+            "topology": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "M1"
+              ],
+              [
+                "REINFORCE",
+                "Q1"
+              ]
+            ],
+            "necessary_core": [],
+            "sufficient_supports": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "Q1"
+              ]
+            ],
+            "attention": "WATCH",
+            "effects": [
+              {
+                "operation": "REINFORCE",
+                "target": "BT1",
+                "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                "change_magnitude_debug_only": 0.7,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.8,
+                "reason": "The source provides concrete latency evidence for high-frequency embodied control: direct-control simulations were paused between LLM calls to avoid real-time latency dominating, and real-time control would require ~83 Hz while current non-reasoning inference runs at ~0.2-0.4 Hz, a gap of roughly two orders of magnitude. This directly reinforces the bottleneck proposition that latency × energy × task-success evaluation is lacking for high-frequency embodied control."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "M1",
+                "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.75,
+                "reason": "The observed dependence of capability on control interface abstraction—direct joint control failing while supervising a pretrained controller or using simple orientation tools succeeds—supports the model that embodied intelligence contains partially separable cognitive intelligence (strategy, perception-to-action conversion) and temporal motor intelligence (low-level control), with the latter better handled by specialized controllers."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "Q1",
+                "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+                "change_magnitude_debug_only": 0.55,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.7,
+                "reason": "Evidence that direct high-frequency control by large unified models is currently infeasible due to latency and poor performance, while abstraction layers (pretrained policies, programmatic controllers) enable success, reinforces the question's framing that high-frequency motor control may not depend on a large unified model."
+              }
+            ],
+            "effect_count": 3,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "WATCH",
+              "necessary_core": [],
+              "sufficient_supports": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ],
+                [
+                  "REINFORCE",
+                  "Q1"
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "BT1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "WATCH",
+                  "necessary": false,
+                  "sufficient": true,
+                  "classification": "REDUNDANT_LOAD_BEARING"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "M1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "AWARE",
+                  "necessary": false,
+                  "sufficient": false,
+                  "classification": "PERIPHERAL"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "Q1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "WATCH",
+                  "necessary": false,
+                  "sufficient": true,
+                  "classification": "REDUNDANT_LOAD_BEARING"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 3719,
+              "prompt_tokens": 3256,
+              "completion_tokens": 746,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-4",
+            "arm": "P1",
+            "topology": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "M1"
+              ],
+              [
+                "REINFORCE",
+                "Q1"
+              ]
+            ],
+            "necessary_core": [],
+            "sufficient_supports": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "Q1"
+              ]
+            ],
+            "attention": "WATCH",
+            "effects": [
+              {
+                "operation": "REINFORCE",
+                "target": "BT1",
+                "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.8,
+                "reason": "The evaluation explicitly measures task success across four control interfaces and reports a latency gap (83 Hz required vs ~0.2-0.4 Hz achieved), directly addressing the identified bottleneck of lacking latency × energy × task-success evaluation for high-frequency embodied control. The evidence provides concrete latency and task-success data, reinforcing the existence and relevance of this evaluation gap."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "Q1",
+                "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+                "change_magnitude_debug_only": 0.5,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.7,
+                "reason": "The finding that capability depends heavily on the control interface—direct joint control mostly fails while supervising a pretrained controller or using simple orientation tools enables real navigation and manipulation—provides evidence relevant to the question of whether high-frequency motor control should depend on a large unified model. It supports the position that direct dependence on a large unified model for the fastest loop is problematic, reinforcing the question's framing."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "M1",
+                "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.75,
+                "reason": "The observed separation between high-level cognitive tasks (strategy adjustment, image/sensory understanding) and low-level temporal motor control (direct joint control failing, pretrained policy supervision succeeding) supports the model that embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence. The evidence shows different capabilities and bottlenecks across abstraction levels."
+              }
+            ],
+            "effect_count": 3,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "WATCH",
+              "necessary_core": [],
+              "sufficient_supports": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ],
+                [
+                  "REINFORCE",
+                  "Q1"
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "BT1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "WATCH",
+                  "necessary": false,
+                  "sufficient": true,
+                  "classification": "REDUNDANT_LOAD_BEARING"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "M1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "AWARE",
+                  "necessary": false,
+                  "sufficient": false,
+                  "classification": "PERIPHERAL"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "Q1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "WATCH",
+                  "necessary": false,
+                  "sufficient": true,
+                  "classification": "REDUNDANT_LOAD_BEARING"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 3149,
+              "prompt_tokens": 3256,
+              "completion_tokens": 770,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-5",
+            "arm": "P1",
+            "topology": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "M1"
+              ],
+              [
+                "REINFORCE",
+                "Q1"
+              ]
+            ],
+            "necessary_core": [],
+            "sufficient_supports": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "Q1"
+              ]
+            ],
+            "attention": "WATCH",
+            "effects": [
+              {
+                "operation": "REINFORCE",
+                "target": "BT1",
+                "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.8,
+                "reason": "The evaluation explicitly measures task success across four control interfaces and reports latency constraints (83 Hz vs 0.2-0.4 Hz), directly addressing the identified bottleneck of lacking latency × energy × task-success evaluation for high-frequency embodied control. The source provides concrete latency and task-success data, reinforcing the bottleneck's existence and relevance."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "Q1",
+                "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+                "change_magnitude_debug_only": 0.5,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.7,
+                "reason": "The finding that capability depends heavily on the control interface—direct joint control mostly fails while supervising a pretrained controller or using simple orientation tools enables real navigation and manipulation—provides evidence relevant to the question of whether high-frequency motor control should depend on a large unified model. It reinforces the concern that direct dependence on a large unified model for the fastest loop is problematic."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "M1",
+                "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.75,
+                "reason": "The observed separation between high-level cognitive tasks (strategy adjustment, image/sensory understanding) and low-level motor control (direct joint control failing, pretrained policy supervision succeeding) supports the model that embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence. The evidence shows different capabilities and failure modes across abstraction levels."
+              }
+            ],
+            "effect_count": 3,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "WATCH",
+              "necessary_core": [],
+              "sufficient_supports": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ],
+                [
+                  "REINFORCE",
+                  "Q1"
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "BT1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "WATCH",
+                  "necessary": false,
+                  "sufficient": true,
+                  "classification": "REDUNDANT_LOAD_BEARING"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "M1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "AWARE",
+                  "necessary": false,
+                  "sufficient": false,
+                  "classification": "PERIPHERAL"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "Q1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "WATCH",
+                  "necessary": false,
+                  "sufficient": true,
+                  "classification": "REDUNDANT_LOAD_BEARING"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 3181,
+              "prompt_tokens": 3256,
+              "completion_tokens": 755,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          },
+          {
+            "sample_id": "P1-6",
+            "arm": "P1",
+            "topology": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "M1"
+              ],
+              [
+                "REINFORCE",
+                "Q1"
+              ]
+            ],
+            "necessary_core": [],
+            "sufficient_supports": [
+              [
+                "REINFORCE",
+                "BT1"
+              ],
+              [
+                "REINFORCE",
+                "Q1"
+              ]
+            ],
+            "attention": "WATCH",
+            "effects": [
+              {
+                "operation": "REINFORCE",
+                "target": "BT1",
+                "target_kernel_node_id": "ba1ac843-a828-5842-8542-47f6edd05e2f",
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.8,
+                "reason": "The evaluation explicitly measures task success across four control interfaces and reports a latency gap (83 Hz required vs ~0.2-0.4 Hz achieved) for direct control, while also noting that the simulator was paused to avoid latency dominating results. This directly addresses the identified bottleneck: lack of latency × energy × task-success evaluation for high-frequency embodied control, by providing such an evaluation and confirming the gap."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "Q1",
+                "target_kernel_node_id": "3a3370e6-0858-5c9a-8796-99373e53f47d",
+                "change_magnitude_debug_only": 0.5,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.7,
+                "reason": "The finding that capability depends heavily on the control interface—direct joint control mostly fails while supervising a pretrained controller or using simple orientation tools enables real navigation and manipulation—provides evidence relevant to the question of whether high-frequency motor control should depend on a large unified model. It supports the negative side by showing that large unified models struggle with direct high-frequency control but can succeed when abstracted away from the fastest loop."
+              },
+              {
+                "operation": "REINFORCE",
+                "target": "M1",
+                "target_kernel_node_id": "b9cac295-0b01-5422-8e62-340be9e7f2ec",
+                "change_magnitude_debug_only": 0.6,
+                "epistemic_strength": 0.35,
+                "target_importance": 0.75,
+                "reason": "The observed pattern—that models perform better when supervising a pretrained controller or using high-level commands than when directly controlling joints, and that RL policy training is worse than writing a Python controller—supports the structural model that embodied intelligence contains partially separable cognitive intelligence and temporal motor intelligence. The cognitive (strategy, adaptation) and motor (low-level control) aspects show different capability profiles."
+              }
+            ],
+            "effect_count": 3,
+            "causal_profile": {
+              "version": "decision-causal-core-v0.1",
+              "decision_projection": "article-attention-disposition",
+              "baseline_decision": "WATCH",
+              "necessary_core": [],
+              "sufficient_supports": [
+                [
+                  "REINFORCE",
+                  "BT1"
+                ],
+                [
+                  "REINFORCE",
+                  "Q1"
+                ]
+              ],
+              "relations": [
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "BT1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "WATCH",
+                  "necessary": false,
+                  "sufficient": true,
+                  "classification": "REDUNDANT_LOAD_BEARING"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "M1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "AWARE",
+                  "necessary": false,
+                  "sufficient": false,
+                  "classification": "PERIPHERAL"
+                },
+                {
+                  "relation": [
+                    "REINFORCE",
+                    "Q1"
+                  ],
+                  "multiplicity": 1,
+                  "baseline_decision": "WATCH",
+                  "without_decision": "WATCH",
+                  "alone_decision": "WATCH",
+                  "necessary": false,
+                  "sufficient": true,
+                  "classification": "REDUNDANT_LOAD_BEARING"
+                }
+              ],
+              "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+            },
+            "meta": {
+              "latency_ms": 3729,
+              "prompt_tokens": 3256,
+              "completion_tokens": 799,
+              "estimated_cost_usd": null,
+              "model": "deepseek-flash",
+              "validation_events": [],
+              "thinking": "disabled",
+              "reasoning_effort": null,
+              "timeout": 60.0,
+              "impact_contract_version": "canonical-impact-vnext-v0.1"
+            },
+            "impact_contract_version": "canonical-impact-vnext-v0.1",
+            "status": "OK"
+          }
+        ]
+      },
+      "summary": {
+        "P0": {
+          "n_ok": 6,
+          "n_error": 0,
+          "attention_counts": {
+            "WATCH": 6
+          },
+          "effect_count_mean": 2.0,
+          "map": {
+            "version": "static-probabilistic-cognitive-map-v0.1",
+            "n": 6,
+            "relation_map": {
+              "('REINFORCE', 'BT1')": {
+                "relation": [
+                  "REINFORCE",
+                  "BT1"
+                ],
+                "topology": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                },
+                "necessary": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                },
+                "sufficient": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                },
+                "load_bearing": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                },
+                "load_bearing_given_present": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                }
+              },
+              "('REINFORCE', 'M1')": {
+                "relation": [
+                  "REINFORCE",
+                  "M1"
+                ],
+                "topology": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                },
+                "necessary": {
+                  "count": 0,
+                  "p": 0.0,
+                  "wilson95": [
+                    2.7755575615628914e-17,
+                    0.3903342879021653
+                  ],
+                  "half_width": 0.19516714395108264
+                },
+                "sufficient": {
+                  "count": 0,
+                  "p": 0.0,
+                  "wilson95": [
+                    2.7755575615628914e-17,
+                    0.3903342879021653
+                  ],
+                  "half_width": 0.19516714395108264
+                },
+                "load_bearing": {
+                  "count": 0,
+                  "p": 0.0,
+                  "wilson95": [
+                    2.7755575615628914e-17,
+                    0.3903342879021653
+                  ],
+                  "half_width": 0.19516714395108264
+                },
+                "load_bearing_given_present": {
+                  "count": 0,
+                  "p": 0.0,
+                  "wilson95": [
+                    2.7755575615628914e-17,
+                    0.3903342879021653
+                  ],
+                  "half_width": 0.19516714395108264
+                }
+              }
+            },
+            "topology_distribution": {
+              "n_unique": 1,
+              "mode_rate": 1.0,
+              "entropy_bits": -0.0
+            },
+            "load_bearing_distribution": {
+              "n_unique": 1,
+              "mode_rate": 1.0,
+              "entropy_bits": -0.0
+            },
+            "attention_distribution": {
+              "counts": {
+                "WATCH": 6
+              },
+              "probabilities": {
+                "WATCH": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                }
+              },
+              "entropy_bits": -0.0,
+              "normalized_entropy": -0.0,
+              "dominant_action": "WATCH",
+              "concentration": 1.0,
+              "dominant_wilson95": [
+                0.6096657120978346,
+                1.0
+              ]
+            },
+            "semantics": {
+              "topology_probability": "P(r in T)",
+              "necessary_probability": "P(r in N_pi(T))",
+              "sufficient_probability": "P(r in S_pi(T))",
+              "load_bearing_probability": "P(r in B_pi(T)), B_pi=N_pi union S_pi",
+              "attention_probability": "P(A)",
+              "guardrail": "empirical bounded-epoch distribution; not a stochastic-process model"
+            }
+          }
+        },
+        "P1": {
+          "n_ok": 6,
+          "n_error": 0,
+          "attention_counts": {
+            "WATCH": 6
+          },
+          "effect_count_mean": 3.0,
+          "map": {
+            "version": "static-probabilistic-cognitive-map-v0.1",
+            "n": 6,
+            "relation_map": {
+              "('REINFORCE', 'BT1')": {
+                "relation": [
+                  "REINFORCE",
+                  "BT1"
+                ],
+                "topology": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                },
+                "necessary": {
+                  "count": 0,
+                  "p": 0.0,
+                  "wilson95": [
+                    2.7755575615628914e-17,
+                    0.3903342879021653
+                  ],
+                  "half_width": 0.19516714395108264
+                },
+                "sufficient": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                },
+                "load_bearing": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                },
+                "load_bearing_given_present": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                }
+              },
+              "('REINFORCE', 'M1')": {
+                "relation": [
+                  "REINFORCE",
+                  "M1"
+                ],
+                "topology": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                },
+                "necessary": {
+                  "count": 0,
+                  "p": 0.0,
+                  "wilson95": [
+                    2.7755575615628914e-17,
+                    0.3903342879021653
+                  ],
+                  "half_width": 0.19516714395108264
+                },
+                "sufficient": {
+                  "count": 0,
+                  "p": 0.0,
+                  "wilson95": [
+                    2.7755575615628914e-17,
+                    0.3903342879021653
+                  ],
+                  "half_width": 0.19516714395108264
+                },
+                "load_bearing": {
+                  "count": 0,
+                  "p": 0.0,
+                  "wilson95": [
+                    2.7755575615628914e-17,
+                    0.3903342879021653
+                  ],
+                  "half_width": 0.19516714395108264
+                },
+                "load_bearing_given_present": {
+                  "count": 0,
+                  "p": 0.0,
+                  "wilson95": [
+                    2.7755575615628914e-17,
+                    0.3903342879021653
+                  ],
+                  "half_width": 0.19516714395108264
+                }
+              },
+              "('REINFORCE', 'Q1')": {
+                "relation": [
+                  "REINFORCE",
+                  "Q1"
+                ],
+                "topology": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                },
+                "necessary": {
+                  "count": 0,
+                  "p": 0.0,
+                  "wilson95": [
+                    2.7755575615628914e-17,
+                    0.3903342879021653
+                  ],
+                  "half_width": 0.19516714395108264
+                },
+                "sufficient": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                },
+                "load_bearing": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                },
+                "load_bearing_given_present": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                }
+              }
+            },
+            "topology_distribution": {
+              "n_unique": 1,
+              "mode_rate": 1.0,
+              "entropy_bits": -0.0
+            },
+            "load_bearing_distribution": {
+              "n_unique": 1,
+              "mode_rate": 1.0,
+              "entropy_bits": -0.0
+            },
+            "attention_distribution": {
+              "counts": {
+                "WATCH": 6
+              },
+              "probabilities": {
+                "WATCH": {
+                  "count": 6,
+                  "p": 1.0,
+                  "wilson95": [
+                    0.6096657120978346,
+                    1.0
+                  ],
+                  "half_width": 0.1951671439510827
+                }
+              },
+              "entropy_bits": -0.0,
+              "normalized_entropy": -0.0,
+              "dominant_action": "WATCH",
+              "concentration": 1.0,
+              "dominant_wilson95": [
+                0.6096657120978346,
+                1.0
+              ]
+            },
+            "semantics": {
+              "topology_probability": "P(r in T)",
+              "necessary_probability": "P(r in N_pi(T))",
+              "sufficient_probability": "P(r in S_pi(T))",
+              "load_bearing_probability": "P(r in B_pi(T)), B_pi=N_pi union S_pi",
+              "attention_probability": "P(A)",
+              "guardrail": "empirical bounded-epoch distribution; not a stochastic-process model"
+            }
+          }
+        }
+      }
+    }
+  },
+  "guardrails": [
+    "Same frozen real-web audited semantic units and same modal Locate per arm.",
+    "Same audited-units to ExtractionResult adapter and production projection per arm.",
+    "Same ModelProvider grounding, importance resolver, epistemic handling, runtime and decision strategy per arm.",
+    "Only the Impact system prompt differs between P0 and P1.",
+    "P0/P1 calls are interleaved by ordinal within case.",
+    "No outcome-dependent prompt editing or sample expansion.",
+    "Production default remains P0 during this gate."
+  ]
+}
