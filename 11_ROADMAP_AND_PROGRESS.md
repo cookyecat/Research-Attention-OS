@@ -1132,3 +1132,7 @@ Result: `136_PHASE10D6B_PROMPT_RECONCILIATION_RESULT.md`. Prompt-only shadow A/B
 ## Phase 10D.6C Canonical Input Reconciliation — PREREGISTERED 2026-09-11
 
 Preregistration: `137_PHASE10D6C_CANONICAL_INPUT_RECONCILIATION_PREREGISTRATION.md`. After 10D.6B exposed empty-effect DROP on A/D in both prompt arms, the next controlled gate moves to the earlier representation seam. B0 uses the audited-units -> `ExtractionResult` Impact payload; C1 gives the same Auditor-admitted canonical units directly to Relation Mapping. The production system prompt, grounding, importance resolver, feature projection, decision strategy and runtime remain frozen. Raw pre-grounding and grounded effects are both persisted for causal attribution.
+
+## Phase 10D.6C first execution — TECHNICAL SCHEMA FAILURE / AMENDMENT LOCKED 2026-09-11
+
+First execution at SHA `08963a4` yielded 0/24 valid C1 outcomes because the experimental canonical user payload omitted the explicit JSON response skeleton that production `impact_user_prompt` includes. This is a runner plumbing asymmetry, not a semantic result. Amendment `138_PHASE10D6C_SCHEMA_PLUMBING_FAILURE_AND_AMENDMENT.md` permits only restoring the exact output-shape instruction; all semantic and decision variables remain frozen. Failed artifact is retained.
