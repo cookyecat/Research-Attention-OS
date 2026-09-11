@@ -1187,3 +1187,7 @@ Preregistration: `158_PHASE10D6K_CONSERVATIVE_AUTHORITATIVE_ATTENTION_REPLAY_PRE
 ## Phase 10D.6K first execution — TECHNICAL CARDINAL-FREE LEGALITY FAILURE / AMENDMENT LOCKED 2026-09-11
 
 First execution at SHA `2053ad0` produced all-DROP because shared `legal_public_effects()` still requires `change_magnitude > 0` before the Magnitude-Free/Pareto stack. Failed artifact SHA256 `bed036e39041f296c0b1b88234daa910f9de65021f6c60191e4a26a363072bbf` is retained and is not a cognitive result. Amendment `159_PHASE10D6K_CARDINAL_FREE_LEGALITY_FAILURE_AND_AMENDMENT.md` forbids injecting a fake positive magnitude. Existing Magnitude-Free v0.1 remains unchanged; a separately versioned experimental semantic-effect-existence strategy will be introduced for the valid rerun. Production defaults unchanged; Phase 9A remains paused.
+
+## Phase 10D.6K second execution — CAUSAL-CORE LEGALITY PLUMBING FAILURE / AMENDMENT LOCKED 2026-09-11
+
+The new cardinal-free strategy itself was correct, but `Decision-Causal Core` independently applied legacy `legal_public_effects()` before invoking it, again producing all-DROP. Failed artifact SHA256 `3661c32c1dd9eb493e74d55e830aa9b84ee8f08e1522c8f4f5d544c19fe26423` is retained and is not a cognitive result. Amendment `160_PHASE10D6K_CAUSAL_CORE_LEGALITY_PLUMBING_FAILURE_AND_AMENDMENT.md` centralizes effect-existence legality in the decision strategy so route and causal ablation share one contract. Existing production strategy semantics remain unchanged.
