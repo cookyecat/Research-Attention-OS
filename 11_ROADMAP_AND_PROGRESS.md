@@ -1237,3 +1237,6 @@ The K3 direction passes the amended research gate: no A/D ENGAGE inflation, no f
 
 Next: Phase 9A may resume, but its old preregistered instrument must first be audited against the frozen post-10D.6L cognition contract before any outcome sampling.
 Regression checkpoint after 10D.6K v0.2: `686 passed, 63 skipped, 1 historical Case-K failure, 1 warning`; zero new failures.
+## Research spinout — RAOS Cognitive Evaluator Benchmark paper seed — 2026-09-12
+
+Paper/motivation seed: `178_RAOS_COGNITIVE_EVALUATOR_BENCHMARK_PAPER_SEED.md`. The proposed benchmark grows out of RAOS causal failure analysis and targets state-conditioned, evidence-grounded cognitive reasoning plus downstream decision consequences. Current draft includes Abstract, Introduction, Related Work (FEVER/AVeriTeC/ALCE/FACTS Grounding/Evidence Sufficiency/JudgeBench), benchmark task skeleton, and a frozen research-origin narrative. This is a parallel research asset and does **not** interrupt Phase 9A; Phase 9A's Kernel counterfactual is expected to provide a central benchmark result.
