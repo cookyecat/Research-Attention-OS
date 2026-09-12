@@ -1250,3 +1250,11 @@ Primary semantic gate: K0 vs K1-S raw target polarity must move from CHALLENGE-d
 ## Phase 9A v0.2 deterministic instrument preflight — CLOSED 2026-09-13
 
 Result: `179_PHASE9A_V02_DETERMINISTIC_PREFLIGHT_RESULT.md`. No LLM outcome was sampled. K0 and K1-I produce byte-equivalent Relation-Mapping payloads when importance/version metadata is excluded as preregistered; K1-S differs only through the semantic proposition. Deterministic cardinal-free routing confirms the preregistered downstream channels: K0 CHALLENGE/HIGH/SUFFICIENT -> ENGAGE, K1-S REINFORCE/HIGH/SUFFICIENT -> AWARE, and K1-I CHALLENGE/LOW/SUFFICIENT -> AWARE. Next: implement and test the v0.2 stochastic Relation-Mapping runner before any outcome collection.
+
+## Phase 9A Kernel Causal Alignment — CLOSED / CAUSAL ALIGNMENT SUPPORTED 2026-09-13
+
+Result: `180_PHASE9A_KERNEL_CAUSAL_ALIGNMENT_RESULT.md`. Valid v0.2 measurement SHA `fcf684ad33fb3de3215ce6b163f6cdb5ded50d7c`; artifact SHA256 `025e0777d1146ce3e2720bd9bd1b42bf34a969a9faa2fea13b5b36c8237860ea`.
+
+With identical frozen RS05 evidence, K0 produced `CHALLENGE_ONLY 12/12 -> ENGAGE 12/12`, while semantic assimilation K1-S produced `REINFORCE_ONLY 12/12 -> AWARE 12/12`. Raw-polarity JSD=`1.0`; 5000-permutation null p95=`0.081704`; tail probability=`0.00019996`; preregistered semantic gate PASS. The primary endpoint is raw Relation Mapping, so deterministic Grounding cannot manufacture the relation reversal.
+
+The importance-only K1-I arm replayed the exact K0 relation realization in every pair: topology/load-bearing JSD=`0.0`, zero topology invariant violations, while authoritative importance `0.9 -> 0.2` changed Attention `ENGAGE -> AWARE` in `12/12` retained-CHALLENGE pairs. This cleanly separates semantic assimilation from attention allocation. Full regression: `693 passed, 63 skipped, 1 historical Case-K failure, 1 warning`; zero new failures. Production defaults unchanged.

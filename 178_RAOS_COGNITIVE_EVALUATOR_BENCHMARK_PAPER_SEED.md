@@ -319,7 +319,7 @@ These are **motivation results**, not yet the final benchmark table:
 - In Phase 10D.6L.4, the weak evaluator was highly stable but permissive, with many strong-reference `PARTIAL` items classified as `DIRECT`. Stability therefore did not imply calibrated strictness.
 - In Phase 10D.6L.4J, two apparent critical jurisdiction failures disappeared when full anchor semantics were provided: both cases matched the strong reference in 3/3 repeats. This is the empirical origin of the `Model Capability + Task Information + Decision Policy` decomposition.
 - In Phase 10D.6K, weak-vs-strong evaluator policy changed final Attention on boundary cases but converged on the strong N4 technical case. This motivates measuring downstream consequence rather than only local evaluator agreement.
-- Phase 9A is intended to supply the first explicit Kernel counterfactual: hold evidence fixed while changing the accepted cognitive proposition and test whether the relation flips from CHALLENGE to REINFORCE.
+- Phase 9A supplied the first explicit Kernel counterfactual. With identical frozen RS05 evidence, K0 produced `CHALLENGE_ONLY 12/12`, while an accepted semantic-assimilation Kernel K1-S produced `REINFORCE_ONLY 12/12`. Raw-polarity JSD was `1.0` bit and exceeded the preregistered 5000-permutation null gate (`p=0.00019996`). A separate importance-only K1-I replay preserved relation topology exactly while changing Attention `ENGAGE -> AWARE` in `12/12` pairs. This is the first controlled evidence for state-conditioned relation reversal plus downstream causal separation.
 
 ### 7.2 Important negative result to preserve
 

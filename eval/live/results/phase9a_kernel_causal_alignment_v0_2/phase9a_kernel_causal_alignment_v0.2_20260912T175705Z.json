@@ -1,0 +1,4654 @@
+{
+  "run_version": "phase9a-kernel-causal-alignment-v0.2",
+  "status": "PHASE9A_KERNEL_CAUSAL_ALIGNMENT_V0_2",
+  "measurement_sha": "fcf684ad33fb3de3215ce6b163f6cdb5ded50d7c",
+  "instrument_version": "phase9a-kernel-causal-alignment-v0.2",
+  "relation_contract_version": "phase9a-relation-only-cardinal-free-v0.2",
+  "system_prompt_sha256": "669fe5d9ae544adc9a16a97c85dd4d2fe58102357a0146f580a97ecc0c5452ee",
+  "auditor_artifact": "eval/live/results/phase7a_v0_2_6_epistemic_audit_v0_1/phase6b_epistemic_unit_audit_v0_1_20260908T090628Z.json",
+  "auditor_sha256": "aa594aab2b7b2f0e252dbf3ed8978865e03d9ddd1b905c8f38db0ae60ea5711f",
+  "model_configuration": {
+    "requested_model": "deepseek-flash",
+    "thinking": "disabled",
+    "temperature": 0.1
+  },
+  "strategy": {
+    "strategy_id": "pareto-multidelta-cardinal-free-anchored-open-new",
+    "version": "pareto-multidelta-cardinal-free-anchored-open-new-v0.1",
+    "selection": "ordinal-pareto-frontier-v0.1",
+    "article_aggregation": "attention-join-v0.1",
+    "effect_calibration": {
+      "calibration_id": "magnitude-free",
+      "version": "magnitude-free-v0.1",
+      "uses_raw_change_magnitude": false,
+      "authority": "operation+epistemic-band+importance-band+active-role-band"
+    },
+    "effect_admission": {
+      "admission_id": "anchored-open-new",
+      "version": "anchored-open-new-v0.1",
+      "open_new_requires_kernel_jurisdiction_anchor": true,
+      "uses_raw_change_magnitude": false
+    },
+    "public_update_projection": "strategy-decision-cause-with-legacy-unbound-fallback-v0.1",
+    "decision_scope": "strategy-bound-scope-v0.1",
+    "effect_existence": "legal-semantic-relation-v0.1"
+  },
+  "n_per_semantic_arm": 12,
+  "arms": {
+    "K0": {
+      "arm": "K0",
+      "target_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+      "target_title": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+      "target_proposition": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+      "target_importance": 0.9,
+      "current_version": 1,
+      "patch": null,
+      "target_versions": [
+        {
+          "version": 1,
+          "snapshot": {
+            "id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "code": "CF-B-PERF",
+            "node_type": "BELIEF",
+            "title": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+            "status": "ACTIVE",
+            "payload": {
+              "proposition": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+              "scope": "small PyTorch GPU matrix multiplication workloads",
+              "importance": 0.9,
+              "phase6b_fixture_code": "CF-B-PERF"
+            },
+            "current_version": 1
+          },
+          "patch_id": null,
+          "committed_by": "USER"
+        }
+      ]
+    },
+    "K1-S": {
+      "arm": "K1-S",
+      "target_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+      "target_title": "For a small 64x64 bf16 matrix multiplication with bias, kernel preparation and launch overhead dominate useful GPU computation.",
+      "target_proposition": "For a small 64x64 bf16 matrix multiplication with bias, kernel preparation and launch overhead dominate useful GPU computation.",
+      "target_importance": 0.9,
+      "current_version": 2,
+      "patch": {
+        "id": "5b4c5a2d-9f9b-40f1-ab59-9ca90947a804",
+        "status": "ACCEPTED",
+        "change_type": "REVISE",
+        "target_object_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+        "proposed_state": {
+          "title": "For a small 64x64 bf16 matrix multiplication with bias, kernel preparation and launch overhead dominate useful GPU computation.",
+          "payload": {
+            "proposition": "For a small 64x64 bf16 matrix multiplication with bias, kernel preparation and launch overhead dominate useful GPU computation.",
+            "scope": "small PyTorch GPU matrix multiplication workloads",
+            "importance": 0.9,
+            "phase6b_fixture_code": "CF-B-PERF"
+          }
+        }
+      },
+      "target_versions": [
+        {
+          "version": 1,
+          "snapshot": {
+            "id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "code": "CF-B-PERF",
+            "node_type": "BELIEF",
+            "title": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+            "status": "ACTIVE",
+            "payload": {
+              "proposition": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+              "scope": "small PyTorch GPU matrix multiplication workloads",
+              "importance": 0.9,
+              "phase6b_fixture_code": "CF-B-PERF"
+            },
+            "current_version": 1
+          },
+          "patch_id": null,
+          "committed_by": "USER"
+        },
+        {
+          "version": 2,
+          "snapshot": {
+            "id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "node_type": "BELIEF",
+            "title": "For a small 64x64 bf16 matrix multiplication with bias, kernel preparation and launch overhead dominate useful GPU computation.",
+            "status": "ACTIVE",
+            "payload": {
+              "proposition": "For a small 64x64 bf16 matrix multiplication with bias, kernel preparation and launch overhead dominate useful GPU computation.",
+              "scope": "small PyTorch GPU matrix multiplication workloads",
+              "importance": 0.9,
+              "phase6b_fixture_code": "CF-B-PERF"
+            },
+            "current_version": 2
+          },
+          "patch_id": "5b4c5a2d-9f9b-40f1-ab59-9ca90947a804",
+          "committed_by": "USER"
+        }
+      ]
+    },
+    "K1-I": {
+      "arm": "K1-I",
+      "target_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+      "target_title": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+      "target_proposition": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+      "target_importance": 0.2,
+      "current_version": 2,
+      "patch": {
+        "id": "80d2fea3-04b6-48a7-a058-87180fed9c64",
+        "status": "ACCEPTED",
+        "change_type": "REVISE",
+        "target_object_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+        "proposed_state": {
+          "title": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+          "payload": {
+            "proposition": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+            "scope": "small PyTorch GPU matrix multiplication workloads",
+            "importance": 0.2,
+            "phase6b_fixture_code": "CF-B-PERF"
+          }
+        }
+      },
+      "target_versions": [
+        {
+          "version": 1,
+          "snapshot": {
+            "id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "code": "CF-B-PERF",
+            "node_type": "BELIEF",
+            "title": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+            "status": "ACTIVE",
+            "payload": {
+              "proposition": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+              "scope": "small PyTorch GPU matrix multiplication workloads",
+              "importance": 0.9,
+              "phase6b_fixture_code": "CF-B-PERF"
+            },
+            "current_version": 1
+          },
+          "patch_id": null,
+          "committed_by": "USER"
+        },
+        {
+          "version": 2,
+          "snapshot": {
+            "id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "node_type": "BELIEF",
+            "title": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+            "status": "ACTIVE",
+            "payload": {
+              "proposition": "For a small 64x64 bf16 matrix multiplication with bias, computation dominates runtime rather than kernel preparation and launch overhead.",
+              "scope": "small PyTorch GPU matrix multiplication workloads",
+              "importance": 0.2,
+              "phase6b_fixture_code": "CF-B-PERF"
+            },
+            "current_version": 2
+          },
+          "patch_id": "80d2fea3-04b6-48a7-a058-87180fed9c64",
+          "committed_by": "USER"
+        }
+      ]
+    }
+  },
+  "samples": {
+    "K0": [
+      {
+        "sample_id": "K0-1",
+        "ordinal": 1,
+        "arm": "K0",
+        "relation_source_arm": "K0",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "ENGAGE",
+        "expected_output": "KERNEL_PATCH",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "ENGAGE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "ENGAGE",
+              "without_decision": "DROP",
+              "alone_decision": "ENGAGE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 982,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K0-2",
+        "ordinal": 2,
+        "arm": "K0",
+        "relation_source_arm": "K0",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "ENGAGE",
+        "expected_output": "KERNEL_PATCH",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "ENGAGE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "ENGAGE",
+              "without_decision": "DROP",
+              "alone_decision": "ENGAGE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1627,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K0-3",
+        "ordinal": 3,
+        "arm": "K0",
+        "relation_source_arm": "K0",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "ENGAGE",
+        "expected_output": "KERNEL_PATCH",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "ENGAGE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "ENGAGE",
+              "without_decision": "DROP",
+              "alone_decision": "ENGAGE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 928,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K0-4",
+        "ordinal": 4,
+        "arm": "K0",
+        "relation_source_arm": "K0",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "ENGAGE",
+        "expected_output": "KERNEL_PATCH",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "ENGAGE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "ENGAGE",
+              "without_decision": "DROP",
+              "alone_decision": "ENGAGE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1218,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K0-5",
+        "ordinal": 5,
+        "arm": "K0",
+        "relation_source_arm": "K0",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "ENGAGE",
+        "expected_output": "KERNEL_PATCH",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "ENGAGE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "ENGAGE",
+              "without_decision": "DROP",
+              "alone_decision": "ENGAGE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1047,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K0-6",
+        "ordinal": 6,
+        "arm": "K0",
+        "relation_source_arm": "K0",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "ENGAGE",
+        "expected_output": "KERNEL_PATCH",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "ENGAGE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "ENGAGE",
+              "without_decision": "DROP",
+              "alone_decision": "ENGAGE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 979,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K0-7",
+        "ordinal": 7,
+        "arm": "K0",
+        "relation_source_arm": "K0",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "ENGAGE",
+        "expected_output": "KERNEL_PATCH",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "ENGAGE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "ENGAGE",
+              "without_decision": "DROP",
+              "alone_decision": "ENGAGE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition: it states that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate. This is the same workload scope (small 64x64 bf16 matmul with add/bias) and directly requires the target proposition (that computation dominates rather than overhead) to be weakened or overturned."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition: it states that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate. This is the same workload scope (small 64x64 bf16 matmul with add/bias) and directly requires the target proposition (that computation dominates rather than overhead) to be weakened or overturned."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1206,
+          "prompt_tokens": 735,
+          "completion_tokens": 145,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K0-8",
+        "ordinal": 8,
+        "arm": "K0",
+        "relation_source_arm": "K0",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "ENGAGE",
+        "expected_output": "KERNEL_PATCH",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "ENGAGE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "ENGAGE",
+              "without_decision": "DROP",
+              "alone_decision": "ENGAGE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 967,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K0-9",
+        "ordinal": 9,
+        "arm": "K0",
+        "relation_source_arm": "K0",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "ENGAGE",
+        "expected_output": "KERNEL_PATCH",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "ENGAGE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "ENGAGE",
+              "without_decision": "DROP",
+              "alone_decision": "ENGAGE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1039,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K0-10",
+        "ordinal": 10,
+        "arm": "K0",
+        "relation_source_arm": "K0",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "ENGAGE",
+        "expected_output": "KERNEL_PATCH",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "ENGAGE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "ENGAGE",
+              "without_decision": "DROP",
+              "alone_decision": "ENGAGE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 732,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K0-11",
+        "ordinal": 11,
+        "arm": "K0",
+        "relation_source_arm": "K0",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "ENGAGE",
+        "expected_output": "KERNEL_PATCH",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "ENGAGE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "ENGAGE",
+              "without_decision": "DROP",
+              "alone_decision": "ENGAGE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1234,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K0-12",
+        "ordinal": 12,
+        "arm": "K0",
+        "relation_source_arm": "K0",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "ENGAGE",
+        "expected_output": "KERNEL_PATCH",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "ENGAGE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "ENGAGE",
+              "without_decision": "DROP",
+              "alone_decision": "ENGAGE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 681,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      }
+    ],
+    "K1-S": [
+      {
+        "sample_id": "K1-S-1",
+        "ordinal": 1,
+        "arm": "K1-S",
+        "relation_source_arm": "K1-S",
+        "status": "OK",
+        "raw_target_polarity": "REINFORCE_ONLY",
+        "raw_topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "REINFORCE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, establishing an overhead-bound regime where CPU-side kernel preparation and launch dominate—matching the target proposition's scope of small PyTorch GPU matrix multiplication workloads."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, establishing an overhead-bound regime where CPU-side kernel preparation and launch dominate—matching the target proposition's scope of small PyTorch GPU matrix multiplication workloads."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 907,
+          "prompt_tokens": 733,
+          "completion_tokens": 113,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-S-2",
+        "ordinal": 2,
+        "arm": "K1-S",
+        "relation_source_arm": "K1-S",
+        "status": "OK",
+        "raw_target_polarity": "REINFORCE_ONLY",
+        "raw_topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "REINFORCE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate, matching the target proposition's scope and claim."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate, matching the target proposition's scope and claim."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1124,
+          "prompt_tokens": 733,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-S-3",
+        "ordinal": 3,
+        "arm": "K1-S",
+        "relation_source_arm": "K1-S",
+        "status": "OK",
+        "raw_target_polarity": "REINFORCE_ONLY",
+        "raw_topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "REINFORCE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly states that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate, which confirms the target proposition at matching scope."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly states that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate, which confirms the target proposition at matching scope."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1166,
+          "prompt_tokens": 733,
+          "completion_tokens": 106,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-S-4",
+        "ordinal": 4,
+        "arm": "K1-S",
+        "relation_source_arm": "K1-S",
+        "status": "OK",
+        "raw_target_polarity": "REINFORCE_ONLY",
+        "raw_topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "REINFORCE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly states that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate, which confirms the target proposition at matching scope."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly states that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate, which confirms the target proposition at matching scope."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1028,
+          "prompt_tokens": 733,
+          "completion_tokens": 106,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-S-5",
+        "ordinal": 5,
+        "arm": "K1-S",
+        "relation_source_arm": "K1-S",
+        "status": "OK",
+        "raw_target_polarity": "REINFORCE_ONLY",
+        "raw_topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "REINFORCE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, establishing an overhead-bound regime where CPU-side kernel preparation and launch dominate—matching the target proposition's scope and claim."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, establishing an overhead-bound regime where CPU-side kernel preparation and launch dominate—matching the target proposition's scope and claim."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1580,
+          "prompt_tokens": 733,
+          "completion_tokens": 106,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-S-6",
+        "ordinal": 6,
+        "arm": "K1-S",
+        "relation_source_arm": "K1-S",
+        "status": "OK",
+        "raw_target_polarity": "REINFORCE_ONLY",
+        "raw_topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "REINFORCE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate, matching the target proposition's scope and claim."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate, matching the target proposition's scope and claim."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1594,
+          "prompt_tokens": 733,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-S-7",
+        "ordinal": 7,
+        "arm": "K1-S",
+        "relation_source_arm": "K1-S",
+        "status": "OK",
+        "raw_target_polarity": "REINFORCE_ONLY",
+        "raw_topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "REINFORCE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate, matching the target proposition's scope and claim."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate, matching the target proposition's scope and claim."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1098,
+          "prompt_tokens": 733,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-S-8",
+        "ordinal": 8,
+        "arm": "K1-S",
+        "relation_source_arm": "K1-S",
+        "status": "OK",
+        "raw_target_polarity": "REINFORCE_ONLY",
+        "raw_topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "REINFORCE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate, matching the target proposition's scope and claim."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate, matching the target proposition's scope and claim."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1074,
+          "prompt_tokens": 733,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-S-9",
+        "ordinal": 9,
+        "arm": "K1-S",
+        "relation_source_arm": "K1-S",
+        "status": "OK",
+        "raw_target_polarity": "REINFORCE_ONLY",
+        "raw_topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "REINFORCE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, establishing an overhead-bound regime where CPU-side preparation and launch dominate, matching the target proposition's scope and claim."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, establishing an overhead-bound regime where CPU-side preparation and launch dominate, matching the target proposition's scope and claim."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 858,
+          "prompt_tokens": 733,
+          "completion_tokens": 104,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-S-10",
+        "ordinal": 10,
+        "arm": "K1-S",
+        "relation_source_arm": "K1-S",
+        "status": "OK",
+        "raw_target_polarity": "REINFORCE_ONLY",
+        "raw_topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "REINFORCE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate, matching the target proposition's scope and claim."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate, matching the target proposition's scope and claim."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1356,
+          "prompt_tokens": 733,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-S-11",
+        "ordinal": 11,
+        "arm": "K1-S",
+        "relation_source_arm": "K1-S",
+        "status": "OK",
+        "raw_target_polarity": "REINFORCE_ONLY",
+        "raw_topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "REINFORCE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, establishing an overhead-bound regime where CPU-side kernel preparation and launch dominate, matching the target proposition's scope of small PyTorch GPU matrix multiplication workloads."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, establishing an overhead-bound regime where CPU-side kernel preparation and launch dominate, matching the target proposition's scope of small PyTorch GPU matrix multiplication workloads."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 939,
+          "prompt_tokens": 733,
+          "completion_tokens": 112,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-S-12",
+        "ordinal": 12,
+        "arm": "K1-S",
+        "relation_source_arm": "K1-S",
+        "status": "OK",
+        "raw_target_polarity": "REINFORCE_ONLY",
+        "raw_topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "REINFORCE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.9,
+            "importance_band": "HIGH",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "REINFORCE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "REINFORCE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, establishing an overhead-bound regime where CPU-side kernel preparation and launch dominate—matching the target proposition's scope and claim."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "REINFORCE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly confirms that for a 64x64 bf16 matmul+add workload, GPU kernel time is under 1% of CPU time, establishing an overhead-bound regime where CPU-side kernel preparation and launch dominate—matching the target proposition's scope and claim."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1271,
+          "prompt_tokens": 733,
+          "completion_tokens": 106,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      }
+    ],
+    "K1-I": [
+      {
+        "sample_id": "K1-I-1",
+        "ordinal": 1,
+        "arm": "K1-I",
+        "relation_source_arm": "K0_REPLAY",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.2,
+            "importance_band": "LOW",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 982,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-I-2",
+        "ordinal": 2,
+        "arm": "K1-I",
+        "relation_source_arm": "K0_REPLAY",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.2,
+            "importance_band": "LOW",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1627,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-I-3",
+        "ordinal": 3,
+        "arm": "K1-I",
+        "relation_source_arm": "K0_REPLAY",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.2,
+            "importance_band": "LOW",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 928,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-I-4",
+        "ordinal": 4,
+        "arm": "K1-I",
+        "relation_source_arm": "K0_REPLAY",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.2,
+            "importance_band": "LOW",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1218,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-I-5",
+        "ordinal": 5,
+        "arm": "K1-I",
+        "relation_source_arm": "K0_REPLAY",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.2,
+            "importance_band": "LOW",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1047,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-I-6",
+        "ordinal": 6,
+        "arm": "K1-I",
+        "relation_source_arm": "K0_REPLAY",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.2,
+            "importance_band": "LOW",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 979,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-I-7",
+        "ordinal": 7,
+        "arm": "K1-I",
+        "relation_source_arm": "K0_REPLAY",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.2,
+            "importance_band": "LOW",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition: it states that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate. This is the same workload scope (small 64x64 bf16 matmul with add/bias) and directly requires the target proposition (that computation dominates rather than overhead) to be weakened or overturned."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition: it states that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate. This is the same workload scope (small 64x64 bf16 matmul with add/bias) and directly requires the target proposition (that computation dominates rather than overhead) to be weakened or overturned."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1206,
+          "prompt_tokens": 735,
+          "completion_tokens": 145,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-I-8",
+        "ordinal": 8,
+        "arm": "K1-I",
+        "relation_source_arm": "K0_REPLAY",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.2,
+            "importance_band": "LOW",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 967,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-I-9",
+        "ordinal": 9,
+        "arm": "K1-I",
+        "relation_source_arm": "K0_REPLAY",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.2,
+            "importance_band": "LOW",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1039,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-I-10",
+        "ordinal": 10,
+        "arm": "K1-I",
+        "relation_source_arm": "K0_REPLAY",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.2,
+            "importance_band": "LOW",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 732,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-I-11",
+        "ordinal": 11,
+        "arm": "K1-I",
+        "relation_source_arm": "K0_REPLAY",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.2,
+            "importance_band": "LOW",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 1234,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      },
+      {
+        "sample_id": "K1-I-12",
+        "ordinal": 12,
+        "arm": "K1-I",
+        "relation_source_arm": "K0_REPLAY",
+        "status": "OK",
+        "raw_target_polarity": "CHALLENGE_ONLY",
+        "raw_topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "topology": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "necessary_core": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "sufficient_supports": [
+          [
+            "CHALLENGE",
+            "CF-B-PERF"
+          ]
+        ],
+        "attention": "AWARE",
+        "expected_output": "SUMMARY",
+        "authority": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "support_unit_ids": [
+              "RS05-U01"
+            ],
+            "grounding": "DIRECT",
+            "keep": true,
+            "authority_reason": "DIRECT_RS05_U01",
+            "importance_value": 0.2,
+            "importance_band": "LOW",
+            "epistemic_band": "SUFFICIENT"
+          }
+        ],
+        "causal_profile": {
+          "version": "decision-causal-core-v0.1",
+          "decision_projection": "article-attention-disposition",
+          "baseline_decision": "AWARE",
+          "necessary_core": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "sufficient_supports": [
+            [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ]
+          ],
+          "relations": [
+            {
+              "relation": [
+                "CHALLENGE",
+                "CF-B-PERF"
+              ],
+              "multiplicity": 1,
+              "baseline_decision": "AWARE",
+              "without_decision": "DROP",
+              "alone_decision": "AWARE",
+              "necessary": true,
+              "sufficient": true,
+              "classification": "SINGULAR_LOAD_BEARING"
+            }
+          ],
+          "guardrail": "first-order-single-relation-counterfactuals-only; redundant joint cut sets are not enumerated"
+        },
+        "raw_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "normalized_effects": [
+          {
+            "operation": "CHALLENGE",
+            "target_kernel_node_id": "173ae936-51be-52bb-929d-4703c8371bbd",
+            "target": "CF-B-PERF",
+            "reason": "RS05-U01 directly contradicts the target proposition by stating that for a 64x64 bf16 matmul+add workload, GPU kernel time is less than 1% of CPU time, indicating an overhead-bound regime where CPU-side kernel preparation and launch dominate rather than computation."
+          }
+        ],
+        "invalid_effects": [],
+        "meta": {
+          "latency_ms": 681,
+          "prompt_tokens": 735,
+          "completion_tokens": 105,
+          "model": "deepseek-flash",
+          "requested_model": "deepseek-flash",
+          "response_model": "deepseek-flash",
+          "estimated_cost_usd": null,
+          "thinking": "disabled",
+          "reasoning_effort": null,
+          "timeout": 60.0,
+          "temperature": 0.1
+        },
+        "schema_events": []
+      }
+    ]
+  },
+  "summaries": {
+    "K0": {
+      "n_total": 12,
+      "n_ok": 12,
+      "n_invalid": 0,
+      "raw_polarity_counts": {
+        "CHALLENGE_ONLY": 12
+      },
+      "attention_counts": {
+        "ENGAGE": 12
+      },
+      "map": {
+        "version": "static-probabilistic-cognitive-map-v0.1",
+        "n": 12,
+        "relation_map": {
+          "('CHALLENGE', 'CF-B-PERF')": {
+            "relation": [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ],
+            "topology": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            },
+            "necessary": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            },
+            "sufficient": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            },
+            "load_bearing": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            },
+            "load_bearing_given_present": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            }
+          }
+        },
+        "topology_distribution": {
+          "n_unique": 1,
+          "mode_rate": 1.0,
+          "entropy_bits": -0.0
+        },
+        "load_bearing_distribution": {
+          "n_unique": 1,
+          "mode_rate": 1.0,
+          "entropy_bits": -0.0
+        },
+        "attention_distribution": {
+          "counts": {
+            "ENGAGE": 12
+          },
+          "probabilities": {
+            "ENGAGE": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            }
+          },
+          "entropy_bits": -0.0,
+          "normalized_entropy": -0.0,
+          "dominant_action": "ENGAGE",
+          "concentration": 1.0,
+          "dominant_wilson95": [
+            0.7575059933447592,
+            1.0
+          ]
+        },
+        "semantics": {
+          "topology_probability": "P(r in T)",
+          "necessary_probability": "P(r in N_pi(T))",
+          "sufficient_probability": "P(r in S_pi(T))",
+          "load_bearing_probability": "P(r in B_pi(T)), B_pi=N_pi union S_pi",
+          "attention_probability": "P(A)",
+          "guardrail": "empirical bounded-epoch distribution; not a stochastic-process model"
+        }
+      }
+    },
+    "K1-S": {
+      "n_total": 12,
+      "n_ok": 12,
+      "n_invalid": 0,
+      "raw_polarity_counts": {
+        "REINFORCE_ONLY": 12
+      },
+      "attention_counts": {
+        "AWARE": 12
+      },
+      "map": {
+        "version": "static-probabilistic-cognitive-map-v0.1",
+        "n": 12,
+        "relation_map": {
+          "('REINFORCE', 'CF-B-PERF')": {
+            "relation": [
+              "REINFORCE",
+              "CF-B-PERF"
+            ],
+            "topology": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            },
+            "necessary": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            },
+            "sufficient": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            },
+            "load_bearing": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            },
+            "load_bearing_given_present": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            }
+          }
+        },
+        "topology_distribution": {
+          "n_unique": 1,
+          "mode_rate": 1.0,
+          "entropy_bits": -0.0
+        },
+        "load_bearing_distribution": {
+          "n_unique": 1,
+          "mode_rate": 1.0,
+          "entropy_bits": -0.0
+        },
+        "attention_distribution": {
+          "counts": {
+            "AWARE": 12
+          },
+          "probabilities": {
+            "AWARE": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            }
+          },
+          "entropy_bits": -0.0,
+          "normalized_entropy": -0.0,
+          "dominant_action": "AWARE",
+          "concentration": 1.0,
+          "dominant_wilson95": [
+            0.7575059933447592,
+            1.0
+          ]
+        },
+        "semantics": {
+          "topology_probability": "P(r in T)",
+          "necessary_probability": "P(r in N_pi(T))",
+          "sufficient_probability": "P(r in S_pi(T))",
+          "load_bearing_probability": "P(r in B_pi(T)), B_pi=N_pi union S_pi",
+          "attention_probability": "P(A)",
+          "guardrail": "empirical bounded-epoch distribution; not a stochastic-process model"
+        }
+      }
+    },
+    "K1-I": {
+      "n_total": 12,
+      "n_ok": 12,
+      "n_invalid": 0,
+      "raw_polarity_counts": {
+        "CHALLENGE_ONLY": 12
+      },
+      "attention_counts": {
+        "AWARE": 12
+      },
+      "map": {
+        "version": "static-probabilistic-cognitive-map-v0.1",
+        "n": 12,
+        "relation_map": {
+          "('CHALLENGE', 'CF-B-PERF')": {
+            "relation": [
+              "CHALLENGE",
+              "CF-B-PERF"
+            ],
+            "topology": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            },
+            "necessary": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            },
+            "sufficient": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            },
+            "load_bearing": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            },
+            "load_bearing_given_present": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            }
+          }
+        },
+        "topology_distribution": {
+          "n_unique": 1,
+          "mode_rate": 1.0,
+          "entropy_bits": -0.0
+        },
+        "load_bearing_distribution": {
+          "n_unique": 1,
+          "mode_rate": 1.0,
+          "entropy_bits": -0.0
+        },
+        "attention_distribution": {
+          "counts": {
+            "AWARE": 12
+          },
+          "probabilities": {
+            "AWARE": {
+              "count": 12,
+              "p": 1.0,
+              "wilson95": [
+                0.7575059933447592,
+                1.0
+              ],
+              "half_width": 0.1212470033276204
+            }
+          },
+          "entropy_bits": -0.0,
+          "normalized_entropy": -0.0,
+          "dominant_action": "AWARE",
+          "concentration": 1.0,
+          "dominant_wilson95": [
+            0.7575059933447592,
+            1.0
+          ]
+        },
+        "semantics": {
+          "topology_probability": "P(r in T)",
+          "necessary_probability": "P(r in N_pi(T))",
+          "sufficient_probability": "P(r in S_pi(T))",
+          "load_bearing_probability": "P(r in B_pi(T)), B_pi=N_pi union S_pi",
+          "attention_probability": "P(A)",
+          "guardrail": "empirical bounded-epoch distribution; not a stochastic-process model"
+        }
+      }
+    }
+  },
+  "semantic_gate": {
+    "structural_success": true,
+    "k0_modal": "CHALLENGE_ONLY",
+    "k1s_modal": "REINFORCE_ONLY",
+    "directional_modal_flip": true,
+    "permutation": {
+      "version": "cognitive-map-permutation-null-v0.1",
+      "observed": 1.0,
+      "permutations": 5000,
+      "seed": 20260913,
+      "null_median": 0.020131243348847278,
+      "null_p95": 0.08170416594551039,
+      "null_p99": 0.18872187554086717,
+      "tail_probability": 0.0001999600079984003,
+      "exceeds_null_p95": true,
+      "drift_supported_v0_1": true,
+      "guardrail": "Monte Carlo permutation calibration assumes exchangeability under the no-epoch-shift null; descriptive research gate, not a calibrated causal test"
+    },
+    "gate_pass": true
+  },
+  "importance_gate": {
+    "topology_invariant_violations": [],
+    "eligible_retained_challenge_pairs": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "attention_transition_counts": {
+      "('ENGAGE', 'AWARE')": 12
+    },
+    "expected_engage_to_aware": 12,
+    "gate_pass": true
+  },
+  "guardrails": [
+    "Exact frozen RS05 Auditor artifact; no Sensor/Auditor/Locate call.",
+    "K0 and K1-S differ only in materialized target proposition at Relation Mapping.",
+    "K1-I reuses each exact K0 Relation Mapping realization; no independent semantic call.",
+    "Relation Mapping emits only operation, target id, reason; cardinal authority/provenance/Attention fields are absent.",
+    "Targeted support is deterministically bound to preregistered direct unit RS05-U01.",
+    "Grounding is deterministic and cannot create the primary raw polarity flip.",
+    "OPEN_NEW has no preregistered jurisdiction in this single-belief probe and is rejected downstream.",
+    "Cardinal-free effect existence; raw change_magnitude has zero authority.",
+    "No outcome-dependent prompt, intervention, support, Grounding, or sample-selection tuning."
+  ]
+}
