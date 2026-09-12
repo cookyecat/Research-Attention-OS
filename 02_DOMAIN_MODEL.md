@@ -448,11 +448,11 @@ Grounding asks whether a proposed semantic relation is actually licensed by the 
 Input: a relation, its exact support evidence, target/jurisdiction, and Kernel propositions.
 Output: legal/illegal relation plus categorical support/scope assessment.
 
-Grounding has orthogonal verification dimensions rather than a permanently fixed number of model calls. For targeted `REINFORCE` / `CHALLENGE`, the main check is relation-support fit at the exact target proposition and scope. For `OPEN_NEW`, Grounding must additionally verify that the proposed new branch belongs to the supplied cognitive jurisdiction using the full anchor semantics, not opaque IDs/codes alone.
+Grounding owns **relation-support fit**: whether the frozen evidence licenses the proposed operation at the exact target/branch scope. It does not own OPEN_NEW jurisdiction admission. That responsibility belongs to Anchored OPEN_NEW.
 
-These dimensions may be produced in one structured call by a capable evaluator, split into separate reviewer calls when useful for attribution/robustness, or checked by multiple reviewers. The architecture freezes the responsibilities and output fields; it does **not** require two LLM calls in production. Logical separation is not the same as physical-call separation.
+A capable evaluator may physically return multiple structured judgments in one model call, or research/high-risk execution may split them across reviewers. The architecture freezes authority ownership and output fields; it does **not** prescribe RPC count. Logical separation is not the same as physical-call separation.
 
-Grounding checks identifier legality, target eligibility, scope alignment, operation direction, relation-to-support fit, and—when applicable—jurisdiction fit. It is the deterministic/semantic firewall between "the LLM proposed a relation" and "the system may reason from that relation."
+Grounding checks identifier legality, target eligibility, scope alignment, operation direction, and relation-to-support fit. It is the deterministic/semantic firewall between "the LLM proposed a relation" and "the system may reason from that relation."
 
 ## Authority
 
@@ -468,7 +468,7 @@ Authority produces decision-bearing bands/flags consumed by Magnitude-Free polic
 
 A jurisdiction is a responsibility area in the Kernel, analogous to assigning a new research proposal to an appropriate discipline/division even when it is not an update to an existing project. Current production may use an explicitly labelled Locate-derived approximation; the research contract can carry exact `jurisdiction_anchor_ids` per effect.
 
-Anchored admission answers only whether an `OPEN_NEW` branch has legitimate Kernel jurisdiction. It does not rank the branch or determine Attention.
+Anchored admission answers only whether an `OPEN_NEW` branch has legitimate Kernel jurisdiction. Its semantic jurisdiction check must receive the full anchor meaning (node type/title/proposition or equivalent), not opaque IDs/codes alone. It does not rank the branch or determine Attention.
 
 ## Pareto selection
 

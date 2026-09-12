@@ -12,7 +12,7 @@ Known remaining gaps are now explicit research/production boundaries rather than
 
 1. Relation Mapping is a semantic matching task only. It must not threshold OPEN_NEW by magnitude, rank effects, choose a single public winner, or decide Attention.
 2. Support Binding is a separate stage. It may attach provenance to frozen relations but cannot create, delete, retarget or redirect them.
-3. Grounding has two orthogonal semantic checks: relation-support fit, plus OPEN_NEW jurisdiction fit when applicable. These are logical responsibilities, not a requirement for two physical LLM calls. Jurisdiction admission requires full anchor semantics, not opaque IDs/codes alone.
+3. Grounding owns relation-support fit. `Anchored OPEN_NEW` separately owns jurisdiction admission for new branches. A single capable evaluator may physically return both structured judgments in one call, but authority ownership remains separate. Jurisdiction admission requires full anchor semantics, not opaque IDs/codes alone.
 4. Evaluator capacity must be bracketed. DeepSeek-Flash is a robustness lower bound; strong-model adjudication is an architecture-capability upper bound. Weak-model-only disagreement is not sufficient evidence to change RAOS architecture.
 5. Decision cause is authoritative provenance for Public Update, WATCH and KernelPatch side effects.
 ## Final regression checkpoint
@@ -44,4 +44,4 @@ Crucially, two apparent `OPEN_NEW` critical errors were later traced to **instru
 
 This motivates a three-way distinction for future experiments: (1) architecture/contract failure, (2) evaluator-policy/capability boundary, and (3) instrument/input insufficiency. Do not modify RAOS architecture merely to compensate for (2) or (3).
 
-The production design is consequently **not** frozen as two Grounding calls. `Targeted relation-support fit` and `OPEN_NEW jurisdiction fit` are separate output dimensions/authorities. A strong production evaluator may return both in one structured call. Research or high-risk operation may split them or use multiple reviewers for attribution, calibration, or consensus. `one stage = one responsibility` constrains authority; it does not prescribe RPC count.
+The production design is consequently **not** frozen as two Grounding calls. Relation-support fit belongs to Grounding; OPEN_NEW jurisdiction fit belongs to Anchored admission. A strong production evaluator may return both structured judgments in one physical call and route each output to its owning stage. Research or high-risk operation may split them or use multiple reviewers for attribution, calibration, or consensus. `one stage = one responsibility` constrains authority; it does not prescribe RPC count.

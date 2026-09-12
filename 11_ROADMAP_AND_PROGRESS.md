@@ -1221,7 +1221,7 @@ Result: `171_PHASE10D6L4_GROUNDING_CAPACITY_BRACKETING_RESULT.md`. At measuremen
 
 ## Phase 10D.6L.4J OPEN_NEW Jurisdiction Capacity — CLOSED / INPUT-SUFFICIENCY CONFIRMED 2026-09-12
 
-Result: `173_PHASE10D6L4J_OPEN_NEW_JURISDICTION_CAPACITY_RESULT.md`. With complete jurisdiction-anchor semantics supplied, the two D OPEN_NEW cases were classified `INSUFFICIENT_JURISDICTION` by Flash in 3/3 draws each, exactly matching the frozen strong reference with zero critical error. Conclusion: task-state sufficiency is a first-order condition for fair evaluator assessment. Flash remains useful as a stable lower-bound reviewer with a permissive bias; it is not dismissed as incapable. Grounding keeps relation-support fit and jurisdiction fit as orthogonal logical judgments, but production is **not** required to make two model calls.
+Result: `173_PHASE10D6L4J_OPEN_NEW_JURISDICTION_CAPACITY_RESULT.md`. With complete jurisdiction-anchor semantics supplied, the two D OPEN_NEW cases were classified `INSUFFICIENT_JURISDICTION` by Flash in 3/3 draws each, exactly matching the frozen strong reference with zero critical error. Conclusion: task-state sufficiency is a first-order condition for fair evaluator assessment. Flash remains useful as a stable lower-bound reviewer with a permissive bias; it is not dismissed as incapable. Relation-support fit remains Grounding responsibility, while OPEN_NEW jurisdiction fit belongs to Anchored admission. Production is **not** required to make two model calls; one evaluator call may return separately owned structured judgments.
 
 ## Phase 10D.6L End-to-End Business Logic Integrity Audit — CLOSED / PRODUCTION PROMOTION DEFERRED 2026-09-12
 

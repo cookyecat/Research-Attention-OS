@@ -15,4 +15,4 @@ The two critical OPEN_NEW errors in 10D.6L.4 v0.1 were not evidence that the arc
 
 Once full Kernel anchor title/proposition/type semantics were supplied, the weak evaluator correctly rejected both broad/mismatched jurisdictions.
 
-Therefore targeted relation-support grounding and OPEN_NEW jurisdiction admission should remain separate semantic checks. The latter requires full jurisdiction semantics, not opaque IDs/codes alone.
+Therefore relation-support Grounding and OPEN_NEW jurisdiction admission should remain separate semantic responsibilities. Architecturally, the latter belongs to `Anchored OPEN_NEW`, not to Grounding, and it requires full jurisdiction semantics rather than opaque IDs/codes alone. This responsibility separation does not require separate LLM calls in production.
