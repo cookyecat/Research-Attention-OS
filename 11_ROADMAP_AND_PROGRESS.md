@@ -1240,3 +1240,10 @@ Regression checkpoint after 10D.6K v0.2: `686 passed, 63 skipped, 1 historical C
 ## Research spinout — RAOS Cognitive Evaluator Benchmark paper seed — 2026-09-12
 
 Paper/motivation seed: `178_RAOS_COGNITIVE_EVALUATOR_BENCHMARK_PAPER_SEED.md`. The proposed benchmark grows out of RAOS causal failure analysis and targets state-conditioned, evidence-grounded cognitive reasoning plus downstream decision consequences. Current draft includes Abstract, Introduction, Related Work (FEVER/AVeriTeC/ALCE/FACTS Grounding/Evidence Sufficiency/JudgeBench), benchmark task skeleton, and a frozen research-origin narrative. This is a parallel research asset and does **not** interrupt Phase 9A; Phase 9A's Kernel counterfactual is expected to provide a central benchmark result.
+## Phase 9A Kernel Causal Alignment — ACTIVE / v0.2 PREREGISTERED 2026-09-13
+
+Post-10D.6L amendment: `177_PHASE9A_POST_10D6L_INSTRUMENT_AMENDMENT.md`. The original scientific question is unchanged (`E` fixed, accepted `K0 -> K1`, measure `M(E,K)`), but the unfinished v0.1 runner is invalid because it predates cardinal-free legality and the frozen Relation Mapping / Support Binding / Grounding / Authority boundaries.
+
+The v0.2 design freezes RS05 evidence and Locate, uses relation-only cardinal-free stochastic Relation Mapping, deterministic `RS05-U01` support binding, preregistered strong Grounding, Kernel-authoritative importance, and the repaired cardinal-free Magnitude-Free/Pareto/Attention path. K0 and K1-S receive fresh interleaved Relation-Mapping samples; K1-I replays each K0 relation realization exactly so the importance-only intervention cannot be confounded by semantic stochasticity.
+
+Primary semantic gate: K0 vs K1-S raw target polarity must move from CHALLENGE-dominant to REINFORCE-dominant and pass the frozen 5000-permutation JSD gate. Primary allocation gate: K0 vs K1-I must preserve exact target topology while HIGH->LOW Kernel importance drives the paired mechanistic Attention transition `ENGAGE -> AWARE` whenever the target CHALLENGE is retained. No Phase 9A outcome has yet been sampled.
