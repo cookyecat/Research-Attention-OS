@@ -1226,3 +1226,14 @@ Result: `173_PHASE10D6L4J_OPEN_NEW_JURISDICTION_CAPACITY_RESULT.md`. With comple
 ## Phase 10D.6L End-to-End Business Logic Integrity Audit — CLOSED / PRODUCTION PROMOTION DEFERRED 2026-09-12
 
 Closure: `174_PHASE10D6L_END_TO_END_BUSINESS_LOGIC_INTEGRITY_RESULT.md`. Full backend regression after the audit is `682 passed, 63 skipped, 1 failed, 1 warning`; the sole failure remains historical Case K (`PREEMPT` expected, `PRIORITY` actual), with zero new regression failures. The audit now distinguishes architecture/contract bugs, evaluator-policy/capability boundaries, and instrument/input insufficiency. Next: resume 10D.6K authoritative Attention replay with evaluator-capacity bracketing; Phase 9A remains paused.
+
+## Phase 10D.6K Evaluator-Capacity Authoritative Attention Replay — CLOSED 2026-09-12
+
+Amendment: `175_PHASE10D6K_EVALUATOR_CAPACITY_BRACKETING_AMENDMENT.md`. Result: `176_PHASE10D6K_EVALUATOR_CAPACITY_BRACKET_RESULT.md`. Valid measurement SHA `520faa4`; artifact SHA256 `7313d7bf0984a1e2db0cb9f5f8fd6cf5fca23479a18ea3c75c8a71004fb75339`.
+
+On the same 24 frozen 10D.6H realizations, K2 DeepSeek-Flash and K3 strong authority differed on 18/24 final Attention decisions, but N4 remained WATCH 6/6 under every arm. Strong authority produced A DROP6, D DROP6, X WATCH6, N4 WATCH6; weak authority produced A AWARE6, D WATCH6, X ENGAGE6, N4 WATCH6. This demonstrates that evaluator policy materially affects boundary cases while direct technical evidence can remain Attention-stable.
+
+The K3 direction passes the amended research gate: no A/D ENGAGE inflation, no false DROP on direct N4 evidence, and repaired Decision Cause provenance is preserved. Production is not promoted. N4 attribution shows its remaining WATCH is not a Grounding failure: direct B1/M1 evidence is SUFFICIENT but low-importance, while high-importance BT1/Q1 effects are only PARTIAL/WEAK. If N4 is later judged too conservative, the next question belongs to importance/Attention policy, not Grounding.
+
+Next: Phase 9A may resume, but its old preregistered instrument must first be audited against the frozen post-10D.6L cognition contract before any outcome sampling.
+Regression checkpoint after 10D.6K v0.2: `686 passed, 63 skipped, 1 historical Case-K failure, 1 warning`; zero new failures.
