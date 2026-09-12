@@ -1214,3 +1214,15 @@ Result: `168_PHASE10D6L3_DECOUPLED_SUPPORT_BINDING_RESULT.md`. Valid rerun at SH
 ## Phase 10D.6L.4 Grounding Capacity Bracketing — PREREGISTERED 2026-09-12
 
 Preregistration: `169_PHASE10D6L4_GROUNDING_CAPACITY_BRACKETING_PREREGISTRATION.md`. Strong-model manual reference frozen before Flash outcomes in `170_PHASE10D6L4_STRONG_GROUNDING_REFERENCE.md` and `eval/live/phase10d6l4_strong_grounding_reference_v0_1.json`: 28 items = 11 DIRECT, 12 PARTIAL, 5 INSUFFICIENT. Flash is evaluated only as robustness lower bound; isolated weak-model disagreement does not justify architecture changes. Production defaults unchanged; 10D.6K and Phase 9A remain paused.
+
+## Phase 10D.6L.4 Grounding Capacity Bracketing — CLOSED / WEAK EVALUATOR NOT AUTHORITATIVE 2026-09-12
+
+Result: `171_PHASE10D6L4_GROUNDING_CAPACITY_BRACKETING_RESULT.md`. At measurement SHA `8de852d`, all 9 Flash batches and all 28 items were stable, but modal exact agreement with the frozen strong reference was 8/28. Flash showed a stable permissive bias: 12 strong-reference PARTIAL items were called DIRECT, and three strong-reference INSUFFICIENT items were initially called DIRECT. Two of the three critical cases were OPEN_NEW jurisdiction judgments whose L4 input exposed only anchor codes, not full anchor semantics; these were therefore instrument-under-specification candidates rather than clean evaluator errors.
+
+## Phase 10D.6L.4J OPEN_NEW Jurisdiction Capacity — CLOSED / INPUT-SUFFICIENCY CONFIRMED 2026-09-12
+
+Result: `173_PHASE10D6L4J_OPEN_NEW_JURISDICTION_CAPACITY_RESULT.md`. With complete jurisdiction-anchor semantics supplied, the two D OPEN_NEW cases were classified `INSUFFICIENT_JURISDICTION` by Flash in 3/3 draws each, exactly matching the frozen strong reference with zero critical error. Conclusion: task-state sufficiency is a first-order condition for fair evaluator assessment. Flash remains useful as a stable lower-bound reviewer with a permissive bias; it is not dismissed as incapable. Grounding keeps relation-support fit and jurisdiction fit as orthogonal logical judgments, but production is **not** required to make two model calls.
+
+## Phase 10D.6L End-to-End Business Logic Integrity Audit — CLOSED / PRODUCTION PROMOTION DEFERRED 2026-09-12
+
+Closure: `174_PHASE10D6L_END_TO_END_BUSINESS_LOGIC_INTEGRITY_RESULT.md`. Full backend regression after the audit is `682 passed, 63 skipped, 1 failed, 1 warning`; the sole failure remains historical Case K (`PREEMPT` expected, `PRIORITY` actual), with zero new regression failures. The audit now distinguishes architecture/contract bugs, evaluator-policy/capability boundaries, and instrument/input insufficiency. Next: resume 10D.6K authoritative Attention replay with evaluator-capacity bracketing; Phase 9A remains paused.

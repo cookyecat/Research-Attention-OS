@@ -1,0 +1,143 @@
+{
+  "run_version": "phase10d6l4j-open-new-jurisdiction-capacity-v0.1",
+  "status": "OPEN_NEW_JURISDICTION_CAPACITY_BRACKET",
+  "measurement_sha": "7e3d65fce8f44e34eac6b59dcf7a7e482720510a",
+  "strong_reference": "eval/live/phase10d6l4_strong_grounding_reference_v0_1.json",
+  "strong_reference_sha256": "b9843211eeea3145843e23a6fc091c290df5339e7db9036173e2a915a708b6cf",
+  "jurisdiction_prompt_sha256": "6d8c010757035a987517f2d260928c83f4fd6afbce5d2d99b4a0e5d5ca311a85",
+  "repeats": 3,
+  "summary": {
+    "n_calls": 3,
+    "n_structured_ok_calls": 3,
+    "structured_success_rate": 1.0,
+    "n_items": 2,
+    "n_stable_items": 2,
+    "n_exact_modal_matches": 2,
+    "critical_modal_errors": 0,
+    "per_item": {
+      "D:P1-1:1": {
+        "expected_strong_jurisdiction": "INSUFFICIENT_JURISDICTION",
+        "weak_vote_counts": {
+          "INSUFFICIENT_JURISDICTION": 3
+        },
+        "weak_modal_class": "INSUFFICIENT_JURISDICTION",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": true,
+        "critical_modal_error": false
+      },
+      "D:P1-2:2": {
+        "expected_strong_jurisdiction": "INSUFFICIENT_JURISDICTION",
+        "weak_vote_counts": {
+          "INSUFFICIENT_JURISDICTION": 3
+        },
+        "weak_modal_class": "INSUFFICIENT_JURISDICTION",
+        "weak_modal_count": 3,
+        "stable_2_of_3": true,
+        "exact_modal_match": true,
+        "critical_modal_error": false
+      }
+    }
+  },
+  "runs": [
+    {
+      "status": "OK",
+      "errors": [],
+      "items": [
+        {
+          "relation_id": "D:P1-1:1",
+          "jurisdiction_class": "INSUFFICIENT_JURISDICTION",
+          "reason": "No jurisdiction anchors were supplied for this relation, so there is no Kernel anchor whose semantic scope can legitimately contain the new branch about opaque recurrence, unreadable chain-of-thought, and alignment monitoring."
+        },
+        {
+          "relation_id": "D:P1-2:2",
+          "jurisdiction_class": "INSUFFICIENT_JURISDICTION",
+          "reason": "The supplied anchors 'Collective Intelligence' and 'Build better embodied and multi-agent intelligence systems' are broad/topical and belong to collective, embodied, and multi-agent intelligence rather than the new branch's core responsibility area of recursive self-improvement in frontier model training and autonomous training supervision."
+        }
+      ],
+      "meta": {
+        "latency_ms": 930,
+        "prompt_tokens": 1045,
+        "completion_tokens": 174,
+        "model": "deepseek-flash",
+        "requested_model": "deepseek-flash",
+        "response_model": "deepseek-flash",
+        "estimated_cost_usd": null,
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "temperature": 0.1
+      },
+      "schema_events": [],
+      "repeat": 1
+    },
+    {
+      "status": "OK",
+      "errors": [],
+      "items": [
+        {
+          "relation_id": "D:P1-1:1",
+          "jurisdiction_class": "INSUFFICIENT_JURISDICTION",
+          "reason": "No jurisdiction anchors were supplied for this relation, so there is no Kernel anchor whose semantic scope can legitimately contain the new branch about opaque recurrence, unreadable chain-of-thought, and alignment monitoring."
+        },
+        {
+          "relation_id": "D:P1-2:2",
+          "jurisdiction_class": "INSUFFICIENT_JURISDICTION",
+          "reason": "The supplied anchors 'Collective Intelligence' and 'Build better embodied and multi-agent intelligence systems' are broad topical goals about collective/embodied/multi-agent intelligence, not a cognitive responsibility area that specifically covers recursive self-improvement in frontier model training or autonomous model-supervised training."
+        }
+      ],
+      "meta": {
+        "latency_ms": 1026,
+        "prompt_tokens": 1045,
+        "completion_tokens": 172,
+        "model": "deepseek-flash",
+        "requested_model": "deepseek-flash",
+        "response_model": "deepseek-flash",
+        "estimated_cost_usd": null,
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "temperature": 0.1
+      },
+      "schema_events": [],
+      "repeat": 2
+    },
+    {
+      "status": "OK",
+      "errors": [],
+      "items": [
+        {
+          "relation_id": "D:P1-1:1",
+          "jurisdiction_class": "INSUFFICIENT_JURISDICTION",
+          "reason": "No jurisdiction anchors were supplied for this relation, so there is no Kernel anchor whose semantic scope can legitimately contain the new branch about opaque recurrence, unreadable chain-of-thought, and alignment monitoring."
+        },
+        {
+          "relation_id": "D:P1-2:2",
+          "jurisdiction_class": "INSUFFICIENT_JURISDICTION",
+          "reason": "The supplied anchors 'Collective Intelligence' and 'Build better embodied and multi-agent intelligence systems' are broad/topical and belong to collective, embodied, and multi-agent intelligence rather than the new branch's core responsibility area of recursive self-improvement and autonomous model-supervised training."
+        }
+      ],
+      "meta": {
+        "latency_ms": 1606,
+        "prompt_tokens": 1045,
+        "completion_tokens": 172,
+        "model": "deepseek-flash",
+        "requested_model": "deepseek-flash",
+        "response_model": "deepseek-flash",
+        "estimated_cost_usd": null,
+        "thinking": "disabled",
+        "reasoning_effort": null,
+        "timeout": 60.0,
+        "temperature": 0.1
+      },
+      "schema_events": [],
+      "repeat": 3
+    }
+  ],
+  "guardrails": [
+    "relations/support/anchors frozen",
+    "full anchor semantics supplied",
+    "strong labels hidden from weak prompt",
+    "no relation/support/anchor mutation allowed"
+  ]
+}

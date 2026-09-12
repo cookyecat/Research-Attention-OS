@@ -1,6 +1,6 @@
 # Phase 10D.6L — End-to-End Business Logic Integrity Audit
 
-**Status:** ACTIVE / ALL NEW COGNITIVE OUTCOME SAMPLING PAUSED
+**Status:** CLOSED / PRODUCTION PROMOTION DEFERRED
 **Date:** 2026-09-11
 
 ## Why this gate exists
@@ -87,3 +87,16 @@ The major P0 plumbing defects that could make measurement, public update, or sid
 Architecture conclusions must not be inferred from isolated weak-model errors. DeepSeek-Flash is treated as a robustness lower-bound evaluator; GPT-5.6 Sol manual adjudication on the same frozen evidence/Kernel is used as a qualitative upper-bound reference when needed. A weak-model-only failure is a robustness boundary unless it survives strong-model adjudication or violates a deterministic invariant.
 
 Strong-reference file: `164_PHASE10D6L2_MODEL_CAPACITY_BRACKETING_STRONG_REFERENCE.md`. It was frozen before the 10D.6L.1 support-binding diagnostic outcome.
+
+
+## Closure — 2026-09-12
+
+Audit closure result: `174_PHASE10D6L_END_TO_END_BUSINESS_LOGIC_INTEGRITY_RESULT.md`. The final full backend regression is `682 passed, 63 skipped, 1 historical Case-K failure, 1 warning`, with no new failures.
+
+10D.6L.1–L.4 established that Relation Mapping, Support Binding, targeted Grounding, and OPEN_NEW jurisdiction admission must remain separate responsibilities. The weak evaluator is retained as a robustness lower bound; strong-model adjudication is the architecture upper bound. Two OPEN_NEW critical errors in the first Grounding bracket disappeared when full jurisdiction semantics were supplied, confirming an input-contract defect rather than an architecture failure.
+
+New cognitive outcome sampling may resume on the frozen experimental path. Production defaults remain unchanged; production promotion is deferred until the 10D.6K authoritative Attention replay closes. Phase 9A remains paused.
+
+## Closure
+
+Closure result: `174_PHASE10D6L_END_TO_END_BUSINESS_LOGIC_INTEGRITY_RESULT.md`. The audit is closed after L3/L4/L4J attribution and full regression; production promotion remains deferred. Grounding dimensions are logically separated but are not required to be separate model calls.

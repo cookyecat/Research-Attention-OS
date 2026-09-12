@@ -448,7 +448,11 @@ Grounding asks whether a proposed semantic relation is actually licensed by the 
 Input: a relation, its exact support evidence, target/jurisdiction, and Kernel propositions.
 Output: legal/illegal relation plus categorical support/scope assessment.
 
-Grounding checks identifier legality, target eligibility, scope alignment, operation direction, and relation-to-support fit. It is the deterministic/semantic firewall between "the LLM proposed a relation" and "the system may reason from that relation."
+Grounding has orthogonal verification dimensions rather than a permanently fixed number of model calls. For targeted `REINFORCE` / `CHALLENGE`, the main check is relation-support fit at the exact target proposition and scope. For `OPEN_NEW`, Grounding must additionally verify that the proposed new branch belongs to the supplied cognitive jurisdiction using the full anchor semantics, not opaque IDs/codes alone.
+
+These dimensions may be produced in one structured call by a capable evaluator, split into separate reviewer calls when useful for attribution/robustness, or checked by multiple reviewers. The architecture freezes the responsibilities and output fields; it does **not** require two LLM calls in production. Logical separation is not the same as physical-call separation.
+
+Grounding checks identifier legality, target eligibility, scope alignment, operation direction, relation-to-support fit, and—when applicable—jurisdiction fit. It is the deterministic/semantic firewall between "the LLM proposed a relation" and "the system may reason from that relation."
 
 ## Authority
 
