@@ -91,27 +91,29 @@ export default function KernelPatchCard({
   }
 
   return (
-    <div className="card">
+    <div className="card commit-card">
+      <div className="eyebrow">Proposed Kernel change</div>
       <div className="row">
         <span className="badge">{patch.status}</span>
         <span className="badge">{patch.change_type}</span>
         <span className="badge">{patch.target_object_type}</span>
       </div>
-      <p>{patch.reasoning}</p>
+      <h3>{patch.change_type} {patch.target_object_type.toLowerCase()}</h3>
+      <p className="muted">{patch.reasoning}</p>
       {proposed.title && <p className="lede">{String(proposed.title)}</p>}
       {error && <p className="error">{error}</p>}
       {patch.status === "PROPOSED" && (
         <>
           <div className="actions">
-            <button disabled={busy} onClick={() => act("accept")}>Accept</button>
+            <button disabled={busy} onClick={() => act("accept")}>Accept into Kernel</button>
             <button disabled={busy} className="ghost" onClick={() => setOpen((v) => !v)}>
-              {open ? "Hide modify" : "Modify"}
+              {open ? "Close editor" : "Review / modify"}
             </button>
-            <button disabled={busy} className="danger" onClick={() => act("reject")}>Reject</button>
+            <button disabled={busy} className="danger" onClick={() => act("reject")}>Reject proposal</button>
           </div>
           {open && (
             <div className="modify-form">
-              <p className="lede">Modify then Human Commit. AI cannot write the Kernel directly.</p>
+              <p className="muted">You are editing the proposed committed state. Nothing changes until you explicitly save it.</p>
               <label>Status</label>
               <select value={status} onChange={(e) => setStatus(e.target.value)}>
                 <option>ACTIVE</option>
@@ -145,7 +147,7 @@ export default function KernelPatchCard({
               <label>Rationale</label>
               <textarea value={rationale} onChange={(e) => setRationale(e.target.value)} />
               <div className="actions">
-                <button disabled={busy} onClick={modify}>Modify → Human Commit</button>
+                <button disabled={busy} onClick={modify}>Save modified Kernel change</button>
               </div>
             </div>
           )}

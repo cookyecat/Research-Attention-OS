@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { api, apiOrNull } from "@/lib/api";
 import KernelPatchCard from "@/components/KernelPatchCard";
@@ -16,11 +16,12 @@ type SourceSummary = {
   raw_metadata?: Record<string, any>;
 };
 
+const RANK: Record<string, number> = { ENGAGE: 0, WATCH: 1, AWARE: 2, DROP: 3 };
+const FILTERS = ["ALL", "ENGAGE", "WATCH", "AWARE", "DROP"] as const;
+
 function sourceOrigin(source?: SourceSummary) {
   if (!source) return "Unknown source";
-  try {
-    if (source.canonical_url) return new URL(source.canonical_url).hostname.replace(/^www\./, "");
-  } catch {}
+  try { if (source.canonical_url) return new URL(source.canonical_url).hostname.replace(/^www\./, ""); } catch {}
   return source.ingestion_method || "Manual source";
 }
 
@@ -33,57 +34,58 @@ function sourceTime(source?: SourceSummary, fallback?: string | null) {
   return date.toLocaleString();
 }
 
+function actionCopy(disposition: string) {
+  if (disposition === "ENGAGE") return "This deserves focused attention now.";
+  if (disposition === "WATCH") return "RAOS is keeping responsibility for the next update. You do not need to monitor this manually.";
+  if (disposition === "AWARE") return "Worth knowing once. No cognitive commitment or follow-up is required.";
+  return "No attention needed right now.";
+}
+
+function operationCopy(operation?: string | null) {
+  if (operation === "CHALLENGE") return "This challenges something already in your Kernel.";
+  if (operation === "REINFORCE") return "This strengthens or adds support to existing cognition.";
+  if (operation === "OPEN_NEW") return "This may justify opening a new cognitive branch.";
+  return "No material cognitive change to your current Kernel.";
+}
+
+function displayP(value: unknown) {
+  if (value == null) return "UNKNOWN";
+  return String(value);
+}
+
 export default function AttentionPage() {
   const params = useSearchParams();
   const sourceId = params.get("source");
   const [plans, setPlans] = useState<any[]>([]);
   const [sources, setSources] = useState<Record<string, SourceSummary>>({});
-  const [showDrop, setShowDrop] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [filter, setFilter] = useState<(typeof FILTERS)[number]>("ALL");
+  const [query, setQuery] = useState("");
 
   async function loadPlans() {
-    const [nextPlans, nextSources] = await Promise.all([
-      api<any[]>("/kernel/attention"),
-      api<SourceSummary[]>("/sources"),
-    ]);
+    const [nextPlans, nextSources] = await Promise.all([api<any[]>("/kernel/attention"), api<SourceSummary[]>("/sources")]);
     setPlans(nextPlans);
     setSources(Object.fromEntries(nextSources.map((source) => [source.id, source])));
   }
 
-  async function loadAnalysis(mode: "read" | "extract" | "reprocess" = "read") {
+  async function loadAnalysis(mode: "read" | "reprocess" = "read") {
     if (!sourceId) return;
-    setBusy(true);
-    setError(null);
+    setBusy(true); setError(null);
     try {
       if (mode === "reprocess") {
         setAnalysis(await api("/analysis/reprocess", { method: "POST", body: JSON.stringify({ source_id: sourceId }) }));
-        return;
+      } else {
+        const existing = await apiOrNull<any>(`/analysis/by-source/${sourceId}`);
+        setAnalysis(existing || await api("/analysis/extract", { method: "POST", body: JSON.stringify({ source_id: sourceId }) }));
       }
-      if (mode === "extract") {
-        setAnalysis(await api("/analysis/extract", { method: "POST", body: JSON.stringify({ source_id: sourceId }) }));
-        return;
-      }
-      const existing = await apiOrNull<any>(`/analysis/by-source/${sourceId}`);
-      if (existing) setAnalysis(existing);
-      else {
-        setAnalysis(await api("/analysis/extract", { method: "POST", body: JSON.stringify({ source_id: sourceId }) }));
-      }
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : String(e));
-    } finally {
-      setBusy(false);
-    }
+    } catch (e: unknown) { setError(e instanceof Error ? e.message : String(e)); }
+    finally { setBusy(false); }
   }
 
-  useEffect(() => {
-    loadPlans().catch((e) => setError(String(e.message || e)));
-  }, []);
-
-  useEffect(() => {
-    loadAnalysis("read");
-  }, [sourceId]);
+  useEffect(() => { loadPlans().catch((e) => setError(String(e.message || e))); }, []);
+  useEffect(() => { setAnalysis(null); loadAnalysis("read"); }, [sourceId]);
 
   const currentPlans = useMemo(() => {
     const latest = new Map<string, any>();
@@ -91,14 +93,17 @@ export default function AttentionPage() {
       const key = `${plan.candidate_type}:${plan.candidate_id}`;
       if (!latest.has(key)) latest.set(key, plan);
     }
-    return Array.from(latest.values());
+    return Array.from(latest.values()).sort((a, b) => (RANK[a.disposition] ?? 9) - (RANK[b.disposition] ?? 9));
   }, [plans]);
 
-  const shown = useMemo(
-    () => currentPlans.filter((p) => showDrop || p.disposition !== "DROP"),
-    [currentPlans, showDrop],
-  );
+  const shown = useMemo(() => currentPlans.filter((p) => {
+    if (filter !== "ALL" && p.disposition !== filter) return false;
+    if (!query.trim()) return true;
+    const title = sources[p.candidate_id]?.title || "";
+    return `${title} ${p.reason || ""}`.toLowerCase().includes(query.toLowerCase());
+  }), [currentPlans, filter, query, sources]);
 
+  const counts = useMemo(() => Object.fromEntries(FILTERS.map((f) => [f, f === "ALL" ? currentPlans.length : currentPlans.filter((p) => p.disposition === f).length])), [currentPlans]);
   const selectedSource = sourceId ? sources[sourceId] : undefined;
 
   async function afterCommit() {
@@ -109,160 +114,156 @@ export default function AttentionPage() {
     }
   }
 
+  if (sourceId) {
+    const plan = analysis ? (analysis.latest_attention_plan || analysis.attention_plan) : null;
+    const awareness = analysis?.no_delta_awareness;
+    const awarenessEvent = awareness?.events?.[0];
+    const operation = analysis?.update?.operation || plan?.update?.operation || null;
+
+    return (
+      <>
+        <Link className="back-link" href="/attention">← Back to Attention</Link>
+        <header className="page-header">
+          <div>
+            <div className="eyebrow">Attention detail</div>
+            <h1 className="page-title source-title">{selectedSource?.title || "Source analysis"}</h1>
+            <div className="source-meta" style={{marginTop: 10}}>
+              <span>{sourceOrigin(selectedSource)}</span>
+              {sourceTime(selectedSource) && <span>· {sourceTime(selectedSource)}</span>}
+              {selectedSource?.canonical_url && <><span>·</span><a className="text-link" href={selectedSource.canonical_url} target="_blank" rel="noreferrer">Open original ↗</a></>}
+            </div>
+          </div>
+          <button className="ghost" disabled={busy} onClick={() => loadAnalysis("reprocess")}>{busy ? "Reprocessing…" : "Reprocess"}</button>
+        </header>
+
+        {error && <p className="error">{error}</p>}
+        {!analysis && !error && <div className="empty-state">Loading analysis…</div>}
+
+        {analysis && plan && (
+          <div className="detail-grid">
+            <div>
+              <section className={`decision-hero ${plan.disposition}`}>
+                <div className="row"><span className={`badge ${plan.disposition}`}>{plan.disposition}</span>{operation && <span className="badge">{operation}</span>}</div>
+                <div className="decision-label">{plan.disposition}</div>
+                <p className="decision-copy">{actionCopy(plan.disposition)}</p>
+                <div className="metric-line" style={{marginTop: 14}}>
+                  <span><strong>{plan.cognitive_budget_minutes ?? 0} min</strong> attention budget</span>
+                  <span><strong>{plan.urgency || "NORMAL"}</strong> urgency</span>
+                  <span><strong>{operation || "NONE"}</strong> cognitive effect</span>
+                </div>
+              </section>
+
+              {awareness?.applicable && (
+                <section className="section card">
+                  <div className="eyebrow">Why RAOS surfaced this</div>
+                  <h3>No cognitive change, but the event still matters situationally.</h3>
+                  <p className="muted">The no-Delta awareness path is separate from cognitive change. This decision is based on the event itself, your standing monitoring scope, and available attention evidence.</p>
+                  <div className="reason-grid">
+                    <div className="signal-card"><strong>D · Your standing world</strong><span>Does this belong to a world you asked RAOS to monitor?</span><span className="signal-state">{displayP(awarenessEvent?.component_states?.D)}</span></div>
+                    <div className="signal-card"><strong>S · Material consequence</strong><span>Did the event materially disturb a consequential shared system?</span><span className="signal-state">{displayP(awarenessEvent?.component_states?.S)}</span></div>
+                    <div className="signal-card"><strong>P · Collective attention</strong><span>Are the relevant people genuinely paying attention right now?</span><span className="signal-state">{displayP(awarenessEvent?.component_states?.P)}</span></div>
+                  </div>
+                  <details className="technical-details">
+                    <summary>See D / S / P reasoning</summary>
+                    <div className="technical-body">
+                      {awarenessEvent?.D?.reason && <p><strong>D:</strong> {awarenessEvent.D.reason}</p>}
+                      {awarenessEvent?.S?.reason && <p><strong>S:</strong> {awarenessEvent.S.reason}</p>}
+                      {awarenessEvent?.P?.reason && <p><strong>P:</strong> {awarenessEvent.P.reason}</p>}
+                    </div>
+                  </details>
+                </section>
+              )}
+
+              <section className="section card">
+                <div className="eyebrow">Cognitive impact</div>
+                <h3>{operationCopy(operation)}</h3>
+                <p className="muted">{analysis.delta_content || analysis.model_delta?.summary || "No cognitive delta summary available."}</p>
+                {(analysis.model_delta?.distinctions?.length > 0 || analysis.model_delta?.questions?.length > 0) && (
+                  <ul>{[...(analysis.model_delta.distinctions || []), ...(analysis.model_delta.questions || [])].map((item: string) => <li key={item}>{item}</li>)}</ul>
+                )}
+              </section>
+
+              {analysis.kernel_matches?.length > 0 && (
+                <section className="section card">
+                  <div className="eyebrow">Relevant to your Kernel</div>
+                  <h3>Where this information touches your current cognitive state</h3>
+                  {analysis.kernel_matches.slice(0, 4).map((m: any) => (
+                    <div className="kernel-match" key={m.node_id}>
+                      <div className="row"><span className="badge">{m.node_type}</span><span className="meta">{m.relevance_type || "match"}</span></div>
+                      <h4>{m.title}</h4>
+                      {m.reason && <p>{m.reason}</p>}
+                    </div>
+                  ))}
+                </section>
+              )}
+
+              <section className="section">
+                <details className="technical-details">
+                  <summary>Evidence & technical trace</summary>
+                  <div className="technical-body">
+                    <div className="trace-grid">
+                      <div className="trace-block"><h4>AnalysisRun</h4><p>provider {analysis.analysis_run?.provider_type} · {analysis.analysis_run?.status}</p><p>pipeline {analysis.analysis_run?.pipeline_version}<br/>extractor {analysis.analysis_run?.extractor_version}<br/>matcher {analysis.analysis_run?.matcher_version}<br/>prompt {analysis.analysis_run?.prompt_version}</p></div>
+                      <div className="trace-block"><h4>Decision trace</h4><p>{plan.reason}</p><p>Strategy details and provenance remain frozen in the AnalysisRun.</p></div>
+                    </div>
+                    <h3 style={{marginTop: 22}}>Extracted evidence</h3>
+                    <div className="claim-list">
+                      {(analysis.claims || []).map((c: any) => <div className="claim-item" key={c.id}><span className="badge">{c.claim_type}</span><p>{c.text}</p></div>)}
+                      {(analysis.observations || []).map((c: any) => <div className="claim-item" key={c.id}><span className="badge">observation</span><p>{c.text}</p></div>)}
+                      {(analysis.inferences || []).map((c: any) => <div className="claim-item" key={c.id}><span className="badge">inference</span><p>{c.text}</p></div>)}
+                    </div>
+                  </div>
+                </details>
+              </section>
+            </div>
+
+            <aside className="detail-side">
+              {plan?.id && <AttentionFeedbackPanel planId={plan.id} analysis={analysis} onSubmitted={afterCommit} />}
+              {analysis.kernel_patches?.length > 0 && (
+                <section className="section">
+                  <div className="eyebrow">Your authorization required</div>
+                  <h3>Proposed Kernel change</h3>
+                  <p className="muted">RAOS can propose a cognitive update, but only you can commit it.</p>
+                  {analysis.kernel_patches.map((p: any) => <KernelPatchCard key={p.id} patch={p} onCommitted={afterCommit} />)}
+                </section>
+              )}
+            </aside>
+          </div>
+        )}
+      </>
+    );
+  }
+
   return (
     <>
-      <h2>Attention</h2>
-      <p className="lede">Extracted objects, Kernel match, AttentionPlan, Model Delta, and proposed KernelPatch. AI cannot commit Beliefs. Refresh reads the existing AnalysisRun; it does not re-run the pipeline.</p>
+      <header className="page-header">
+        <div><div className="eyebrow">Attention</div><h1 className="page-title">Your filtered world.</h1><p className="page-subtitle">One source, one current attention state. Start with what needs you; everything else has already been compressed.</p></div>
+        <Link className="button-link ghost" href="/inbox">Add source</Link>
+      </header>
       {error && <p className="error">{error}</p>}
-      {sourceId && (
-        <div className="actions">
-          <button className="ghost" disabled={busy} onClick={() => loadAnalysis("reprocess")}>Reprocess</button>
-        </div>
-      )}
-      {analysis && (
-        <>
-          {selectedSource && (
-            <div className="card source-header">
-              <div className="row">
-                <span className="badge">{sourceOrigin(selectedSource)}</span>
-                {sourceTime(selectedSource) && <span className="meta">{sourceTime(selectedSource)}</span>}
-              </div>
-              <h3>{selectedSource.title || "Untitled source"}</h3>
-              {selectedSource.canonical_url && (
-                <a className="text-link" href={selectedSource.canonical_url} target="_blank" rel="noreferrer">
-                  Open original ↗
-                </a>
-              )}
-            </div>
-          )}
-          {analysis.analysis_run && (
-            <div className="card">
-              <h3>AnalysisRun</h3>
-              <div className="row">
-                <span className="badge">{analysis.analysis_run.provider_type}</span>
-                <span className="badge">{analysis.analysis_run.status}</span>
-                {analysis.analysis_run.fallback_used && <span className="badge">fallback</span>}
-              </div>
-              <p className="lede">
-                pipeline {analysis.analysis_run.pipeline_version} · extractor {analysis.analysis_run.extractor_version} ·
-                matcher {analysis.analysis_run.matcher_version} · prompt {analysis.analysis_run.prompt_version}
-              </p>
-            </div>
-          )}
-          <div className="card">
-            <h3>AttentionPlan</h3>
-            <div className="row">
-              <span className={`badge ${(analysis.latest_attention_plan || analysis.attention_plan).disposition}`}>
-                {(analysis.latest_attention_plan || analysis.attention_plan).disposition}
-              </span>
-              {analysis.update?.operation && (
-                <span className="badge">{analysis.update.operation}{analysis.update.target_node_id ? ` → ${analysis.update.target_node_id}` : ""}</span>
-              )}
-              <span className={`badge ${(analysis.latest_attention_plan || analysis.attention_plan).urgency}`}>
-                {(analysis.latest_attention_plan || analysis.attention_plan).urgency}
-              </span>
-            </div>
-            <p>{(analysis.latest_attention_plan || analysis.attention_plan).reason}</p>
-            {analysis.original_attention_plan?.id &&
-              analysis.latest_attention_plan?.id &&
-              analysis.original_attention_plan.id !== analysis.latest_attention_plan.id && (
-                <p className="lede">Original plan retained as provenance only.</p>
-              )}
-          </div>
-          {(analysis.latest_attention_plan || analysis.attention_plan)?.id && (
-            <AttentionFeedbackPanel
-              planId={(analysis.latest_attention_plan || analysis.attention_plan).id}
-              analysis={analysis}
-              onSubmitted={async () => {
-                if (!sourceId) return;
-                const existing = await apiOrNull<any>(`/analysis/by-source/${sourceId}`);
-                if (existing) setAnalysis(existing);
-              }}
-            />
-          )}
-          <div className="grid2">
-            <div className="card">
-              <h3>Claims</h3>
-              {analysis.claims.map((c: any) => (
-                <p key={c.id}><span className="badge">{c.claim_type}</span> {c.text}</p>
-              ))}
-            </div>
-            <div className="card">
-              <h3>Observations</h3>
-              {analysis.observations.length === 0 && <p>None — interpretations are not stored here.</p>}
-              {analysis.observations.map((c: any) => (
-                <p key={c.id}><span className="badge">{c.observation_type}</span> {c.text}</p>
-              ))}
-            </div>
-          </div>
-          <div className="card">
-            <h3>Inferences</h3>
-            {analysis.inferences.map((c: any) => (
-              <p key={c.id}>{c.text}</p>
-            ))}
-          </div>
-          <div className="card">
-            <h3>Kernel match</h3>
-            {analysis.kernel_matches.map((m: any) => (
-              <p key={m.node_id}><span className="badge">{m.relevance_type || m.node_type}</span> {m.title} ({m.score})</p>
-            ))}
-          </div>
-          <div className="card">
-            <h3>Cognitive delta</h3>
-            <p>{analysis.delta_content || analysis.model_delta.summary}</p>
-            <ul>
-              {(analysis.model_delta.distinctions || []).map((d: string) => (
-                <li key={d}>{d}</li>
-              ))}
-              {(analysis.model_delta.questions || []).map((d: string) => (
-                <li key={d}>{d}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="card">
-            <h3>KernelPatch (human commit required)</h3>
-            {analysis.kernel_patches.length === 0 && <p>No KernelPatch proposed — the source persists, but the Kernel is unchanged until a justified patch is accepted.</p>}
-            {analysis.kernel_patches.map((p: any) => (
-              <KernelPatchCard key={p.id} patch={p} onCommitted={afterCommit} />
-            ))}
-          </div>
-        </>
-      )}
+
       <div className="section-heading">
-        <div>
-          <h3>Attention feed</h3>
-          <p className="lede compact">One source, one current attention state. Older plans are retained as provenance but not repeated here.</p>
+        <div className="filter-bar">
+          {FILTERS.map((value) => <button className={filter === value ? "filter-chip active" : "filter-chip"} key={value} onClick={() => setFilter(value)}>{value === "ALL" ? "All" : value} · {counts[value] || 0}</button>)}
         </div>
-        <button className="ghost" onClick={() => setShowDrop((value) => !value)}>
-          {showDrop ? "Hide DROP" : "Show DROP"}
-        </button>
+        <input className="search-input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search current attention…" />
       </div>
-      {shown.length === 0 && <p className="lede">No current attention items.</p>}
-      {shown.map((p) => {
-        const source = sources[p.candidate_id];
-        const title = source?.title || `${p.candidate_type} ${p.candidate_id}`;
-        const href = p.candidate_type === "SOURCE" ? `/attention?source=${p.candidate_id}` : undefined;
-        const content = (
-          <>
-            <div className="row">
-              <span className={`badge ${p.disposition}`}>{p.disposition}</span>
-              {p.update?.operation && <span className="badge">{p.update.operation}</span>}
-              <span className="meta">{sourceOrigin(source)}</span>
-              {sourceTime(source, p.created_at) && <span className="meta">{sourceTime(source, p.created_at)}</span>}
-            </div>
-            <h3>{title}</h3>
-            <p className="attention-reason">{p.reason}</p>
-            {href && <span className="text-link">View analysis →</span>}
-          </>
-        );
-        return href ? (
-          <Link className="card attention-card" href={href} key={p.id}>
-            {content}
-          </Link>
-        ) : (
-          <div className="card" key={p.id}>{content}</div>
-        );
-      })}
+
+      {shown.length === 0 && <div className="empty-state">No current attention items match this view.</div>}
+      <div className="stack">
+        {shown.map((p) => {
+          const source = sources[p.candidate_id];
+          const title = source?.title || `${p.candidate_type} ${p.candidate_id}`;
+          const operation = p.update?.operation;
+          return (
+            <Link className={`card attention-card disposition-${p.disposition}`} href={`/attention?source=${p.candidate_id}`} key={p.id}>
+              <div className="row"><span className={`badge ${p.disposition}`}>{p.disposition}</span>{operation && <span className="badge">{operation}</span>}<span className="meta">{sourceOrigin(source)}</span>{sourceTime(source, p.created_at) && <span className="meta">· {sourceTime(source, p.created_at)}</span>}</div>
+              <h3>{title}</h3>
+              <p className="attention-summary">{actionCopy(p.disposition)} {operation ? operationCopy(operation) : ""}</p>
+              <div className="attention-footer"><span className="text-link">Open →</span>{p.cognitive_budget_minutes != null && <span className="meta">{p.cognitive_budget_minutes} min attention</span>}</div>
+            </Link>
+          );
+        })}
+      </div>
     </>
   );
 }

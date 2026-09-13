@@ -136,10 +136,11 @@ export default function AttentionFeedbackPanel({
   }
 
   return (
-    <div className="card">
-      <h3>Human feedback</h3>
-      <p className="lede">
-        Confirm or correct the frozen AnalysisRun judgment. Corrections stay beside the original prediction — they do not rewrite the run or mutate the Kernel.
+    <div className="card feedback-card">
+      <div className="eyebrow">Your judgment</div>
+      <h3>Did RAOS get this right?</h3>
+      <p className="muted">
+        This feedback evaluates the analysis only. It never commits a change to your Kernel.
       </p>
       <div className="row">
         <span className="badge">{system.disposition}</span>
@@ -163,15 +164,15 @@ export default function AttentionFeedbackPanel({
       {error && <p className="error">{error}</p>}
       <div className="actions">
         <button disabled={busy} onClick={() => submit("CONFIRM")}>
-          Confirm
+          Judgment looks right
         </button>
         <button disabled={busy} className="ghost" onClick={() => setOpen((v) => !v)}>
-          {open ? "Hide correct" : "Correct it"}
+          {open ? "Close correction" : "Correct RAOS"}
         </button>
       </div>
       {open && (
         <div className="modify-form">
-          <label>Disposition</label>
+          <label>What should the attention state be?</label>
           <select value={disposition} onChange={(e) => setDisposition(e.target.value)}>
             {DISPOSITIONS.map((d) => (
               <option key={d} value={d}>
@@ -179,7 +180,7 @@ export default function AttentionFeedbackPanel({
               </option>
             ))}
           </select>
-          <label>Update</label>
+          <label>What cognitive effect should RAOS have found?</label>
           <select value={operation} onChange={(e) => setOperation(e.target.value)}>
             {OPERATIONS.map((o) => (
               <option key={o} value={o}>
@@ -200,7 +201,7 @@ export default function AttentionFeedbackPanel({
               </select>
             </>
           )}
-          <label>Delta content</label>
+          <label>How should the cognitive impact be described?</label>
           <textarea value={deltaContent} onChange={(e) => setDeltaContent(e.target.value)} rows={4} />
           <div className="actions">
             <button disabled={busy} onClick={() => submit("CORRECT")}>

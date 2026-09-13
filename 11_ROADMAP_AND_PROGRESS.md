@@ -1319,3 +1319,21 @@ Repository living documentation was reviewed against the current developer-dogfo
 Documentation authority is now explicit: `RAOS_CANONICAL_ARCHITECTURE.md` is the HEAD architecture truth source; `35_RAOS_MATHEMATICAL_LANGUAGE_REGISTRY.md` is the living semantic/mathematical registry; living subsystem specs defer to them for exact online wiring; preregistrations/results/checkpoints remain immutable historical provenance except for clearly labelled historical/superseded status notes where an old `ACTIVE/current` header could mislead future work.
 
 No RAOS theory, code, prompt, strategy, runtime configuration, or experimental result was changed by this audit. Repository-wide Markdown reference validation found zero missing referenced `.md` files. A proposed new external-world symbol was deliberately not added to the mathematical registry because documentation maintenance must not silently create new theory.
+## Frontend UX V2 — IMPLEMENTED / DOGFOOD READY 2026-09-14
+
+Result: `187_RAOS_FRONTEND_UX_V2_RESULT.md`.
+
+Real use showed that cognition quality had outgrown the frontend: internal AnalysisRun state, pipeline terminology, raw claims, duplicated WATCH records, and generic confirmation controls made the product feel like a research console rather than an attention operating system. UX V2 changes only presentation and interaction; cognition, D/S/P, Attention, WATCH, Kernel authority, Acquisition, and backend contracts remain unchanged.
+
+The active presentation contract is now:
+
+```text
+human action first
+→ cognitive explanation
+→ evidence
+→ technical trace
+```
+
+Today is action-first; Inbox exposes direct URL/Text/PDF/Observation entry and recent sources; Attention is a searchable/filterable source-centric filtered world; no-Delta detail exposes D/S/P reasoning in human language; human judgment feedback is visually separated from Kernel authorization; Kernel is a searchable cognitive workspace; WATCH rows are grouped into monitoring responsibilities and developer trigger controls are collapsed.
+
+Validation: frontend TypeScript check PASS; clean production build PASS with zero warnings; `/`, `/inbox`, `/attention`, `/kernel`, and `/watch` all returned 200 and were visually checked against the live Mac dogfood backend. `RAOS_CANONICAL_ARCHITECTURE.md` is unchanged because no architecture or authority boundary changed. Next frontend work should be driven by actual dogfood residuals rather than speculative feature expansion.

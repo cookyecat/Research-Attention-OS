@@ -82,10 +82,13 @@ Never commit secrets from `.env`.
 
 ## Current user surfaces
 
-- **Inbox** — pasted text, URL, PDF, manual observation.
-- **Attention** — source-centric feed; one current state per Source, with article title/origin/time and click-through to the full analysis. DROP is hidden by default but inspectable.
-- **Kernel** — human-authorized durable cognitive state.
-- **Watch** — delegated future-attention obligations.
+- **Today** — action-first overview of what needs focused attention now, what RAOS is watching, and how much information has already been filtered away.
+- **Inbox** — URL, text, PDF, or manual observation entry with recent-source recovery.
+- **Attention** — source-centric filtered world with search and disposition filters. Detail views lead with the decision, why RAOS surfaced it, cognitive impact, and Kernel relevance; raw evidence and pipeline internals stay available under Technical trace.
+- **Kernel** — searchable human-authorized cognitive workspace with durable state and a visually separate authorization area for proposed changes.
+- **Watch** — delegated future-attention responsibilities grouped by monitored target rather than raw watch-record rows; developer trigger simulation is hidden under technical controls.
+
+The frontend follows an action-first presentation rule: **human action first -> cognitive explanation -> evidence -> technical trace**. This presentation contract changes no cognition semantics or backend authority boundaries.
 
 `POST /analysis/extract` is idempotent. `POST /analysis/reprocess` forces a new `AnalysisRun`. `GET /analysis/by-source/{id}` reads the latest run without rerunning cognition.
 
