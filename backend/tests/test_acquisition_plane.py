@@ -9,7 +9,7 @@ from app.models.acquisition import (
     SourceDefinition,
 )
 from app.services import acquisition
-from app.services.acquisition import DiscoveredExternalItem, parse_rss_or_atom, poll_source
+from app.services.acquisition import DiscoveredExternalItem, parse_rss_or_atom, poll_due_sources, poll_source
 from app.services.ingestion import ingest_text
 
 
@@ -131,3 +131,47 @@ def test_source_definition_can_be_managed_without_touching_cognition(client):
     listed = client.get("/acquisition/sources")
     assert listed.status_code == 200
     assert any(item["id"] == row["id"] for item in listed.json())
+
+
+def test_first_due_poll_bootstraps_without_cognitive_analysis(db, monkeypatch):
+    analyses = _fake_delivery(monkeypatch)
+    source = _source(db, "Bootstrap Feed", "https://example.com/bootstrap.xml")
+
+    results = poll_due_sources(db, limit_per_source=5, analyze=True)
+
+    assert len(results) == 1
+    assert results[0]["status"] == "OK"
+    assert results[0]["bootstrap"] is True
+    assert results[0]["new_snapshots"] == 1
+    assert analyses == []
+    assert source.last_polled_at is not None
+
+
+def test_one_broken_source_does_not_stop_other_due_sources(db, monkeypatch):
+    analyses = []
+
+    def fake_discover(self, locator):
+        if "broken" in locator:
+            raise RuntimeError("feed unavailable")
+        return [DiscoveredExternalItem(ref="https://example.com/good-article", title="Good")]
+
+    def fake_ingest_url(db, url):
+        row = ingest_text(db, f"Fetched body for {url}", title="Good article")
+        row.canonical_url = url
+        return row
+
+    monkeypatch.setattr(acquisition.RSSAdapter, "discover", fake_discover)
+    monkeypatch.setattr(acquisition, "ingest_url", fake_ingest_url)
+    monkeypatch.setattr(acquisition, "run_pipeline", lambda db, source_id: analyses.append(str(source_id)))
+    broken = _source(db, "Broken", "https://example.com/broken.xml")
+    good = _source(db, "Good", "https://example.com/good.xml")
+
+    results = poll_due_sources(db, limit_per_source=5, analyze=True)
+    by_name = {row["source_name"]: row for row in results}
+
+    assert by_name["Broken"]["status"] == "ERROR"
+    assert by_name["Good"]["status"] == "OK"
+    assert by_name["Good"]["bootstrap"] is True
+    assert broken.last_polled_at is not None
+    assert good.last_polled_at is not None
+    assert analyses == []

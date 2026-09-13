@@ -1294,3 +1294,11 @@ Active dogfood no-Delta path now reuses audited Event projections from the share
 The acquisition-fed The Verge article `OpenAI’s rogue AI tried to hack another company in May` was rerun. Cognition again produced `Δ=NONE`; restored awareness produced `D=IN, S=MATERIAL, P=UNKNOWN -> AWARE`, correcting the earlier incomplete online DROP. Counterfactual P values `SALIENT` and `NOT_SALIENT` both also produce AWARE, so this case is P-insensitive.
 
 Focused regression: `69 passed, 1 warning`. Full backend regression: `711 passed, 63 skipped, 1 historical Case-K failure, 1 warning`; zero new failures.
+
+## Acquisition Plane v0.1 — UNATTENDED DOGFOOD READY 2026-09-13
+
+The acquisition worker now has two operational invariants required for unattended use: a newly registered Source establishes a non-cognitive present-time baseline on its first due poll, and a single failing Source is isolated so other due Sources continue polling. The worker also loads an explicit dotenv file before importing RAOS runtime modules, preventing cognition-contract drift between HTTP backend and acquisition worker.
+
+Initial active registry: The Verge RSS (30 min), Google DeepMind Blog (60 min), NVIDIA Blog (60 min). Each feed was baselined over its current top-five window without cognitive analysis; only subsequent arrivals are intended to enter the live research-aligned RAOS pipeline automatically.
+
+Regression: `713 passed, 63 skipped, 1 historical Case-K failure, 1 warning`; zero new failures.

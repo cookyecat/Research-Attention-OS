@@ -237,8 +237,36 @@ def poll_due_sources(db: Session, *, limit_per_source: int = 5, analyze: bool = 
     sources = db.execute(
         select(SourceDefinition).where(SourceDefinition.enabled.is_(True)).order_by(SourceDefinition.created_at)
     ).scalars().all()
-    return [
-        poll_source(db, source, limit=limit_per_source, analyze=analyze)
-        for source in sources
-        if _due(source, now)
-    ]
+    results: list[dict] = []
+    for source in sources:
+        if not _due(source, now):
+            continue
+        # A newly registered Source establishes a present-time baseline first.
+        # Historical feed entries are captured but are not pushed through cognition.
+        bootstrap = source.last_polled_at is None
+        try:
+            with db.begin_nested():
+                result = poll_source(
+                    db,
+                    source,
+                    limit=limit_per_source,
+                    analyze=analyze and not bootstrap,
+                )
+            result["bootstrap"] = bootstrap
+            result["status"] = "OK"
+            results.append(result)
+        except Exception as exc:
+            # One broken external Source must not terminate the whole poller.
+            # Treat the attempt as a poll for cadence purposes, while preserving
+            # the error as an explicit acquisition result.
+            source.last_polled_at = now
+            db.flush()
+            results.append({
+                "source_definition_id": str(source.id),
+                "source_name": source.name,
+                "bootstrap": bootstrap,
+                "status": "ERROR",
+                "error_type": type(exc).__name__,
+                "error": str(exc),
+            })
+    return results

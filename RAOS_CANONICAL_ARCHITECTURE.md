@@ -36,6 +36,8 @@ K_{t+1} when explicitly authorized
 Sources / Feeds / APIs / Manual Input
         ↓
 ──────────────── Acquisition Plane ────────────────
+Source Registry → independent Source Poller → Adapter
+        ↓
 SourceDefinition → Observation → Information Object → Snapshot
         ↓
 RAOS Source / Raw Information Boundary
@@ -136,6 +138,8 @@ Unknown composition            no-delta-awareness-integration-v1.1 semantics
 8. UNKNOWN / unavailable evidence is not negative evidence.
 9. Historical snapshots and execution identity are immutable; replay must preserve the frozen contract.
 10. Research and active developer dogfood should execute the same validated semantic contract unless an explicit versioned experiment says otherwise.
+11. A newly registered Acquisition Source establishes a present-time baseline before cognitive analysis; historical feed backlog must not masquerade as newly arrived information.
+12. Failure of one Acquisition Source must not terminate polling of independent Sources.
 
 ## 6. Architecture-change checklist
 
