@@ -1,5 +1,7 @@
 # Phase 6 — Raw Source → Attention Action Vertical Slice
 
+
+> **Historical phase note (2026-09-13):** Phase 6 integration is complete. Its D/S/P event-routing insight remains valid and is now online; current architecture is `RAOS_CANONICAL_ARCHITECTURE.md`.
 Status: **ACTIVE RESEARCH / PREREGISTERED DEVELOPMENT INTEGRATION**  
 Date: 2026-09-08
 

@@ -1,10 +1,10 @@
 # Research Attention OS — Semantic Sensor System v1.0
 
-Status: **CANONICAL CONCEPTUAL MODEL / ACTIVE ENGINEERING FRONTIER**  
-Date: 2026-09-07  
+Status: **CANONICAL CONCEPTUAL MODEL / DEPLOYED SENSOR BASELINE; HEAD WIRING IN RAOS_CANONICAL_ARCHITECTURE.md**
+Date: 2026-09-07
 Purpose: consolidate the motivation, terminology, semantic source skeleton, provenance discipline, compression principle, lifecycle/storage model, and evaluation method for the RAOS Semantic Sensor Front-End.
 
-> Short definition: **The Semantic Sensor reads raw information and turns it into a compact, auditable semantic representation. It answers “what does this source actually say?” before D/S/P/Delta decide “what does it mean for attention or cognition?”**
+> Short definition: **The Semantic Sensor reads a RAOS Source and turns it into a compact, auditable semantic representation. It answers “what does this source actually say?” before the cognitive-transition path or no-Delta D/S/P path decides what it means for attention.**
 
 ---
 

@@ -1,25 +1,47 @@
 # Research Attention OS
 
-Personal cognitive OS: allocate finite attention to information that can change research understanding.
+Research Attention OS (RAOS) is a personal cognitive operating system for allocating scarce human attention to information that can change, challenge, extend, or materially affect a researcher's current world model.
+
+Current HEAD architecture is defined by `RAOS_CANONICAL_ARCHITECTURE.md`. Historical numbered phase documents explain how the system reached that architecture; they are not current configuration guides.
 
 ```text
-Source → Claim / Observation / Inference
-      → Kernel Match → AttentionPlan → Model Delta
-      → KernelPatch → Human Accept / Modify / Reject
+External World
+  → Acquisition Plane
+  → RAOS Source
+  → Semantic Sensor / Auditor
+  → Audited World Representation
+       ├─ cognitive effects → Relation Mapping / Binding / Grounding / Authority
+       │                    → Magnitude-Free / Pareto
+       └─ no cognitive effect → D / S / P situational-awareness gate
+  → DROP / AWARE / WATCH / ENGAGE
+  → authorized public update / WATCH / KernelPatch
 ```
 
-Vertical Slice 2 adds a **Model-backed Cognitive Engine** behind the same constitution: AI never silently writes Belief / Model / Hypothesis / Decision.
+## Current developer dogfood
 
-## Run (development)
+RAOS currently runs as developer dogfood: validated research cognition is the online cognition contract rather than a separate production-only semantic path.
 
-Backend defaults to SQLite + the rule-based provider (stable, no API key):
+Active dogfood identity:
+
+```text
+cognition:        research-aligned-cognition-v1
+decision strategy: pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2
+no-Delta branch:  dsp-v1
+```
+
+Repository compatibility defaults remain conservative (`rule`, `legacy`, `one-delta`) so historical tests/replays do not silently change semantics. Dogfood must set the research-aligned contract explicitly.
+
+## Run locally
+
+Backend:
 
 ```bash
 cd backend
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-uvicorn app.main:app --reload --port 8000
+alembic upgrade head
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --env-file ../.env
 ```
 
 Frontend:
@@ -30,11 +52,78 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:3000`. Seed the MVP Kernel from Home or the Kernel page.
+Open `http://localhost:3000`.
 
-If port 8000 is taken, point `frontend/next.config.ts` at the API port.
+Acquisition worker (separate process, same execution environment as backend):
 
-## PostgreSQL + pgvector (target database)
+```bash
+cd backend
+source .venv/bin/activate
+python -m app.acquisition_worker --env-file ../.env --interval 60 --limit-per-source 5
+```
+
+Do not run `next build` concurrently with a long-running `next dev` using the same `.next` directory. If client-side controls stop hydrating, stop dev, remove `frontend/.next`, and restart `npm run dev`.
+
+## Dogfood configuration
+
+Typical local `.env` contract:
+
+```bash
+RAOS_COGNITIVE_PROVIDER=model
+RAOS_COGNITIVE_CONTRACT=research-aligned-v1
+RAOS_NO_DELTA_AWARENESS_CONTRACT=dsp-v1
+RAOS_DECISION_STRATEGY_ID=pareto-multidelta-cardinal-free-effect-anchored-open-new
+RAOS_LLM_BASE_URL=...
+RAOS_LLM_API_KEY=...
+RAOS_LLM_MODEL=...
+```
+
+Never commit secrets from `.env`.
+
+## Current user surfaces
+
+- **Inbox** — pasted text, URL, PDF, manual observation.
+- **Attention** — source-centric feed; one current state per Source, with article title/origin/time and click-through to the full analysis. DROP is hidden by default but inspectable.
+- **Kernel** — human-authorized durable cognitive state.
+- **Watch** — delegated future-attention obligations.
+
+`POST /analysis/extract` is idempotent. `POST /analysis/reprocess` forces a new `AnalysisRun`. `GET /analysis/by-source/{id}` reads the latest run without rerunning cognition.
+
+## Acquisition Plane v0.1
+
+Acquisition answers only: **what became observable?** It does not judge cognitive relevance.
+
+The current v0.1 model is:
+
+```text
+SourceDefinition → Observation → Information Object → Snapshot → RAOS Source
+```
+
+RSS/Atom is the first unattended transport. New Sources establish a present-time baseline before cognitive analysis so old feed backlog does not masquerade as newly arrived information. One Source failure must not terminate polling of independent Sources.
+
+Identity deduplication belongs to Acquisition; semantic event clustering remains downstream.
+
+## D / S / P no-Delta awareness
+
+When no legal cognitive effect exists, RAOS does **not** automatically DROP. It evaluates audited event semantics using:
+
+```text
+D = standing attention jurisdiction
+S = material consequence
+P = collective-attention salience
+
+AWARE iff S AND (D OR P)
+```
+
+`UNKNOWN` is not False. P must not be invented from article prose. Observed, estimated, and simulated P evidence must remain provenance-distinct.
+
+## Database
+
+Current migration head: `0009_acquisition_plane_v01`.
+
+SQLite is the active lightweight local dogfood database; PostgreSQL 16+ with pgvector remains the target scalable database.
+
+PostgreSQL example:
 
 ```bash
 docker compose up -d
@@ -42,46 +131,31 @@ cd backend
 export RAOS_DATABASE_URL=postgresql+psycopg://raos:raos@localhost:5432/raos
 export RAOS_AUTO_CREATE_TABLES=false
 alembic upgrade head
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --env-file ../.env
 ```
-
-SQLite remains a light local mode (`create_all` when `RAOS_AUTO_CREATE_TABLES=true`).
-
-## Cognitive providers
-
-```bash
-export RAOS_COGNITIVE_PROVIDER=rule    # default; A–O regression baseline
-export RAOS_COGNITIVE_PROVIDER=model   # OpenAI-compatible + rule fallback
-export RAOS_DECISION_STRATEGY_ID=one-delta  # compatibility default
-# Phase 10D.4 dogfood: pareto-multidelta-magnitude-free-anchored-open-new
-export RAOS_LLM_BASE_URL=https://api.openai.com/v1
-export RAOS_LLM_API_KEY=...
-export RAOS_LLM_MODEL=gpt-4o-mini
-export RAOS_EMBEDDING_BASE_URL=
-export RAOS_EMBEDDING_API_KEY=
-export RAOS_EMBEDDING_MODEL=text-embedding-3-small
-```
-
-`POST /analysis/extract` is idempotent. Use `POST /analysis/reprocess` to force a new `AnalysisRun`. `GET /analysis/by-source/{id}` reads the latest run without rerunning the pipeline.
-
-`POST /kernel/bootstrap/propose` emits KernelPatch proposals only (Human Commit required).
 
 ## Tests
 
-```bash
-cd backend
-pytest -q
-```
-
-PostgreSQL:
+From repo root for the complete backend suite:
 
 ```bash
-export RAOS_TEST_DATABASE_URL=postgresql+psycopg://raos:raos@localhost:5432/raos
-pytest -q
+PYTHONPATH=. backend/.venv/bin/pytest -q backend/tests
 ```
 
-Eval Set v0.1 lives in `eval/v0.1/` (50+ structured cases). A–O paraphrases are in `backend/tests/acceptance/paraphrases.py`.
+Frontend:
 
-## Explicitly not in this slice
+```bash
+cd frontend
+npm run typecheck
+```
 
-Large-scale crawling, recommendation feed, automatic Kernel mutation, WeChat history scraping, learned attention policy, multi-agent orchestration, notification system, mobile.
+Historical acceptance fixtures remain in `07_MVP_ACCEPTANCE_TESTS.md` and `eval/`; current architecture and status are governed by `RAOS_CANONICAL_ARCHITECTURE.md` and `11_ROADMAP_AND_PROGRESS.md`.
+
+## Still intentionally deferred
+
+- broad authenticated / anti-bot crawling and paywall bypass;
+- adaptive Attention→Acquisition feedback loops;
+- autonomous hidden Kernel mutation;
+- learned personal attention policy before sufficient dogfood feedback;
+- large-scale event clustering without measured need;
+- mobile / notification productization.

@@ -1,10 +1,25 @@
 # Research Attention OS — SCHEDULER_SPEC.md
 
 Version: RAOS v1.1
+Status: **ACTIVE SCHEDULER/ATTENTION SPEC — current HEAD semantics clarified 2026-09-13**
 
 ## 1. Core contract
 
-The scheduler is not an importance scorer.
+The scheduler is not an importance scorer. Current HEAD has two mutually exclusive Attention-authority branches:
+
+```text
+legal cognitive Decision Cause exists
+→ cognitive path owns AWARE / WATCH / ENGAGE
+→ D/S/P has no authority
+
+no legal cognitive Decision Cause
+→ audited Event projection → D / S / P
+→ AWARE iff S AND (D OR P), otherwise DROP when logically determined
+```
+
+`UNKNOWN` is not False. Attention Policy may allocate consequence; it must not manufacture cognitive change.
+
+The public `AttentionPlan` remains the compatibility/output object:
 
 ```text
 Scheduler(
@@ -162,9 +177,9 @@ Typical cases:
 
 Popularity alone never justifies PREEMPT.
 
-## 10. Core features
+## 10. Diagnostic / compatibility features
 
-Scheduler may estimate:
+Legacy and UI diagnostics may estimate the following features, but they are **not cardinal authority for the research-aligned cognitive path**:
 
 ```text
 R   Topic Relevance
@@ -182,9 +197,11 @@ Cost Cognitive Cost
 
 Do not collapse these into one authoritative weighted score.
 
-## 11. Rule-based routing first
+## 11. Historical rule baseline (compatibility only)
 
-Reference rules:
+The following rules describe the original v1.1 rule-provider baseline and remain useful for regression intuition. They do **not** override the current Relation Mapping → Grounding/Authority → Magnitude-Free/Pareto or D/S/P contracts:
+
+Reference baseline:
 
 ```text
 IF duplicate OR clearly redundant
@@ -217,6 +234,24 @@ IF active Decision may change
 IF active Decision may change AND time-sensitive
   → PRIORITY or PREEMPT
 ```
+
+## 11.1 Current research-aligned routing
+
+```text
+Sensor/Auditor
+  → Relation Mapping (REINFORCE / CHALLENGE / OPEN_NEW)
+  → Support Binding
+  → Grounding / OPEN_NEW jurisdiction
+  → deterministic Authority
+  → semantic cardinal-free effect existence
+  → Magnitude-Free per-effect channel decisions
+  → Pareto preservation of incomparable legal effects
+  → article/source-level join
+```
+
+Only the selected Decision Cause may authorize Public Update, WATCH scope, ModelDelta compatibility projection, or KernelPatch.
+
+If Relation Mapping / legality produces no Decision Cause, route to D/S/P rather than treating `Delta=NONE` as automatic DROP.
 
 ## 12. Error-cost policy
 
@@ -344,11 +379,6 @@ Collect:
 
 Do this before attempting learned Personal Attention Policy.
 
-## 23. Implementation phases
+## 23. Current maturity / next learning loop
 
-Phase A: rules + one strong LLM call.
-Phase B: separate extraction and scheduling.
-Phase C: feedback-calibrated heuristics.
-Phase D: learned personal policy.
-
-Do not jump directly to Phase D.
+The rules-only and separated extraction/scheduling phases are historical milestones. Current developer dogfood uses the research-aligned semantic pipeline plus D/S/P. The next policy work should be driven by Human Gold and real dogfood residuals before any learned personal Attention Policy is introduced.

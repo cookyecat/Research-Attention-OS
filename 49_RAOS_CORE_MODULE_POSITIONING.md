@@ -1,10 +1,10 @@
 # Research Attention OS — Core Module Positioning
 
-Status: **CANONICAL SYSTEM MAP / ACTIVE MAINTENANCE CONTRACT**  
-Date: 2026-09-07  
-Purpose: provide one stable architectural map for the core RAOS modules so that module responsibilities do not drift as the system evolves.
+Status: **FOUNDATIONAL MODULE-POSITIONING REFERENCE / NOT THE HEAD CONTRACT**
+Original date: 2026-09-07 · status clarified: 2026-09-13
+Purpose: preserve the conceptual responsibility boundaries established during Sensor/Auditor/D-S-P/Delta development.
 
-> This file answers one question: **Which RAOS module is responsible for what?**
+> Current HEAD architecture and exact online wiring are authoritative in `RAOS_CANONICAL_ARCHITECTURE.md`. This file preserves the earlier conceptual decomposition and should not be used to override the HEAD contract. In particular, the old single-box `Delta` abstraction is now implemented as Relation Mapping → Support Binding → Grounding / OPEN_NEW Jurisdiction → Authority → cardinal-free decision policy.
 
 RAOS exists to achieve:
 
@@ -37,36 +37,33 @@ The modules below are not independent products. They are stages in one attention
 # 1. One-screen system map
 
 ```text
-Raw Source / Information
+External World
         ↓
-Semantic Sensor
-“这篇东西到底说了什么？”
+Acquisition Plane
+“什么变得可观察？”
         ↓
-Candidate Semantic Skeleton
+RAOS Source / Raw Information Boundary
         ↓
-Semantic Evidence Auditor
-“你说的这些意思，当前引用的证据够不够？”
+Semantic Sensor → Semantic Evidence Auditor
         ↓
-Audited Semantic Representation
+Audited World Representation
         ↓
-+----------------------+----------------------+
-|                                             |
-v                                             v
-D / S / P                                  Delta
-Attention-world path                    Cognitive path
-|                                             |
-+----------------------+----------------------+
-                       ↓
-                Attention Policy
-      “我现在应该花多少注意力？”
-                       ↓
-          DROP / AWARE / WATCH / ENGAGE
-                       ↓
-                 Human Feedback
-                       ↓
-          human-authorized cognition only
-                       ↓
-                  Cognitive Kernel
++---------------------------+----------------------------------+
+|                                                              |
+v                                                              v
+no legal cognitive effect                               cognitive effect(s)
+→ audited Event → D / S / P                             → Locate / Relation Mapping
+→ DROP / AWARE                                          → Binding / Grounding / Authority
+                                                       → Magnitude-Free / Pareto
+                                                       → AWARE / WATCH / ENGAGE
+|                                                              |
++---------------------------+----------------------------------+
+                            ↓
+                     Final Attention
+                            ↓
+                 Human-authorized side effects
+                            ↓
+                      Cognitive Kernel
 ```
 
 Core layering invariant:

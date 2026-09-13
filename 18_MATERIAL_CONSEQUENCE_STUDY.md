@@ -1,5 +1,6 @@
 # Research Attention OS — Material Consequence (S) Study
 
+> **Historical status note (2026-09-13):** this document records the S calibration study. S semantics and estimator work subsequently closed into S v1 and are now reused by the online no-Delta branch; current wiring is in `RAOS_CANONICAL_ARCHITECTURE.md`.
 Status: **ACTIVE — SEMANTIC CALIBRATION**  
 Date: 2026-09-06  
 Phase: II-B Attention Policy Calibration  

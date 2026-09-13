@@ -26,7 +26,11 @@ These two models meet inside cognitive judgment and attention allocation.
 The Semantic Sensor is not merely preprocessing. It constructs the semantic world that downstream RAOS is able to see.
 
 ```text
-Raw Source
+External World
+   ↓
+Acquisition Plane
+   ↓
+RAOS Source / Raw Information Boundary
    ↓
 Semantic Sensor
    ↓
@@ -218,13 +222,16 @@ Canonical memory set from this stage:
 ## 6. Current architectural interpretation
 
 ```text
-External World Model quality      current primary bottleneck candidate
-Brain World Model                 conceptually required; engineering frontier later
-Delta semantics                   frozen / performing well under clean input
+External World Model quality      remains a first-order causal variable
+Brain World Model                 authoritative state boundary remains required
+Cognitive transition semantics    decomposed into current research-aligned stages
 Attention Policy                  downstream allocator, not perception repair
+Acquisition                       observation boundary, not cognitive filtering
 ```
 
-The immediate implication is not to redesign Delta. It is to improve and measure the fidelity of the worlds Delta is shown.## Observed Brain World Model authority failure — Phase 6C
+As of 2026-09-13 the system is in real developer dogfood. No single layer is declared the current bottleneck in advance; new work should be driven by observed residuals and attributed from the earliest causal layer.
+
+## Observed Brain World Model authority failure — Phase 6C
 
 Phase 6C produced a concrete example of why Brain World Model authority must be explicit.
 

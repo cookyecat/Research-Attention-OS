@@ -1,5 +1,7 @@
 # Phase 8C.2 — Production Sensor Bridge Result
 
+
+> **Historical result note (2026-09-13):** the “production default remains legacy / promotion blocked” statements below describe this experiment at measurement time. Sensor/Auditor bridge and research-aligned cognition were later promoted to developer dogfood; do not treat this file as current deployment status.
 Status: **ACTIVE / TIER-2 PASS / DECISION-STABILITY RESIDUAL ATTRIBUTED / PRODUCTION PROMOTION BLOCKED**
 Date: 2026-09-09
 

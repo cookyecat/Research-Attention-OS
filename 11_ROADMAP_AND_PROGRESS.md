@@ -1309,3 +1309,13 @@ Real use exposed that the Attention page was rendering the raw `AttentionPlan` l
 A second dogfood residual was a frontend runtime hydration failure: server-rendered navigation links worked, but client-side controls (`Show DROP`, Inbox submit, feedback, etc.) and `useEffect`-loaded Attention data did not. Backend APIs were healthy (`/api/kernel/attention` returned 15 plans; 6 unique current non-DROP Sources), so this was not an RAOS decision/data failure. Root cause was the long-running `next dev` sharing `.next` with a concurrent `next build`, leaving the development client bundle/hydration state inconsistent. Runtime repair: stop the old dev server, remove `frontend/.next`, restart `npm run dev`. A clean headless browser then rendered the expected six source-level cards, including the The Verge AWARE item. No cognition, Acquisition, DSP, or database semantics changed.
 
 The hand-off documentation commit is `f2050194676422fa5f61ea49ced3e20039cb0cde`; the last functional code change before documentation-only commits is `b4175dd`. The next product-facing work should come from actual dogfood residuals, with a likely near-term cleanup being separation of historical dev/experiment Sources from live dogfood Attention views rather than deleting provenance.
+
+## Documentation Consistency Audit — CLOSED 2026-09-13
+
+Result: `186_DOCUMENTATION_CONSISTENCY_AUDIT_RESULT.md`.
+
+Repository living documentation was reviewed against the current developer-dogfood HEAD. `README.md`, Product/Domain/Database/Scheduler/Ingestion/Source-Graph specs, the mathematical registry, core module positioning, Sensor strategy, and dual-world-model documents were updated so they no longer imply that legacy one-delta cognition, future-only RSS/crawling, automatic `Delta=NONE -> DROP`, or pre-Acquisition architecture are current deployment truth.
+
+Documentation authority is now explicit: `RAOS_CANONICAL_ARCHITECTURE.md` is the HEAD architecture truth source; `35_RAOS_MATHEMATICAL_LANGUAGE_REGISTRY.md` is the living semantic/mathematical registry; living subsystem specs defer to them for exact online wiring; preregistrations/results/checkpoints remain immutable historical provenance except for clearly labelled historical/superseded status notes where an old `ACTIVE/current` header could mislead future work.
+
+No RAOS theory, code, prompt, strategy, runtime configuration, or experimental result was changed by this audit. Repository-wide Markdown reference validation found zero missing referenced `.md` files. A proposed new external-world symbol was deliberately not added to the mathematical registry because documentation maintenance must not silently create new theory.

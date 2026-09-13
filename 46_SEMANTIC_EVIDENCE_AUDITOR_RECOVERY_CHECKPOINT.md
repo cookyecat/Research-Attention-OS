@@ -1,5 +1,7 @@
 # Semantic Evidence Auditor — Recovery Checkpoint after First Calibration Run
 
+
+> **Historical checkpoint note (2026-09-13):** later Auditor work closed the boundary calibration and deployed Auditor v0.1.1. Keep this file as provenance, not as current status.
 Status: **ACTIVE DEVELOPMENT / CORE SUPPORT CHECK PASSED / UNCERTAIN BOUNDARY CALIBRATION NEXT**  
 Date: 2026-09-07
 

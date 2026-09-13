@@ -1,5 +1,7 @@
 # Phase 8 — Narrow Continuous Attention Loop
 
+
+> **Historical phase note (2026-09-13):** Phase 8A WATCH responsibility, 8B continuous arrival, and later Acquisition/dogfood work have progressed beyond this program-opening state. Use the roadmap and canonical architecture for current status.
 Status: **ACTIVE**
 Opened: 2026-09-08
 

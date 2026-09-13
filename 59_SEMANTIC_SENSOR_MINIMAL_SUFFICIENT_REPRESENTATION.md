@@ -1,5 +1,7 @@
 # Semantic Sensor — Minimal Sufficient Representation
 
+
+> **Historical research note (2026-09-13):** this study helped produce the current Sensor representation; Sensor v0.2.6 is now active dogfood infrastructure. Preserve the study contract/results as research history.
 Status: **ACTIVE RESEARCH / PREREGISTERED DEVELOPMENT STUDY**  
 Date: 2026-09-08
 

@@ -1,5 +1,7 @@
 # Semantic Sensor Front-End — Development Corpus v0.1
 
+
+> **Historical development-corpus note (2026-09-13):** this corpus remains development evidence and must not be reused as fresh holdout. It is not the current project phase.
 Status: **ACTIVE DEVELOPMENT / NOT FRESH VALIDATION**  
 Date: 2026-09-07  
 Parent: `33_SEMANTIC_EVIDENCE_EXTRACTION_FRONT_END.md`  

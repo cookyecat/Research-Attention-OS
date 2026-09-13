@@ -6,6 +6,8 @@ Date: 2026-09-08
 > **研发阶段买清晰度，生产阶段买效率。**  
 > **During research, buy clarity. During production, buy efficiency.**
 
+> **Current deployment note (2026-09-13):** RAOS has no external production users yet. The active Mac runtime is developer dogfood and intentionally executes the validated research-aligned cognition contract with the configured model provider. The local-first architecture below is a **future efficiency strategy**, not the current online semantic contract. Research and dogfood semantics must not diverge merely to save cost.
+
 ---
 
 # 1. Why this principle exists

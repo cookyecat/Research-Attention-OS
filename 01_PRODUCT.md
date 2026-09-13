@@ -1,7 +1,9 @@
 # Research Attention OS — PRODUCT.md
 
 Version: RAOS v1.1
-Status: Development Baseline
+Status: **ACTIVE PRODUCT DIRECTION / DEVELOPER DOGFOOD**
+
+Current HEAD wiring is authoritative in `RAOS_CANONICAL_ARCHITECTURE.md`. Sections that describe the original MVP are retained as product-history milestones; they do not override the current Acquisition + research-aligned cognition + D/S/P architecture.
 
 ## 1. Product definition
 
@@ -73,21 +75,29 @@ The Kernel stores active Researcher State, not all accumulated information.
 ## 5. System architecture
 
 ```text
-0. SOURCE INGESTION
+0. ACQUISITION PLANE
         ↓
-1. INFORMATION PLANE
+1. RAW INFORMATION / SOURCE BOUNDARY
         ↓
-2. EPISTEMIC PLANE
+2. SEMANTIC SENSOR + EVIDENCE AUDITOR
         ↓
-3. COGNITIVE SCHEDULER
+3. AUDITED WORLD REPRESENTATION
+        ├─ cognitive transition path
+        │    → Relation Mapping / Binding / Grounding / Authority
+        │    → Magnitude-Free / Pareto
+        └─ no-Delta awareness path
+             → D / S / P
         ↓
-4. COGNITIVE KERNEL
+4. ATTENTION / ACTION
         ↓
-5. EXECUTION / FEEDBACK
+5. HUMAN-AUTHORIZED COGNITIVE KERNEL / WATCH
 ```
 
+### Acquisition Plane
+Continuously observes configured external Sources and creates provenance-bearing Observation / Information Object / Snapshot records. Acquisition defines where RAOS looks, not what RAOS should care about.
+
 ### Source Ingestion
-Receives external material and normalizes it into Source.
+Fetches/parses a selected external object or manual input and normalizes it into the existing RAOS `Source` boundary.
 
 ### Information Plane
 Represents what happened and what was said:
@@ -135,9 +145,9 @@ Example home:
 Estimated attention required: 24 minutes.
 ```
 
-## 7. v1.1 MVP objective
+## 7. v1.1 foundational MVP objective — ACHIEVED
 
-Prove one vertical slice:
+The original product milestone was to prove one protected vertical slice:
 
 ```text
 Source
@@ -163,11 +173,12 @@ Required:
 - PDF;
 - manual user observation.
 
-Optional after the core slice passes:
-- arXiv;
-- RSS;
-- GitHub;
-- WeChat shared URL.
+Current / next transports:
+- RSS/Atom — active unattended dogfood transport;
+- arXiv — future adapter;
+- GitHub — future adapter;
+- X / social sources — future official-API or explicitly supported adapter;
+- WeChat shared URL — manual/public URL path where accessible.
 
 ## 9. MVP required capabilities
 
@@ -181,17 +192,18 @@ Optional after the core slice passes:
 8. Create WATCH objects.
 9. Preserve provenance and version history.
 
-## 10. Explicitly out of scope for first implementation
+## 10. Current deliberate non-goals / deferred scope
 
-- large-scale crawling;
+- broad authenticated or anti-bot crawling as a prerequisite for dogfood;
+- paywall bypass or unrestricted scraping assumptions;
+- Attention-driven adaptive acquisition before feedback-bias research;
 - autonomous WeChat history crawling;
-- recommendation feed;
-- reward-model training;
-- social features;
-- automatic Kernel mutation;
+- infinite recommendation feed;
+- reward-model training before sufficient Human Gold;
+- automatic hidden Kernel mutation;
 - giant ontology;
-- multi-agent orchestration;
-- complex million-document event clustering.
+- multi-agent orchestration unrelated to the Attention OS objective;
+- complex million-document event clustering without measured need.
 
 ## 11. Reference implementation defaults
 
@@ -207,8 +219,8 @@ Database:
 - pgvector
 
 Background jobs:
-- Redis
-- Celery or equivalent
+- current dogfood: independent Python Acquisition worker;
+- Redis/Celery or equivalent only if later scale requires it
 
 Frontend:
 - Next.js
@@ -231,7 +243,7 @@ Product semantics take priority over stack preferences.
 Paste text, URL, upload PDF, or add observation.
 
 ### Attention
-Show extracted cognitive objects, Kernel match, and AttentionPlan.
+Source-centric current-attention feed. Show one current disposition per Source, article/source provenance, click-through analysis, Human Gold feedback, and proposed KernelPatch where authorized. Historical plans remain provenance rather than duplicate feed cards.
 
 ### Kernel
 Show active Goals, Projects, Bottlenecks, Questions, Beliefs, Hypotheses, Models, Decisions, Experiments.
@@ -252,7 +264,7 @@ Codex must not:
 
 ## 14. Definition of success
 
-Given a pasted article and a pre-existing Kernel, the application can:
+The original MVP slice is complete. Current dogfood success is broader: automatically observed or manually supplied information should enter the same protected cognition contract and produce an auditable Attention decision. The foundational checklist remains:
 1. persist the article as Source;
 2. extract attributed Claims;
 3. separate Observations from Inferences;

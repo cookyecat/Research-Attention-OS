@@ -1,7 +1,7 @@
 # Research Attention OS — Mathematical Language Registry
 
-Status: **CANONICAL QUICK-REFERENCE / ACTIVE MAINTENANCE CONTRACT**  
-Date: 2026-09-07  
+Status: **CANONICAL QUICK-REFERENCE / ACTIVE MAINTENANCE CONTRACT**
+Original date: 2026-09-07 · maintained through: 2026-09-13
 Purpose: provide one stable entry point for the current mathematical language of RAOS so that symbol meaning does not drift across research iterations, implementation work, or human memory.
 
 > This file is the RAOS mathematical dictionary. It summarizes—not replaces—the canonical semantic documents. When a frozen semantic definition changes, this registry MUST be updated in the same research change.
@@ -50,34 +50,33 @@ Do not alter a theoretical definition merely because its engineering sensor or e
 # 1. One-screen core map
 
 ```text
-REAL WORLD / INFORMATION
+EXTERNAL WORLD / INFORMATION
 
+Acquisition / observation boundary
+ ↓
 I_t
- ↓ Extract / Semantic Sensor
+ ↓ Semantic Sensor + Auditor
 E_t / SemHat(E)
  ↓
-+---------------------------+
-|                           |
-v                           v
-Cognitive path          Attention-world path
-                         D-hat / S-hat / P-hat
-K_t                     |
- ↓ Locate                |
-L_t                     |
- ↓                      |
-Delta_t                 |
-+------------+-----------+
-             ↓
-        Attention Policy
-             ↓
-            A_t
-             ↓
-            H_t
-             ↓ human-authorized patch only
-          K_{t+1}
++--------------------------------------+--------------------------------------+
+|                                                                             |
+v                                                                             v
+Cognitive-transition path                                              no-Delta awareness path
+K_t → Locate → Relation Mapping                                       audited Event semantics
+    → Support Binding / Grounding / Authority                         → D-hat / S-hat / P-hat
+    → cardinal-free legal effects                                     → frozen Boolean gate
+    → Magnitude-Free / Pareto                                          |
+|                                                                             |
++--------------------------------------+--------------------------------------+
+                                       ↓
+                                  Attention A_t
+                                       ↓
+                              Decision Cause / H_t
+                                       ↓ human-authorized patch only
+                                    K_{t+1}
 ```
 
-For the current no-cognitive-change AWARE study:
+For the frozen no-cognitive-change AWARE semantics:
 
 $$
 \boxed{
@@ -105,7 +104,7 @@ with partial determinacy allowed when an unknown component cannot change the Boo
 
 | Symbol | Canonical name | Dependency | Mathematical language | Physical meaning | One-sentence plain language |
 |---|---|---|---|---|---|
-| $I_t$ | Information | time $t$ | external information object | raw information reaching RAOS | **现在进来了一条什么原始信息？** |
+| $I_t$ | Observable Information | Acquisition + time $t$ | externally observed information object | information made observable to RAOS by configured acquisition/manual input | **RAOS 现在实际看到了什么信息？** |
 | $E_t$ | Epistemic Representation | $I_t$ | $E_t=Extract(I_t)$ | claims, observations, inferences and evidence recovered from the source | **这条信息实际上说了什么，哪些是事实、观察、推断和证据？** |
 | $Sem^*(E)$ | True Event Semantics | real event $E$ | latent / unobservable | the real semantic state of the event independent of RAOS extraction | **现实中这件事究竟是什么。** |
 | $\widehat{Sem}(E)$ | Extracted Semantic Evidence | raw source $I$ | $\widehat{Sem}(E)=ExtractSemanticEvidence(I)$ | engineering estimate of event semantics | **RAOS 从文章里读出来“这件事是什么”。** |
@@ -118,7 +117,7 @@ with partial determinacy allowed when an unknown component cannot change the Boo
 | $\mathcal G_E$ | Objective Attention Constituency | $Sem(E)$ | $\mathcal G_E=Constituency(Sem(E))$ | natural reference audience for judging attention penetration | **判断“大家是否在关注”时，到底应该拿哪群人当分母？** |
 | $R_E(t)$ | Reference-normalized Attention Penetration | $\mathcal G_E,t$ | $R_E(t)=\frac{1}{|\mathcal G_E|}\sum_{i\in\mathcal G_E}a_i(E,t)$ | conceptual genuine-attention penetration within the correct constituency | **相关人群中，有多大比例真的把注意力放到了这件事上？** |
 | $R_t$ | Runtime Context | user + time | runtime state | current task, interruption state, deadline, capacity and available attention | **现在这个时刻，我有没有条件把注意力花在它上面？** |
-| $A_t$ | Attention Action / Disposition | $\Delta_t,K_t,R_t$ plus policy evidence | $A_t=\pi(\Delta_t,K_t,R_t)$ | allocation of scarce human attention | **我现在应该忽略、知道一下、继续盯着，还是认真投入？** |
+| $A_t$ | Attention Action / Disposition | cognitive Decision Cause **or**, when none exists, $D/S/P$ + runtime context | policy-composed action | allocation of scarce human attention | **我现在应该忽略、知道一下、继续盯着，还是认真投入？** |
 | $H_t$ | Human Feedback | user interaction | observed human judgment / authorization | correction, confirmation, acceptance, rejection or modification | **人最终怎么判断、纠正和授权。** |
 | $K_{t+1}$ | Next Cognitive Kernel | $K_t,H_t$ | accepted patch only | next committed cognitive state | **只有人确认过的认知变化，才真正写进下一版“我”。** |
 
@@ -540,7 +539,7 @@ Do not let one variable answer another variable's question.
 
 # 8. no-$\Delta$ AWARE gate
 
-Current frozen Phase II-B semantic gate:
+Current frozen and online no-$\Delta$ semantic gate:
 
 $$
 \boxed{
@@ -714,17 +713,19 @@ $$
 # 13. Current status snapshot
 
 ```text
-Cognitive Transition v2.1        FROZEN / CLOSED BASELINE
-Delta semantics                  FROZEN
-D semantic definition            FROZEN / CLOSED
-User Standing Radar clauses      ACTIVE CALIBRATION
-S semantic definition            FROZEN / CLOSED
-S estimator v1                   ACCEPTED in controlled validation
-P semantic definition            FROZEN / CLOSED
-P estimator v1                   ACCEPTED in controlled validation
-no-Delta AWARE gate              FROZEN semantic baseline
-Partial UNKNOWN determinacy      v1.1 implemented
-Semantic Evidence Extraction     ACTIVE — CURRENT FRONTIER
+Cognitive Transition theory       FROZEN semantic baseline
+Implementation of cognitive path research-aligned / cardinal-free / support-bound
+D semantic definition            FROZEN; D v4/profile v4 active online for no-Delta
+S semantic definition            FROZEN; S v1 active online for no-Delta
+P semantic definition            FROZEN; P v1 available, direct evidence often UNKNOWN
+P engineering estimator          OPEN engineering frontier; estimate/simulation provenance must be explicit
+no-Delta AWARE gate              FROZEN and ONLINE: AWARE iff S AND (D OR P)
+Partial UNKNOWN determinacy      v1.1 ONLINE
+Semantic Sensor                  v0.2.6 active dogfood representation
+Semantic Evidence Auditor        v0.1.1 active dogfood gate
+Acquisition Plane                v0.1 unattended RSS dogfood ACTIVE
+Attention strategy               Magnitude-Free + Pareto + effect-anchored OPEN_NEW online
+Research ↔ developer dogfood     SAME validated semantic contract
 ```
 
 Do not infer open-world production accuracy from controlled clean-semantic validation.
@@ -735,14 +736,17 @@ Do not infer open-world production accuracy from controlled clean-semantic valid
 
 | Concept | Canonical source |
 |---|---|
-| Cognitive Kernel / $E_t,L_t,\Delta_t,A_t$ | `08_COGNITIVE_TRANSITION_MODEL_V2.1.md` |
+| HEAD architecture / online authority split | `RAOS_CANONICAL_ARCHITECTURE.md` |
+| Cognitive Kernel / theoretical $E_t,L_t,\Delta_t,A_t$ | `08_COGNITIVE_TRANSITION_MODEL_V2.1.md` |
 | Attention-policy elicitation / AWARE semantics | `10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md` |
 | D — Standing Attention Jurisdiction | `16_STANDING_ATTENTION_JURISDICTION.md` |
 | S — Material Consequence | `19_MATERIAL_CONSEQUENCE_REFERENCE_SCALE.md` |
 | P — Collective Attention Salience | `22_COLLECTIVE_ATTENTION_SALIENCE.md` |
 | P Evidence Packet / estimator modeling | `23_COLLECTIVE_ATTENTION_ESTIMATOR_MODELING.md`, `24_COLLECTIVE_ATTENTION_EVIDENCE_INTERFACE.md` |
 | Semantic Evidence Extraction | `33_SEMANTIC_EVIDENCE_EXTRACTION_FRONT_END.md` |
-| Current integrated adjudication history | `34_INTEGRATED_NO_DELTA_AWARE_ROUND2_ADJUDICATION.md` |
+| no-Delta integration history | `34_INTEGRATED_NO_DELTA_AWARE_ROUND2_ADJUDICATION.md`, `184_CANONICAL_ARCHITECTURE_AND_DSP_ONLINE_RESTORATION_RESULT.md` |
+| Acquisition Plane | `182_ACQUISITION_PLANE_V01_TOP_LEVEL_DESIGN.md`, `183_ACQUISITION_PLANE_V01_RSS_DOGFOOD_RESULT.md` |
+| Current cognitive implementation contract | `180_PHASE9A_KERNEL_CAUSAL_ALIGNMENT_RESULT.md`, `181_RESEARCH_PRODUCTION_ALIGNMENT_DOGFOOD_ROLLOUT_RESULT.md` |
 
 ---
 

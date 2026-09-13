@@ -1,39 +1,42 @@
 # Research Attention OS — INGESTION_SPEC.md
 
 Version: RAOS v1.1
+Status: **ACTIVE INGESTION BOUNDARY; external discovery now belongs to Acquisition Plane**
 
 ## 1. Purpose
 
-The ingestion layer is external I/O.
+Current HEAD separates **Acquisition** from **Ingestion**:
 
 ```text
-discover / receive
+Acquisition Plane
+  discover / observe / identify external item / snapshot
       ↓
-fetch
+Ingestion boundary
+  fetch → parse → normalize → fingerprint → persist RAOS Source
       ↓
-parse
-      ↓
-normalize
-      ↓
-fingerprint
-      ↓
-persist Source
+Sensor / Auditor / cognition
 ```
 
-It does not make final cognitive scheduling decisions.
+Acquisition answers “what became observable?” Ingestion turns a selected object into a normalized RAOS `Source`. Neither layer makes cognitive relevance or Attention decisions.
 
-## 2. SourceConnector interface
+## 2. Acquisition Adapter vs Ingestion Connector
+
+Acquisition adapter (current v0.1 RSS/Atom transport):
 
 ```python
-class SourceConnector(Protocol):
-    def discover(self, query_or_config) -> list[DiscoveredItem]: ...
-    def fetch(self, item: DiscoveredItem) -> RawSource: ...
-    def parse(self, raw: RawSource) -> ParsedSource: ...
-    def normalize(self, parsed: ParsedSource) -> NormalizedSource: ...
-    def fingerprint(self, normalized: NormalizedSource) -> str: ...
+class AcquisitionAdapter(Protocol):
+    def discover(self, source_definition) -> list[DiscoveredExternalItem]: ...
 ```
 
-Manual connectors do not need active discovery.
+The Acquisition service owns external identity, Observation, Snapshot, baseline, and polling semantics.
+
+Ingestion connectors/services own content retrieval and normalization:
+
+```python
+fetch → parse → normalize → fingerprint → persist Source
+```
+
+Do not merge discovery scheduling into the cognitive pipeline.
 
 ## 3. Canonical NormalizedSource
 
@@ -102,7 +105,7 @@ Creates:
 
 This is a first-class path.
 
-## 5. Phase-2 connectors
+## 5. Additional / future connectors
 
 ### arXivConnector
 - query/direct ID/URL;
@@ -111,10 +114,14 @@ This is a first-class path.
 - optional PDF;
 - reference resolution.
 
-### RSSConnector
-- poll configured feeds;
-- create Source candidates;
-- deduplicate.
+### RSS / Atom Acquisition Adapter — ACTIVE v0.1
+- poll configured `SourceDefinition` rows;
+- create/resolve External Information Objects and Observations;
+- create immutable Snapshots linked to normalized RAOS Sources;
+- establish a present-time baseline for newly registered feeds before cognitive analysis;
+- isolate one Source failure from unrelated Sources.
+
+RSS discovery does not decide which feed items matter cognitively.
 
 ### GitHubConnector
 - repository metadata;
@@ -146,6 +153,8 @@ Possible:
 
 ## 7. Deduplication
 
+Acquisition distinguishes **external item identity** from semantic same-event identity. Safe acquisition-level dedup includes stable external IDs, canonical URL identity, and exact content snapshots.
+
 ### Exact duplicate
 Use:
 - DOI;
@@ -161,7 +170,7 @@ Use:
 - text similarity.
 
 ### Same-event duplicate
-Handled by EventCluster later.
+Handled by EventCluster / Source Graph downstream. Acquisition must not collapse semantically similar reports merely because they describe the same event.
 
 Never delete provenance silently; preserve relation metadata.
 
@@ -277,4 +286,7 @@ A connector passes if:
 4. parsing failure is visible;
 5. downstream extraction can read normalized text;
 6. paper references emit unresolved candidates;
-7. user observation enters without pretending to be a web source.
+7. user observation enters without pretending to be a web source;
+8. newly registered unattended Sources baseline current history without triggering cognition;
+9. one failing Acquisition Source does not terminate independent polling;
+10. the worker loads the same explicit runtime environment/semantic contract as the HTTP backend.

@@ -1,5 +1,7 @@
 # Integrated no-Delta AWARE Validation
 
+
+> **Historical status note (2026-09-13):** this was the first D/S/P composition study. The validated branch is now restored online; see `184_CANONICAL_ARCHITECTURE_AND_DSP_ONLINE_RESTORATION_RESULT.md` and `RAOS_CANONICAL_ARCHITECTURE.md`.
 Status: **ACTIVE — FIRST SYSTEM COMPOSITION**  
 Date: 2026-09-07  
 Scope: `Delta = NONE` only  

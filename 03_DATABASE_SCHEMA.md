@@ -1,7 +1,9 @@
 # Research Attention OS — DATABASE_SCHEMA.md
 
 Version: RAOS v1.1
-Reference database: PostgreSQL 16+ with pgvector
+Status: **LIVING CONCEPTUAL SCHEMA — current migration/model code is authoritative**
+Reference database: PostgreSQL 16+ with pgvector; active local dogfood uses SQLite
+Current Alembic head: `0009_acquisition_plane_v01`
 
 ## 1. Design principles
 
@@ -20,6 +22,28 @@ Reference database: PostgreSQL 16+ with pgvector
 CREATE EXTENSION IF NOT EXISTS vector;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 ```
+
+## 2.1 Acquisition Plane tables
+
+Current HEAD adds an external-observation layer before RAOS `Source`:
+
+```text
+acquisition_sources
+  id, name, source_type, locator, enabled, poll_interval_seconds, last_polled_at
+
+external_information_items
+  id, identity_key UNIQUE, item_type, canonical_url, title, published_at
+
+acquisition_observations
+  id, source_definition_id FK, external_item_id FK, observed_at, external_ref, observation_metadata
+  UNIQUE(source_definition_id, external_item_id)
+
+information_snapshots
+  id, external_item_id FK, raos_source_id FK, captured_at, content_hash, snapshot_metadata
+  UNIQUE(external_item_id, content_hash)
+```
+
+Acquisition identity/snapshot state is distinct from semantic Event clustering and from the normalized `sources` table.
 
 ## 3. Source tables
 
@@ -259,7 +283,13 @@ Commit must be transactional:
 5. associate patch;
 6. commit.
 
-## 9. Scheduler tables
+## 9. Analysis execution + Scheduler tables
+
+### analysis_runs
+
+`AnalysisRun` is the immutable execution-identity boundary used for cache/replay/reschedule attribution. Current fields include source/extras, identity/input/kernel hashes, all stage/provider/prompt versions, provider/model identity, status/error/fallback, latency/token/cost telemetry, `result_payload`, `stage_provenance`, and completion timestamps. A partial unique index prevents more than one live RUNNING/COMPLETED row for the same execution identity.
+
+### Scheduler tables
 
 ### runtime_contexts
 ```text
@@ -286,7 +316,11 @@ expected_output VARCHAR NOT NULL
 reason TEXT NOT NULL
 watch_after_processing BOOLEAN NOT NULL DEFAULT false
 scheduler_version TEXT NOT NULL
+attention_policy_version VARCHAR
+runtime_context_id UUID NULL FK runtime_contexts
+runtime_snapshot JSONB
 score_debug JSONB NOT NULL DEFAULT '{}'
+analysis_run_id UUID NULL FK analysis_runs
 created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 ```
 
@@ -300,9 +334,26 @@ target_ref TEXT NOT NULL
 status VARCHAR NOT NULL
 created_reason TEXT NOT NULL
 kernel_target_ids JSONB NOT NULL DEFAULT '[]'
+analysis_run_id UUID NULL FK analysis_runs
+attention_plan_id UUID NULL FK attention_plans
 created_at TIMESTAMPTZ
 updated_at TIMESTAMPTZ
 ```
+
+### watch_checks
+```text
+id UUID PK
+watch_id UUID NOT NULL FK watches
+trigger_id UUID NULL FK watch_triggers
+new_source_id UUID NULL FK sources
+analysis_run_id UUID NULL FK analysis_runs
+attention_plan_id UUID NULL FK attention_plans
+disposition VARCHAR NOT NULL
+outcome VARCHAR NOT NULL
+checked_at TIMESTAMPTZ NOT NULL
+```
+
+WATCH is an auditable future-attention responsibility loop, not merely a saved topic.
 
 ### watch_triggers
 ```text
@@ -322,6 +373,11 @@ updated_at TIMESTAMPTZ
 ```text
 id UUID PK
 attention_plan_id UUID NOT NULL FK attention_plans
+analysis_run_id UUID NULL FK analysis_runs
+feedback_kind VARCHAR NOT NULL
+system_prediction JSONB NOT NULL DEFAULT '{}'
+user_correction JSONB NOT NULL DEFAULT '{}'
+corrected_fields JSONB NOT NULL DEFAULT '[]'
 system_attention_state VARCHAR
 user_attention_state VARCHAR
 system_modes JSONB
@@ -390,6 +446,9 @@ app/
 9. feedback
 10. ingestion_jobs / parser_runs
 11. source_edges
+12. analysis_runs / execution ownership extensions
+13. feedback / watch-check history
+14. Acquisition Plane (`0009_acquisition_plane_v01`)
 
 ## 15. Database invariants to test
 

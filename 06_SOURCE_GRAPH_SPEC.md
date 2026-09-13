@@ -1,5 +1,7 @@
 # Research Attention OS — SOURCE_GRAPH_SPEC.md
 
+
+> **Current scope note (2026-09-13):** Source Graph remains a valid downstream provenance model. External discovery/polling now belongs to the separate Acquisition Plane (`RAOS_CANONICAL_ARCHITECTURE.md`); Source Graph must not absorb Acquisition or cognitive-attention responsibilities.
 Version: RAOS v1.1
 
 ## 1. Purpose
@@ -232,7 +234,7 @@ Claim traced to primary technical paper
 
 ```text
 Reference strongly matches active Bottleneck
-→ ENGAGE / DEEP_DIVE
+→ ENGAGE, then verify/deep-read as an execution choice
 ```
 
 ## 15. Reference-first research workflow

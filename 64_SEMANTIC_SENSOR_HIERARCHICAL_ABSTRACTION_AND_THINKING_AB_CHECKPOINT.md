@@ -1,5 +1,7 @@
 # Semantic Sensor — Hierarchical Abstraction & Thinking A/B Checkpoint
 
+
+> **Historical checkpoint note (2026-09-13):** this development-only abstraction/thinking A/B is no longer the current project phase. Do not reinterpret its inspected corpus as fresh validation.
 Status: **ACTIVE RESEARCH / DEVELOPMENT-ONLY**  
 Date: 2026-09-08
 

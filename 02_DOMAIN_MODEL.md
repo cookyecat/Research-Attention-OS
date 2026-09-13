@@ -20,6 +20,45 @@ AI may create/propose Source metadata, Event, Claim, Observation candidates, Inf
 
 AI may not directly commit Belief, Model, Hypothesis, or Decision.
 
+## 1.1 Acquisition Plane objects
+
+Acquisition is outside the cognition layer. It records how information becomes observable without deciding whether that information is cognitively important.
+
+```yaml
+SourceDefinition:
+  id: UUID
+  name: string
+  source_type: RSS | ...
+  locator: string
+  enabled: bool
+  poll_interval_seconds: integer
+  last_polled_at: datetime | null
+
+ExternalInformationItem:
+  id: UUID
+  identity_key: string
+  item_type: ARTICLE | ...
+  canonical_url: string | null
+  title: string | null
+  published_at: datetime | null
+
+AcquisitionObservation:
+  source_definition_id: UUID
+  external_item_id: UUID
+  observed_at: datetime
+  external_ref: string | null
+  observation_metadata: object
+
+InformationSnapshot:
+  external_item_id: UUID
+  raos_source_id: UUID
+  captured_at: datetime
+  content_hash: string | null
+  snapshot_metadata: object
+```
+
+A newly registered Source establishes a present-time baseline before cognitive analysis. Identity deduplication belongs here; semantic same-event clustering does not.
+
 # 2. Information Plane
 
 ## Source
@@ -325,6 +364,10 @@ AttentionPlan:
   reason: string
   watch_after_processing: bool
   scheduler_version: string
+  attention_policy_version: string | null
+  runtime_context_id: UUID | null
+  runtime_snapshot: object | null
+  analysis_run_id: UUID | null
 ```
 
 # 8. Watch objects
@@ -466,7 +509,7 @@ Authority produces decision-bearing bands/flags consumed by Magnitude-Free polic
 
 `OPEN_NEW` means the evidence opens a useful new cognitive branch but no existing epistemic Kernel node is the correct update target. Such a branch must still belong to a cognitive jurisdiction.
 
-A jurisdiction is a responsibility area in the Kernel, analogous to assigning a new research proposal to an appropriate discipline/division even when it is not an update to an existing project. Current production may use an explicitly labelled Locate-derived approximation; the research contract can carry exact `jurisdiction_anchor_ids` per effect.
+A jurisdiction is a responsibility area in the Kernel, analogous to assigning a new research proposal to an appropriate discipline/division even when it is not an update to an existing project. The active research-aligned dogfood contract carries effect-specific `jurisdiction_anchor_ids`; opaque global-Locate approximations are historical compatibility behavior, not the current target semantics.
 
 Anchored admission answers only whether an `OPEN_NEW` branch has legitimate Kernel jurisdiction. Its semantic jurisdiction check must receive the full anchor meaning (node type/title/proposition or equivalent), not opaque IDs/codes alone. It does not rank the branch or determine Attention.
 
@@ -500,7 +543,7 @@ Reschedule keeps frozen cognition but recomputes runtime-dependent attention/art
 
 ## Research contract
 
-A research contract is a versioned experimental interface/semantic contract used to test a proposed architecture before production promotion. It is not automatically the production contract. For example, effect-level `support_unit_ids` and `jurisdiction_anchor_ids` are currently validated research-contract fields even when production core still uses a compatibility representation.
+A research contract is a versioned experimental interface/semantic contract used to test a proposed architecture before promotion. It is **not automatically online authority**. Once a contract passes its gate and is explicitly promoted, developer dogfood should execute the same semantics rather than maintain a separate production-only interpretation. The active `research-aligned-cognition-v1` dogfood contract therefore preserves effect-level `support_unit_ids`, `jurisdiction_anchor_ids`, categorical Grounding, and cardinal-free decision authority.
 
 ## Evaluator-capacity bracketing
 
@@ -510,3 +553,17 @@ Model errors and architecture errors must be separated. During research, evaluat
 - strongest available model or strong-model manual adjudication: capability upper bound / architecture ceiling.
 
 A single weak-model error is not sufficient evidence that the RAOS architecture is wrong. Architecture changes require evidence that the failure persists under a stronger evaluator or follows from a deterministic contract/invariant violation. Conversely, a design that remains reliable under a weak model is especially valuable because it demonstrates architectural robustness rather than merely model capability.
+
+
+## No-Delta situational awareness
+
+When the cognitive path yields no legal Decision Cause, Article/Source Attention is not automatically DROP. Audited Event projections feed the orthogonal D/S/P branch:
+
+```text
+D = Standing Attention Jurisdiction
+S = Material Consequence
+P = Collective Attention Salience
+AWARE iff S AND (D OR P)
+```
+
+`UNKNOWN` is not False. P may be observed, estimated, or explicitly simulated, but those provenance classes must remain distinct. D/S/P has no authority when a legal cognitive Decision Cause exists.

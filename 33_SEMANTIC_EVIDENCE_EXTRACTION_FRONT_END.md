@@ -1,5 +1,7 @@
 # Semantic Evidence Extraction / Sensor Front-End
 
+
+> **Historical frontier note (2026-09-13):** Semantic extraction is no longer merely the “next product frontier”; Sensor v0.2.6 + Auditor v0.1.1 are active in developer dogfood. Preserve this document as the modeling origin; use `RAOS_CANONICAL_ARCHITECTURE.md` for current wiring.
 Status: **ACTIVE MODELING — NEXT PRODUCT FRONTIER**  
 Date: 2026-09-07
 

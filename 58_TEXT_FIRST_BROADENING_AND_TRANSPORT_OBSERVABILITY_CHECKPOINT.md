@@ -1,5 +1,7 @@
 # Semantic Sensor / Auditor — Text-First Broadening Checkpoint
 
+
+> **Historical checkpoint note (2026-09-13):** this text-first transport attribution frontier was followed by the minimal-sufficient Sensor work and v0.2.6 deployment. It is not the current active frontier.
 Status: **ACTIVE DEVELOPMENT / PDF DEFERRED / TEXT TRANSPORT ATTRIBUTION NEXT**  
 Date: 2026-09-08
 

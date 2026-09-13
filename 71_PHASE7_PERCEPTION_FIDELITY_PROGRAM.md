@@ -1,5 +1,7 @@
 # Phase 7 — Perception Fidelity Program
 
+
+> **Historical phase note (2026-09-13):** Phase 7A/7B/7C completed their intended gates. Sensor/Auditor and trusted state boundaries are now part of dogfood; this is no longer the current program.
 Status: **ACTIVE / CURRENT PROGRAM**
 Date: 2026-09-08
 

@@ -1,5 +1,7 @@
 # Research Attention OS — MVP_ACCEPTANCE_TESTS.md
 
+
+> **Status note (2026-09-13):** this is the foundational v1.1 product-behavior acceptance suite. It remains valuable as regression history, but it is **not** an exhaustive specification of current HEAD cognition. Current authority is `RAOS_CANONICAL_ARCHITECTURE.md`; newer contracts include cardinal-free Relation Mapping, Support Binding, Grounding/Authority, Pareto Attention, and the D/S/P no-Delta branch.
 Version: RAOS v1.1
 
 ## 1. Test philosophy
