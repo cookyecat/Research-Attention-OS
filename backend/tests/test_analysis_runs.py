@@ -67,3 +67,49 @@ def test_refresh_after_accept_does_not_rerun(client: TestClient):
     if patches:
         statuses = {p["status"] for p in refreshed["kernel_patches"]}
         assert "ACCEPTED" in statuses or "MODIFIED" in statuses
+
+
+def test_fail_run_after_rollback_clears_poisoned_live_identity(db):
+    from uuid import uuid4
+
+    import pytest
+    from sqlalchemy.exc import IntegrityError
+
+    from app.models.analysis import AnalysisRun
+    from app.services.analysis_runs import fail_run_after_rollback, new_run
+
+    run = new_run(
+        db,
+        source_id=uuid4(),
+        extra_ids=[],
+        identity="failure-recovery-identity",
+        in_hash="in",
+        k_hash="kernel",
+        provider_type="model",
+        model_name="fake",
+        embedding_model_version="none",
+    )
+    run_id = run.id
+    db.commit()
+    db.expunge(run)
+
+    duplicate = AnalysisRun(
+        id=run_id,
+        source_id=uuid4(),
+        extra_source_ids=[],
+        identity_key="different-identity",
+        attempt=1,
+        extractor_version="x", matcher_version="x", evidence_reasoner_version="x",
+        delta_version="x", scheduler_version="x", prompt_version="x", provider_version="x",
+        embedding_model_version="none", pipeline_version="x", provider_type="model",
+        model_name="fake", input_hash="x", kernel_snapshot_hash="x", status="RUNNING", result_payload={},
+    )
+    db.add(duplicate)
+    with pytest.raises(IntegrityError):
+        db.flush()
+
+    assert fail_run_after_rollback(db, run_id, "forced flush failure") is True
+    stored = db.get(AnalysisRun, run_id)
+    assert stored.status == "FAILED"
+    assert stored.completed_at is not None
+    assert stored.error == "forced flush failure"

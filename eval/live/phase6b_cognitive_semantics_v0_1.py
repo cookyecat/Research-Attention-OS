@@ -102,6 +102,8 @@ def audited_units_to_extraction(units: list[dict[str, Any]]):
                 observation_type=ObservationType.OTHER,
                 confidence=confidence,
                 source_span_text=span,
+                semantic_unit_id=str(unit["unit_id"]),
+                semantic_supports=list(unit.get("supports") or []),
             ))
         elif status == "EXTRACTOR_INFERENCE":
             result.inferences.append(ExtractedInference(
@@ -110,6 +112,8 @@ def audited_units_to_extraction(units: list[dict[str, Any]]):
                 confidence=confidence,
                 source_roles=["audited_sensor_unit"],
                 source_span_text=span,
+                semantic_unit_id=str(unit["unit_id"]),
+                semantic_supports=list(unit.get("supports") or []),
             ))
         else:
             result.claims.append(ExtractedClaim(
@@ -120,6 +124,8 @@ def audited_units_to_extraction(units: list[dict[str, Any]]):
                 confidence_extraction=confidence,
                 temporal_status="CURRENT",
                 source_span_text=span,
+                semantic_unit_id=str(unit["unit_id"]),
+                semantic_supports=list(unit.get("supports") or []),
             ))
     result.event_summary = "\n".join(str(u["statement"]) for u in units)[:2000] or None
     result.evidence_maturity = 0.45 if result.observations else (0.35 if result.claims else 0.3)

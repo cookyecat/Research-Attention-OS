@@ -112,3 +112,28 @@ def test_bridge_execution_fingerprint_changes_analysis_identity(db):
     assert legacy["execution_digest"] != bridged["execution_digest"]
     assert "extraction_bridge" not in legacy["execution_snapshot"]
     assert bridged["execution_snapshot"]["extraction_bridge"]["bridge_version"] == "test-fixed-bridge-v1"
+
+
+class RequiresAuditedProvider(SpyRuleProvider):
+    requires_audited_semantics = True
+
+
+def test_research_aligned_provider_auto_installs_audited_bridge(db, monkeypatch):
+    seed_mvp_kernel(db)
+    source = ingest_text(db, "Raw text should not hit legacy extraction.", title="auto bridge")
+    provider = RequiresAuditedProvider()
+    bridge = FixedBridge()
+    monkeypatch.setattr(
+        "app.services.extraction_bridge.research_aligned_extraction_bridge",
+        lambda: bridge,
+    )
+
+    result = run_pipeline(db, source.id, provider=provider, allow_watch_creation=False)
+
+    assert provider.extract_calls == 0
+    assert provider.reason_calls == 0
+    assert result["extraction_path"]["mode"] == "bridge"
+    assert result["execution_snapshot"]["extraction_bridge"] == bridge.execution_snapshot()
+    provenance = result["impact_input"]["extraction"]["analysis_provenance"]
+    assert provenance["primary_source_id"] == str(source.id)
+    assert provenance["independent_source_ids"] == [str(source.id)]

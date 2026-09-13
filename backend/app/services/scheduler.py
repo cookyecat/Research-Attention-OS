@@ -324,6 +324,13 @@ def _bind_decision_scope(draft: PlanDraft, effect, matches: list[KernelMatch]) -
         draft.decision_scope_kind = "TARGET"
         draft.decision_scope_provenance = "exact-target"
         return
+    exact_anchors = [str(x) for x in (getattr(effect, "jurisdiction_anchor_ids", None) or [])]
+    if exact_anchors:
+        known = {str(m.node_id) for m in (matches or [])}
+        draft.decision_scope_node_ids = [anchor for anchor in exact_anchors if anchor in known]
+        draft.decision_scope_kind = "JURISDICTION"
+        draft.decision_scope_provenance = "effect-specific-jurisdiction"
+        return
     from app.services.effect_admission import jurisdiction_anchor_matches
     anchors = jurisdiction_anchor_matches(matches or [])
     draft.decision_scope_node_ids = [str(m.node_id) for m in anchors]
@@ -414,11 +421,13 @@ def get_decision_strategy(strategy_id: str | None = None):
         "pareto-multidelta-magnitude-free",
         "pareto-multidelta-magnitude-free-anchored-open-new",
         "pareto-multidelta-cardinal-free-anchored-open-new",
+        "pareto-multidelta-cardinal-free-effect-anchored-open-new",
     } and strategy_id not in _DECISION_STRATEGIES:
         from app.services.pareto_decision_strategy import (
             ANCHORED_OPEN_NEW_MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
             CARDINAL_FREE_ANCHORED_OPEN_NEW_PARETO_DECISION_STRATEGY,
             MAGNITUDE_FREE_PARETO_DECISION_STRATEGY,
+            RESEARCH_ALIGNED_CARDINAL_FREE_PARETO_DECISION_STRATEGY,
             PARETO_MULTI_DELTA_DECISION_STRATEGY,
         )
 
@@ -429,6 +438,9 @@ def get_decision_strategy(strategy_id: str | None = None):
         )
         _DECISION_STRATEGIES["pareto-multidelta-cardinal-free-anchored-open-new"] = (
             CARDINAL_FREE_ANCHORED_OPEN_NEW_PARETO_DECISION_STRATEGY
+        )
+        _DECISION_STRATEGIES["pareto-multidelta-cardinal-free-effect-anchored-open-new"] = (
+            RESEARCH_ALIGNED_CARDINAL_FREE_PARETO_DECISION_STRATEGY
         )
     try:
         return _DECISION_STRATEGIES[strategy_id]

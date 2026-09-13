@@ -82,6 +82,11 @@ class CognitiveEffect:
     reason: str
     exploration_candidate: bool = False
     target_node_type: str | None = None
+    support_unit_ids: list[str] = field(default_factory=list)
+    jurisdiction_anchor_ids: list[str] = field(default_factory=list)
+    grounding_class: str | None = None
+    provenance_role: str | None = None
+    authority_reason: str | None = None
 
     def as_dict(self) -> dict:
         kind = self.operation.value if hasattr(self.operation, "value") else str(self.operation)
@@ -94,6 +99,11 @@ class CognitiveEffect:
             "reason": self.reason,
             "exploration_candidate": bool(self.exploration_candidate),
             "target_node_type": self.target_node_type,
+            "support_unit_ids": list(self.support_unit_ids),
+            "jurisdiction_anchor_ids": list(self.jurisdiction_anchor_ids),
+            "grounding_class": self.grounding_class,
+            "provenance_role": self.provenance_role,
+            "authority_reason": self.authority_reason,
         }
 
 
@@ -395,6 +405,11 @@ def _copy_effect(effect: CognitiveEffect, *, target_node_type: str | None) -> Co
         reason=effect.reason,
         exploration_candidate=effect.exploration_candidate,
         target_node_type=target_node_type,
+        support_unit_ids=list(effect.support_unit_ids),
+        jurisdiction_anchor_ids=list(effect.jurisdiction_anchor_ids),
+        grounding_class=effect.grounding_class,
+        provenance_role=effect.provenance_role,
+        authority_reason=effect.authority_reason,
     )
 
 
@@ -767,6 +782,11 @@ def assessment_from_dict(data: dict | None) -> CognitiveImpactAssessment | None:
                 reason=str(item.get("reason") or ""),
                 exploration_candidate=bool(item.get("exploration_candidate")),
                 target_node_type=str(item["target_node_type"]) if item.get("target_node_type") else None,
+                support_unit_ids=[str(x) for x in (item.get("support_unit_ids") or [])],
+                jurisdiction_anchor_ids=[str(x) for x in (item.get("jurisdiction_anchor_ids") or [])],
+                grounding_class=str(item["grounding_class"]) if item.get("grounding_class") else None,
+                provenance_role=str(item["provenance_role"]) if item.get("provenance_role") else None,
+                authority_reason=str(item["authority_reason"]) if item.get("authority_reason") else None,
             )
         )
     return CognitiveImpactAssessment(

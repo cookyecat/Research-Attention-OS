@@ -125,6 +125,9 @@ def analysis_execution_snapshot(provider=None) -> dict[str, Any]:
             "version": str(getattr(model_backend, "impact_contract_version", "") or ""),
             "system_prompt_sha256": hashlib.sha256(impact_prompt.encode("utf-8")).hexdigest(),
         }
+        contract_snapshot = getattr(model_backend, "cognition_contract_snapshot", None)
+        if callable(contract_snapshot):
+            snapshot["cognition_contract"] = dict(contract_snapshot() or {})
     if _uses_model_llm(provider):
         snapshot["llm"] = _llm_execution(model_backend)
     if uses_embedding_retrieval(provider):

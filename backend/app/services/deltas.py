@@ -354,3 +354,70 @@ def suggest_watches(text: str, features: SchedulerFeatures, delta: ModelDelta) -
         add("METHOD", "code release", "Implementation evidence still missing.", ["CODE_RELEASE"])
         add("METHOD", "independent replication", "Single demo/success is not confirmation.", ["INDEPENDENT_REPLICATION"])
     return suggestions
+
+
+def model_delta_from_decision_effect(
+    effect,
+    extraction: ExtractionResult | None = None,
+) -> ModelDelta:
+    """Render the exact strategy-selected semantic cause without re-selecting by magnitude."""
+    maturity = float(getattr(extraction, "evidence_maturity", None) or 0.4) if extraction is not None else 0.4
+    if effect is None:
+        return ModelDelta(
+            summary="No material cognitive change relative to the current Kernel.",
+            admission_allowed=False,
+            evidence_maturity=maturity,
+            rationale="No strategy-selected Decision Cause.",
+        )
+    op = _kind(effect.operation)
+    target = None if op == CognitiveEffectKind.OPEN_NEW else (
+        str(effect.target_kernel_node_id) if effect.target_kernel_node_id else None
+    )
+    reason = str(getattr(effect, "reason", "") or "").strip()
+    summary = reason or (
+        "OPEN_NEW: no existing Kernel node is the correct landing point."
+        if op == CognitiveEffectKind.OPEN_NEW
+        else f"{op} on {getattr(effect, 'target_node_type', None) or target or 'existing target'}."
+    )
+    return ModelDelta(
+        summary=summary,
+        what_could_change=[summary],
+        admission_allowed=True,
+        affected_kernel_nodes=_affected_from_update({"operation": op, "target_node_id": target}),
+        evidence_maturity=maturity,
+        rationale=f"Exact Decision Cause projection for {op}; no secondary winner selection.",
+    )
+
+
+def propose_patches_for_decision_effect(
+    effect,
+    *,
+    delta: ModelDelta,
+    nodes: list[KernelNode],
+    extraction: ExtractionResult | None,
+    evidence_link_ids: list[str],
+) -> list[PatchDraft]:
+    """Generate patches only from the already-selected Decision Cause."""
+    if effect is None:
+        return []
+    op = _kind(effect.operation)
+    target = None if op == CognitiveEffectKind.OPEN_NEW else (
+        str(effect.target_kernel_node_id) if effect.target_kernel_node_id else None
+    )
+    update = {"operation": op, "target_node_id": target}
+    evidence_ids = list(evidence_link_ids or [])
+    drafts: list[PatchDraft] = []
+    if op == CognitiveEffectKind.OPEN_NEW:
+        drafts.append(_create_open_new_draft(extraction, effect.reason, delta, evidence_ids))
+    elif op in {CognitiveEffectKind.REINFORCE, CognitiveEffectKind.CHALLENGE}:
+        node = next((n for n in nodes if str(n.id) == str(target)), None)
+        if node is None or not is_update_eligible_node(node.node_type):
+            return []
+        draft = _revise_draft(node, op, effect.reason, evidence_ids)
+        if draft is not None:
+            drafts.append(draft)
+    return [
+        draft for draft in drafts
+        if patch_consistent_with_update(draft, update)
+        and proposed_state_is_legal(draft.target_object_type, draft.proposed_state)
+    ]

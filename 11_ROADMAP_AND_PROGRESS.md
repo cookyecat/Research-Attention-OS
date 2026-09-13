@@ -1258,3 +1258,17 @@ Result: `180_PHASE9A_KERNEL_CAUSAL_ALIGNMENT_RESULT.md`. Valid v0.2 measurement 
 With identical frozen RS05 evidence, K0 produced `CHALLENGE_ONLY 12/12 -> ENGAGE 12/12`, while semantic assimilation K1-S produced `REINFORCE_ONLY 12/12 -> AWARE 12/12`. Raw-polarity JSD=`1.0`; 5000-permutation null p95=`0.081704`; tail probability=`0.00019996`; preregistered semantic gate PASS. The primary endpoint is raw Relation Mapping, so deterministic Grounding cannot manufacture the relation reversal.
 
 The importance-only K1-I arm replayed the exact K0 relation realization in every pair: topology/load-bearing JSD=`0.0`, zero topology invariant violations, while authoritative importance `0.9 -> 0.2` changed Attention `ENGAGE -> AWARE` in `12/12` retained-CHALLENGE pairs. This cleanly separates semantic assimilation from attention allocation. Full regression: `693 passed, 63 skipped, 1 historical Case-K failure, 1 warning`; zero new failures. Production defaults unchanged.
+
+## Research == Production Developer Dogfood Alignment — CLOSED / ACTIVE 2026-09-13
+
+Result: `181_RESEARCH_PRODUCTION_ALIGNMENT_DOGFOOD_ROLLOUT_RESULT.md`.
+
+Because RAOS has no external production users yet, the Mac runtime is treated as developer dogfood rather than a separate semantic tier. New dogfood AnalysisRuns now execute the validated research contract directly: Phase 8C.2 Sensor/Auditor representation, Phase 9A relation-only mapping, 10D.6L.3 Support Binding, 10D.6L.4 Grounding, 10D.6L.4J OPEN_NEW jurisdiction, deterministic ordinal Authority, semantic cardinal-free effect existence, Magnitude-Free/Pareto Attention, and exact Decision Cause downstream projection.
+
+Active local dogfood identity is `research-aligned-cognition-v1` with decision strategy `pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2`. Legacy cognition remains only for explicit historical replay / rollback compatibility.
+
+A real Mac HTTP smoke completed successfully with `fallback_used=false`, `extraction_path.mode=bridge`, three support-bound relations, Grounding `DIRECT/DIRECT/PARTIAL`, and a final `WATCH` whose public update and persisted Watch matched the same `REINFORCE(BOTTLENECK)` Decision Cause. Repeating `/analysis/run` after final backend restart hit the same completed run in 0.066s, confirming the running server uses the aligned execution identity.
+
+Dogfood also exposed and repaired two deployment residuals: the local SQLite schema was upgraded from Alembic `0003` to current head `0008`, and poisoned-transaction failure recovery now rolls back before marking persisted AnalysisRuns `FAILED`, preventing orphan `RUNNING` identities.
+
+Final regression: `701 passed, 63 skipped, 1 historical Case-K failure, 1 warning`; zero new failures. Next work should come from actual dogfood residuals or a newly motivated research question rather than maintaining a separate production-only cognition path.

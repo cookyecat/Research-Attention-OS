@@ -342,6 +342,30 @@ def fail_run(run: AnalysisRun, error: str) -> None:
     run.error = error[:4000]
 
 
+def fail_run_after_rollback(db: Session, run_id: UUID, error: str) -> bool:
+    """Close a failed AnalysisRun even when the active transaction is poisoned.
+
+    A DB flush/commit error can leave Session in pending-rollback state. Roll back first,
+    then mark any persisted RUNNING row FAILED in a clean transaction. If the run itself
+    was rolled back and no longer exists, returning False is still safe: no live identity
+    remains to block a retry.
+    """
+    try:
+        db.rollback()
+    except Exception:
+        pass
+    try:
+        run = db.get(AnalysisRun, run_id)
+        if run is None:
+            return False
+        fail_run(run, error)
+        db.commit()
+        return True
+    except Exception:
+        db.rollback()
+        return False
+
+
 def attention_plans_for_run(db: Session, run_id: UUID) -> list[AttentionPlan]:
     return (
         db.execute(

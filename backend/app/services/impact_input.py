@@ -50,12 +50,12 @@ _FINGERPRINT_KEYS = (
 FINGERPRINT_COVERAGE = {
     "source_text": "blob passed to assess_cognitive_impact",
     "extraction": (
-        "claims(text, claim_type, attributed_to, attribution_type), "
-        "observations(text, observer_type, observation_type), "
-        "inferences(text, author_type, confidence), "
+        "claims(text, claim_type, attributed_to, attribution_type, semantic_unit_id, semantic_supports), "
+        "observations(text, observer_type, observation_type, semantic_unit_id, semantic_supports), "
+        "inferences(text, author_type, confidence, semantic_unit_id, semantic_supports), "
         "evidence(source_role, target_role, stance, strength, scope, confidence), "
         "separations, marketing_heavy, evidence_maturity, evidence_stage_skipped, "
-        "evidence_skip_reason, event_title"
+        "evidence_skip_reason, event_title, analysis_provenance"
     ),
     "matches": "node_id, node_type, title, score, reason, structural, relevance_type",
     "kernel_targets": "id, type, title, proposition, scope, importance, priority",
@@ -102,6 +102,8 @@ def canonical_extraction(raw) -> dict:
                 "claim_type": _as_str(item.claim_type),
                 "attributed_to": item.attributed_to,
                 "attribution_type": _as_str(getattr(item, "attribution_type", None)),
+                "semantic_unit_id": getattr(item, "semantic_unit_id", None),
+                "semantic_supports": list(getattr(item, "semantic_supports", None) or []),
             }
             for item in (raw.claims or [])
             if getattr(item, "text", None)
@@ -111,6 +113,8 @@ def canonical_extraction(raw) -> dict:
                 "text": item.text,
                 "observer_type": _as_str(item.observer_type),
                 "observation_type": _as_str(item.observation_type),
+                "semantic_unit_id": getattr(item, "semantic_unit_id", None),
+                "semantic_supports": list(getattr(item, "semantic_supports", None) or []),
             }
             for item in (raw.observations or [])
             if getattr(item, "text", None)
@@ -120,6 +124,8 @@ def canonical_extraction(raw) -> dict:
                 "text": item.text,
                 "author_type": _as_str(item.author_type),
                 "confidence": float(item.confidence or 0.5),
+                "semantic_unit_id": getattr(item, "semantic_unit_id", None),
+                "semantic_supports": list(getattr(item, "semantic_supports", None) or []),
             }
             for item in (raw.inferences or [])
             if getattr(item, "text", None)
@@ -151,6 +157,7 @@ def canonical_extraction(raw) -> dict:
             "evidence_stage_skipped": bool(raw.evidence_stage_skipped),
             "evidence_skip_reason": raw.evidence_skip_reason,
             "event_title": raw.event_title,
+            "analysis_provenance": dict(getattr(raw, "analysis_provenance", None) or {}),
         }
 
     ext = raw if isinstance(raw, dict) else {}
@@ -179,6 +186,8 @@ def canonical_extraction(raw) -> dict:
                 "claim_type": _as_str(item.get("claim_type")),
                 "attributed_to": item.get("attributed_to"),
                 "attribution_type": _as_str(item.get("attribution_type")),
+                "semantic_unit_id": item.get("semantic_unit_id"),
+                "semantic_supports": list(item.get("semantic_supports") or []),
             }
             for item in (ext.get("claims") or [])
             if isinstance(item, dict) and item.get("text")
@@ -188,6 +197,8 @@ def canonical_extraction(raw) -> dict:
                 "text": item.get("text"),
                 "observer_type": _as_str(item.get("observer_type")),
                 "observation_type": _as_str(item.get("observation_type")),
+                "semantic_unit_id": item.get("semantic_unit_id"),
+                "semantic_supports": list(item.get("semantic_supports") or []),
             }
             for item in (ext.get("observations") or [])
             if isinstance(item, dict) and item.get("text")
@@ -197,6 +208,8 @@ def canonical_extraction(raw) -> dict:
                 "text": item.get("text"),
                 "author_type": _as_str(item.get("author_type")),
                 "confidence": float(item.get("confidence") or 0.5),
+                "semantic_unit_id": item.get("semantic_unit_id"),
+                "semantic_supports": list(item.get("semantic_supports") or []),
             }
             for item in (ext.get("inferences") or [])
             if isinstance(item, dict) and item.get("text")
@@ -213,6 +226,7 @@ def canonical_extraction(raw) -> dict:
         "evidence_stage_skipped": bool(ext.get("evidence_stage_skipped")),
         "evidence_skip_reason": ext.get("evidence_skip_reason"),
         "event_title": ext.get("event_title"),
+        "analysis_provenance": dict(ext.get("analysis_provenance") or {}),
     }
 
 
@@ -567,6 +581,7 @@ def extraction_from_snapshot(snapshot: dict) -> ExtractionResult:
         promotional_framing=list(seps.get("promotional_framing") or []),
         evidence_stage_skipped=bool(ext.get("evidence_stage_skipped")),
         evidence_skip_reason=ext.get("evidence_skip_reason"),
+        analysis_provenance=dict(ext.get("analysis_provenance") or {}),
     )
     for item in ext.get("claims") or []:
         result.claims.append(
@@ -577,6 +592,8 @@ def extraction_from_snapshot(snapshot: dict) -> ExtractionResult:
                 attribution_type=_enum_value(
                     AttributionType, item.get("attribution_type"), AttributionType.UNKNOWN
                 ),
+                semantic_unit_id=item.get("semantic_unit_id"),
+                semantic_supports=list(item.get("semantic_supports") or []),
             )
         )
     for item in ext.get("observations") or []:
@@ -587,6 +604,8 @@ def extraction_from_snapshot(snapshot: dict) -> ExtractionResult:
                 observation_type=_enum_value(
                     ObservationType, item.get("observation_type"), ObservationType.OTHER
                 ),
+                semantic_unit_id=item.get("semantic_unit_id"),
+                semantic_supports=list(item.get("semantic_supports") or []),
             )
         )
     for item in ext.get("inferences") or []:
@@ -595,6 +614,8 @@ def extraction_from_snapshot(snapshot: dict) -> ExtractionResult:
                 text=item["text"],
                 author_type=_enum_value(AuthorType, item.get("author_type"), AuthorType.AI),
                 confidence=float(item.get("confidence") or 0.5),
+                semantic_unit_id=item.get("semantic_unit_id"),
+                semantic_supports=list(item.get("semantic_supports") or []),
             )
         )
     for item in ext.get("evidence") or []:

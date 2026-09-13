@@ -7,6 +7,8 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./raos.db"
     auto_create_tables: bool = True
     cognitive_provider: str = "rule"
+    # legacy | research-aligned-v1. Dogfood sets research-aligned-v1 explicitly.
+    cognitive_contract: str = "legacy"
     llm_api_key: str | None = None
     llm_base_url: str = "https://api.openai.com/v1"
     llm_model: str = "gpt-4o-mini"

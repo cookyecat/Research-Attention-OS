@@ -176,6 +176,8 @@ class ExtractedClaim:
     source_start_offset: int | None = None
     source_end_offset: int | None = None
     chunk_id: str | None = None
+    semantic_unit_id: str | None = None
+    semantic_supports: list[dict] = field(default_factory=list)
 
 
 @dataclass
@@ -188,6 +190,8 @@ class ExtractedObservation:
     source_start_offset: int | None = None
     source_end_offset: int | None = None
     chunk_id: str | None = None
+    semantic_unit_id: str | None = None
+    semantic_supports: list[dict] = field(default_factory=list)
 
 
 @dataclass
@@ -200,6 +204,8 @@ class ExtractedInference:
     source_start_offset: int | None = None
     source_end_offset: int | None = None
     chunk_id: str | None = None
+    semantic_unit_id: str | None = None
+    semantic_supports: list[dict] = field(default_factory=list)
 
 
 @dataclass
@@ -230,6 +236,7 @@ class ExtractionResult:
     promotional_framing: list[str] = field(default_factory=list)
     evidence_stage_skipped: bool = False
     evidence_skip_reason: str | None = None
+    analysis_provenance: dict = field(default_factory=dict)
 
 
 def _claim_type_for(sentence: str) -> ClaimType:

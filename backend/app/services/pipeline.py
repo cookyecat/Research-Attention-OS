@@ -482,7 +482,7 @@ def run_pipeline(
     from app.services.analysis_runs import (
         acquire_run,
         complete_run,
-        fail_run,
+        fail_run_after_rollback,
         hydrate_run,
         canonical_extra_sources,
         compute_identity,
@@ -502,6 +502,10 @@ def run_pipeline(
     extras = [db.get(Source, sid) for sid in extra_source_ids or []]
     extras = canonical_extra_sources([s for s in extras if s is not None])
     provider = provider or get_provider()
+    if extraction_bridge is None and bool(getattr(provider, "requires_audited_semantics", False)):
+        from app.services.extraction_bridge import research_aligned_extraction_bridge
+
+        extraction_bridge = research_aligned_extraction_bridge()
     decision_strategy = decision_strategy or get_decision_strategy()
     nodes = _active_kernel(db)
     in_hash = input_hash(source, extras)
@@ -588,6 +592,12 @@ def run_pipeline(
             independent_source_count=rel_ctx.independent_sources,
             extraction_bridge=extraction_bridge,
         )
+        extraction.analysis_provenance = {
+            "primary_source_id": str(source.id),
+            "independent_source_ids": list(rel_ctx.independent_source_ids),
+            "secondary_source_ids": list(rel_ctx.secondary_source_ids),
+            "relational_digest": rel_ctx.digest,
+        }
         blob = " ".join(
             [source.content_text or "", source.title or ""] + [e.content_text or "" for e in extras]
         )
@@ -717,6 +727,7 @@ def run_pipeline(
                     "kind": draft.decision_scope_kind,
                     "provenance": draft.decision_scope_provenance,
                 },
+                "cognition_trace": dict(getattr(provider, "last_cognition_trace", None) or {}),
             },
         )
         db.add(plan)
@@ -786,6 +797,7 @@ def run_pipeline(
             assessment=assessment,
         )
         payload["relational_context"] = rel_ctx.as_dict()
+        payload["cognition_trace"] = dict(getattr(provider, "last_cognition_trace", None) or {})
         payload["execution_digest"] = exec_digest
         payload["execution_snapshot"] = exec_snapshot
         payload["extraction_path"] = {
@@ -811,11 +823,7 @@ def run_pipeline(
         payload["analysis_run"] = run_public(run)
         return payload
     except Exception as exc:
-        fail_run(run, str(exc))
-        try:
-            db.commit()
-        except Exception:
-            db.rollback()
+        fail_run_after_rollback(db, run.id, str(exc))
         raise
 
 

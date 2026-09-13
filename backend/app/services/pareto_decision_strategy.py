@@ -16,6 +16,7 @@ from app.services.cognitive_impact import (
 )
 from app.services.effect_admission import (
     ANCHORED_OPEN_NEW_ADMISSION,
+    EFFECT_ANCHORED_OPEN_NEW_ADMISSION,
     LEGAL_PUBLIC_EFFECT_ADMISSION,
 )
 from app.services.effect_calibration import (
@@ -231,5 +232,14 @@ CARDINAL_FREE_ANCHORED_OPEN_NEW_PARETO_DECISION_STRATEGY = ParetoMultiDeltaDecis
     version="pareto-multidelta-cardinal-free-anchored-open-new-v0.1",
     calibration_strategy=MAGNITUDE_FREE_CALIBRATION,
     effect_admission_strategy=ANCHORED_OPEN_NEW_ADMISSION,
+    semantic_effect_existence=True,
+)
+
+
+RESEARCH_ALIGNED_CARDINAL_FREE_PARETO_DECISION_STRATEGY = ParetoMultiDeltaDecisionStrategy(
+    strategy_id="pareto-multidelta-cardinal-free-effect-anchored-open-new",
+    version="pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2",
+    calibration_strategy=MAGNITUDE_FREE_CALIBRATION,
+    effect_admission_strategy=EFFECT_ANCHORED_OPEN_NEW_ADMISSION,
     semantic_effect_existence=True,
 )

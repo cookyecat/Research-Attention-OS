@@ -208,6 +208,10 @@ def get_provider(*, chat_fn=None):
             "patches": {"provider": "deterministic", "status": "success"},
         }
         return rule
+    if kind == "model" and (settings.cognitive_contract or "legacy").strip().lower() == "research-aligned-v1":
+        from app.cognitive.research_aligned_provider import ResearchAlignedCognitiveProvider
+
+        return ResearchAlignedCognitiveProvider(chat_fn=chat_fn) if chat_fn else ResearchAlignedCognitiveProvider()
     model = ModelBackedCognitiveProvider(chat_fn=chat_fn) if chat_fn else ModelBackedCognitiveProvider()
     if kind == "model":
         return FallbackProvider(model, rule)
