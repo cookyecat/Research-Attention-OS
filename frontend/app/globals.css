@@ -54,3 +54,14 @@ pre { white-space: pre-wrap; color: var(--muted); font-size: 13px; }
   .stats, .grid2 { grid-template-columns: 1fr; }
   nav.side { border-right: 0; border-bottom: 1px solid var(--line); }
 }
+
+/* Article-level Attention workbench */
+.attention-card { display: block; transition: border-color 120ms ease, transform 120ms ease; }
+.attention-card:hover { border-color: var(--muted); transform: translateY(-1px); }
+.attention-card h3, .source-header h3 { margin-top: 10px; }
+.attention-reason { color: var(--muted); line-height: 1.5; margin-bottom: 10px; }
+.meta { color: var(--muted); font-size: 12px; align-self: center; }
+.text-link { color: var(--paper); text-decoration: underline; text-underline-offset: 3px; }
+.section-heading { display: flex; justify-content: space-between; gap: 16px; align-items: flex-end; margin-top: 28px; margin-bottom: 12px; }
+.section-heading h3 { margin: 0 0 4px; }
+.lede.compact { margin-bottom: 0; }

@@ -1,21 +1,55 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { api, apiOrNull } from "@/lib/api";
 import KernelPatchCard from "@/components/KernelPatchCard";
 import AttentionFeedbackPanel from "@/components/AttentionFeedbackPanel";
 
+type SourceSummary = {
+  id: string;
+  title?: string | null;
+  canonical_url?: string | null;
+  ingested_at?: string | null;
+  ingestion_method?: string | null;
+  raw_metadata?: Record<string, any>;
+};
+
+function sourceOrigin(source?: SourceSummary) {
+  if (!source) return "Unknown source";
+  try {
+    if (source.canonical_url) return new URL(source.canonical_url).hostname.replace(/^www\./, "");
+  } catch {}
+  return source.ingestion_method || "Manual source";
+}
+
+function sourceTime(source?: SourceSummary, fallback?: string | null) {
+  const raw = source?.raw_metadata || {};
+  const value = raw.published || source?.ingested_at || fallback;
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return date.toLocaleString();
+}
+
 export default function AttentionPage() {
   const params = useSearchParams();
   const sourceId = params.get("source");
   const [plans, setPlans] = useState<any[]>([]);
+  const [sources, setSources] = useState<Record<string, SourceSummary>>({});
+  const [showDrop, setShowDrop] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   async function loadPlans() {
-    setPlans(await api<any[]>("/kernel/attention"));
+    const [nextPlans, nextSources] = await Promise.all([
+      api<any[]>("/kernel/attention"),
+      api<SourceSummary[]>("/sources"),
+    ]);
+    setPlans(nextPlans);
+    setSources(Object.fromEntries(nextSources.map((source) => [source.id, source])));
   }
 
   async function loadAnalysis(mode: "read" | "extract" | "reprocess" = "read") {
@@ -51,7 +85,21 @@ export default function AttentionPage() {
     loadAnalysis("read");
   }, [sourceId]);
 
-  const shown = useMemo(() => plans.filter((p) => p.disposition !== "DROP" || sourceId), [plans, sourceId]);
+  const currentPlans = useMemo(() => {
+    const latest = new Map<string, any>();
+    for (const plan of plans) {
+      const key = `${plan.candidate_type}:${plan.candidate_id}`;
+      if (!latest.has(key)) latest.set(key, plan);
+    }
+    return Array.from(latest.values());
+  }, [plans]);
+
+  const shown = useMemo(
+    () => currentPlans.filter((p) => showDrop || p.disposition !== "DROP"),
+    [currentPlans, showDrop],
+  );
+
+  const selectedSource = sourceId ? sources[sourceId] : undefined;
 
   async function afterCommit() {
     await loadPlans();
@@ -73,6 +121,20 @@ export default function AttentionPage() {
       )}
       {analysis && (
         <>
+          {selectedSource && (
+            <div className="card source-header">
+              <div className="row">
+                <span className="badge">{sourceOrigin(selectedSource)}</span>
+                {sourceTime(selectedSource) && <span className="meta">{sourceTime(selectedSource)}</span>}
+              </div>
+              <h3>{selectedSource.title || "Untitled source"}</h3>
+              {selectedSource.canonical_url && (
+                <a className="text-link" href={selectedSource.canonical_url} target="_blank" rel="noreferrer">
+                  Open original ↗
+                </a>
+              )}
+            </div>
+          )}
           {analysis.analysis_run && (
             <div className="card">
               <h3>AnalysisRun</h3>
@@ -166,18 +228,41 @@ export default function AttentionPage() {
           </div>
         </>
       )}
-      <h3>Recent plans</h3>
-      {shown.map((p) => (
-        <div className="card" key={p.id}>
-          <div className="row">
-            <span className={`badge ${p.disposition}`}>{p.disposition}</span>
-            {p.update?.operation && (
-              <span className="badge">{p.update.operation}</span>
-            )}
-          </div>
-          <p>{p.reason}</p>
+      <div className="section-heading">
+        <div>
+          <h3>Attention feed</h3>
+          <p className="lede compact">One source, one current attention state. Older plans are retained as provenance but not repeated here.</p>
         </div>
-      ))}
+        <button className="ghost" onClick={() => setShowDrop((value) => !value)}>
+          {showDrop ? "Hide DROP" : "Show DROP"}
+        </button>
+      </div>
+      {shown.length === 0 && <p className="lede">No current attention items.</p>}
+      {shown.map((p) => {
+        const source = sources[p.candidate_id];
+        const title = source?.title || `${p.candidate_type} ${p.candidate_id}`;
+        const href = p.candidate_type === "SOURCE" ? `/attention?source=${p.candidate_id}` : undefined;
+        const content = (
+          <>
+            <div className="row">
+              <span className={`badge ${p.disposition}`}>{p.disposition}</span>
+              {p.update?.operation && <span className="badge">{p.update.operation}</span>}
+              <span className="meta">{sourceOrigin(source)}</span>
+              {sourceTime(source, p.created_at) && <span className="meta">{sourceTime(source, p.created_at)}</span>}
+            </div>
+            <h3>{title}</h3>
+            <p className="attention-reason">{p.reason}</p>
+            {href && <span className="text-link">View analysis →</span>}
+          </>
+        );
+        return href ? (
+          <Link className="card attention-card" href={href} key={p.id}>
+            {content}
+          </Link>
+        ) : (
+          <div className="card" key={p.id}>{content}</div>
+        );
+      })}
     </>
   );
 }
