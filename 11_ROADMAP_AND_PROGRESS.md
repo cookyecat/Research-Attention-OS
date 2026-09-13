@@ -1272,3 +1272,9 @@ A real Mac HTTP smoke completed successfully with `fallback_used=false`, `extrac
 Dogfood also exposed and repaired two deployment residuals: the local SQLite schema was upgraded from Alembic `0003` to current head `0008`, and poisoned-transaction failure recovery now rolls back before marking persisted AnalysisRuns `FAILED`, preventing orphan `RUNNING` identities.
 
 Final regression: `701 passed, 63 skipped, 1 historical Case-K failure, 1 warning`; zero new failures. Next work should come from actual dogfood residuals or a newly motivated research question rather than maintaining a separate production-only cognition path.
+
+## Acquisition Plane v0.1 — TOP-LEVEL DESIGN FROZEN / IMPLEMENTATION STARTED 2026-09-13
+
+Design: `182_ACQUISITION_PLANE_V01_TOP_LEVEL_DESIGN.md`. Acquisition extends RAOS to the external-world boundary and answers only “what became observable?”, while the existing Information/Cognitive planes retain all semantic judgment. The v0.1 ontology is deliberately limited to four objects: Source, Observation, Information Object, and Snapshot. Core invariant: Source selection defines observation scope, never item-level cognitive relevance.
+
+Implementation scope is intentionally minimal: prove `Source -> Observation -> Information Object -> Snapshot -> existing RAOS Source ingestion -> existing research-aligned analysis` using RSS as the first transport. X, authenticated crawling, complex anti-bot behavior, adaptive acquisition, and other corner cases are deferred until dogfood produces concrete residuals.
