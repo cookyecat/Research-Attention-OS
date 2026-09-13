@@ -1,4 +1,5 @@
 from app.models.analysis import AnalysisRun
+from app.models.acquisition import AcquisitionObservation, ExternalInformationItem, InformationSnapshot, SourceDefinition
 from app.models.claim import Claim
 from app.models.event import Event, EventSource
 from app.models.evidence import EvidenceLink, TemporalPolicy
@@ -38,4 +39,8 @@ __all__ = [
     "IngestionJob",
     "ParserRun",
     "AnalysisRun",
+    "SourceDefinition",
+    "AcquisitionObservation",
+    "ExternalInformationItem",
+    "InformationSnapshot",
 ]
