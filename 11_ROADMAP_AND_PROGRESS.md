@@ -1282,3 +1282,15 @@ Implementation scope is intentionally minimal: prove `Source -> Observation -> I
 ## Acquisition Plane v0.1 — CLOSED / RSS DOGFOOD ACTIVE 2026-09-13
 
 Result: `183_ACQUISITION_PLANE_V01_RSS_DOGFOOD_RESULT.md`. The frozen four-object model (`Source -> Observation -> Information Object -> Snapshot`) is implemented with RSS/Atom as the first transport, existing `ingest_url()` as the content boundary, and the existing research-aligned RAOS pipeline as cognition. Real The Verge RSS dogfood created one external item, one observation, one snapshot, one RAOS Source, and a completed research-aligned AnalysisRun without manual copy/paste; a repeated poll was idempotent. Full regression: `705 passed, 63 skipped, 1 historical Case-K failure, 1 warning`; zero new failures. OpenAI RSS discovery works but direct article retrieval returned HTTP 403 and is retained as the first real Acquisition residual rather than expanding v0.1 around an anticipated workaround.
+
+## Canonical HEAD Architecture + D/S/P Online Restoration — CLOSED 2026-09-13
+
+Result: `184_CANONICAL_ARCHITECTURE_AND_DSP_ONLINE_RESTORATION_RESULT.md`. A whole-system architecture review found that no later module had replaced D/S/P: the validated no-Delta awareness branch had been temporarily isolated during Multi-Delta/Pareto research and was never merged back during the later research==production cognition rollout. `181` is therefore scoped precisely as cognitive-transition-path alignment, while this closure restores the orthogonal no-Delta branch.
+
+`RAOS_CANONICAL_ARCHITECTURE.md` is now the authoritative living HEAD architecture contract. Any future commit that changes module inventory, responsibility boundaries, main dataflow, Attention authority, execution identity, or research↔dogfood semantics must update it in the same commit.
+
+Active dogfood no-Delta path now reuses audited Event projections from the shared Sensor/Auditor bridge and the frozen research contracts: D v4/profile v4, S v1, P v1, and UNKNOWN-aware integration v1.1 semantics. P is never inferred from article prose; absent attention evidence remains UNKNOWN, while explicit engineering estimates/simulations must remain provenance-distinct from observed attention evidence.
+
+The acquisition-fed The Verge article `OpenAI’s rogue AI tried to hack another company in May` was rerun. Cognition again produced `Δ=NONE`; restored awareness produced `D=IN, S=MATERIAL, P=UNKNOWN -> AWARE`, correcting the earlier incomplete online DROP. Counterfactual P values `SALIENT` and `NOT_SALIENT` both also produce AWARE, so this case is P-insensitive.
+
+Focused regression: `69 passed, 1 warning`. Full backend regression: `711 passed, 63 skipped, 1 historical Case-K failure, 1 warning`; zero new failures.

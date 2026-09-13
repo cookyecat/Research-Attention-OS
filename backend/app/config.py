@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     cognitive_provider: str = "rule"
     # legacy | research-aligned-v1. Dogfood sets research-aligned-v1 explicitly.
     cognitive_contract: str = "legacy"
+    # disabled | dsp-v1. No-Delta D/S/P situational-awareness branch.
+    no_delta_awareness_contract: str = "disabled"
     llm_api_key: str | None = None
     llm_base_url: str = "https://api.openai.com/v1"
     llm_model: str = "gpt-4o-mini"

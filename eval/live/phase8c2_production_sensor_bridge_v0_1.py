@@ -313,6 +313,7 @@ class SemanticSensorProductionBridgeV0_1:
                     "event_id": projection["event_id"],
                     "routing_status": projection["routing_status"],
                     "sensor_summary_diagnostic_only": projection["sensor_event_summary_diagnostic_only"],
+                    "audited_projection": projection,
                     "n_edges": len(rows),
                     "n_admitted_edges": len(admitted),
                     "n_rejected_or_unscorable": len(projection["rejected_or_unscorable_objects"]),

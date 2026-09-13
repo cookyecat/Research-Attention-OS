@@ -513,6 +513,11 @@ def run_pipeline(
     event_source_ids = [source.id] + [e.id for e in extras]
     rel_ctx = freeze_analysis_relational_context(db, event_source_ids)
     exec_snapshot = analysis_execution_snapshot(provider)
+    no_delta_awareness_enabled = settings.no_delta_awareness_contract == "dsp-v1"
+    if no_delta_awareness_enabled:
+        from app.services.no_delta_awareness import execution_snapshot as no_delta_execution_snapshot
+
+        exec_snapshot["no_delta_awareness"] = no_delta_execution_snapshot()
     strategy_execution = decision_strategy_snapshot(decision_strategy)
     exec_snapshot["decision_strategy"] = strategy_execution
     bridge_execution = None
@@ -680,6 +685,35 @@ def run_pipeline(
                 features, view, assessment=assessment, matches=matches, decision_strategy=decision_strategy
             )
         )
+        no_delta_awareness_trace: dict = {}
+        if no_delta_awareness_enabled and draft.decision_effect_bound and draft.decision_effect is None:
+            from app.services.no_delta_awareness import evaluate_no_delta_awareness
+
+            p_packets: dict = {}
+            for src in [source, *extras]:
+                candidate = (src.raw_metadata or {}).get("collective_attention_evidence_packets")
+                if isinstance(candidate, dict):
+                    p_packets.update(candidate)
+            no_delta = evaluate_no_delta_awareness(
+                extraction_diagnostics,
+                p_packets=p_packets or None,
+            )
+            no_delta_awareness_trace = dict(no_delta.trace)
+            if no_delta.applicable and not no_delta.final_determined:
+                raise RuntimeError(
+                    "No-Delta D/S/P awareness is unresolved; refusing to coerce UNKNOWN evidence to DROP"
+                )
+            if no_delta.applicable and no_delta.disposition is not None and no_delta.disposition.value == "AWARE":
+                draft = validate_plan(
+                    route(
+                        features,
+                        view,
+                        assessment=assessment,
+                        matches=matches,
+                        awareness=no_delta.awareness_signals,
+                        decision_strategy=decision_strategy,
+                    )
+                )
         plan = AttentionPlan(
             candidate_type=CandidateType.SOURCE,
             candidate_id=source.id,
@@ -728,6 +762,7 @@ def run_pipeline(
                     "provenance": draft.decision_scope_provenance,
                 },
                 "cognition_trace": dict(getattr(provider, "last_cognition_trace", None) or {}),
+                "no_delta_awareness": no_delta_awareness_trace,
             },
         )
         db.add(plan)
@@ -798,6 +833,7 @@ def run_pipeline(
         )
         payload["relational_context"] = rel_ctx.as_dict()
         payload["cognition_trace"] = dict(getattr(provider, "last_cognition_trace", None) or {})
+        payload["no_delta_awareness"] = no_delta_awareness_trace
         payload["execution_digest"] = exec_digest
         payload["execution_snapshot"] = exec_snapshot
         payload["extraction_path"] = {
@@ -899,9 +935,20 @@ def _reschedule(
         brain_snapshot.authoritative_value("threatens_active_work", default=False)
     )
     decision_strategy = decision_strategy or get_decision_strategy()
+    stored_no_delta_trace = orig_debug.get("no_delta_awareness") or stored_payload.get("no_delta_awareness") or {}
+    awareness = None
+    if settings.no_delta_awareness_contract == "dsp-v1":
+        from app.services.no_delta_awareness import awareness_signals_from_trace
+
+        awareness = awareness_signals_from_trace(stored_no_delta_trace)
     draft = validate_plan(
         route(
-            features, runtime, assessment=assessment or impact, matches=matches, decision_strategy=decision_strategy
+            features,
+            runtime,
+            assessment=assessment or impact,
+            matches=matches,
+            awareness=awareness,
+            decision_strategy=decision_strategy,
         )
     )
     score_debug = dict(orig_debug or (payload.get("attention_plan") or {}).get("score_debug") or {})
@@ -914,6 +961,7 @@ def _reschedule(
         "kind": draft.decision_scope_kind,
         "provenance": draft.decision_scope_provenance,
     }
+    score_debug["no_delta_awareness"] = stored_no_delta_trace
     plan = AttentionPlan(
         candidate_type=CandidateType.SOURCE,
         candidate_id=source.id,

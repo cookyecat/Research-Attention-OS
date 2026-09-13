@@ -61,9 +61,9 @@ class AwarenessSignals:
     production does not estimate these from source text or Kernel matches.
     """
 
-    domain_fit: bool
-    event_significance: bool
-    attention_momentum: bool
+    domain_fit: bool | None
+    event_significance: bool | None
+    attention_momentum: bool | None
 
 
 @dataclass
