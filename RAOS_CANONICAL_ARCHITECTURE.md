@@ -84,8 +84,10 @@ Sources / Feeds / APIs / Manual Input
 ──────────────── Acquisition Plane ────────────────
 Source Registry → independent Source Poller → Adapter
                                      ├─ RSS / Atom
-                                     ├─ WEIBO_PUBLIC
-                                     └─ X_PUBLIC (optional)
+                                     ├─ WEIBO_PUBLIC / X_PUBLIC
+                                     ├─ HACKERNEWS_SEARCH
+                                     ├─ BILIBILI_SEARCH / BILIBILI_CREATOR
+                                     └─ SOGOU_SEARCH (blocked residual when public DOM unavailable)
         ↓
 SourceDefinition → Observation → Information Object → Snapshot
         ↓
@@ -161,7 +163,7 @@ UNKNOWN is not False. If missing components prevent the Boolean result from bein
 ## 4. Current contract versions
 
 ```text
-Acquisition Plane              acquisition-plane-v0.1
+Acquisition Plane              acquisition-plane-v0.2 / Phase 11A adapter expansion
 Semantic Sensor                semantic-evidence-extractor-v0.2.6
 Semantic Evidence Auditor      semantic-evidence-auditor-v0.1.1
 Cognition                      research-aligned-cognition-v1
@@ -200,6 +202,9 @@ Unknown composition            no-delta-awareness-integration-v1.1 semantics
 15. Reading/opening a Source is never an implicit cognition trigger. Manual `Analyze with RAOS` is recovery/explicit action, not ordinary scheduling.
 16. The system should maximize observable-world coverage while minimizing human interruption: high acquisition/cognition throughput is compatible with a quiet Attention surface.
 17. Anonymous public-social adapters may consume only publicly observable material. Authenticated account/following access is a separate explicitly authorized transport layer.
+18. Discovery adapters may preserve raw engagement/rank/platform telemetry, but raw popularity is evidence only; it has no D/S/P or Attention authority.
+19. Platform-native content with materially incomplete semantics may be persisted under an explicit cognition-defer policy rather than analyzed as if the full content had been observed.
+20. Query-bearing Source locators in Phase 11A are fixed observation scope; automatic Query Expansion is a separate Phase 11B capability and may not become cognition authority.
 
 
 

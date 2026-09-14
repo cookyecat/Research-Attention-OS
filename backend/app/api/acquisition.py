@@ -44,8 +44,17 @@ def _source_out(row: SourceDefinition) -> dict:
 @router.post("/sources")
 def create_acquisition_source(body: SourceDefinitionCreate, db: Session = Depends(get_db)):
     kind = body.source_type.upper()
-    if kind not in {"RSS", "X_PUBLIC", "WEIBO_PUBLIC"}:
-        raise HTTPException(400, "Supported acquisition source types: RSS, X_PUBLIC, WEIBO_PUBLIC")
+    supported = {
+        "RSS",
+        "X_PUBLIC",
+        "WEIBO_PUBLIC",
+        "HACKERNEWS_SEARCH",
+        "BILIBILI_SEARCH",
+        "BILIBILI_CREATOR",
+        "SOGOU_SEARCH",
+    }
+    if kind not in supported:
+        raise HTTPException(400, f"Supported acquisition source types: {', '.join(sorted(supported))}")
     row = SourceDefinition(
         name=body.name,
         source_type=kind,

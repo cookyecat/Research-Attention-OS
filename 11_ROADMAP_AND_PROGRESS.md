@@ -129,7 +129,8 @@ Core invariants:
 | Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **CLOSED / OPERATIONAL BASELINE ESTABLISHED** |
 | Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **9A PREREGISTERED / OUTCOME SAMPLING PAUSED FOR PARITY GATE** |
 | Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence | **10D.6E CLOSED / 10D.6F SUPPORT-BINDING NEXT** |
-| Phase 11 — Personalization / Scale | Questionnaire prior + trajectory residuals + multi-user/product validation | **NOT STARTED** |
+| Phase 11 — External Attention Infrastructure | 11A Acquisition Expansion → 11B Query Expansion → 11C P Evidence → 11D Delivery → 11E Agent Interface | **11A CLOSED / 11B NEXT** |
+| Phase 12 — Personalization / Scale | Questionnaire prior + trajectory residuals + multi-user/product validation | **NOT STARTED / MOVED FROM OLD PHASE 11** |
 
 Current strategic position:
 
@@ -1468,3 +1469,15 @@ arXiv ingestion is now paper-aware. arXiv `/abs`, `/html`, and `/pdf` URLs are n
 The 10 existing arXiv Sources were presentation-backfilled from official arXiv HTML with 0 failures while preserving their historical cognition inputs. Future arXiv arrivals become `PAPER` Sources whose complete scholarly text is eligible for canonical cognition. `/sources?compact=true` keeps list surfaces lightweight; full Source detail is fetched only when opening a Reader.
 
 A dogfood race where compact list data could overwrite full Source detail was removed by separating selected detail state from the compact index. Contents now appears only when a full body exists, uses real smooth-scroll controls with active-section tracking, and paper progress is section-based. No cognition or authority semantics changed.
+
+## Phase 11 — External Attention Infrastructure — STARTED 2026-09-15
+
+Top-level plan: `198_PHASE11_EXTERNAL_ATTENTION_INFRASTRUCTURE_PLAN.md`. The prior Phase 11 Personalization / Scale plan is moved to Phase 12. Phase 11 executes in the frozen order `11A Acquisition Expansion → 11B Query Expansion / Active Acquisition → 11C P Evidence Sensor & Estimator → 11D Delivery Plane → 11E Agent Interface / Skill`. Peripheral machinery may be borrowed aggressively; semantic authority remains RAOS.
+
+### Phase 11A — Acquisition Expansion — CLOSED 2026-09-15
+
+Preregistration: `199_PHASE11A_ACQUISITION_EXPANSION_PREREGISTRATION.md`. Initial adapters are `HACKERNEWS_SEARCH`, `BILIBILI_SEARCH`, `BILIBILI_CREATOR`, and `SOGOU_SEARCH`, all reusing the existing `SourceDefinition → Observation → Information Object → Snapshot → RAOS Source` ontology. Live preflight validated HN Algolia and Bilibili public search. Bilibili search requires an anonymous visitor `buvid3` cookie but no authenticated account. Bilibili creator currently returns platform code `-799`; Sogou currently returns a protection/shell page with no result DOM. Both are retained as explicit disabled residuals.
+
+First dogfood baseline: HN `AI agent` 5/5 items, Bilibili `AI Agent` 5/5 items, zero item failures. HN web discoveries enter existing URL ingestion. Bilibili video search preserves title/description/author/thumbnail/engagement but is marked `METADATA_ONLY` with cognition explicitly deferred until fuller video semantics are acquired. Raw engagement signals remain acquisition evidence only and do not alter D/S/P or Attention.
+
+Phase 11A result: `200_PHASE11A_ACQUISITION_EXPANSION_RESULT.md`. 11A closed with live HN + Bilibili search dogfood, explicit Bilibili Creator/Sogou residuals, preserved raw attention signals, and zero cognition-authority changes. **Phase 11B Query Expansion / Active Acquisition is next.**

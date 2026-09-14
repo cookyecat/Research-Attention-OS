@@ -110,19 +110,19 @@ The active frontend boundary is: **User Space = content + meaning + action; RAOS
 
 `POST /analysis/extract` is idempotent. `POST /analysis/reprocess` forces a new `AnalysisRun`. `GET /analysis/by-source/{id}` reads the latest run without rerunning cognition.
 
-## Acquisition Plane v0.1
+## Acquisition Plane v0.2 — Phase 11A expansion
 
 Acquisition answers only: **what became observable?** It does not judge cognitive relevance.
 
-The current v0.1 model is:
+The current ontology remains the v0.1 four-object model:
 
 ```text
 SourceDefinition → Observation → Information Object → Snapshot → RAOS Source
 ```
 
-Acquisition is transport-adapter based. RSS/Atom is the baseline unattended transport; `WEIBO_PUBLIC` and `X_PUBLIC` are optional anonymous public-social adapters. New Sources establish a present-time baseline before cognitive analysis so old backlog does not masquerade as newly arrived information. One Source failure must not terminate independent Sources, and one failed item must not abort sibling items in the same Source.
+Acquisition is transport-adapter based. RSS/Atom remains the baseline unattended transport; `WEIBO_PUBLIC` and `X_PUBLIC` are anonymous public-social adapters. Phase 11A adds pragmatic discovery adapters for `HACKERNEWS_SEARCH`, `BILIBILI_SEARCH`, `BILIBILI_CREATOR`, and `SOGOU_SEARCH`. HN/Sogou are web-discovery transports that prefer the existing URL ingestion boundary; Bilibili is currently metadata-only and explicitly defers cognition until fuller video semantics are acquired. New Sources establish a present-time baseline before cognitive analysis so old backlog does not masquerade as newly arrived information. One Source failure must not terminate independent Sources, and one failed item must not abort sibling items in the same Source.
 
-When an article page cannot be fetched but the publisher's RSS/Atom entry contains usable summary/content, Acquisition may preserve it as an explicit `RSS_FALLBACK` Source rather than bypassing publisher access controls. The dogfood registry currently includes The Verge, DeepMind, NVIDIA, OpenAI, Google AI, Google Research, Microsoft Research, Meta Engineering, arXiv cs.AI/cs.RO, an enabled anonymous Weibo timeline, and a disabled optional X public timeline. Hugging Face remains registered but disabled under the conservative SSRF policy.
+When an article page cannot be fetched but its discovery/feed record contains usable publisher/platform text, Acquisition may preserve an explicit provenance-labelled fallback rather than bypassing access controls. The dogfood registry now also contains enabled Hacker News and Bilibili search Sources. Bilibili Creator and Sogou search are registered disabled residuals until their current anonymous public paths are reliable; Hugging Face remains disabled under the conservative SSRF policy. Raw platform engagement/rank signals may be preserved as Acquisition evidence, but they have no D/S/P or Attention authority in Phase 11A.
 
 Identity deduplication belongs to Acquisition; semantic event clustering remains downstream. Public social adapters consume only anonymously observable material. Logged-in Following/friends timelines are a separate future authenticated layer and must carry explicit authorization/provenance rather than hidden browser cookies. Acquisition volume is allowed to grow independently of cognition spending: baseline backlog can be persisted without analysis, but genuine post-baseline arrivals normally enter automatic canonical cognition. A persisted Source is always readable before analysis, and merely opening it never triggers cognition; `Analyze with RAOS` exists for recovery or explicit user action.
 

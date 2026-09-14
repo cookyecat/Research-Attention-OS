@@ -25,6 +25,12 @@ from app.services.fingerprint import NormalizedSource
 from app.services.pipeline import run_pipeline
 from app.services.acquisition_types import DiscoveredExternalItem
 from app.services.social_adapters import WeiboPublicAdapter, XPublicAdapter
+from app.services.discovery_adapters import (
+    BilibiliCreatorAdapter,
+    BilibiliSearchAdapter,
+    HackerNewsSearchAdapter,
+    SogouSearchAdapter,
+)
 
 
 def _text(node, *names: str) -> str | None:
@@ -144,6 +150,14 @@ def _adapter_for(source: SourceDefinition):
         return XPublicAdapter()
     if kind == "WEIBO_PUBLIC":
         return WeiboPublicAdapter()
+    if kind == "HACKERNEWS_SEARCH":
+        return HackerNewsSearchAdapter()
+    if kind == "BILIBILI_SEARCH":
+        return BilibiliSearchAdapter()
+    if kind == "BILIBILI_CREATOR":
+        return BilibiliCreatorAdapter()
+    if kind == "SOGOU_SEARCH":
+        return SogouSearchAdapter()
     raise ValueError(f"Unsupported acquisition source type: {source.source_type}")
 
 
@@ -164,7 +178,7 @@ def _get_or_create_item(db: Session, source: SourceDefinition, discovered: Disco
     if item is None:
         item = ExternalInformationItem(
             identity_key=key,
-            item_type="ARTICLE" if source.source_type.upper() == "RSS" else "POST",
+            item_type=str((discovered.metadata or {}).get("item_type") or ("ARTICLE" if source.source_type.upper() == "RSS" else "POST")),
             canonical_url=discovered.ref,
             title=discovered.title,
             published_at=discovered.published_at,
@@ -225,14 +239,14 @@ def _persist_feed_fallback(db: Session, source: SourceDefinition, item: External
     return persist_normalized(db, normalized)
 
 
-def _persist_social_item(db: Session, source: SourceDefinition, item: ExternalInformationItem, discovered: DiscoveredExternalItem) -> Source:
+def _persist_inline_item(db: Session, source: SourceDefinition, item: ExternalInformationItem, discovered: DiscoveredExternalItem) -> Source:
     metadata = dict(discovered.metadata or {})
     text = str(metadata.get("content_text") or "").strip()
     if not text:
-        raise ValueError("Social item has no public text")
-    author = metadata.get("social_author")
+        raise ValueError("Platform item has no public text")
+    author = metadata.get("social_author") or metadata.get("author_name")
     normalized = NormalizedSource(
-        source_type="POST",
+        source_type=str(metadata.get("normalized_source_type") or "POST"),
         title=item.title,
         canonical_url=item.canonical_url,
         content_text=text,
@@ -242,10 +256,35 @@ def _persist_social_item(db: Session, source: SourceDefinition, item: ExternalIn
         raw_metadata={
             **metadata,
             "origin_url": item.canonical_url,
-            "social_source_name": source.name,
+            "acquisition_source_name": source.name,
             "parser": f"{source.source_type.lower()}-v1",
         },
         ingestion_method=source.source_type.upper(),
+    )
+    return persist_normalized(db, normalized)
+
+
+def _persist_discovery_fallback(db: Session, source: SourceDefinition, item: ExternalInformationItem, discovered: DiscoveredExternalItem) -> Source:
+    metadata = dict(discovered.metadata or {})
+    text = str(metadata.get("fallback_content_text") or "").strip()
+    if not text:
+        raise ValueError("Discovered web item has no fallback content")
+    normalized = NormalizedSource(
+        source_type="URL",
+        title=item.title,
+        canonical_url=item.canonical_url,
+        content_text=text,
+        published_at=item.published_at,
+        author_entities=[str(metadata["author_name"])] if metadata.get("author_name") else [],
+        publisher=source.name,
+        raw_metadata={
+            **metadata,
+            "origin_url": item.canonical_url,
+            "acquisition_source_name": source.name,
+            "discovery_fallback": True,
+            "parser": f"{source.source_type.lower()}-fallback-v1",
+        },
+        ingestion_method=f"{source.source_type.upper()}_FALLBACK",
     )
     return persist_normalized(db, normalized)
 
@@ -254,15 +293,23 @@ def _deliver(db: Session, source: SourceDefinition, item: ExternalInformationIte
     existing = _current_snapshot(db, item.id)
     if existing is not None:
         return existing
-    if source.source_type.upper() == "RSS":
+    metadata = dict(discovered.metadata or {})
+    kind = source.source_type.upper()
+    delivery_mode = str(metadata.get("delivery_mode") or ("URL_FETCH" if kind == "RSS" else "INLINE_PUBLIC")).upper()
+    if delivery_mode == "URL_FETCH":
         try:
             raos_source = ingest_url(db, item.canonical_url)
         except Exception:
-            if not (discovered.metadata or {}).get("feed_content_text"):
+            if kind == "RSS" and metadata.get("feed_content_text"):
+                raos_source = _persist_feed_fallback(db, source, item, discovered)
+            elif metadata.get("fallback_content_text"):
+                raos_source = _persist_discovery_fallback(db, source, item, discovered)
+            else:
                 raise
-            raos_source = _persist_feed_fallback(db, source, item, discovered)
+    elif delivery_mode == "INLINE_PUBLIC":
+        raos_source = _persist_inline_item(db, source, item, discovered)
     else:
-        raos_source = _persist_social_item(db, source, item, discovered)
+        raise ValueError(f"Unsupported acquisition delivery mode: {delivery_mode}")
     raos_source.raw_metadata = {
         **(raos_source.raw_metadata or {}),
         "acquisition": {"external_item_id": str(item.id), "identity_key": item.identity_key},
@@ -271,11 +318,16 @@ def _deliver(db: Session, source: SourceDefinition, item: ExternalInformationIte
         external_item_id=item.id,
         raos_source_id=raos_source.id,
         content_hash=raos_source.content_hash,
-        snapshot_metadata={"delivery": "URL_FETCH" if source.source_type.upper() == "RSS" else source.source_type.upper()},
+        snapshot_metadata={
+            "delivery": delivery_mode,
+            "source_type": kind,
+            "cognition_deferred": bool(metadata.get("defer_cognition")),
+            "cognition_defer_reason": metadata.get("defer_cognition_reason"),
+        },
     )
     db.add(snapshot)
     db.flush()
-    if analyze:
+    if analyze and not metadata.get("defer_cognition"):
         run_pipeline(db, raos_source.id)
     return snapshot
 
