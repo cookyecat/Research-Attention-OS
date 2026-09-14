@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 type ThemePreference = "dark" | "light" | "system";
 type TextSize = "compact" | "default" | "large";
@@ -59,13 +60,18 @@ export default function PreferencesPanel() {
 
   useEffect(() => {
     if (!open) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") setOpen(false); };
-    window.addEventListener("keydown", onKey); return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
   }, [open]);
 
-  return <>
-    <button className="preferences-entry" onClick={() => setOpen(true)}><span className="preferences-icon">Aa</span><span><strong>Preferences</strong><small>Appearance & reading</small></span></button>
-    {open && <div className="preferences-backdrop" onMouseDown={(event) => { if (event.currentTarget === event.target) setOpen(false); }}>
+  const modal = open ? createPortal(
+    <div className="preferences-backdrop" onMouseDown={(event) => { if (event.currentTarget === event.target) setOpen(false); }}>
       <section className="preferences-panel" role="dialog" aria-modal="true" aria-label="RAOS Preferences">
         <header><div><div className="eyebrow">Preferences</div><h2>Make RAOS comfortable to read.</h2></div><button className="icon-button" onClick={() => setOpen(false)} aria-label="Close">×</button></header>
         <PreferenceRow title="Theme" description="Changes the entire RAOS interface"><div className="segmented-control">{(["dark","light","system"] as ThemePreference[]).map(v => <button key={v} className={theme===v?"active":""} onClick={()=>changeTheme(v)}>{v[0].toUpperCase()+v.slice(1)}</button>)}</div></PreferenceRow>
@@ -74,7 +80,13 @@ export default function PreferencesPanel() {
         <PreferenceRow title="Half-bold weight" description="Adjust how strongly the fixation points stand out."><div className="segmented-control">{(["soft","medium","strong"] as BionicWeight[]).map(v => <button key={v} className={bionicWeight===v?"active":""} onClick={()=>changeWeight(v)}>{v[0].toUpperCase()+v.slice(1)}</button>)}</div></PreferenceRow>
         <p className="preferences-note">Saved in this browser. Reading aids change presentation only; Source text and RAOS cognition remain untouched.</p>
       </section>
-    </div>}
+    </div>,
+    document.body
+  ) : null;
+
+  return <>
+    <button className="preferences-entry" onClick={() => setOpen(true)}><span className="preferences-icon">Aa</span><span><strong>Preferences</strong><small>Appearance & reading</small></span></button>
+    {modal}
   </>;
 }
 

@@ -106,6 +106,8 @@ frozen cognition result
 
 Do not create new claims merely to make the UI richer. Underlines/highlights should be traceable to existing evidence spans. Clicking an anchor may reveal a concise human-readable explanation; raw claim schema remains in Inspector.
 
+Evidence emphasis is itself a scarce attention resource. If everything is emphasized, nothing is emphasized. Reader anchors therefore remain sparse, deterministic, and spatially distributed: at most one anchor per selected paragraph and only a small bounded set across an article.
+
 ## 7. The reading companion should be context-sensitive
 
 The side rail should not permanently occupy attention with static cards.

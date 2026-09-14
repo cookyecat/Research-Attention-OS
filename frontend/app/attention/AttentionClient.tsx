@@ -80,20 +80,41 @@ function evidenceSentences(claims: any[]) {
   return out;
 }
 
-function paragraphEvidence(paragraph: string, claims: any[]) {
-  const ranges: Array<{ start: number; end: number; claim: any }> = [];
-  for (const item of evidenceSentences(claims)) {
-    const start = paragraph.indexOf(item.text);
-    if (start >= 0) ranges.push({ start, end: start + item.text.length, claim: item.claim });
+type EvidenceAnchor = { paragraphIndex: number; start: number; end: number; claim: any; text: string };
+
+function evidenceCandidates(paragraphs: string[], claims: any[]) {
+  const candidates: EvidenceAnchor[] = [];
+  const sentences = evidenceSentences(claims);
+  paragraphs.forEach((paragraph, paragraphIndex) => {
+    const matches = sentences
+      .map((item) => {
+        const start = paragraph.indexOf(item.text);
+        return start >= 0 ? { paragraphIndex, start, end: start + item.text.length, claim: item.claim, text: item.text } : null;
+      })
+      .filter(Boolean) as EvidenceAnchor[];
+    if (!matches.length) return;
+    matches.sort((a, b) => {
+      const score = (anchor: EvidenceAnchor) => anchor.text.length >= 60 && anchor.text.length <= 220 ? 0 : Math.abs(anchor.text.length - 140);
+      return score(a) - score(b) || a.start - b.start;
+    });
+    candidates.push(matches[0]);
+  });
+  return candidates;
+}
+
+function selectReaderEvidenceAnchors(paragraphs: string[], claims: any[]) {
+  const candidates = evidenceCandidates(paragraphs, claims);
+  if (candidates.length <= 1) return candidates;
+  const maxAnchors = Math.min(5, Math.max(1, Math.ceil(paragraphs.length / 4)));
+  if (candidates.length <= maxAnchors) return candidates;
+  const selected: EvidenceAnchor[] = [];
+  const remaining = [...candidates];
+  for (let slot = 0; slot < maxAnchors && remaining.length; slot++) {
+    const target = ((slot + 0.5) / maxAnchors) * Math.max(0, paragraphs.length - 1);
+    remaining.sort((a, b) => Math.abs(a.paragraphIndex - target) - Math.abs(b.paragraphIndex - target) || a.paragraphIndex - b.paragraphIndex);
+    selected.push(remaining.shift()!);
   }
-  ranges.sort((a, b) => a.start - b.start || (b.end - b.start) - (a.end - a.start));
-  const deduped: typeof ranges = [];
-  for (const range of ranges) {
-    if (deduped.some((existing) => existing.start === range.start && existing.end === range.end)) continue;
-    if (deduped.some((existing) => range.start >= existing.start && range.end <= existing.end)) continue;
-    deduped.push(range);
-  }
-  return deduped;
+  return selected.sort((a, b) => a.paragraphIndex - b.paragraphIndex);
 }
 
 function inlineImagesForParagraph(images: any[], paragraph: string, index: number, total: number) {
@@ -108,8 +129,8 @@ function inlineImagesForParagraph(images: any[], paragraph: string, index: numbe
   });
 }
 
-function ReaderParagraph({ text, index, claims, selectedClaimId, onSelect }: { text: string; index: number; claims: any[]; selectedClaimId: string | null; onSelect: (claim: any) => void }) {
-  const ranges = paragraphEvidence(text, claims);
+function ReaderParagraph({ text, index, anchors, selectedClaimId, onSelect }: { text: string; index: number; anchors: EvidenceAnchor[]; selectedClaimId: string | null; onSelect: (claim: any) => void }) {
+  const ranges = anchors.filter((anchor) => anchor.paragraphIndex === index);
   if (ranges.length === 0) return <p className="reader-paragraph" data-reader-index={index}><BionicText text={text} /></p>;
   const nodes: React.ReactNode[] = [];
   let cursor = 0;
@@ -309,9 +330,10 @@ export default function AttentionPage() {
     const minutes = readingMinutes(selectedSource);
     const topMatch = analysis?.kernel_matches?.[0];
     const claims = analysis?.claims || [];
+    const readerEvidenceAnchors = selectReaderEvidenceAnchors(paragraphs, claims);
     const inlineImages = articleImages(selectedSource);
-    const activeRanges = paragraphEvidence(paragraphs[activeParagraph] || "", claims);
-    const activeClaim = claims.find((claim: any) => claim.id === selectedClaimId) || activeRanges[0]?.claim || null;
+    const activeAnchor = readerEvidenceAnchors.find((anchor) => anchor.paragraphIndex === activeParagraph);
+    const activeClaim = claims.find((claim: any) => claim.id === selectedClaimId) || activeAnchor?.claim || null;
     const progressPercent = Math.max(0, Math.min(100, Math.round(readingProgress * 100)));
 
     return (
@@ -359,7 +381,7 @@ export default function AttentionPage() {
                 <div className="reader-body">
                   {paragraphs.map((paragraph, index) => (
                     <React.Fragment key={`${index}-${paragraph.slice(0, 24)}`}>
-                      <ReaderParagraph text={paragraph} index={index} claims={claims} selectedClaimId={selectedClaimId} onSelect={(claim) => setSelectedClaimId(claim.id)} />
+                      <ReaderParagraph text={paragraph} index={index} anchors={readerEvidenceAnchors} selectedClaimId={selectedClaimId} onSelect={(claim) => setSelectedClaimId(claim.id)} />
                       {inlineImagesForParagraph(inlineImages, paragraph, index, paragraphs.length).map((image: any, imageIndex: number) => (
                         <figure className="reader-inline-media" key={`${image.url}-${imageIndex}`}>
                           <img src={image.url} alt={image.alt || image.caption || "Article visual"} loading="lazy" />

@@ -581,8 +581,8 @@ html[data-theme="light"] .text-link:hover { color: #17202a; }
 .preferences-entry small { display: block; color: var(--muted); font-size: 10px; }
 .preferences-icon { display: grid; place-items: center; width: 27px; height: 27px; border: 1px solid var(--line-strong); border-radius: 8px; font-size: 10px; font-weight: 800; color: var(--accent); }
 .system-entry { margin-top: 0; }
-.preferences-backdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; background: rgba(4,8,13,.58); backdrop-filter: blur(5px); }
-.preferences-panel { width: min(620px, 100%); border: 1px solid var(--line-strong); border-radius: 18px; background: var(--surface); box-shadow: 0 30px 90px rgba(0,0,0,.35); padding: 24px; }
+.preferences-backdrop { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; padding: 20px; background: rgba(4,8,13,.58); backdrop-filter: blur(5px); overscroll-behavior: contain; }
+.preferences-panel { position: relative; z-index: 1; width: min(620px, 100%); max-height: calc(100vh - 40px); overflow: auto; border: 1px solid var(--line-strong); border-radius: 18px; background: var(--surface); box-shadow: 0 30px 90px rgba(0,0,0,.35); padding: 24px; }
 .preferences-panel header { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
 .preferences-panel h2 { margin: 0; font-size: 22px; }
 .icon-button { width: 34px; height: 34px; padding: 0; border-radius: 9px; background: transparent; color: var(--muted); border: 1px solid var(--line); font-size: 23px; }
@@ -713,7 +713,7 @@ html[data-theme="light"] .preferences-entry strong { color: var(--ink); }
 html[data-bionic="on"] .reader-body .bionic-prefix,
 html[data-bionic="on"] .reader-note .bionic-prefix { font-weight: var(--bionic-weight); color: var(--ink); }
 .reader-paragraph { position: relative; scroll-margin-top: 120px; }
-.evidence-highlight { text-decoration-line: underline; text-decoration-color: rgba(53,111,214,.55); text-decoration-thickness: 2px; text-underline-offset: 4px; border-radius: 3px; cursor: pointer; }
+.evidence-highlight { text-decoration-line: underline; text-decoration-color: rgba(53,111,214,.48); text-decoration-thickness: 1px; text-underline-offset: 4px; border-radius: 3px; cursor: pointer; }
 .evidence-highlight:hover, .evidence-highlight.active { background: rgba(53,111,214,.10); text-decoration-color: var(--accent); }
 .reader-progress-card { padding: 14px 16px; border: 1px solid var(--line); border-radius: 13px; background: var(--surface); }
 .reader-progress-track { height: 5px; border-radius: 99px; background: var(--surface-3); overflow: hidden; margin: 9px 0 6px; }
