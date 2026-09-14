@@ -1458,3 +1458,13 @@ Result: `196_RAOS_INBOX_ATTENTION_UX_EDITORIAL_RHYTHM_RESULT.md`.
 Dogfood after Source diversity expansion exposed a presentation residual: Inbox had become a visually uniform storage grid even though RAOS now observes heterogeneous sources, and cognition state was invisible until opening a Source. Inbox now joins `/sources` with the latest source-centric `AttentionPlan` in the presentation layer, renders `DROP / AWARE / WATCH / ENGAGE` directly on analyzed Source cards, leaves unanalyzed Sources explicitly readable, and uses a deterministic editorial-rhythm grid (lead / side / wide / standard / compact) without changing chronological ordering or cognition authority.
 
 Reader entry hierarchy was also corrected from `title → Open original → media → RAOS disposition` to `title → RAOS disposition → Open original → media → body`. This freezes two frontend principles: **Inbox is a living intake landscape, not a storage grid**, and **the RAOS judgment should appear before the reading journey begins**. No cognition, Attention semantics, Acquisition semantics, Kernel authority, or backend contract changed.
+
+## Reader UX V3.2 — Scholarly Paper Profile — DOGFOOD READY 2026-09-15
+
+Result: `197_RAOS_READER_UX_V32_SCHOLARLY_PAPER_PROFILE_RESULT.md`.
+
+arXiv ingestion is now paper-aware. arXiv `/abs`, `/html`, and `/pdf` URLs are normalized as scholarly Sources, citation metadata comes from the abstract page, official arXiv HTML is preferred for full paper structure, and the Reader preserves authors, affiliations, Abstract, top-level sections, Figures, MathML equations, tables, References, version, PDF/arXiv/HTML actions, and a real section navigator. The arXiv social-share logo is never treated as paper hero media.
+
+The 10 existing arXiv Sources were presentation-backfilled from official arXiv HTML with 0 failures while preserving their historical cognition inputs. Future arXiv arrivals become `PAPER` Sources whose complete scholarly text is eligible for canonical cognition. `/sources?compact=true` keeps list surfaces lightweight; full Source detail is fetched only when opening a Reader.
+
+A dogfood race where compact list data could overwrite full Source detail was removed by separating selected detail state from the compact index. Contents now appears only when a full body exists, uses real smooth-scroll controls with active-section tracking, and paper progress is section-based. No cognition or authority semantics changed.

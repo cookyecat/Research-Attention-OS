@@ -61,7 +61,7 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    Promise.all([api<Home>("/meta/home"), api<any[]>("/kernel/attention"), api<SourceSummary[]>("/sources"), api<any[]>("/watches")])
+    Promise.all([api<Home>("/meta/home"), api<any[]>("/kernel/attention"), api<SourceSummary[]>("/sources?compact=true"), api<any[]>("/watches")])
       .then(([nextHome, nextPlans, nextSources, nextWatches]) => {
         setHome(nextHome); setPlans(nextPlans); setWatches(nextWatches);
         setSources(Object.fromEntries(nextSources.map((source) => [source.id, source])));

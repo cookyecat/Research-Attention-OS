@@ -297,5 +297,9 @@ class URLConnector:
         return make_fingerprint(normalized)
 
     def ingest(self, url: str) -> NormalizedSource:
+        from app.connectors.arxiv import ArxivPaperConnector, is_arxiv_url
+
+        if is_arxiv_url(url):
+            return ArxivPaperConnector().ingest(url)
         raw = self.fetch(DiscoveredItem(ref=url, metadata={}))
         return self.normalize(self.parse(raw))

@@ -25,8 +25,25 @@ type SourceSummary = {
 const RANK: Record<string, number> = { ENGAGE: 0, WATCH: 1, AWARE: 2, DROP: 3 };
 const FILTERS = ["CURRENT", "ENGAGE", "WATCH", "AWARE", "DROP"] as const;
 
+function paperCategoryCode(source?: SourceSummary) {
+  const value = String(source?.raw_metadata?.primary_category || "");
+  const match = value.match(/\(([^)]+)\)/);
+  return match?.[1] || value || null;
+}
+
+function isPaperSource(source?: SourceSummary) {
+  if (!source) return false;
+  if (source.source_type === "PAPER" || source.raw_metadata?.paper_profile) return true;
+  try { return Boolean(source.canonical_url && new URL(source.canonical_url).hostname.replace(/^www\./, "") === "arxiv.org"); } catch {}
+  return false;
+}
+
 function sourceOrigin(source?: SourceSummary) {
   if (!source) return "Unknown source";
+  if (isPaperSource(source)) {
+    const category = paperCategoryCode(source);
+    return category ? `arXiv · ${category}` : "arXiv";
+  }
   try { if (source.canonical_url) return new URL(source.canonical_url).hostname.replace(/^www\./, ""); } catch {}
   return source.ingestion_method || "Manual source";
 }
@@ -51,7 +68,20 @@ function sourceAuthor(source?: SourceSummary) {
   return source?.raw_metadata?.author || source?.raw_metadata?.social_author || null;
 }
 function heroImage(source?: SourceSummary) {
+  if (isPaperSource(source)) return source?.raw_metadata?.paper_lead_figure_url || null;
   return source?.raw_metadata?.hero_image_cached_url || source?.raw_metadata?.hero_image_url || null;
+}
+function paperAuthors(source?: SourceSummary) {
+  const values = source?.raw_metadata?.authors;
+  return Array.isArray(values) ? values.filter(Boolean) : [];
+}
+function paperAffiliations(source?: SourceSummary) {
+  const values = source?.raw_metadata?.affiliations;
+  return Array.isArray(values) ? values.filter(Boolean) : [];
+}
+function paperSections(source?: SourceSummary) {
+  const values = source?.raw_metadata?.paper_sections;
+  return Array.isArray(values) ? values.filter((item) => item?.id && item?.title) : [];
 }
 function heroImageAlt(source?: SourceSummary) {
   return source?.raw_metadata?.hero_image_alt || displayTitle(source);
@@ -198,6 +228,8 @@ function ReaderParagraph({ text, index, anchors, selectedClaimId, onSelect }: { 
 }
 
 function displayTitle(source?: SourceSummary) {
+  const paperTitle = source?.raw_metadata?.paper_title;
+  if (paperTitle) return String(paperTitle).trim();
   const title = source?.title || "Untitled source";
   return title.replace(/\s*\|\s*[^|]+$/, "").trim() || title;
 }
@@ -239,6 +271,8 @@ function readerParagraphs(source?: SourceSummary) {
 }
 
 function readingMinutes(source?: SourceSummary) {
+  const paperWords = Number(source?.raw_metadata?.paper_word_count || 0);
+  if (paperWords > 0) return Math.max(1, Math.round(paperWords / 230));
   const content = source?.content_text || "";
   if (!content.trim()) return null;
   const cjk = (content.match(/[\u3400-\u9fff]/g) || []).length;
@@ -247,7 +281,8 @@ function readingMinutes(source?: SourceSummary) {
 }
 
 function sourceExcerpt(source?: SourceSummary, length = 190) {
-  const text = (source?.content_text || "").replace(/\s+/g, " ").trim();
+  const preferred = isPaperSource(source) ? source?.raw_metadata?.abstract : null;
+  const text = String(preferred || source?.content_text || "").replace(/\s+/g, " ").trim();
   if (!text) return "RAOS has a current attention state for this source.";
   const shortTitle = displayTitle(source);
   const cleaned = text.toLowerCase().startsWith(shortTitle.toLowerCase()) ? text.slice(shortTitle.length).trim() : text;
@@ -294,9 +329,11 @@ export default function AttentionPage() {
   const [activeParagraph, setActiveParagraph] = useState(0);
   const [readingProgress, setReadingProgress] = useState(0);
   const [selectedClaimId, setSelectedClaimId] = useState<string | null>(null);
+  const [selectedSourceDetail, setSelectedSourceDetail] = useState<SourceSummary | null>(null);
+  const [sourceDetailLoading, setSourceDetailLoading] = useState(false);
 
   async function loadPlans() {
-    const [nextPlans, nextSources] = await Promise.all([api<any[]>("/kernel/attention"), api<SourceSummary[]>("/sources")]);
+    const [nextPlans, nextSources] = await Promise.all([api<any[]>("/kernel/attention"), api<SourceSummary[]>("/sources?compact=true")]);
     setPlans(nextPlans);
     setSources(Object.fromEntries(nextSources.map((source) => [source.id, source])));
   }
@@ -318,6 +355,17 @@ export default function AttentionPage() {
   }
 
   useEffect(() => { loadPlans().catch((e) => setError(String(e.message || e))); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    setSelectedSourceDetail(null);
+    if (!sourceId) return () => { cancelled = true; };
+    setSourceDetailLoading(true);
+    api<SourceSummary>(`/sources/${sourceId}`)
+      .then((source) => { if (!cancelled) setSelectedSourceDetail(source); })
+      .catch(() => undefined)
+      .finally(() => { if (!cancelled) setSourceDetailLoading(false); });
+    return () => { cancelled = true; };
+  }, [sourceId]);
   useEffect(() => { setAnalysis(null); setDetailView(viewParam === "system" ? "inspector" : "reader"); loadAnalysis("read"); }, [sourceId, viewParam]);
 
   const currentPlans = useMemo(() => {
@@ -345,20 +393,23 @@ export default function AttentionPage() {
   const editorialShown = useMemo(() => [...shown].sort((a, b) =>
     timestampMs(sourceTimeValue(sources[b.candidate_id], b.created_at)) - timestampMs(sourceTimeValue(sources[a.candidate_id], a.created_at))
   ), [shown, sources]);
-  const selectedSource = sourceId ? sources[sourceId] : undefined;
+  const selectedSource = sourceId ? (selectedSourceDetail || sources[sourceId]) : undefined;
 
   useEffect(() => {
     if (!sourceId || detailView !== "reader") return;
     const update = () => {
-      const body = document.querySelector<HTMLElement>(".reader-body");
-      const items = Array.from(document.querySelectorAll<HTMLElement>(".reader-paragraph"));
+      const paperBody = document.querySelector<HTMLElement>(".paper-body");
+      const body = paperBody || document.querySelector<HTMLElement>(".reader-body");
+      const items = paperBody
+        ? Array.from(paperBody.querySelectorAll<HTMLElement>(":scope > section.ltx_section"))
+        : Array.from(document.querySelectorAll<HTMLElement>(".reader-paragraph"));
       if (!body || items.length === 0) return;
       const focusY = window.innerHeight * 0.38;
       let bestIndex = 0; let bestDistance = Number.POSITIVE_INFINITY;
-      for (const item of items) {
+      items.forEach((item, index) => {
         const distance = Math.abs(item.getBoundingClientRect().top - focusY);
-        if (distance < bestDistance) { bestDistance = distance; bestIndex = Number(item.dataset.readerIndex || 0); }
-      }
+        if (distance < bestDistance) { bestDistance = distance; bestIndex = paperBody ? index : Number(item.dataset.readerIndex || 0); }
+      });
       setActiveParagraph(bestIndex);
       const rect = body.getBoundingClientRect();
       const consumed = Math.max(0, Math.min(rect.height, focusY - rect.top));
@@ -366,7 +417,7 @@ export default function AttentionPage() {
     };
     update(); window.addEventListener("scroll", update, { passive: true }); window.addEventListener("resize", update);
     return () => { window.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
-  }, [sourceId, detailView, analysis]);
+  }, [sourceId, detailView, analysis, selectedSourceDetail]);
 
   async function afterCommit() {
     await loadPlans();
@@ -376,20 +427,33 @@ export default function AttentionPage() {
     }
   }
 
+  function scrollToPaperSection(sectionId: string) {
+    const node = document.getElementById(sectionId);
+    if (!node) return;
+    node.scrollIntoView({ behavior: "smooth", block: "start" });
+    try { history.replaceState(null, "", `#${sectionId}`); } catch {}
+  }
+
   if (sourceId) {
     const plan = analysis ? (analysis.latest_attention_plan || analysis.attention_plan) : null;
     const awareness = analysis?.no_delta_awareness;
     const awarenessEvent = awareness?.events?.[0];
     const operation = analysis?.update?.operation || plan?.update?.operation || null;
+    const paperMode = isPaperSource(selectedSource) && Boolean(selectedSource?.raw_metadata?.paper_profile);
+    const paperMeta = selectedSource?.raw_metadata || {};
+    const paperAuthorList = paperAuthors(selectedSource);
+    const paperAffiliationList = paperAffiliations(selectedSource);
+    const paperSectionList = paperSections(selectedSource);
     const paragraphs = readerParagraphs(selectedSource);
     const minutes = readingMinutes(selectedSource);
     const topMatch = analysis?.kernel_matches?.[0];
     const claims = analysis?.claims || [];
-    const readerEvidenceAnchors = selectReaderEvidenceAnchors(paragraphs, claims);
-    const inlineMedia = mediaAssets(selectedSource);
-    const activeAnchor = readerEvidenceAnchors.find((anchor) => anchor.paragraphIndex === activeParagraph);
-    const activeClaim = claims.find((claim: any) => claim.id === selectedClaimId) || activeAnchor?.claim || null;
+    const readerEvidenceAnchors = paperMode ? [] : selectReaderEvidenceAnchors(paragraphs, claims);
+    const inlineMedia = paperMode ? [] : mediaAssets(selectedSource);
+    const activeAnchor = paperMode ? null : readerEvidenceAnchors.find((anchor) => anchor.paragraphIndex === activeParagraph);
+    const activeClaim = paperMode ? null : (claims.find((claim: any) => claim.id === selectedClaimId) || activeAnchor?.claim || null);
     const progressPercent = Math.max(0, Math.min(100, Math.round(readingProgress * 100)));
+    const progressUnits = paperMode ? paperSectionList.length : paragraphs.length;
 
     return (
       <>
@@ -409,12 +473,15 @@ export default function AttentionPage() {
             <article className="reader-article">
               <header className="reader-header">
                 <div className="reader-source-line">
+                  {paperMode && <span className="paper-type-mark">PAPER</span>}
                   <span>{sourceOrigin(selectedSource)}</span>
-                  {sourceAuthor(selectedSource) && <><span>·</span><span>{sourceAuthor(selectedSource)}</span></>}
+                  {!paperMode && sourceAuthor(selectedSource) && <><span>·</span><span>{sourceAuthor(selectedSource)}</span></>}
                   {sourceTime(selectedSource) && <><span>·</span><span>{sourceTime(selectedSource)}</span></>}
                   {minutes && <><span>·</span><span>{minutes} min read</span></>}
                 </div>
                 <h1>{displayTitle(selectedSource)}</h1>
+                {paperMode && paperAuthorList.length > 0 && <div className="paper-authors">{paperAuthorList.join(", ")}</div>}
+                {paperMode && paperAffiliationList.length > 0 && <details className="paper-affiliations"><summary>{paperAuthorList.length} authors · {paperAffiliationList.length} affiliations</summary><div>{paperAffiliationList.map((item: string) => <span key={item}>{item}</span>)}</div></details>}
                 <div className="reader-header-decision-row">
                   {plan ? <div className={`reader-status reader-header-status ${plan.disposition}`}>
                     <span className={`badge ${plan.disposition}`}>{plan.disposition}</span>
@@ -424,11 +491,15 @@ export default function AttentionPage() {
                     <strong>Available to read. RAOS has not analyzed this source yet.</strong>
                     <button className="ghost" disabled={busy} onClick={() => loadAnalysis("analyze")}>{busy ? "Analyzing…" : "Analyze with RAOS"}</button>
                   </div>}
-                  {selectedSource?.canonical_url && <a className="button-link ghost reader-original-link" href={selectedSource.canonical_url} target="_blank" rel="noreferrer">Open original ↗</a>}
+                  {paperMode ? <div className="paper-primary-actions">
+                    {paperMeta.pdf_url && <a className="button-link paper-action-primary" href={paperMeta.pdf_url} target="_blank" rel="noreferrer">PDF ↗</a>}
+                    {paperMeta.abs_url && <a className="button-link ghost" href={paperMeta.abs_url} target="_blank" rel="noreferrer">arXiv ↗</a>}
+                    {paperMeta.html_url && <a className="button-link ghost" href={paperMeta.html_url} target="_blank" rel="noreferrer">HTML ↗</a>}
+                  </div> : selectedSource?.canonical_url && <a className="button-link ghost reader-original-link" href={selectedSource.canonical_url} target="_blank" rel="noreferrer">Open original ↗</a>}
                 </div>
               </header>
 
-              {heroImage(selectedSource) && (
+              {!paperMode && heroImage(selectedSource) && (
                 <figure className="reader-hero-media">
                   <img src={heroImage(selectedSource)} alt={heroImageAlt(selectedSource)} loading="eager" />
                   {selectedSource?.raw_metadata?.hero_image_alt && <figcaption>{selectedSource.raw_metadata.hero_image_alt}</figcaption>}
@@ -441,7 +512,21 @@ export default function AttentionPage() {
                 {selectedSource.canonical_url && <a href={selectedSource.canonical_url} target="_blank" rel="noreferrer">Open original ↗</a>}
               </div>}
 
-              {paragraphs.length > 0 ? (
+              {paperMode ? <>
+                {paperMeta.abstract && <section className="paper-abstract">
+                  <div className="eyebrow">Abstract</div>
+                  <p><BionicText text={String(paperMeta.abstract)} /></p>
+                </section>}
+                {paperMeta.paper_body_html && paperSectionList.length > 0 && <nav className="paper-toc" aria-label="Paper contents">
+                  <div className="paper-toc-label"><span className="eyebrow">On this paper</span><span>{paperSectionList.length} sections</span></div>
+                  <div className="paper-toc-items">{paperSectionList.map((section: any, sectionIndex: number) => <button type="button" className={activeParagraph === sectionIndex ? "active" : ""} onClick={() => scrollToPaperSection(section.id)} key={section.id}>{section.title}</button>)}</div>
+                </nav>}
+                {paperMeta.paper_body_html ? <div className="paper-body" dangerouslySetInnerHTML={{__html: String(paperMeta.paper_body_html)}} /> : sourceDetailLoading ? <div className="paper-loading"><span className="eyebrow">Loading paper</span><p>Fetching the full arXiv HTML reading view…</p></div> : <div className="reader-empty paper-abstract-only">
+                  <div className="eyebrow">Abstract-only source</div>
+                  <h3>arXiv does not provide a full HTML reading view for this version.</h3>
+                  <p>The abstract and scholarly metadata are preserved here. Use PDF or arXiv for the complete paper.</p>
+                </div>}
+              </> : paragraphs.length > 0 ? (
                 <div className="reader-body">
                   {paragraphs.map((paragraph, index) => (
                     <React.Fragment key={`${index}-${paragraph.slice(0, 24)}`}>
@@ -483,7 +568,8 @@ export default function AttentionPage() {
               {readingProgress > 0.01 && <section className="reader-progress-card">
                 <div className="eyebrow">Reading</div>
                 <div className="reader-progress-track"><span style={{width: `${progressPercent}%`}} /></div>
-                <div className="reader-progress-meta"><span>{progressPercent}% through article</span><span>¶ {Math.min(activeParagraph + 1, paragraphs.length)} / {paragraphs.length}</span></div>
+                <div className="reader-progress-meta"><span>{progressPercent}% through {paperMode ? "paper" : "article"}</span><span>{paperMode ? "Section" : "¶"} {Math.min(activeParagraph + 1, Math.max(1, progressUnits))} / {Math.max(1, progressUnits)}</span></div>
+                {paperMode && paperSectionList[activeParagraph]?.title && <strong className="paper-current-section">{paperSectionList[activeParagraph].title}</strong>}
               </section>}
 
               {readingProgress > 0.01 && activeClaim && <section className="reader-evidence-card">

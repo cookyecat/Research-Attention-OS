@@ -18,17 +18,33 @@ type AttentionPlan = {
   id: string; candidate_type?: string | null; candidate_id: string; disposition: Disposition; created_at?: string | null;
 };
 
+function isPaperSource(source: Source) {
+  if (source.raw_metadata?.paper_profile) return true;
+  try { return Boolean(source.canonical_url && new URL(source.canonical_url).hostname.replace(/^www\./, "") === "arxiv.org"); } catch {}
+  return false;
+}
+function paperCategoryCode(source: Source) {
+  const value = String(source.raw_metadata?.primary_category || "");
+  const match = value.match(/\(([^)]+)\)/);
+  return match?.[1] || value || null;
+}
 function displayTitle(source: Source) {
+  if (source.raw_metadata?.paper_title) return String(source.raw_metadata.paper_title).trim();
   const title = source.title || "Untitled source";
   return title.replace(/\s*\|\s*[^|]+$/, "").trim() || title;
 }
 function origin(source: Source) {
+  if (isPaperSource(source)) {
+    const category = paperCategoryCode(source);
+    return category ? `arXiv · ${category}` : "arXiv";
+  }
   if ((source.ingestion_method === "WEIBO_PUBLIC" || source.ingestion_method === "X_PUBLIC") && source.publisher) return source.publisher;
   try { if (source.canonical_url) return new URL(source.canonical_url).hostname.replace(/^www\./, ""); } catch {}
   return source.publisher || source.ingestion_method || "source";
 }
 function excerpt(source: Source, length = 210) {
-  const text = (source.content_text || "").replace(/\s+/g, " ").trim();
+  const preferred = isPaperSource(source) ? source.raw_metadata?.abstract : null;
+  const text = String(preferred || source.content_text || "").replace(/\s+/g, " ").trim();
   if (!text) return "Ready in RAOS.";
   return text.length > length ? `${text.slice(0, length).trim()}…` : text;
 }
@@ -36,6 +52,7 @@ function sourceTimeValue(source: Source) {
   return source.published_at || source.raw_metadata?.published || source.ingested_at || null;
 }
 function heroImage(source: Source) {
+  if (isPaperSource(source)) return source.raw_metadata?.paper_lead_figure_url || null;
   return source.raw_metadata?.hero_image_cached_url || source.raw_metadata?.hero_image_url || null;
 }
 function isSystemFixture(source: Source) {
@@ -80,7 +97,7 @@ export default function InboxPage() {
     (async () => {
       try {
         const [items, plans] = await Promise.all([
-          api<Source[]>("/sources"),
+          api<Source[]>("/sources?compact=true"),
           api<AttentionPlan[]>("/kernel/attention").catch(() => []),
         ]);
         if (cancelled) return;

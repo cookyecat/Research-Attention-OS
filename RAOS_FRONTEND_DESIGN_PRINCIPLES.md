@@ -193,3 +193,17 @@ real use
 ```
 
 Avoid speculative feature accumulation. Every added visual or interaction should reduce attention cost, improve comprehension, or make authority/provenance clearer.
+
+## 11. Scholarly Sources deserve a scholarly profile
+
+A paper is not an ordinary publisher webpage. When a structured scholarly representation is available, Reader should preserve the research object rather than the host site's chrome.
+
+```math
+\boxed{Paper\ fidelity = scholarly\ structure\ fidelity \neq page\ fidelity}
+```
+
+For papers, prioritize title, authors, affiliations, abstract, section hierarchy, figures, equations, tables, references, version history, and canonical PDF/HTML links. Site logos, recommendation widgets, citation-tool placeholders, labs chrome, and generic webpage furniture are not paper content.
+
+Section navigation must be functional and grounded in the actual preserved body. Never display an interactive-looking table of contents when the corresponding body is unavailable. Paper reading progress should follow sections, not arbitrary paragraph counts.
+
+List/index payloads may remain compact, but detail reading must fetch the full Source separately; compact list state must never overwrite a full Reader detail object.

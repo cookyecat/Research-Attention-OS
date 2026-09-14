@@ -18,7 +18,7 @@ export default function SystemPage() {
     async function load() {
       try {
         const [nextSources, nextPlans, nextWatches, nextKernel] = await Promise.all([
-          api<Source[]>("/sources"),
+          api<Source[]>("/sources?compact=true"),
           api<any[]>("/kernel/attention"),
           api<any[]>("/watches"),
           api<Record<string, any[]>>("/kernel"),

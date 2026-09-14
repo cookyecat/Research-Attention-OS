@@ -60,9 +60,20 @@ async def create_pdf(
 
 
 @router.get("", response_model=list[SourceOut])
-def list_sources(db: Session = Depends(get_db)):
+def list_sources(compact: bool = False, db: Session = Depends(get_db)):
     rows = db.execute(select(Source).where(Source.deleted_at.is_(None)).order_by(Source.ingested_at.desc())).scalars().all()
-    return rows
+    if not compact:
+        return rows
+    compact_rows = []
+    for row in rows:
+        payload = SourceOut.model_validate(row).model_dump()
+        text = payload.get("content_text") or ""
+        if len(text) > 1400:
+            payload["content_text"] = text[:1400].rstrip() + "…"
+        metadata = dict(payload.get("raw_metadata") or {})
+        metadata.pop("paper_body_html", None)
+        compact_rows.append(SourceOut(**{**payload, "raw_metadata": metadata}))
+    return compact_rows
 
 
 @router.get("/{source_id}", response_model=SourceOut)
