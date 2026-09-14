@@ -15,6 +15,8 @@ type SourceSummary = {
   title?: string | null;
   canonical_url?: string | null;
   content_text?: string | null;
+  published_at?: string | null;
+  publisher?: string | null;
   ingested_at?: string | null;
   ingestion_method?: string | null;
   raw_metadata?: Record<string, any>;
@@ -31,7 +33,7 @@ function sourceOrigin(source?: SourceSummary) {
 
 function sourceTimeValue(source?: SourceSummary, fallback?: string | null) {
   const raw = source?.raw_metadata || {};
-  return raw.published || source?.ingested_at || fallback || null;
+  return source?.published_at || raw.published || source?.ingested_at || fallback || null;
 }
 
 function sourceTime(source?: SourceSummary, fallback?: string | null) {
@@ -46,7 +48,7 @@ function isSystemFixture(source?: SourceSummary) {
 }
 
 function sourceAuthor(source?: SourceSummary) {
-  return source?.raw_metadata?.author || null;
+  return source?.raw_metadata?.author || source?.raw_metadata?.social_author || null;
 }
 function heroImage(source?: SourceSummary) {
   return source?.raw_metadata?.hero_image_cached_url || source?.raw_metadata?.hero_image_url || null;
@@ -299,15 +301,17 @@ export default function AttentionPage() {
     setSources(Object.fromEntries(nextSources.map((source) => [source.id, source])));
   }
 
-  async function loadAnalysis(mode: "read" | "reprocess" = "read") {
+  async function loadAnalysis(mode: "read" | "analyze" | "reprocess" = "read") {
     if (!sourceId) return;
-    setBusy(true); setError(null);
+    setBusy(true); if (mode !== "read") setError(null);
     try {
       if (mode === "reprocess") {
         setAnalysis(await api("/analysis/reprocess", { method: "POST", body: JSON.stringify({ source_id: sourceId }) }));
+      } else if (mode === "analyze") {
+        setAnalysis(await api("/analysis/extract", { method: "POST", body: JSON.stringify({ source_id: sourceId }) }));
+        await loadPlans();
       } else {
-        const existing = await apiOrNull<any>(`/analysis/by-source/${sourceId}`);
-        setAnalysis(existing || await api("/analysis/extract", { method: "POST", body: JSON.stringify({ source_id: sourceId }) }));
+        setAnalysis(await apiOrNull<any>(`/analysis/by-source/${sourceId}`));
       }
     } catch (e: unknown) { setError(e instanceof Error ? e.message : String(e)); }
     finally { setBusy(false); }
@@ -344,7 +348,7 @@ export default function AttentionPage() {
   const selectedSource = sourceId ? sources[sourceId] : undefined;
 
   useEffect(() => {
-    if (!sourceId || detailView !== "reader" || !analysis) return;
+    if (!sourceId || detailView !== "reader") return;
     const update = () => {
       const body = document.querySelector<HTMLElement>(".reader-body");
       const items = Array.from(document.querySelectorAll<HTMLElement>(".reader-paragraph"));
@@ -398,9 +402,9 @@ export default function AttentionPage() {
         </div>
 
         {error && <p className="error">{error}</p>}
-        {!analysis && !error && <div className="empty-state">Loading source…</div>}
+        {!selectedSource && !error && <div className="empty-state">Loading source…</div>}
 
-        {analysis && plan && detailView === "reader" && (
+        {selectedSource && detailView === "reader" && (
           <div className="reader-layout">
             <article className="reader-article">
               <header className="reader-header">
@@ -423,10 +427,20 @@ export default function AttentionPage() {
                 </figure>
               )}
 
-              <div className={`reader-status ${plan.disposition}`}>
+              {selectedSource?.raw_metadata?.feed_fallback && <div className="reader-status feed-fallback-status">
+                <span className="badge AWARE">FEED SUMMARY</span>
+                <strong>The publisher page was unavailable to the crawler, so RAOS preserved the publisher-provided RSS summary instead.</strong>
+                {selectedSource.canonical_url && <a href={selectedSource.canonical_url} target="_blank" rel="noreferrer">Open original ↗</a>}
+              </div>}
+
+              {plan ? <div className={`reader-status ${plan.disposition}`}>
                 <span className={`badge ${plan.disposition}`}>{plan.disposition}</span>
                 <strong>{actionCopy(plan.disposition)}</strong>
-              </div>
+              </div> : <div className="reader-status UNANALYZED">
+                <span className="badge">UNANALYZED</span>
+                <strong>Available to read. RAOS has not spent model budget on this source yet.</strong>
+                <button className="ghost" disabled={busy} onClick={() => loadAnalysis("analyze")}>{busy ? "Analyzing…" : "Analyze with RAOS"}</button>
+              </div>}
 
               {paragraphs.length > 0 ? (
                 <div className="reader-body">
@@ -449,6 +463,7 @@ export default function AttentionPage() {
             </article>
 
             <aside className={`reader-rail ${readingProgress > 0.02 ? "is-reading" : ""}`}>
+              {plan ? <>
               <section className="reader-note primary-context">
                 <div className="eyebrow">Why it matters to you</div>
                 <p><BionicText text={readerWhy(plan, analysis)} /></p>
@@ -459,6 +474,11 @@ export default function AttentionPage() {
                 <div className="eyebrow">What to do</div>
                 <p><BionicText text={nextMove(plan.disposition)} /></p>
                 {plan.cognitive_budget_minutes != null && <div className="reader-budget">RAOS budget · {plan.cognitive_budget_minutes} min</div>}
+              </section>}
+              </> : <section className="reader-note primary-context unanalyzed-note">
+                <div className="eyebrow">Not analyzed yet</div>
+                <p>This source is in your library, but RAOS has not run cognition on it. Reading is free; analyze only when you want a relevance judgment.</p>
+                <button disabled={busy} onClick={() => loadAnalysis("analyze")}>{busy ? "Analyzing…" : "Analyze with RAOS"}</button>
               </section>}
 
               {readingProgress > 0.01 && <section className="reader-progress-card">
@@ -474,15 +494,25 @@ export default function AttentionPage() {
                 <button onClick={() => setDetailView("inspector")}>Open in Inspector →</button>
               </section>}
 
-              <button className="inspector-entry" onClick={() => setDetailView("inspector")}>
+              {analysis && plan && <button className="inspector-entry" onClick={() => setDetailView("inspector")}>
                 <span>Inspect RAOS decision</span>
                 <small>See cognition, evidence, D/S/P, Kernel mapping, and pipeline trace</small>
-              </button>
+              </button>}
             </aside>
           </div>
         )}
 
-        {analysis && plan && detailView === "inspector" && (
+
+        {selectedSource && !analysis && detailView === "inspector" && (
+          <div className="empty-state inspector-unanalysed">
+            <div className="eyebrow">Operating system view</div>
+            <h2>No AnalysisRun exists for this source.</h2>
+            <p>RAOS has preserved the Source but has intentionally not spent cognition budget on it yet.</p>
+            <button disabled={busy} onClick={() => loadAnalysis("analyze")}>{busy ? "Analyzing…" : "Analyze with RAOS"}</button>
+          </div>
+        )}
+
+                {analysis && plan && detailView === "inspector" && (
           <>
             <header className="page-header inspector-header">
               <div>

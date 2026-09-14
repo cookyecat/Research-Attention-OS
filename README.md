@@ -108,9 +108,11 @@ The current v0.1 model is:
 SourceDefinition → Observation → Information Object → Snapshot → RAOS Source
 ```
 
-RSS/Atom is the first unattended transport. New Sources establish a present-time baseline before cognitive analysis so old feed backlog does not masquerade as newly arrived information. One Source failure must not terminate polling of independent Sources.
+Acquisition is transport-adapter based. RSS/Atom is the baseline unattended transport; `WEIBO_PUBLIC` and `X_PUBLIC` are optional anonymous public-social adapters. New Sources establish a present-time baseline before cognitive analysis so old backlog does not masquerade as newly arrived information. One Source failure must not terminate independent Sources, and one failed item must not abort sibling items in the same Source.
 
-Identity deduplication belongs to Acquisition; semantic event clustering remains downstream.
+When an article page cannot be fetched but the publisher's RSS/Atom entry contains usable summary/content, Acquisition may preserve it as an explicit `RSS_FALLBACK` Source rather than bypassing publisher access controls. The dogfood registry currently includes The Verge, DeepMind, NVIDIA, OpenAI, Google AI, Google Research, Microsoft Research, Meta Engineering, arXiv cs.AI/cs.RO, an enabled anonymous Weibo timeline, and a disabled optional X public timeline. Hugging Face remains registered but disabled under the conservative SSRF policy.
+
+Identity deduplication belongs to Acquisition; semantic event clustering remains downstream. Public social adapters consume only anonymously observable material. Logged-in Following/friends timelines are a separate future authenticated layer and must carry explicit authorization/provenance rather than hidden browser cookies. Acquisition volume is allowed to grow independently of cognition volume: a persisted Source is readable before analysis and cognition runs only when policy/worker flow or an explicit user action requests it.
 
 ## D / S / P no-Delta awareness
 

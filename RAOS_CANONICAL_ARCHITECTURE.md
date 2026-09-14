@@ -37,6 +37,9 @@ Sources / Feeds / APIs / Manual Input
         ↓
 ──────────────── Acquisition Plane ────────────────
 Source Registry → independent Source Poller → Adapter
+                                     ├─ RSS / Atom
+                                     ├─ WEIBO_PUBLIC
+                                     └─ X_PUBLIC (optional)
         ↓
 SourceDefinition → Observation → Information Object → Snapshot
         ↓
@@ -139,7 +142,9 @@ Unknown composition            no-delta-awareness-integration-v1.1 semantics
 9. Historical snapshots and execution identity are immutable; replay must preserve the frozen contract.
 10. Research and active developer dogfood should execute the same validated semantic contract unless an explicit versioned experiment says otherwise.
 11. A newly registered Acquisition Source establishes a present-time baseline before cognitive analysis; historical feed backlog must not masquerade as newly arrived information.
-12. Failure of one Acquisition Source must not terminate polling of independent Sources.
+12. Failure of one Acquisition Source must not terminate polling of independent Sources; failure of one discovered item must not terminate sibling items in that Source.
+13. Acquisition transport and cognition are orthogonal: a Source may be persisted and read without an AnalysisRun; acquisition volume must not imply cognition volume.
+14. Anonymous public-social adapters may consume only publicly observable material. Authenticated account/following access is a separate explicitly authorized transport layer.
 
 ## 6. Architecture-change checklist
 

@@ -43,11 +43,12 @@ def _source_out(row: SourceDefinition) -> dict:
 
 @router.post("/sources")
 def create_acquisition_source(body: SourceDefinitionCreate, db: Session = Depends(get_db)):
-    if body.source_type.upper() != "RSS":
-        raise HTTPException(400, "Acquisition v0.1 supports RSS only")
+    kind = body.source_type.upper()
+    if kind not in {"RSS", "X_PUBLIC", "WEIBO_PUBLIC"}:
+        raise HTTPException(400, "Supported acquisition source types: RSS, X_PUBLIC, WEIBO_PUBLIC")
     row = SourceDefinition(
         name=body.name,
-        source_type=body.source_type.upper(),
+        source_type=kind,
         locator=body.locator,
         enabled=body.enabled,
         poll_interval_seconds=body.poll_interval_seconds,

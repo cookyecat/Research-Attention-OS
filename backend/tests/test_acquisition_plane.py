@@ -175,3 +175,40 @@ def test_one_broken_source_does_not_stop_other_due_sources(db, monkeypatch):
     assert broken.last_polled_at is not None
     assert good.last_polled_at is not None
     assert analyses == []
+
+
+def test_one_broken_item_does_not_stop_sibling_items(db, monkeypatch):
+    source = _source(db, "Mixed Feed", "https://example.com/mixed.xml")
+    monkeypatch.setattr(acquisition.RSSAdapter, "discover", lambda self, locator: [
+        DiscoveredExternalItem(ref="https://example.com/bad", title="Bad"),
+        DiscoveredExternalItem(ref="https://example.com/good", title="Good"),
+    ])
+    def fake_ingest(db, url):
+        if url.endswith("/bad"):
+            raise RuntimeError("article fetch failed")
+        row = ingest_text(db, "Good body", title="Good")
+        row.canonical_url = url
+        return row
+    monkeypatch.setattr(acquisition, "ingest_url", fake_ingest)
+    result = poll_source(db, source, analyze=False)
+    assert result["item_failures"] == 1
+    assert result["new_snapshots"] == 1
+    assert result["item_errors"][0]["title"] == "Bad"
+
+
+def test_feed_content_fallback_preserves_item_when_page_fetch_fails(db, monkeypatch):
+    source = _source(db, "Fallback Feed", "https://example.com/fallback.xml")
+    monkeypatch.setattr(acquisition.RSSAdapter, "discover", lambda self, locator: [
+        DiscoveredExternalItem(ref="https://example.com/blocked", title="Blocked", metadata={
+            "feed_format": "RSS", "feed_content_text": "Publisher supplied summary text."
+        })
+    ])
+    monkeypatch.setattr(acquisition, "ingest_url", lambda db, url: (_ for _ in ()).throw(RuntimeError("403")))
+    result = poll_source(db, source, analyze=False)
+    snapshot = db.execute(select(InformationSnapshot)).scalar_one()
+    from app.models.source import Source
+    stored = db.get(Source, snapshot.raos_source_id)
+    assert result["new_snapshots"] == 1
+    assert stored.ingestion_method == "RSS_FALLBACK"
+    assert stored.content_text == "Publisher supplied summary text."
+    assert stored.raw_metadata["feed_fallback"] is True

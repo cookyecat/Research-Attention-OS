@@ -18,6 +18,9 @@ class SourceOut(BaseModel):
     title: str | None
     canonical_url: str | None
     content_text: str | None
+    published_at: datetime | None = None
+    publisher: str | None = None
+    language: str | None = None
     ingested_at: datetime
     fingerprint: str
     content_hash: str | None

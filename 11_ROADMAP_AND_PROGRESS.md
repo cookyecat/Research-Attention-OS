@@ -1393,3 +1393,28 @@ Dogfood on DeepMind AlphaGenome exposed a Source-fidelity failure: the publisher
 Trusted YouTube/Vimeo embeds are re-embedded in Reader; direct images/video are cached under the local RAOS media cache when they fit the configured 12 MB per-asset bound, while oversized or failed caches retain the original remote URL as fallback. `/media/{filename}` serves cached bytes with HTTP range support through the existing frontend `/api` rewrite. Reader disables autoplay, uses native controls, lazy-loads embeds, and inserts assets near their preserved source context rather than mirroring publisher DOM.
 
 A presentation-only backfill refreshed all 22 current URL_FETCH Sources with zero failures and did not rerun cognition. The AlphaGenome Source now resolves to one YouTube EMBED and one locally cached 915,730-byte WebM VIDEO; browser validation observed the iframe at 16:9, the native video at `readyState=4`, `duration=26`, `controls=true`, and `autoplay=false`. Current data also exposed native/embedded media in NVIDIA Sources, confirming this is not a single-site special case. No Source text, Claim/Auditor result, D/S/P, Attention decision, Watch state, Kernel authority, or canonical cognition contract changed.
+
+## Acquisition Source Diversity Expansion — DOGFOOD ACTIVE 2026-09-14
+
+Result: `194_RAOS_ACQUISITION_SOURCE_DIVERSITY_EXPANSION_RESULT.md`.
+
+Reader dogfood showed that the dominant experience bottleneck had moved upstream: Acquisition was healthy, but the live registry contained only The Verge, DeepMind, and NVIDIA, so Inbox/Today/Attention repeatedly showed the same small information set.
+
+The registry was expanded with OpenAI News, Google AI, Google Research, Hugging Face Blog, Microsoft Research, Meta Engineering, arXiv cs.AI, and arXiv cs.RO. Successful no-cognition baselines expanded persisted Sources from 27 to 62. Hugging Face is temporarily disabled because the conservative SSRF validator rejects its mixed public/non-global DNS resolution.
+
+Acquisition robustness was strengthened at the item boundary: one failed article no longer aborts sibling items in the same RSS Source. Publisher-supplied RSS/Atom summary/content is now preserved and may be used as an explicit `RSS_FALLBACK` when the canonical article page cannot be fetched; this allowed five current OpenAI feed items to enter the dogfood corpus without bypassing OpenAI's HTTP 403 response.
+
+A small explicit cognition sample verified that source growth does not automatically inflate Attention: new Sources produced both DROP and AWARE outcomes. Recorded successful sample calls consumed 27,270 input and 2,385 output tokens, approximately RMB 0.052 at current DeepSeek V4 Flash off-peak rates.
+
+This checkpoint was subsequently extended by `195_RAOS_PUBLIC_SOCIAL_ACQUISITION_AND_SOURCE_LIBRARY_RESULT.md`: anonymous public-social adapters were implemented without account login. Authenticated following/friends timelines remain a separate future layer.
+
+
+## Public Social Acquisition + Source Library — DOGFOOD READY 2026-09-14
+
+Result: `195_RAOS_PUBLIC_SOCIAL_ACQUISITION_AND_SOURCE_LIBRARY_RESULT.md`.
+
+Inbox is now a Source Library rather than a six-item recent list: 18 items are shown initially with incremental expansion, source/domain filtering, search, hero visuals when available, and real publication chronology. A persisted Source no longer requires cognition before reading; unanalysed material opens immediately with an explicit `NOT ANALYZED YET` state and an optional `Analyze with RAOS` action. `RSS_FALLBACK` is visibly identified as publisher-feed summary content rather than a complete fetched article.
+
+Acquisition now dispatches through public transport adapters: RSS/Atom, `WEIBO_PUBLIC`, and optional `X_PUBLIC`. The Weibo adapter uses an anonymous visitor session and live-validated UID `1912085257` (`斌叔OKmath`); five current posts were baselined with zero delivery failures and the Source is enabled on a 10-minute cadence. The X adapter uses public syndication through the locally configured `proxychains4`; Karpathy data was parseable but stale, so the Source is registered disabled rather than contaminating the current information world.
+
+The live dogfood corpus reached 68 persisted Sources. Public-social acquisition remains non-authoritative: it only determines what becomes observable. Logged-in Following/friends timelines remain a separate future authenticated layer with explicit authorization/provenance.

@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from urllib.parse import urljoin, urlparse
 from xml.etree import ElementTree as ET
+
+from bs4 import BeautifulSoup
 
 import httpx
 from sqlalchemy import select
@@ -19,17 +20,11 @@ from app.models.acquisition import (
     SourceDefinition,
 )
 from app.models.source import Source
-from app.services.ingestion import ingest_url
+from app.services.ingestion import ingest_url, persist_normalized
+from app.services.fingerprint import NormalizedSource
 from app.services.pipeline import run_pipeline
-
-
-@dataclass(frozen=True)
-class DiscoveredExternalItem:
-    ref: str
-    external_id: str | None = None
-    title: str | None = None
-    published_at: datetime | None = None
-    metadata: dict = field(default_factory=dict)
+from app.services.acquisition_types import DiscoveredExternalItem
+from app.services.social_adapters import WeiboPublicAdapter, XPublicAdapter
 
 
 def _text(node, *names: str) -> str | None:
@@ -39,6 +34,23 @@ def _text(node, *names: str) -> str | None:
             return child.text.strip()
     return None
 
+
+
+
+def _clean_feed_text(value: str | None) -> str | None:
+    if not value:
+        return None
+    text = BeautifulSoup(value, "lxml").get_text(" ", strip=True)
+    return " ".join(text.split()) or None
+
+
+def _child_by_local_name(node, *names: str):
+    wanted = set(names)
+    for child in list(node):
+        local = child.tag.rsplit("}", 1)[-1]
+        if local in wanted:
+            return child
+    return None
 
 def _parse_time(value: str | None) -> datetime | None:
     if not value:
@@ -73,12 +85,18 @@ def parse_rss_or_atom(payload: bytes | str, *, base_url: str) -> list[Discovered
             if not link:
                 continue
             published = _text(entry, f"{namespace}published", f"{namespace}updated")
+            summary_node = _child_by_local_name(entry, "summary")
+            content_node = _child_by_local_name(entry, "content")
+            feed_text = _clean_feed_text(
+                (content_node.text if content_node is not None else None)
+                or (summary_node.text if summary_node is not None else None)
+            )
             entries.append(DiscoveredExternalItem(
                 ref=link,
                 external_id=external_id,
                 title=title,
                 published_at=_parse_time(published),
-                metadata={"feed_format": "ATOM"},
+                metadata={"feed_format": "ATOM", "feed_content_text": feed_text},
             ))
         return entries
 
@@ -89,12 +107,18 @@ def parse_rss_or_atom(payload: bytes | str, *, base_url: str) -> list[Discovered
         link = _text(item, "link")
         if not link:
             continue
+        description_node = _child_by_local_name(item, "description")
+        encoded_node = _child_by_local_name(item, "encoded")
+        feed_text = _clean_feed_text(
+            (encoded_node.text if encoded_node is not None else None)
+            or (description_node.text if description_node is not None else None)
+        )
         entries.append(DiscoveredExternalItem(
             ref=urljoin(base_url, link),
             external_id=_text(item, "guid"),
             title=_text(item, "title"),
             published_at=_parse_time(_text(item, "pubDate", "date")),
-            metadata={"feed_format": "RSS"},
+            metadata={"feed_format": "RSS", "feed_content_text": feed_text},
         ))
     return entries
 
@@ -110,6 +134,17 @@ class RSSAdapter:
             final_url = str(response.url)
             validate_public_url(final_url)
             return parse_rss_or_atom(response.content, base_url=final_url)
+
+
+def _adapter_for(source: SourceDefinition):
+    kind = source.source_type.upper()
+    if kind == "RSS":
+        return RSSAdapter()
+    if kind == "X_PUBLIC":
+        return XPublicAdapter()
+    if kind == "WEIBO_PUBLIC":
+        return WeiboPublicAdapter()
+    raise ValueError(f"Unsupported acquisition source type: {source.source_type}")
 
 
 def _identity_key(source: SourceDefinition, item: DiscoveredExternalItem) -> str:
@@ -129,7 +164,7 @@ def _get_or_create_item(db: Session, source: SourceDefinition, discovered: Disco
     if item is None:
         item = ExternalInformationItem(
             identity_key=key,
-            item_type="ARTICLE",
+            item_type="ARTICLE" if source.source_type.upper() == "RSS" else "POST",
             canonical_url=discovered.ref,
             title=discovered.title,
             published_at=discovered.published_at,
@@ -167,11 +202,67 @@ def _current_snapshot(db: Session, item_id):
     ).scalars().first()
 
 
-def _deliver(db: Session, item: ExternalInformationItem, *, analyze: bool) -> InformationSnapshot:
+def _persist_feed_fallback(db: Session, source: SourceDefinition, item: ExternalInformationItem, discovered: DiscoveredExternalItem) -> Source:
+    text = (discovered.metadata or {}).get("feed_content_text")
+    if not text:
+        raise ValueError("Feed item has no fallback content")
+    normalized = NormalizedSource(
+        source_type="URL",
+        title=item.title,
+        canonical_url=item.canonical_url,
+        content_text=text,
+        published_at=item.published_at,
+        publisher=source.name,
+        raw_metadata={
+            "origin_url": item.canonical_url,
+            "feed_source_name": source.name,
+            "feed_format": (discovered.metadata or {}).get("feed_format"),
+            "feed_fallback": True,
+            "parser": "rss-fallback-v1",
+        },
+        ingestion_method="RSS_FALLBACK",
+    )
+    return persist_normalized(db, normalized)
+
+
+def _persist_social_item(db: Session, source: SourceDefinition, item: ExternalInformationItem, discovered: DiscoveredExternalItem) -> Source:
+    metadata = dict(discovered.metadata or {})
+    text = str(metadata.get("content_text") or "").strip()
+    if not text:
+        raise ValueError("Social item has no public text")
+    author = metadata.get("social_author")
+    normalized = NormalizedSource(
+        source_type="POST",
+        title=item.title,
+        canonical_url=item.canonical_url,
+        content_text=text,
+        published_at=item.published_at,
+        author_entities=[str(author)] if author else [],
+        publisher=source.name,
+        raw_metadata={
+            **metadata,
+            "origin_url": item.canonical_url,
+            "social_source_name": source.name,
+            "parser": f"{source.source_type.lower()}-v1",
+        },
+        ingestion_method=source.source_type.upper(),
+    )
+    return persist_normalized(db, normalized)
+
+
+def _deliver(db: Session, source: SourceDefinition, item: ExternalInformationItem, discovered: DiscoveredExternalItem, *, analyze: bool) -> InformationSnapshot:
     existing = _current_snapshot(db, item.id)
     if existing is not None:
         return existing
-    raos_source = ingest_url(db, item.canonical_url)
+    if source.source_type.upper() == "RSS":
+        try:
+            raos_source = ingest_url(db, item.canonical_url)
+        except Exception:
+            if not (discovered.metadata or {}).get("feed_content_text"):
+                raise
+            raos_source = _persist_feed_fallback(db, source, item, discovered)
+    else:
+        raos_source = _persist_social_item(db, source, item, discovered)
     raos_source.raw_metadata = {
         **(raos_source.raw_metadata or {}),
         "acquisition": {"external_item_id": str(item.id), "identity_key": item.identity_key},
@@ -180,7 +271,7 @@ def _deliver(db: Session, item: ExternalInformationItem, *, analyze: bool) -> In
         external_item_id=item.id,
         raos_source_id=raos_source.id,
         content_hash=raos_source.content_hash,
-        snapshot_metadata={"delivery": "URL_FETCH"},
+        snapshot_metadata={"delivery": "URL_FETCH" if source.source_type.upper() == "RSS" else source.source_type.upper()},
     )
     db.add(snapshot)
     db.flush()
@@ -190,20 +281,29 @@ def _deliver(db: Session, item: ExternalInformationItem, *, analyze: bool) -> In
 
 
 def poll_source(db: Session, source: SourceDefinition, *, limit: int = 5, analyze: bool = True) -> dict:
-    if source.source_type.upper() != "RSS":
-        raise ValueError(f"Unsupported acquisition source type: {source.source_type}")
-    discovered = RSSAdapter().discover(source.locator)[: max(0, int(limit))]
-    counts = {"discovered": len(discovered), "new_items": 0, "new_observations": 0, "new_snapshots": 0}
+    discovered = _adapter_for(source).discover(source.locator)[: max(0, int(limit))]
+    counts = {"discovered": len(discovered), "new_items": 0, "new_observations": 0, "new_snapshots": 0, "item_failures": 0}
     delivered_source_ids: list[str] = []
+    item_errors: list[dict] = []
     for candidate in discovered:
-        item, item_created = _get_or_create_item(db, source, candidate)
-        _, observation_created = _observe(db, source, item, candidate)
-        before = _current_snapshot(db, item.id)
-        snapshot = _deliver(db, item, analyze=analyze)
-        counts["new_items"] += int(item_created)
-        counts["new_observations"] += int(observation_created)
-        counts["new_snapshots"] += int(before is None)
-        delivered_source_ids.append(str(snapshot.raos_source_id))
+        try:
+            with db.begin_nested():
+                item, item_created = _get_or_create_item(db, source, candidate)
+                _, observation_created = _observe(db, source, item, candidate)
+                before = _current_snapshot(db, item.id)
+                snapshot = _deliver(db, source, item, candidate, analyze=analyze)
+                counts["new_items"] += int(item_created)
+                counts["new_observations"] += int(observation_created)
+                counts["new_snapshots"] += int(before is None)
+                delivered_source_ids.append(str(snapshot.raos_source_id))
+        except Exception as exc:
+            counts["item_failures"] += 1
+            item_errors.append({
+                "ref": candidate.ref,
+                "title": candidate.title,
+                "error_type": type(exc).__name__,
+                "error": str(exc),
+            })
     source.last_polled_at = datetime.now(timezone.utc)
     db.flush()
     return {
@@ -211,6 +311,7 @@ def poll_source(db: Session, source: SourceDefinition, *, limit: int = 5, analyz
         "source_name": source.name,
         **counts,
         "raos_source_ids": delivered_source_ids,
+        "item_errors": item_errors,
     }
 
 
