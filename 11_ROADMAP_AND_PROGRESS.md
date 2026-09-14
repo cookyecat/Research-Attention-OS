@@ -52,6 +52,38 @@ Product contrast recorded in `13_RAOS_VS_RECOMMENDATION_SYSTEMS.md`:
 
 More rigorously, RAOS optimizes attention efficiency rather than assuming that more consumption / engagement is the desired outcome.
 
+Permanent product operating doctrine:
+
+```text
+Observe broadly.
+Understand automatically.
+Interrupt sparsely.
+
+External World → Acquisition → Automatic Canonical Cognition → Attention → User
+```
+
+Equivalent product statement:
+
+> **RAOS should observe as much of the relevant world as practical, automatically understand genuine new arrivals, and return as little interruption to the human as possible.**
+
+The desired scaling behavior is therefore not “fewer Sources.” It is:
+
+```text
+more observed information
+→ more automatic machine cognition
+→ proportionally less human-visible residue
+```
+
+A new Source's historical backlog may establish a non-cognitive baseline so old material does not masquerade as newly arrived information. After baseline establishment, genuine arrivals should normally enter canonical cognition automatically. Reading a Source is not a cognition trigger; manual analysis is a recovery/explicit-action path.
+
+Product surfaces follow the same hierarchy:
+
+```text
+Inbox      = what RAOS observed
+Attention  = what RAOS judged
+Today      = what deserves consciousness now
+```
+
 ---
 
 ## 2. Constitutional loop

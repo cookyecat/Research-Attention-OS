@@ -20,6 +20,26 @@ User\ Space \neq Operating\ System\ View
 
 Normal UI optimizes for comprehension, attention allocation, reading comfort, and action. Scheduler state, cognition traces, D/S/P internals, raw claims, model provenance, and execution diagnostics belong in explicit Inspector/System surfaces.
 
+### 1.1 User-space hierarchy mirrors the operating doctrine
+
+The frontend must preserve the distinction between what RAOS sees, what RAOS judges, and what the human must consciously handle:
+
+```text
+Inbox      = what RAOS observed / preserved
+Attention  = what RAOS judged into a current attention state
+Today      = what deserves conscious human attention now
+```
+
+The desired scaling behavior is asymmetric:
+
+```text
+more observed information
+→ more automatic machine cognition
+→ less human-visible residue
+```
+
+A busy Acquisition layer and busy cognition layer should therefore be compatible with a calm Today surface. User Space must not reward itself for showing everything the system knows.
+
 ## 2. Reader is attentional recomposition
 
 The RAOS Reader is **not a mirror of the source webpage**. It is a reading space that re-composes the source's attentional structure.

@@ -2,6 +2,18 @@
 
 Research Attention OS (RAOS) is a personal cognitive operating system for allocating scarce human attention to information that can change, challenge, extend, or materially affect a researcher's current world model.
 
+Core product doctrine:
+
+```text
+Observe broadly.
+Understand automatically.
+Interrupt sparsely.
+
+External World → Acquisition → Automatic Cognition → Attention → User
+```
+
+RAOS should see more than the user, understand more than the user must read, and surface only the small residue that deserves human attention. Genuine post-baseline new arrivals normally enter canonical cognition automatically; opening a Source does not trigger cognition.
+
 Current HEAD architecture is defined by `RAOS_CANONICAL_ARCHITECTURE.md`. Historical numbered phase documents explain how the system reached that architecture; they are not current configuration guides.
 
 Frontend/User-Space design is governed by `RAOS_FRONTEND_DESIGN_PRINCIPLES.md`: RAOS Reader is an attentional recomposition of a Source, not a mirror of the publisher webpage.
@@ -112,7 +124,7 @@ Acquisition is transport-adapter based. RSS/Atom is the baseline unattended tran
 
 When an article page cannot be fetched but the publisher's RSS/Atom entry contains usable summary/content, Acquisition may preserve it as an explicit `RSS_FALLBACK` Source rather than bypassing publisher access controls. The dogfood registry currently includes The Verge, DeepMind, NVIDIA, OpenAI, Google AI, Google Research, Microsoft Research, Meta Engineering, arXiv cs.AI/cs.RO, an enabled anonymous Weibo timeline, and a disabled optional X public timeline. Hugging Face remains registered but disabled under the conservative SSRF policy.
 
-Identity deduplication belongs to Acquisition; semantic event clustering remains downstream. Public social adapters consume only anonymously observable material. Logged-in Following/friends timelines are a separate future authenticated layer and must carry explicit authorization/provenance rather than hidden browser cookies. Acquisition volume is allowed to grow independently of cognition volume: a persisted Source is readable before analysis and cognition runs only when policy/worker flow or an explicit user action requests it.
+Identity deduplication belongs to Acquisition; semantic event clustering remains downstream. Public social adapters consume only anonymously observable material. Logged-in Following/friends timelines are a separate future authenticated layer and must carry explicit authorization/provenance rather than hidden browser cookies. Acquisition volume is allowed to grow independently of cognition spending: baseline backlog can be persisted without analysis, but genuine post-baseline arrivals normally enter automatic canonical cognition. A persisted Source is always readable before analysis, and merely opening it never triggers cognition; `Analyze with RAOS` exists for recovery or explicit user action.
 
 ## D / S / P no-Delta awareness
 
