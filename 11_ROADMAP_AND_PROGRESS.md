@@ -1366,3 +1366,15 @@ Final dogfood validation also exposed and closed a production asset-consistency 
 Result: `190_RAOS_FRONTEND_UX_V23_VISUAL_SOURCE_ASSETS_RESULT.md`.
 
 Dogfood showed that text-only reconstruction made media Sources feel sparse even after the User/System split and editorial UX work. `URLConnector` now preserves standard `og:image` / `twitter:image` and image-alt metadata in `Source.raw_metadata`; Reader, Today, and Attention use the preserved hero visual when available while cognition remains text/semantic-authority unchanged. A presentation-only backfill updated all 22 current URL_FETCH Sources with zero failures and did not rerun cognition. A focused URL/acquisition regression passed (`7 passed, 1 warning`).
+
+## Reader UX V3 — ATTENTIONAL RECOMPOSITION / READING AIDS CLOSED 2026-09-14
+
+Result: `191_RAOS_READER_UX_V3_ATTENTIONAL_RECOMPOSITION_RESULT.md`. Living frontend contract: `RAOS_FRONTEND_DESIGN_PRINCIPLES.md`.
+
+Dogfood established the Reader principle that RAOS should not mirror publisher webpages; it should preserve Source truth/provenance while re-composing the attentional structure for comprehension, personal relevance, and low-friction reading.
+
+Reader V3 adds four presentation-only capabilities: conservative article-internal semantic figures; a scroll-aware RAOS rail with reading progress and nearby audited evidence; Claim `source_span_text` mapped back to original source sentences as subtle evidence anchors; and embedded Half-bold reading with browser-persisted Off/On plus Soft/Medium/Strong weight.
+
+The OpenAI/RubyGems Source produced 11 original-text evidence anchors in real dogfood. Production-browser scroll validation observed 42% reading progress at paragraph 3/5 with a relevant nearby Claim. Half-bold Strong computed to font-weight 800. DeepMind AlphaGenome rendered a preserved inline explanatory figure immediately after its matching semantic-context paragraph. Current backfill found semantic article figures in 3 of 22 URL_FETCH Sources.
+
+No cognition result was regenerated for Reader support. Source text, Sensor/Auditor authority, D/S/P, Attention policy, Watch semantics, Kernel authority, and human authorization remain unchanged. Future frontend work must follow `RAOS_FRONTEND_DESIGN_PRINCIPLES.md` and be driven by observed reading residuals.

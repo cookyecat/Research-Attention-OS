@@ -51,6 +51,50 @@ def validate_public_url(url: str) -> str:
     return url
 
 
+def _normalized_media_identity(value: str | None) -> str | None:
+    if not value:
+        return None
+    parsed = urlparse(value)
+    return f"{parsed.netloc.lower()}{parsed.path}"
+
+
+def _image_url(tag, base_url: str) -> str | None:
+    for key in ("src", "data-src", "data-lazy-src"):
+        value = tag.get(key)
+        if value and not str(value).startswith("data:"):
+            return urljoin(base_url, str(value).strip())
+    srcset = tag.get("srcset") or tag.get("data-srcset")
+    if srcset:
+        candidates = [part.strip().split()[0] for part in str(srcset).split(",") if part.strip()]
+        if candidates:
+            return urljoin(base_url, candidates[-1])
+    return None
+
+
+def _extract_article_images(soup: BeautifulSoup, url: str, hero_image_url: str | None) -> list[dict]:
+    hero_identity = _normalized_media_identity(hero_image_url)
+    images: list[dict] = []
+    seen: set[str] = set()
+    for figure in soup.find_all("figure"):
+        image = figure.find("img")
+        if image is None:
+            continue
+        image_url = _image_url(image, url)
+        identity = _normalized_media_identity(image_url)
+        if not image_url or not identity or identity == hero_identity or identity in seen:
+            continue
+        alt = str(image.get("alt") or "").strip() or None
+        caption_tag = figure.find("figcaption")
+        caption = caption_tag.get_text(" ", strip=True) if caption_tag else None
+        context_tag = figure.find_previous("p") or figure.find_next("p")
+        context = context_tag.get_text(" ", strip=True)[:500] if context_tag else None
+        images.append({"url": image_url, "alt": alt, "caption": caption, "context_text": context})
+        seen.add(identity)
+        if len(images) >= 6:
+            break
+    return images
+
+
 def _extract_readable(html: str, url: str) -> tuple[str | None, str | None, dict]:
     soup = BeautifulSoup(html, "lxml")
     title = None
@@ -83,6 +127,7 @@ def _extract_readable(html: str, url: str) -> tuple[str | None, str | None, dict
         if alt_meta and alt_meta.get("content"):
             hero_image_alt = alt_meta["content"].strip()
             break
+    article_images = _extract_article_images(soup, url, hero_image_url)
     try:
         import trafilatura
 
@@ -96,7 +141,8 @@ def _extract_readable(html: str, url: str) -> tuple[str | None, str | None, dict
         "published": published,
         "hero_image_url": hero_image_url,
         "hero_image_alt": hero_image_alt,
-        "parser": "url-html-v2-visual-metadata",
+        "article_images": article_images,
+        "parser": "url-html-v3-visual-structure",
     }
     return title, extracted, metadata
 

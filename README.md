@@ -4,6 +4,8 @@ Research Attention OS (RAOS) is a personal cognitive operating system for alloca
 
 Current HEAD architecture is defined by `RAOS_CANONICAL_ARCHITECTURE.md`. Historical numbered phase documents explain how the system reached that architecture; they are not current configuration guides.
 
+Frontend/User-Space design is governed by `RAOS_FRONTEND_DESIGN_PRINCIPLES.md`: RAOS Reader is an attentional recomposition of a Source, not a mirror of the publisher webpage.
+
 ```text
 External World
   → Acquisition Plane
@@ -86,7 +88,7 @@ RAOS now separates **User Space** from **Operating System View**. Normal use mus
 
 - **Today** — action-first overview of what needs focused attention now, what RAOS is watching, and how much information has already been filtered away.
 - **Inbox** — URL, text, PDF, or manual observation entry with recent-source recovery.
-- **Attention** — source-centric filtered world with search and disposition filters. Opening a Source defaults to **Reader**: source title, author/origin/time, preserved hero visual when available, preserved article text, a compact RAOS attention note, and plain-language personal relevance. The separate **RAOS Inspector** exposes D/S/P, cognitive effects, Kernel mapping, evidence extraction, AnalysisRun provenance, and feedback controls.
+- **Attention** — source-centric filtered world with search and disposition filters. Opening a Source defaults to **Reader**: source title, author/origin/time, preserved hero and semantic article visuals when available, preserved article text, audited evidence anchors mapped back to original sentences, a scroll-aware RAOS reading companion, optional embedded Half-bold reading, and plain-language personal relevance. The separate **RAOS Inspector** exposes D/S/P, cognitive effects, Kernel mapping, evidence extraction, AnalysisRun provenance, and feedback controls.
 - **Context** (`/kernel`) — user-facing durable projects, questions, beliefs, models, and constraints. Raw Kernel type/status/version metadata is subordinate under `RAOS Inspector`. Human authorization remains required for proposed context changes.
 - **Watch** — delegated future-attention responsibilities grouped by monitored target. User Space describes what RAOS is waiting for; raw Watch records and developer trigger simulation are subordinate under `RAOS Inspector`.
 - **Preferences** — real RAOS appearance controls stored in the browser. Theme supports Dark / Light / System and text size supports Compact / Default / Large across the full product.

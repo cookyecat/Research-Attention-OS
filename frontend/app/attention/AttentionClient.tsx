@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { api, apiOrNull } from "@/lib/api";
 import { formatBeijingTime, formatRelativeTime, timestampMs } from "@/lib/time";
 import KernelPatchCard from "@/components/KernelPatchCard";
 import AttentionFeedbackPanel from "@/components/AttentionFeedbackPanel";
+import BionicText from "@/components/BionicText";
 
 type SourceSummary = {
   id: string;
@@ -52,6 +53,74 @@ function heroImage(source?: SourceSummary) {
 }
 function heroImageAlt(source?: SourceSummary) {
   return source?.raw_metadata?.hero_image_alt || displayTitle(source);
+}
+function articleImages(source?: SourceSummary) {
+  const images = source?.raw_metadata?.article_images;
+  return Array.isArray(images) ? images.filter((image) => image?.url) : [];
+}
+
+function claimDisplayText(claim: any) {
+  const text = String(claim?.text || "");
+  const marker = "substantive_basis=";
+  const index = text.indexOf(marker);
+  return index >= 0 ? text.slice(index + marker.length).trim() : text;
+}
+
+function evidenceSentences(claims: any[]) {
+  const out: Array<{ text: string; claim: any }> = [];
+  for (const claim of claims || []) {
+    const span = String(claim?.source_span_text || "");
+    if (!span.trim()) continue;
+    const sentences = span.match(/[^.!?。！？]+[.!?。！？]+|[^.!?。！？]+$/g) || [];
+    for (const raw of sentences) {
+      const text = raw.trim();
+      if (text.length >= 24) out.push({ text, claim });
+    }
+  }
+  return out;
+}
+
+function paragraphEvidence(paragraph: string, claims: any[]) {
+  const ranges: Array<{ start: number; end: number; claim: any }> = [];
+  for (const item of evidenceSentences(claims)) {
+    const start = paragraph.indexOf(item.text);
+    if (start >= 0) ranges.push({ start, end: start + item.text.length, claim: item.claim });
+  }
+  ranges.sort((a, b) => a.start - b.start || (b.end - b.start) - (a.end - a.start));
+  const deduped: typeof ranges = [];
+  for (const range of ranges) {
+    if (deduped.some((existing) => existing.start === range.start && existing.end === range.end)) continue;
+    if (deduped.some((existing) => range.start >= existing.start && range.end <= existing.end)) continue;
+    deduped.push(range);
+  }
+  return deduped;
+}
+
+function inlineImagesForParagraph(images: any[], paragraph: string, index: number, total: number) {
+  return images.filter((image, imageIndex) => {
+    const context = String(image?.context_text || "").trim();
+    if (context && (paragraph.includes(context) || context.includes(paragraph))) return true;
+    if (!context && total > 5) {
+      const target = Math.min(total - 1, Math.max(1, Math.round(((imageIndex + 1) / (images.length + 1)) * total)));
+      return index === target;
+    }
+    return false;
+  });
+}
+
+function ReaderParagraph({ text, index, claims, selectedClaimId, onSelect }: { text: string; index: number; claims: any[]; selectedClaimId: string | null; onSelect: (claim: any) => void }) {
+  const ranges = paragraphEvidence(text, claims);
+  if (ranges.length === 0) return <p className="reader-paragraph" data-reader-index={index}><BionicText text={text} /></p>;
+  const nodes: React.ReactNode[] = [];
+  let cursor = 0;
+  ranges.forEach((range, rangeIndex) => {
+    if (range.start > cursor) nodes.push(<BionicText key={`plain-${rangeIndex}`} text={text.slice(cursor, range.start)} />);
+    const highlighted = text.slice(range.start, range.end);
+    nodes.push(<span key={`evidence-${rangeIndex}`} className={`evidence-highlight ${selectedClaimId === range.claim.id ? "active" : ""}`} role="button" tabIndex={0} title="RAOS evidence anchor" onClick={() => onSelect(range.claim)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") onSelect(range.claim); }}><BionicText text={highlighted} /></span>);
+    cursor = Math.max(cursor, range.end);
+  });
+  if (cursor < text.length) nodes.push(<BionicText key="plain-tail" text={text.slice(cursor)} />);
+  return <p className="reader-paragraph" data-reader-index={index}>{nodes}</p>;
 }
 
 function displayTitle(source?: SourceSummary) {
@@ -148,6 +217,9 @@ export default function AttentionPage() {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("CURRENT");
   const [query, setQuery] = useState("");
   const [detailView, setDetailView] = useState<"reader" | "inspector">("reader");
+  const [activeParagraph, setActiveParagraph] = useState(0);
+  const [readingProgress, setReadingProgress] = useState(0);
+  const [selectedClaimId, setSelectedClaimId] = useState<string | null>(null);
 
   async function loadPlans() {
     const [nextPlans, nextSources] = await Promise.all([api<any[]>("/kernel/attention"), api<SourceSummary[]>("/sources")]);
@@ -199,6 +271,27 @@ export default function AttentionPage() {
   ), [shown, sources]);
   const selectedSource = sourceId ? sources[sourceId] : undefined;
 
+  useEffect(() => {
+    if (!sourceId || detailView !== "reader" || !analysis) return;
+    const update = () => {
+      const body = document.querySelector<HTMLElement>(".reader-body");
+      const items = Array.from(document.querySelectorAll<HTMLElement>(".reader-paragraph"));
+      if (!body || items.length === 0) return;
+      const focusY = window.innerHeight * 0.38;
+      let bestIndex = 0; let bestDistance = Number.POSITIVE_INFINITY;
+      for (const item of items) {
+        const distance = Math.abs(item.getBoundingClientRect().top - focusY);
+        if (distance < bestDistance) { bestDistance = distance; bestIndex = Number(item.dataset.readerIndex || 0); }
+      }
+      setActiveParagraph(bestIndex);
+      const rect = body.getBoundingClientRect();
+      const consumed = Math.max(0, Math.min(rect.height, focusY - rect.top));
+      setReadingProgress(rect.height > 0 ? consumed / rect.height : 0);
+    };
+    update(); window.addEventListener("scroll", update, { passive: true }); window.addEventListener("resize", update);
+    return () => { window.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
+  }, [sourceId, detailView, analysis]);
+
   async function afterCommit() {
     await loadPlans();
     if (sourceId) {
@@ -215,6 +308,11 @@ export default function AttentionPage() {
     const paragraphs = readerParagraphs(selectedSource);
     const minutes = readingMinutes(selectedSource);
     const topMatch = analysis?.kernel_matches?.[0];
+    const claims = analysis?.claims || [];
+    const inlineImages = articleImages(selectedSource);
+    const activeRanges = paragraphEvidence(paragraphs[activeParagraph] || "", claims);
+    const activeClaim = claims.find((claim: any) => claim.id === selectedClaimId) || activeRanges[0]?.claim || null;
+    const progressPercent = Math.max(0, Math.min(100, Math.round(readingProgress * 100)));
 
     return (
       <>
@@ -259,7 +357,17 @@ export default function AttentionPage() {
 
               {paragraphs.length > 0 ? (
                 <div className="reader-body">
-                  {paragraphs.map((paragraph, index) => <p key={`${index}-${paragraph.slice(0, 24)}`}>{paragraph}</p>)}
+                  {paragraphs.map((paragraph, index) => (
+                    <React.Fragment key={`${index}-${paragraph.slice(0, 24)}`}>
+                      <ReaderParagraph text={paragraph} index={index} claims={claims} selectedClaimId={selectedClaimId} onSelect={(claim) => setSelectedClaimId(claim.id)} />
+                      {inlineImagesForParagraph(inlineImages, paragraph, index, paragraphs.length).map((image: any, imageIndex: number) => (
+                        <figure className="reader-inline-media" key={`${image.url}-${imageIndex}`}>
+                          <img src={image.url} alt={image.alt || image.caption || "Article visual"} loading="lazy" />
+                          {(image.caption || image.alt) && <figcaption>{image.caption || image.alt}</figcaption>}
+                        </figure>
+                      ))}
+                    </React.Fragment>
+                  ))}
                 </div>
               ) : (
                 <div className="reader-empty">
@@ -270,23 +378,31 @@ export default function AttentionPage() {
               )}
             </article>
 
-            <aside className="reader-rail">
-              <section className="reader-note">
+            <aside className={`reader-rail ${readingProgress > 0.02 ? "is-reading" : ""}`}>
+              <section className="reader-note primary-context">
                 <div className="eyebrow">Why it matters to you</div>
-                <p>{readerWhy(plan, analysis)}</p>
-                {topMatch && (
-                  <div className="reader-context">
-                    <span>Closest current context</span>
-                    <strong>{topMatch.title}</strong>
-                  </div>
-                )}
+                <p><BionicText text={readerWhy(plan, analysis)} /></p>
+                {topMatch && <div className="reader-context"><span>Closest current context</span><strong>{topMatch.title}</strong></div>}
               </section>
 
-              <section className="reader-note">
+              {readingProgress <= 0.02 && <section className="reader-note primary-context">
                 <div className="eyebrow">What to do</div>
-                <p>{nextMove(plan.disposition)}</p>
+                <p><BionicText text={nextMove(plan.disposition)} /></p>
                 {plan.cognitive_budget_minutes != null && <div className="reader-budget">RAOS budget · {plan.cognitive_budget_minutes} min</div>}
-              </section>
+              </section>}
+
+              {readingProgress > 0.01 && <section className="reader-progress-card">
+                <div className="eyebrow">Reading</div>
+                <div className="reader-progress-track"><span style={{width: `${progressPercent}%`}} /></div>
+                <div className="reader-progress-meta"><span>{progressPercent}% through article</span><span>¶ {Math.min(activeParagraph + 1, paragraphs.length)} / {paragraphs.length}</span></div>
+              </section>}
+
+              {readingProgress > 0.01 && activeClaim && <section className="reader-evidence-card">
+                <div className="eyebrow">RAOS evidence near here</div>
+                <h4>{activeClaim.claim_type || "Claim"}</h4>
+                <p><BionicText text={claimDisplayText(activeClaim)} /></p>
+                <button onClick={() => setDetailView("inspector")}>Open in Inspector →</button>
+              </section>}
 
               <button className="inspector-entry" onClick={() => setDetailView("inspector")}>
                 <span>Inspect RAOS decision</span>
