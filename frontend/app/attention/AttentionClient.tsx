@@ -415,8 +415,16 @@ export default function AttentionPage() {
                   {minutes && <><span>·</span><span>{minutes} min read</span></>}
                 </div>
                 <h1>{displayTitle(selectedSource)}</h1>
-                <div className="reader-actions">
-                  {selectedSource?.canonical_url && <a className="button-link ghost" href={selectedSource.canonical_url} target="_blank" rel="noreferrer">Open original ↗</a>}
+                <div className="reader-header-decision-row">
+                  {plan ? <div className={`reader-status reader-header-status ${plan.disposition}`}>
+                    <span className={`badge ${plan.disposition}`}>{plan.disposition}</span>
+                    <strong>{actionCopy(plan.disposition)}</strong>
+                  </div> : <div className="reader-status reader-header-status UNANALYZED">
+                    <span className="badge">UNANALYZED</span>
+                    <strong>Available to read. RAOS has not analyzed this source yet.</strong>
+                    <button className="ghost" disabled={busy} onClick={() => loadAnalysis("analyze")}>{busy ? "Analyzing…" : "Analyze with RAOS"}</button>
+                  </div>}
+                  {selectedSource?.canonical_url && <a className="button-link ghost reader-original-link" href={selectedSource.canonical_url} target="_blank" rel="noreferrer">Open original ↗</a>}
                 </div>
               </header>
 
@@ -431,15 +439,6 @@ export default function AttentionPage() {
                 <span className="badge AWARE">FEED SUMMARY</span>
                 <strong>The publisher page was unavailable to the crawler, so RAOS preserved the publisher-provided RSS summary instead.</strong>
                 {selectedSource.canonical_url && <a href={selectedSource.canonical_url} target="_blank" rel="noreferrer">Open original ↗</a>}
-              </div>}
-
-              {plan ? <div className={`reader-status ${plan.disposition}`}>
-                <span className={`badge ${plan.disposition}`}>{plan.disposition}</span>
-                <strong>{actionCopy(plan.disposition)}</strong>
-              </div> : <div className="reader-status UNANALYZED">
-                <span className="badge">UNANALYZED</span>
-                <strong>Available to read. RAOS has not spent model budget on this source yet.</strong>
-                <button className="ghost" disabled={busy} onClick={() => loadAnalysis("analyze")}>{busy ? "Analyzing…" : "Analyze with RAOS"}</button>
               </div>}
 
               {paragraphs.length > 0 ? (

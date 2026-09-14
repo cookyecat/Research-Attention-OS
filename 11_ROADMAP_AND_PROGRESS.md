@@ -1450,3 +1450,11 @@ Inbox is now a Source Library rather than a six-item recent list: 18 items are s
 Acquisition now dispatches through public transport adapters: RSS/Atom, `WEIBO_PUBLIC`, and optional `X_PUBLIC`. The Weibo adapter uses an anonymous visitor session and live-validated UID `1912085257` (`斌叔OKmath`); five current posts were baselined with zero delivery failures and the Source is enabled on a 10-minute cadence. The X adapter uses public syndication through the locally configured `proxychains4`; Karpathy data was parseable but stale, so the Source is registered disabled rather than contaminating the current information world.
 
 The live dogfood corpus reached 68 persisted Sources. Public-social acquisition remains non-authoritative: it only determines what becomes observable. Logged-in Following/friends timelines remain a separate future authenticated layer with explicit authorization/provenance.
+
+## Inbox / Attention UX Editorial Rhythm — DOGFOOD READY 2026-09-14
+
+Result: `196_RAOS_INBOX_ATTENTION_UX_EDITORIAL_RHYTHM_RESULT.md`.
+
+Dogfood after Source diversity expansion exposed a presentation residual: Inbox had become a visually uniform storage grid even though RAOS now observes heterogeneous sources, and cognition state was invisible until opening a Source. Inbox now joins `/sources` with the latest source-centric `AttentionPlan` in the presentation layer, renders `DROP / AWARE / WATCH / ENGAGE` directly on analyzed Source cards, leaves unanalyzed Sources explicitly readable, and uses a deterministic editorial-rhythm grid (lead / side / wide / standard / compact) without changing chronological ordering or cognition authority.
+
+Reader entry hierarchy was also corrected from `title → Open original → media → RAOS disposition` to `title → RAOS disposition → Open original → media → body`. This freezes two frontend principles: **Inbox is a living intake landscape, not a storage grid**, and **the RAOS judgment should appear before the reading journey begins**. No cognition, Attention semantics, Acquisition semantics, Kernel authority, or backend contract changed.

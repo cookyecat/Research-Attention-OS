@@ -100,6 +100,16 @@ Substantive source media is a first-class part of the reading experience. Preser
 
 A page itself is an attention-allocation problem. Title, image, RAOS guidance, evidence anchors, body text, and side rail all compete for visual priority and must be deliberately scheduled.
 
+### 4.1 Inbox is a living intake landscape
+
+Inbox represents what RAOS has observed. It should therefore feel alive without becoming another engagement feed. Uniform card matrices create rapid visual habituation and hide information state. Use controlled editorial rhythm instead: one visual anchor, secondary cards, then recurring wide/standard/compact forms with predictable spacing.
+
+```math
+\boxed{Inbox = Scanability + Visual\ Rhythm + State\ Visibility}
+```
+
+Every Source card should reveal its current cognition state when one exists (`DROP / AWARE / WATCH / ENGAGE`). An unanalyzed Source must remain readable and visibly distinct without implying a judgment RAOS has not made. Layout hierarchy is presentation only: it must not fabricate cognitive importance or reorder Source chronology by hidden recommendation logic.
+
 ## 5. Human action first, internals last
 
 Default presentation order:
@@ -113,6 +123,12 @@ information / source
 ```
 
 This is the frontend analogue of RAOS's core mission: reduce the amount of cognitive work returned to the human.
+
+For a Reader detail page, the current RAOS disposition is part of the entry contract, not a body annotation. It should appear immediately after the title and before the hero media/body so the user knows why the Source is in front of them before beginning the reading journey. `Open original` remains available but visually subordinate to the RAOS judgment.
+
+```math
+\boxed{Source\ identity \rightarrow RAOS\ judgment \rightarrow Reading}
+```
 
 ## 6. Evidence should return to the source text
 

@@ -7,10 +7,15 @@ import { API, api } from "@/lib/api";
 import { formatBeijingTime, formatRelativeTime, timestampMs } from "@/lib/time";
 
 type Mode = "URL" | "TEXT" | "PDF" | "MANUAL_OBSERVATION";
+type Disposition = "DROP" | "AWARE" | "WATCH" | "ENGAGE";
+type StateFilter = "ALL" | Disposition | "UNANALYZED";
 type Source = {
   id: string; title?: string | null; canonical_url?: string | null; content_text?: string | null;
   ingestion_method?: string | null; ingested_at?: string | null; published_at?: string | null; publisher?: string | null;
   raw_metadata?: Record<string, any>;
+};
+type AttentionPlan = {
+  id: string; candidate_type?: string | null; candidate_id: string; disposition: Disposition; created_at?: string | null;
 };
 
 function displayTitle(source: Source) {
@@ -22,10 +27,10 @@ function origin(source: Source) {
   try { if (source.canonical_url) return new URL(source.canonical_url).hostname.replace(/^www\./, ""); } catch {}
   return source.publisher || source.ingestion_method || "source";
 }
-function excerpt(source: Source) {
+function excerpt(source: Source, length = 210) {
   const text = (source.content_text || "").replace(/\s+/g, " ").trim();
   if (!text) return "Ready in RAOS.";
-  return text.length > 150 ? `${text.slice(0, 150).trim()}…` : text;
+  return text.length > length ? `${text.slice(0, length).trim()}…` : text;
 }
 function sourceTimeValue(source: Source) {
   return source.published_at || source.raw_metadata?.published || source.ingested_at || null;
@@ -37,6 +42,16 @@ function isSystemFixture(source: Source) {
   const title = (source.title || "").toLowerCase();
   return title.includes("smoke test") || title.includes("live smoke") || title.includes("rollout smoke");
 }
+function editorialVariant(index: number) {
+  if (index === 0) return "lead";
+  if (index === 1 || index === 2) return "side";
+  const pattern = ["wide", "standard", "standard", "compact", "standard", "wide", "compact"];
+  return pattern[(index - 3) % pattern.length];
+}
+function stateLabel(state: StateFilter) {
+  if (state === "UNANALYZED") return "Not analyzed";
+  return state;
+}
 
 const MODES: Array<[Mode, string, string]> = [
   ["URL", "URL", "Article or public page"],
@@ -44,6 +59,7 @@ const MODES: Array<[Mode, string, string]> = [
   ["PDF", "PDF", "Paper or document"],
   ["MANUAL_OBSERVATION", "Observation", "Something you directly observed"],
 ];
+const STATE_FILTERS: StateFilter[] = ["ALL", "ENGAGE", "WATCH", "AWARE", "DROP", "UNANALYZED"];
 
 export default function InboxPage() {
   const router = useRouter();
@@ -53,16 +69,32 @@ export default function InboxPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [recent, setRecent] = useState<Source[]>([]);
+  const [attentionBySource, setAttentionBySource] = useState<Record<string, AttentionPlan>>({});
   const [libraryQuery, setLibraryQuery] = useState("");
   const [originFilter, setOriginFilter] = useState("ALL");
+  const [stateFilter, setStateFilter] = useState<StateFilter>("ALL");
   const [visibleCount, setVisibleCount] = useState(18);
 
   useEffect(() => {
-    api<Source[]>("/sources").then((items) => setRecent(
-      [...items]
-        .filter((item) => !isSystemFixture(item))
-        .sort((a,b) => timestampMs(sourceTimeValue(b)) - timestampMs(sourceTimeValue(a)))
-    )).catch(() => undefined);
+    let cancelled = false;
+    (async () => {
+      try {
+        const [items, plans] = await Promise.all([
+          api<Source[]>("/sources"),
+          api<AttentionPlan[]>("/kernel/attention").catch(() => []),
+        ]);
+        if (cancelled) return;
+        setRecent([...items].filter((item) => !isSystemFixture(item)).sort((a,b) => timestampMs(sourceTimeValue(b)) - timestampMs(sourceTimeValue(a))));
+        const latest: Record<string, AttentionPlan> = {};
+        for (const plan of plans) {
+          if (plan.candidate_type && plan.candidate_type !== "SOURCE") continue;
+          const prior = latest[plan.candidate_id];
+          if (!prior || timestampMs(plan.created_at) >= timestampMs(prior.created_at)) latest[plan.candidate_id] = plan;
+        }
+        setAttentionBySource(latest);
+      } catch { /* Keep Inbox readable even if a secondary status call fails. */ }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   const sourceOrigins = useMemo(() => {
@@ -70,12 +102,22 @@ export default function InboxPage() {
     for (const source of recent) counts.set(origin(source), (counts.get(origin(source)) || 0) + 1);
     return [...counts.entries()].sort((a,b) => b[1] - a[1]);
   }, [recent]);
+  const stateCounts = useMemo(() => {
+    const counts: Record<StateFilter, number> = { ALL: recent.length, ENGAGE: 0, WATCH: 0, AWARE: 0, DROP: 0, UNANALYZED: 0 };
+    for (const source of recent) {
+      const state = attentionBySource[source.id]?.disposition || "UNANALYZED";
+      counts[state] += 1;
+    }
+    return counts;
+  }, [recent, attentionBySource]);
   const filteredRecent = useMemo(() => recent.filter((source) => {
     if (originFilter !== "ALL" && origin(source) !== originFilter) return false;
+    const state = attentionBySource[source.id]?.disposition || "UNANALYZED";
+    if (stateFilter !== "ALL" && state !== stateFilter) return false;
     if (!libraryQuery.trim()) return true;
-    const haystack = `${displayTitle(source)} ${excerpt(source)} ${origin(source)}`.toLowerCase();
+    const haystack = `${displayTitle(source)} ${excerpt(source)} ${origin(source)} ${state}`.toLowerCase();
     return haystack.includes(libraryQuery.trim().toLowerCase());
-  }), [recent, originFilter, libraryQuery]);
+  }), [recent, originFilter, stateFilter, libraryQuery, attentionBySource]);
 
   async function submit() {
     setBusy(true); setError(null);
@@ -101,7 +143,7 @@ export default function InboxPage() {
   return (
     <>
       <header className="page-header">
-        <div><div className="eyebrow">Inbox</div><h1 className="page-title">Give RAOS something to think about.</h1><p className="page-subtitle">Add information here. RAOS will decide whether it deserves your attention — ingestion itself does not.</p></div>
+        <div><div className="eyebrow">Inbox</div><h1 className="page-title">Give RAOS something to think about.</h1><p className="page-subtitle">What RAOS has observed. New arrivals can be understood automatically; opening a source is just reading.</p></div>
       </header>
 
       <div className="ingest-tabs">
@@ -119,27 +161,44 @@ export default function InboxPage() {
         <div className="actions"><button disabled={busy} onClick={submit}>{busy ? "Analyzing…" : "Analyze with RAOS"}</button></div>
       </section>
 
-      <section className="section">
-        <div className="section-heading inbox-library-heading"><div><h2>Source library</h2><p>{recent.length} sources acquired so far. Read first; analysis is optional.</p></div></div>
+      <section className="section source-library-section">
+        <div className="section-heading inbox-library-heading"><div><h2>Source library</h2><p>{recent.length} sources observed. The layout follows arrival rhythm; cognition state stays visible without becoming the content.</p></div></div>
         <div className="inbox-library-toolbar">
-          <input value={libraryQuery} onChange={(e) => { setLibraryQuery(e.target.value); setVisibleCount(18); }} placeholder="Search acquired sources…" />
-          <div className="source-filter-row">
-            <button className={originFilter === "ALL" ? "source-filter active" : "source-filter"} onClick={() => { setOriginFilter("ALL"); setVisibleCount(18); }}>All · {recent.length}</button>
+          <input value={libraryQuery} onChange={(e) => { setLibraryQuery(e.target.value); setVisibleCount(18); }} placeholder="Search sources, topics, or RAOS state…" />
+          <div className="source-state-filter-row" aria-label="Cognition state filters">
+            {STATE_FILTERS.map((state) => <button key={state} className={stateFilter === state ? `source-state-filter active ${state}` : `source-state-filter ${state}`} onClick={() => { setStateFilter(state); setVisibleCount(18); }}><span>{state === "ALL" ? "All states" : stateLabel(state)}</span><strong>{stateCounts[state]}</strong></button>)}
+          </div>
+          <div className="source-filter-row" aria-label="Source filters">
+            <button className={originFilter === "ALL" ? "source-filter active" : "source-filter"} onClick={() => { setOriginFilter("ALL"); setVisibleCount(18); }}>All sources · {recent.length}</button>
             {sourceOrigins.slice(0, 10).map(([name, count]) => <button key={name} className={originFilter === name ? "source-filter active" : "source-filter"} onClick={() => { setOriginFilter(name); setVisibleCount(18); }}>{name} · {count}</button>)}
           </div>
         </div>
-        <div className="recent-source-grid">
+
+        <div className="source-editorial-grid">
           {filteredRecent.slice(0, visibleCount).map((source, index) => {
             const when = sourceTimeValue(source);
             const image = heroImage(source);
             const fallback = Boolean(source.raw_metadata?.feed_fallback);
+            const plan = attentionBySource[source.id];
+            const state: StateFilter = plan?.disposition || "UNANALYZED";
+            const variant = editorialVariant(index);
             return (
-              <Link className={index === 0 ? "recent-source-card featured" : "recent-source-card"} href={`/attention?source=${source.id}`} key={source.id}>
-                {image && <div className="recent-source-visual"><img src={image} alt="" loading="lazy" /></div>}
-                <div className="story-kicker"><span>{origin(source)}</span>{fallback && <span className="feed-summary-chip">Feed summary</span>}{when && <><span>·</span><span title={formatBeijingTime(when)}>{formatRelativeTime(when)}</span></>}</div>
-                <h3>{displayTitle(source)}</h3>
-                <p>{excerpt(source)}</p>
-                <span className="text-link">Read in RAOS →</span>
+              <Link className={`source-editorial-card ${variant} state-${state} ${image ? "has-visual" : "text-only"}`} href={`/attention?source=${source.id}`} key={source.id}>
+                {image && <div className="source-card-visual"><img src={image} alt="" loading="lazy" /></div>}
+                <div className="source-card-content">
+                  <div className="source-card-meta">
+                    <span className={`source-cognition-chip ${state}`}>{stateLabel(state)}</span>
+                    <span className="source-origin">{origin(source)}</span>
+                    {fallback && <span className="feed-summary-chip">Feed summary</span>}
+                    {when && <><span className="meta-separator">·</span><span title={formatBeijingTime(when)}>{formatRelativeTime(when)}</span></>}
+                  </div>
+                  <h3>{displayTitle(source)}</h3>
+                  <p>{excerpt(source, variant === "lead" || variant === "wide" ? 260 : 155)}</p>
+                  <div className="source-card-footer">
+                    <span>{plan ? "RAOS cognition available" : "Readable · cognition pending or baseline"}</span>
+                    <span className="text-link">Read →</span>
+                  </div>
+                </div>
               </Link>
             );
           })}
