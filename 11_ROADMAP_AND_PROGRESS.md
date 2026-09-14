@@ -1337,3 +1337,32 @@ human action first
 Today is action-first; Inbox exposes direct URL/Text/PDF/Observation entry and recent sources; Attention is a searchable/filterable source-centric filtered world; no-Delta detail exposes D/S/P reasoning in human language; human judgment feedback is visually separated from Kernel authorization; Kernel is a searchable cognitive workspace; WATCH rows are grouped into monitoring responsibilities and developer trigger controls are collapsed.
 
 Validation: frontend TypeScript check PASS; clean production build PASS with zero warnings; `/`, `/inbox`, `/attention`, `/kernel`, and `/watch` all returned 200 and were visually checked against the live Mac dogfood backend. `RAOS_CANONICAL_ARCHITECTURE.md` is unchanged because no architecture or authority boundary changed. Next frontend work should be driven by actual dogfood residuals rather than speculative feature expansion.
+
+## Frontend UX V2.1 — USER SPACE / SYSTEM SPACE SPLIT CLOSED 2026-09-14
+
+Result: `188_RAOS_USERSPACE_SYSTEMSPACE_SPLIT_RESULT.md`.
+
+Immediate dogfood after UX V2 exposed a deeper presentation residual: Source detail still treated RAOS's structured internal representation as the primary user object, while the preserved article text was not shown. The frontend contract is now explicitly split into **User Space** and **Operating System View**.
+
+Attention Source detail defaults to Reader with source metadata, full preserved `Source.content_text`, a compact Attention note, plain-language personal relevance, and next-action guidance. D/S/P, cognitive effects, Kernel mapping, extracted evidence, AnalysisRun provenance, feedback controls, and KernelPatch state live in an explicit `RAOS Inspector` tab, deep-linkable with `?view=system`.
+
+The boundary is applied across the product: Attention cards hide cognitive-operation enums; Watch hides raw target/trigger/record semantics behind Inspector; user-facing `/kernel` is now Context with raw Kernel metadata subordinate; the persistent dogfood runtime footer was removed from User Space. A dedicated `/system` route concentrates runtime identity, raw ledgers, pipeline/model provenance, and subsystem inventory.
+
+No backend, cognition, D/S/P, Attention, WATCH, Kernel-authority, Acquisition, or canonical-architecture semantics changed. Next UI work remains driven by real dogfood residuals.
+
+## Frontend UX V2.2 — PRODUCT SURFACE / REAL PREFERENCES / PRODUCTION RUNTIME CLOSED 2026-09-14
+
+Result: `189_RAOS_FRONTEND_UX_V22_PRODUCT_SURFACE_RESULT.md`.
+
+Dogfood exposed that the remaining Next.js Dev Tools overlay could be mistaken for RAOS Preferences, while Today/Attention still behaved visually like a sparse ledger and naive backend UTC timestamps made fresh crawler arrivals appear stale. Frontend dogfood now runs from a production build with `next start`; framework dev controls are absent from User Space.
+
+RAOS now provides its own browser-persisted Theme (Dark/Light/System) and Text size (Compact/Default/Large) preferences. Today and Attention use an editorial attention hierarchy with lead stories, excerpts, compact briefs, delegated monitoring, and current non-DROP defaults; Inbox recent Sources is a content-library grid. Explicit internal smoke fixtures are removed from User Space while remaining preserved in RAOS System.
+
+User-facing timestamps now interpret backend naive datetimes as UTC and render in `Asia/Shanghai` (UTC+8). No cognition, D/S/P, Attention, Watch, Kernel-authority, Acquisition, or canonical-architecture semantics changed.
+
+Final dogfood validation also exposed and closed a production asset-consistency hazard: rebuilding `.next` while an older `next start` remained live caused HTML to reference a stale CSS hash and rendered the product as raw unstyled HTML. The safe local runtime is now encoded as `npm run dogfood:restart`, which stops port 3000, removes `.next`, runs typecheck/build, and only then starts one production server. Browser automation verified whole-page RAOS Preferences: Dark/Light change the actual document theme and Large changes body text from 15px to 17px.
+## Frontend UX V2.3 — VISUAL SOURCE ASSETS CLOSED 2026-09-14
+
+Result: `190_RAOS_FRONTEND_UX_V23_VISUAL_SOURCE_ASSETS_RESULT.md`.
+
+Dogfood showed that text-only reconstruction made media Sources feel sparse even after the User/System split and editorial UX work. `URLConnector` now preserves standard `og:image` / `twitter:image` and image-alt metadata in `Source.raw_metadata`; Reader, Today, and Attention use the preserved hero visual when available while cognition remains text/semantic-authority unchanged. A presentation-only backfill updated all 22 current URL_FETCH Sources with zero failures and did not rerun cognition. A focused URL/acquisition regression passed (`7 passed, 1 warning`).

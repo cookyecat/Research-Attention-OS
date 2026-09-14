@@ -4,9 +4,30 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API, api } from "@/lib/api";
+import { formatBeijingTime, formatRelativeTime, timestampMs } from "@/lib/time";
 
 type Mode = "URL" | "TEXT" | "PDF" | "MANUAL_OBSERVATION";
-type Source = { id: string; title?: string | null; ingestion_method?: string | null; ingested_at?: string | null };
+type Source = {
+  id: string; title?: string | null; canonical_url?: string | null; content_text?: string | null;
+  ingestion_method?: string | null; ingested_at?: string | null; raw_metadata?: Record<string, any>;
+};
+
+function displayTitle(source: Source) {
+  const title = source.title || "Untitled source";
+  return title.replace(/\s*\|\s*[^|]+$/, "").trim() || title;
+}
+function origin(source: Source) {
+  try { if (source.canonical_url) return new URL(source.canonical_url).hostname.replace(/^www\./, ""); } catch {}
+  return source.ingestion_method || "source";
+}
+function excerpt(source: Source) {
+  const text = (source.content_text || "").replace(/\s+/g, " ").trim();
+  if (!text) return "Ready in RAOS.";
+  return text.length > 150 ? `${text.slice(0, 150).trim()}…` : text;
+}
+function sourceTimeValue(source: Source) {
+  return source.raw_metadata?.published || source.ingested_at || null;
+}
 
 const MODES: Array<[Mode, string, string]> = [
   ["URL", "URL", "Article or public page"],
@@ -25,7 +46,7 @@ export default function InboxPage() {
   const [recent, setRecent] = useState<Source[]>([]);
 
   useEffect(() => {
-    api<Source[]>("/sources").then((items) => setRecent(items.slice(0, 6))).catch(() => undefined);
+    api<Source[]>("/sources").then((items) => setRecent([...items].sort((a,b) => timestampMs(sourceTimeValue(b)) - timestampMs(sourceTimeValue(a))).slice(0, 6))).catch(() => undefined);
   }, []);
 
   async function submit() {
@@ -72,8 +93,18 @@ export default function InboxPage() {
 
       <section className="section">
         <div className="section-heading"><div><h2>Recent sources</h2><p>Jump back into something you recently added or acquired.</p></div></div>
-        <div className="stack">
-          {recent.map((source) => <Link className="card" href={`/attention?source=${source.id}`} key={source.id}><div className="row"><span className="badge">{source.ingestion_method || "source"}</span>{source.ingested_at && <span className="meta">{new Date(source.ingested_at).toLocaleString()}</span>}</div><h3>{source.title || "Untitled source"}</h3><span className="text-link">Open analysis →</span></Link>)}
+        <div className="recent-source-grid">
+          {recent.map((source, index) => {
+            const when = sourceTimeValue(source);
+            return (
+              <Link className={index === 0 ? "recent-source-card featured" : "recent-source-card"} href={`/attention?source=${source.id}`} key={source.id}>
+                <div className="story-kicker"><span>{origin(source)}</span>{when && <><span>·</span><span title={formatBeijingTime(when)}>{formatRelativeTime(when)}</span></>}</div>
+                <h3>{displayTitle(source)}</h3>
+                <p>{excerpt(source)}</p>
+                <span className="text-link">Read in RAOS →</span>
+              </Link>
+            );
+          })}
         </div>
       </section>
     </>

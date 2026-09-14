@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { api } from "@/lib/api";
+import { formatBeijingTime } from "@/lib/time";
 
 type CognitiveUpdate = {
   operation?: string | null;
@@ -158,7 +159,7 @@ export default function AttentionFeedbackPanel({
         <p className="lede">
           Recorded {latest.kind.toLowerCase()}
           {latest.corrected_fields.length > 0 && ` · changed ${latest.corrected_fields.join(", ")}`}
-          {latest.created_at ? ` · ${new Date(latest.created_at).toLocaleString()}` : ""}
+          {latest.created_at ? ` · ${formatBeijingTime(latest.created_at)}` : ""}
         </p>
       )}
       {error && <p className="error">{error}</p>}

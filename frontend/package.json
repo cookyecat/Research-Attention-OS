@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "dogfood": "next start",
+    "typecheck": "tsc --noEmit",
+    "dogfood:restart": "bash scripts/restart-dogfood.sh"
   },
   "dependencies": {
     "next": "^15.1.0",

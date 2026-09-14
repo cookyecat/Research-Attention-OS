@@ -3,26 +3,54 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { api } from "@/lib/api";
+import { formatRelativeTime, timestampMs } from "@/lib/time";
 
-type Home = {
-  decision_items: number;
-  engage_items: number;
-  watch_topics: number;
-  discarded: number;
-  estimated_attention_minutes: number;
-  proposed_patches: number;
-  sources: number;
+type Home = { proposed_patches: number };
+type SourceSummary = {
+  id: string;
+  title?: string | null;
+  canonical_url?: string | null;
+  content_text?: string | null;
+  ingested_at?: string | null;
+  ingestion_method?: string | null;
+  raw_metadata?: Record<string, any>;
 };
 
-type SourceSummary = { id: string; title?: string | null; canonical_url?: string | null; ingestion_method?: string | null };
-
-const RANK: Record<string, number> = { ENGAGE: 0, WATCH: 1, AWARE: 2, DROP: 3 };
+function displayTitle(source?: SourceSummary) {
+  const title = source?.title || "Untitled source";
+  return title.replace(/\s*\|\s*[^|]+$/, "").trim() || title;
+}
+function origin(source?: SourceSummary) {
+  try { if (source?.canonical_url) return new URL(source.canonical_url).hostname.replace(/^www\./, ""); } catch {}
+  return source?.ingestion_method || "source";
+}
+function timeValue(source?: SourceSummary, fallback?: string | null) {
+  return source?.raw_metadata?.published || source?.ingested_at || fallback || null;
+}
+function heroImage(source?: SourceSummary) {
+  return source?.raw_metadata?.hero_image_url || null;
+}
+function heroImageAlt(source?: SourceSummary) {
+  return source?.raw_metadata?.hero_image_alt || displayTitle(source);
+}
+function excerpt(source?: SourceSummary, length = 260) {
+  const text = (source?.content_text || "").replace(/\s+/g, " ").trim();
+  if (!text) return "RAOS has classified this source and kept only the attention state you need.";
+  const title = displayTitle(source).toLowerCase();
+  const cleaned = text.toLowerCase().startsWith(title) ? text.slice(displayTitle(source).length).trim() : text;
+  return cleaned.length > length ? `${cleaned.slice(0, length).trim()}…` : cleaned;
+}
+function isSystemFixture(source?: SourceSummary) {
+  if (!source || source.raw_metadata?.acquisition) return false;
+  const title = (source.title || "").toLowerCase();
+  return /(^|\b)(smoke test|live smoke|rollout smoke|dogfood smoke)(\b|$)/i.test(title);
+}
 
 function actionCopy(disposition: string) {
-  if (disposition === "ENGAGE") return "Needs focused attention now.";
-  if (disposition === "WATCH") return "RAOS is carrying the next check for you.";
-  if (disposition === "AWARE") return "Worth knowing; no follow-up is required.";
-  return "No attention needed right now.";
+  if (disposition === "ENGAGE") return "Needs focused attention";
+  if (disposition === "AWARE") return "Worth knowing";
+  if (disposition === "WATCH") return "RAOS is watching";
+  return "Filtered out";
 }
 
 export default function Page() {
@@ -35,10 +63,8 @@ export default function Page() {
   useEffect(() => {
     Promise.all([api<Home>("/meta/home"), api<any[]>("/kernel/attention"), api<SourceSummary[]>("/sources"), api<any[]>("/watches")])
       .then(([nextHome, nextPlans, nextSources, nextWatches]) => {
-        setHome(nextHome);
-        setPlans(nextPlans);
-        setSources(Object.fromEntries(nextSources.map((s) => [s.id, s])));
-        setWatches(nextWatches);
+        setHome(nextHome); setPlans(nextPlans); setWatches(nextWatches);
+        setSources(Object.fromEntries(nextSources.map((source) => [source.id, source])));
       })
       .catch((e) => setError(String(e.message || e)));
     api("/kernel/seed", { method: "POST" }).catch(() => undefined);
@@ -50,79 +76,85 @@ export default function Page() {
       const key = `${plan.candidate_type}:${plan.candidate_id}`;
       if (!latest.has(key)) latest.set(key, plan);
     }
-    return Array.from(latest.values()).sort((a, b) => (RANK[a.disposition] ?? 9) - (RANK[b.disposition] ?? 9));
+    return Array.from(latest.values());
   }, [plans]);
 
-  const engageCount = current.filter((p) => p.disposition === "ENGAGE").length;
-  const needsYou = current.filter((p) => p.disposition === "ENGAGE").slice(0, 3);
-  const awareness = current.filter((p) => p.disposition === "AWARE").length;
-  const discarded = current.filter((p) => p.disposition === "DROP").length;
-  const currentBudget = current.reduce((minutes, p) => minutes + Number(p.cognitive_budget_minutes || 0), 0);
-  const activeWatchResponsibilities = new Set(
-    watches.filter((w) => w.status === "ACTIVE").map((w) => `${w.target_type}:${w.target_ref}`),
-  ).size;
+  const editorial = useMemo(() => current
+    .filter((plan) => plan.disposition !== "DROP" && plan.candidate_type === "SOURCE" && !isSystemFixture(sources[plan.candidate_id]))
+    .sort((a, b) => timestampMs(timeValue(sources[b.candidate_id], b.created_at)) - timestampMs(timeValue(sources[a.candidate_id], a.created_at))), [current, sources]);
+
+  const engage = current.filter((plan) => plan.disposition === "ENGAGE");
+  const lead = editorial[0];
+  const brief = editorial.slice(1, 4);
+  const awareCount = current.filter((plan) => plan.disposition === "AWARE").length;
+  const dropCount = current.filter((plan) => plan.disposition === "DROP").length;
+  const currentBudget = current.reduce((sum, plan) => sum + Number(plan.cognitive_budget_minutes || 0), 0);
+  const activeWatchResponsibilities = new Set(watches.filter((watch) => watch.status === "ACTIVE").map((watch) => `${watch.target_type}:${watch.target_ref}`));
+  const delegated = Array.from(activeWatchResponsibilities).slice(0, 4).map((key) => key.split(":").slice(1).join(":"));
 
   return (
     <>
-      <header className="page-header">
+      <header className="page-header today-header">
         <div>
           <div className="eyebrow">Today</div>
-          <h1 className="page-title">Your attention, already filtered.</h1>
-          <p className="page-subtitle">RAOS watches the information flow so you can spend time only where your cognition or decisions actually need it.</p>
+          <h1 className="page-title">What deserves your attention.</h1>
+          <p className="page-subtitle">A living brief of what changed, what matters, and what RAOS is already carrying for you.</p>
         </div>
         <Link className="button-link ghost" href="/inbox">Add source</Link>
       </header>
-
       {error && <p className="error">{error}</p>}
 
-      <section className="hero-panel">
-        <div className="eyebrow">What needs you now</div>
-        <h2>{engageCount > 0 ? `${engageCount} item${engageCount === 1 ? "" : "s"} deserve focused attention` : "Nothing requires focused attention right now"}</h2>
-        <p>{engageCount > 0 ? "Start with the highest-value cognitive work. Everything else can wait." : "RAOS is absorbing the background noise. You can keep working."}</p>
-      </section>
+      {engage.length > 0 && (
+        <Link className="focus-alert" href={`/attention?source=${engage[0].candidate_id}`}>
+          <span className="focus-alert-dot" />
+          <div><strong>{engage.length} item{engage.length === 1 ? "" : "s"} still need your judgment</strong><span>{displayTitle(sources[engage[0].candidate_id])}</span></div>
+          <span className="focus-alert-action">Review →</span>
+        </Link>
+      )}
 
-      {needsYou.length > 0 && (
-        <section className="section">
-          <div className="section-heading"><div><h2>Engage now</h2><p>Items most likely to change active cognition or decisions.</p></div></div>
-          <div className="stack">
-            {needsYou.map((p) => {
-              const source = sources[p.candidate_id];
+      {lead ? (
+        <section className="today-editorial">
+          <Link className={`lead-story disposition-${lead.disposition}`} href={`/attention?source=${lead.candidate_id}`}>
+            {heroImage(sources[lead.candidate_id]) && <img className="lead-story-image" src={heroImage(sources[lead.candidate_id])} alt={heroImageAlt(sources[lead.candidate_id])} loading="eager" />}
+            <div className="story-kicker"><span className={`badge ${lead.disposition}`}>{lead.disposition}</span><span>{origin(sources[lead.candidate_id])}</span><span>·</span><span>{formatRelativeTime(timeValue(sources[lead.candidate_id], lead.created_at))}</span></div>
+            <h2>{displayTitle(sources[lead.candidate_id])}</h2>
+            <p>{excerpt(sources[lead.candidate_id], 330)}</p>
+            <div className="story-footer"><strong>{actionCopy(lead.disposition)}</strong><span>Read story →</span></div>
+          </Link>
+
+          <aside className="brief-rail">
+            <div className="brief-heading"><span>Brief</span><Link href="/attention">View all →</Link></div>
+            {brief.map((plan) => {
+              const source = sources[plan.candidate_id];
               return (
-                <Link className={`card attention-card disposition-${p.disposition}`} href={`/attention?source=${p.candidate_id}`} key={p.id}>
-                  <div className="row"><span className={`badge ${p.disposition}`}>{p.disposition}</span><span className="meta">{source?.ingestion_method || "source"}</span></div>
-                  <h3>{source?.title || "Untitled source"}</h3>
-                  <p className="attention-summary">{actionCopy(p.disposition)}</p>
-                  <span className="text-link">Open →</span>
+                <Link className="brief-story" href={`/attention?source=${plan.candidate_id}`} key={plan.id}>
+                  <div className="story-kicker"><span className={`status-dot-small ${plan.disposition}`} />{origin(source)} · {formatRelativeTime(timeValue(source, plan.created_at))}</div>
+                  <h3>{displayTitle(source)}</h3>
+                  <p>{excerpt(source, 135)}</p>
                 </Link>
               );
             })}
-          </div>
+            {brief.length === 0 && <div className="brief-empty">No other current items. RAOS has already filtered the rest.</div>}
+          </aside>
         </section>
+      ) : (
+        <section className="hero-panel"><div className="eyebrow">Quiet is a feature</div><h2>Nothing new needs you right now.</h2><p>RAOS is still monitoring in the background. Keep working.</p></section>
       )}
 
-      <section className="section">
-        <div className="section-heading"><div><h2>System state</h2><p>A compact view of work RAOS has already absorbed for you.</p></div></div>
-        <div className="stats">
-          <div className="stat"><b>{activeWatchResponsibilities}</b><span>monitoring responsibilities delegated to RAOS</span></div>
-          <div className="stat"><b>{awareness}</b><span>items worth knowing without deeper work</span></div>
-          <div className="stat"><b>{discarded}</b><span>current items filtered out — attention saved</span></div>
-          <div className="stat"><b>{home?.proposed_patches ?? "—"}</b><span>Kernel changes waiting for your authorization</span></div>
+      <section className="section today-lower-grid">
+        <div>
+          <div className="section-heading"><div><h2>RAOS is carrying these</h2><p>You do not need to keep them in working memory.</p></div><Link className="text-link" href="/watch">Open Watch →</Link></div>
+          <div className="delegated-list">
+            {delegated.map((item, index) => <div className="delegated-item" key={`${item}-${index}`}><span className="delegated-index">{String(index + 1).padStart(2, "0")}</span><strong>{item}</strong><span>Monitoring</span></div>)}
+            {delegated.length === 0 && <div className="empty-state">Nothing is delegated right now.</div>}
+          </div>
         </div>
-      </section>
-
-      <section className="section grid2">
-        <div className="card">
-          <div className="eyebrow">Delegated attention</div>
-          <h3>RAOS is watching {activeWatchResponsibilities} responsibilities for you</h3>
-          <p className="muted">You do not need to remember to revisit them. RAOS owns the next check.</p>
-          <div className="actions"><Link className="button-link ghost" href="/watch">Open Watch</Link></div>
-        </div>
-        <div className="card">
-          <div className="eyebrow">Attention budget</div>
-          <h3>{currentBudget} min across current source states</h3>
-          <p className="muted">This is not a to-do debt. It is the current policy budget before you choose what to open.</p>
-          <div className="actions"><Link className="button-link ghost" href="/attention">Review Attention</Link></div>
-        </div>
+        <aside className="attention-pulse">
+          <div className="eyebrow">Attention pulse</div>
+          <div className="pulse-number"><strong>{currentBudget}</strong><span>min</span></div>
+          <p>Current policy budget across all source states — not a to-do debt.</p>
+          <div className="pulse-stats"><span><b>{awareCount}</b> know</span><span><b>{dropCount}</b> filtered</span><span><b>{activeWatchResponsibilities.size}</b> delegated</span><span><b>{home?.proposed_patches ?? 0}</b> context changes</span></div>
+        </aside>
       </section>
     </>
   );

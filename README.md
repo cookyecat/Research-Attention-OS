@@ -44,15 +44,15 @@ alembic upgrade head
 uvicorn app.main:app --host 127.0.0.1 --port 8000 --env-file ../.env
 ```
 
-Frontend:
+Frontend dogfood runtime:
 
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run dogfood:restart
 ```
 
-Open `http://localhost:3000`.
+`dogfood:restart` is the safe local launch path: it stops any existing frontend on port 3000, removes `.next`, runs typecheck + a clean production build, then starts `next start`. Open `http://localhost:3000`. Use `npm run dev` only while actively editing the frontend.
 
 Acquisition worker (separate process, same execution environment as backend):
 
@@ -62,7 +62,7 @@ source .venv/bin/activate
 python -m app.acquisition_worker --env-file ../.env --interval 60 --limit-per-source 5
 ```
 
-Do not run `next build` concurrently with a long-running `next dev` using the same `.next` directory. If client-side controls stop hydrating, stop dev, remove `frontend/.next`, and restart `npm run dev`.
+Never run `next build` while either `next dev` or `next start` is still serving the same `.next` directory. That can produce HTML/CSS/JS chunk-hash mismatch and a raw unstyled page. For normal dogfood recovery/restart, use `npm run dogfood:restart`.
 
 ## Dogfood configuration
 
@@ -82,13 +82,17 @@ Never commit secrets from `.env`.
 
 ## Current user surfaces
 
+RAOS now separates **User Space** from **Operating System View**. Normal use must show information, meaning, and actions; scheduler/cognition/provenance internals belong in explicit Inspector surfaces.
+
 - **Today** — action-first overview of what needs focused attention now, what RAOS is watching, and how much information has already been filtered away.
 - **Inbox** — URL, text, PDF, or manual observation entry with recent-source recovery.
-- **Attention** — source-centric filtered world with search and disposition filters. Detail views lead with the decision, why RAOS surfaced it, cognitive impact, and Kernel relevance; raw evidence and pipeline internals stay available under Technical trace.
-- **Kernel** — searchable human-authorized cognitive workspace with durable state and a visually separate authorization area for proposed changes.
-- **Watch** — delegated future-attention responsibilities grouped by monitored target rather than raw watch-record rows; developer trigger simulation is hidden under technical controls.
+- **Attention** — source-centric filtered world with search and disposition filters. Opening a Source defaults to **Reader**: source title, author/origin/time, preserved hero visual when available, preserved article text, a compact RAOS attention note, and plain-language personal relevance. The separate **RAOS Inspector** exposes D/S/P, cognitive effects, Kernel mapping, evidence extraction, AnalysisRun provenance, and feedback controls.
+- **Context** (`/kernel`) — user-facing durable projects, questions, beliefs, models, and constraints. Raw Kernel type/status/version metadata is subordinate under `RAOS Inspector`. Human authorization remains required for proposed context changes.
+- **Watch** — delegated future-attention responsibilities grouped by monitored target. User Space describes what RAOS is waiting for; raw Watch records and developer trigger simulation are subordinate under `RAOS Inspector`.
+- **Preferences** — real RAOS appearance controls stored in the browser. Theme supports Dark / Light / System and text size supports Compact / Default / Large across the full product.
+- **RAOS System** (`/system`) — explicit operating-system view for runtime identity, raw ledgers, pipeline/model provenance, and subsystem inventory. It is intentionally outside normal reading flow.
 
-The frontend follows an action-first presentation rule: **human action first -> cognitive explanation -> evidence -> technical trace**. This presentation contract changes no cognition semantics or backend authority boundaries.
+The active frontend boundary is: **User Space = content + meaning + action; RAOS System = scheduling + cognition + provenance + execution internals**. User-facing timestamps interpret backend naive datetimes as UTC and render them explicitly in `Asia/Shanghai` (UTC+8). This presentation contract changes no cognition semantics or backend authority boundaries.
 
 `POST /analysis/extract` is idempotent. `POST /analysis/reprocess` forces a new `AnalysisRun`. `GET /analysis/by-source/{id}` reads the latest run without rerunning cognition.
 

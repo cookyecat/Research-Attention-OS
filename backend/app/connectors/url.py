@@ -70,6 +70,19 @@ def _extract_readable(html: str, url: str) -> tuple[str | None, str | None, dict
     )
     if time_meta and time_meta.get("content"):
         published = time_meta["content"]
+
+    hero_image_url = None
+    for attrs in ({"property": "og:image"}, {"name": "twitter:image"}, {"property": "og:image:url"}):
+        image_meta = soup.find("meta", attrs=attrs)
+        if image_meta and image_meta.get("content"):
+            hero_image_url = urljoin(url, image_meta["content"].strip())
+            break
+    hero_image_alt = None
+    for attrs in ({"property": "og:image:alt"}, {"name": "twitter:image:alt"}):
+        alt_meta = soup.find("meta", attrs=attrs)
+        if alt_meta and alt_meta.get("content"):
+            hero_image_alt = alt_meta["content"].strip()
+            break
     try:
         import trafilatura
 
@@ -81,7 +94,9 @@ def _extract_readable(html: str, url: str) -> tuple[str | None, str | None, dict
         "canonical_url": canonical,
         "author": author,
         "published": published,
-        "parser": "url-html-v1",
+        "hero_image_url": hero_image_url,
+        "hero_image_alt": hero_image_alt,
+        "parser": "url-html-v2-visual-metadata",
     }
     return title, extracted, metadata
 

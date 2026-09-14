@@ -8,7 +8,10 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('raos-theme')||'system';var s=localStorage.getItem('raos-text-size')||'default';var r=t==='system'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):t;document.documentElement.dataset.theme=r;document.documentElement.dataset.fontScale=s;}catch(e){}})();` }} />
+      </head>
       <body>
         <div className="app-shell">
           <Sidebar />
