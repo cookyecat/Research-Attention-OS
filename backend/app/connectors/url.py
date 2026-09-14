@@ -71,28 +71,132 @@ def _image_url(tag, base_url: str) -> str | None:
     return None
 
 
+def _context_text(tag) -> str | None:
+    context_tag = tag.find_previous("p") or tag.find_next("p")
+    if context_tag is None:
+        return None
+    text = context_tag.get_text(" ", strip=True)
+    return text[:700] or None
+
+
+def _media_caption(tag) -> str | None:
+    for parent in tag.parents:
+        if getattr(parent, "name", None) != "figure":
+            continue
+        caption_tag = parent.find("figcaption")
+        if caption_tag is not None:
+            text = caption_tag.get_text(" ", strip=True)
+            if text:
+                return text
+    return None
+
+
 def _extract_article_images(soup: BeautifulSoup, url: str, hero_image_url: str | None) -> list[dict]:
     hero_identity = _normalized_media_identity(hero_image_url)
     images: list[dict] = []
     seen: set[str] = set()
     for figure in soup.find_all("figure"):
+        # A video's poster/fallback is not a substantive article image.
+        if figure.find("video") is not None or figure.find("iframe") is not None:
+            continue
         image = figure.find("img")
-        if image is None:
+        if image is None or image.get("role") == "presentation" or image.get("aria-hidden") == "true":
             continue
         image_url = _image_url(image, url)
         identity = _normalized_media_identity(image_url)
         if not image_url or not identity or identity == hero_identity or identity in seen:
             continue
         alt = str(image.get("alt") or "").strip() or None
-        caption_tag = figure.find("figcaption")
-        caption = caption_tag.get_text(" ", strip=True) if caption_tag else None
-        context_tag = figure.find_previous("p") or figure.find_next("p")
-        context = context_tag.get_text(" ", strip=True)[:500] if context_tag else None
-        images.append({"url": image_url, "alt": alt, "caption": caption, "context_text": context})
+        caption = _media_caption(image)
+        images.append({"url": image_url, "alt": alt, "caption": caption, "context_text": _context_text(figure)})
         seen.add(identity)
         if len(images) >= 6:
             break
     return images
+
+
+def _trusted_embed(src: str) -> tuple[str, str] | None:
+    parsed = urlparse(src)
+    host = (parsed.hostname or "").lower()
+    if host in {"www.youtube.com", "youtube.com", "www.youtube-nocookie.com", "youtube-nocookie.com"} and parsed.path.startswith("/embed/"):
+        return "YOUTUBE", src
+    if host == "player.vimeo.com" and parsed.path.startswith("/video/"):
+        return "VIMEO", src
+    return None
+
+
+def _extract_media_assets(soup: BeautifulSoup, url: str, article_images: list[dict]) -> list[dict]:
+    assets: list[dict] = []
+    seen: set[str] = set()
+    for image in article_images:
+        identity = _normalized_media_identity(image.get("url"))
+        if identity:
+            seen.add(identity)
+        assets.append({"type": "IMAGE", **image})
+
+    for iframe in soup.find_all("iframe"):
+        src = str(iframe.get("src") or "").strip()
+        if not src:
+            continue
+        embed = _trusted_embed(urljoin(url, src))
+        if embed is None:
+            continue
+        provider, embed_url = embed
+        identity = f"embed:{embed_url}"
+        if identity in seen:
+            continue
+        assets.append({
+            "type": "EMBED",
+            "provider": provider,
+            "embed_url": embed_url,
+            "title": str(iframe.get("title") or "").strip() or None,
+            "context_text": _context_text(iframe),
+            "aspect_ratio": "16:9",
+        })
+        seen.add(identity)
+
+    for video in soup.find_all("video"):
+        if video.find_parent("noscript") is not None:
+            continue
+        source = video.find("source")
+        media_url = str(video.get("src") or "").strip()
+        if not media_url and source is not None:
+            media_url = str(source.get("src") or source.get("data-src") or "").strip()
+        if not media_url:
+            continue
+        media_url = urljoin(url, media_url)
+        identity = _normalized_media_identity(media_url)
+        if not identity or identity in seen:
+            continue
+        poster = None
+        if str(video.get("data-poster-is-fallback") or "").lower() != "true":
+            raw_poster = str(video.get("poster") or "").strip()
+            poster = urljoin(url, raw_poster) if raw_poster else None
+        assets.append({
+            "type": "VIDEO",
+            "url": media_url,
+            "mime_type": str(source.get("type") or "").strip() or None if source is not None else None,
+            "poster_url": poster,
+            "caption": _media_caption(video),
+            "context_text": _context_text(video),
+        })
+        seen.add(identity)
+    return assets[:10]
+
+
+def _cache_presentation_media(metadata: dict) -> None:
+    from app.services.media_cache import cache_remote_media
+
+    hero = metadata.get("hero_image_url")
+    if hero:
+        metadata["hero_image_cached_url"] = cache_remote_media(hero)
+    for image in metadata.get("article_images") or []:
+        image["cached_url"] = cache_remote_media(image.get("url"))
+    for asset in metadata.get("media_assets") or []:
+        if asset.get("type") in {"IMAGE", "VIDEO"}:
+            asset["cached_url"] = cache_remote_media(asset.get("url"))
+        if asset.get("poster_url"):
+            asset["poster_cached_url"] = cache_remote_media(asset.get("poster_url"))
 
 
 def _extract_readable(html: str, url: str) -> tuple[str | None, str | None, dict]:
@@ -128,6 +232,7 @@ def _extract_readable(html: str, url: str) -> tuple[str | None, str | None, dict
             hero_image_alt = alt_meta["content"].strip()
             break
     article_images = _extract_article_images(soup, url, hero_image_url)
+    media_assets = _extract_media_assets(soup, url, article_images)
     try:
         import trafilatura
 
@@ -142,7 +247,8 @@ def _extract_readable(html: str, url: str) -> tuple[str | None, str | None, dict
         "hero_image_url": hero_image_url,
         "hero_image_alt": hero_image_alt,
         "article_images": article_images,
-        "parser": "url-html-v3-visual-structure",
+        "media_assets": media_assets,
+        "parser": "url-html-v4-media-assets",
     }
     return title, extracted, metadata
 
@@ -168,6 +274,7 @@ class URLConnector:
     def parse(self, raw: RawSource) -> ParsedSource:
         html = raw.payload.decode("utf-8", errors="replace") if isinstance(raw.payload, bytes) else raw.payload
         title, text, metadata = _extract_readable(html, raw.origin)
+        _cache_presentation_media(metadata)
         metadata.update(raw.metadata)
         return ParsedSource(title=title, text=text, metadata=metadata, reference_candidates=[])
 

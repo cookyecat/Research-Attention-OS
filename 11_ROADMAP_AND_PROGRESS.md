@@ -1373,7 +1373,7 @@ Result: `191_RAOS_READER_UX_V3_ATTENTIONAL_RECOMPOSITION_RESULT.md`. Living fron
 
 Dogfood established the Reader principle that RAOS should not mirror publisher webpages; it should preserve Source truth/provenance while re-composing the attentional structure for comprehension, personal relevance, and low-friction reading.
 
-Reader V3 adds four presentation-only capabilities: conservative article-internal semantic figures; a scroll-aware RAOS rail with reading progress and nearby audited evidence; Claim `source_span_text` mapped back to original source sentences as subtle evidence anchors; and embedded Half-bold reading with browser-persisted Off/On plus Soft/Medium/Strong weight.
+Reader V3 adds four presentation-only capabilities: conservative article-internal semantic figures; a scroll-aware RAOS rail with reading progress and nearby audited evidence; Claim `source_span_text` mapped back to original source sentences as subtle evidence anchors; and embedded Half-bold reading with browser-persisted Off/On, Strength 10–100%, and independent Weight 1–5 controls.
 
 The OpenAI/RubyGems Source produced 11 original-text evidence anchors in real dogfood. Production-browser scroll validation observed 42% reading progress at paragraph 3/5 with a relevant nearby Claim. Half-bold Strong computed to font-weight 800. DeepMind AlphaGenome rendered a preserved inline explanatory figure immediately after its matching semantic-context paragraph. Current backfill found semantic article figures in 3 of 22 URL_FETCH Sources.
 
@@ -1383,3 +1383,13 @@ No cognition result was regenerated for Reader support. Source text, Sensor/Audi
 Immediate dogfood exposed two presentation regressions after V3: mapping every audited `source_span_text` back into Reader made most of a short article underlined, and Preferences rendered inside the sticky Sidebar stacking context so Reader-rail cards could visually cross the modal. Neither issue affected cognition or stored evidence.
 
 Reader evidence is now a sparse deterministic visual schedule rather than a full evidence overlay: candidates are reduced to at most one sentence per paragraph, distributed across the article, with a length-dependent cap of five anchors (two on the five-paragraph OpenAI/RubyGems dogfood article). Preferences now renders through a `document.body` portal, owns a top-level modal stacking layer, and locks background scrolling while open. Production-browser validation confirmed 2 evidence anchors, modal parent=`body`, backdrop z-index=`10000`, and the Reader rail no longer wins hit-testing beneath the modal.
+
+## Reader UX V3.1 — SOURCE MEDIA FIDELITY CLOSED 2026-09-14
+
+Result: `193_RAOS_READER_UX_V31_SOURCE_MEDIA_FIDELITY_RESULT.md`.
+
+Dogfood on DeepMind AlphaGenome exposed a Source-fidelity failure: the publisher article contained a YouTube embed and a native WebM animation, but the v3 image-only extraction path mistook the native video's generic fallback poster for an article image and Reader rendered an empty gray visual block. Acquisition now preserves a unified presentation-only `media_assets[]` layer with `IMAGE`, trusted `EMBED`, and `VIDEO` assets plus semantic context/caption metadata. Video fallback posters are explicitly excluded from semantic image extraction.
+
+Trusted YouTube/Vimeo embeds are re-embedded in Reader; direct images/video are cached under the local RAOS media cache when they fit the configured 12 MB per-asset bound, while oversized or failed caches retain the original remote URL as fallback. `/media/{filename}` serves cached bytes with HTTP range support through the existing frontend `/api` rewrite. Reader disables autoplay, uses native controls, lazy-loads embeds, and inserts assets near their preserved source context rather than mirroring publisher DOM.
+
+A presentation-only backfill refreshed all 22 current URL_FETCH Sources with zero failures and did not rerun cognition. The AlphaGenome Source now resolves to one YouTube EMBED and one locally cached 915,730-byte WebM VIDEO; browser validation observed the iframe at 16:9, the native video at `readyState=4`, `duration=26`, `controls=true`, and `autoplay=false`. Current data also exposed native/embedded media in NVIDIA Sources, confirming this is not a single-site special case. No Source text, Claim/Auditor result, D/S/P, Attention decision, Watch state, Kernel authority, or canonical cognition contract changed.

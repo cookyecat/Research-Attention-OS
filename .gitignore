@@ -17,6 +17,9 @@ dist/
 build/
 *.egg
 
+# Local presentation media cache
+backend/media_cache/
+
 # Local databases
 *.db
 *.db-journal

@@ -76,6 +76,8 @@ Implications:
 - allow text-native sources to remain text-native rather than forcing fake covers;
 - use hierarchy, spacing, and asymmetry to make importance visually legible.
 
+Substantive source media is a first-class part of the reading experience. Preserve the media meaning, not the publisher machinery: trusted embeds may be re-embedded; direct article images/video should be locally cached when technically reasonable; large media may fall back to the original URL; autoplay stays off; ads, avatars, related-story thumbnails, tracking media, and generic fallback posters stay out of Reader.
+
 A page itself is an attention-allocation problem. Title, image, RAOS guidance, evidence anchors, body text, and side rail all compete for visual priority and must be deliberately scheduled.
 
 ## 5. Human action first, internals last

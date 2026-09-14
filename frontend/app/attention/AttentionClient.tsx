@@ -49,7 +49,7 @@ function sourceAuthor(source?: SourceSummary) {
   return source?.raw_metadata?.author || null;
 }
 function heroImage(source?: SourceSummary) {
-  return source?.raw_metadata?.hero_image_url || null;
+  return source?.raw_metadata?.hero_image_cached_url || source?.raw_metadata?.hero_image_url || null;
 }
 function heroImageAlt(source?: SourceSummary) {
   return source?.raw_metadata?.hero_image_alt || displayTitle(source);
@@ -57,6 +57,14 @@ function heroImageAlt(source?: SourceSummary) {
 function articleImages(source?: SourceSummary) {
   const images = source?.raw_metadata?.article_images;
   return Array.isArray(images) ? images.filter((image) => image?.url) : [];
+}
+function mediaAssets(source?: SourceSummary) {
+  const assets = source?.raw_metadata?.media_assets;
+  if (Array.isArray(assets)) return assets.filter((asset) => asset?.type && (asset?.url || asset?.embed_url));
+  return articleImages(source).map((image) => ({ type: "IMAGE", ...image }));
+}
+function mediaUrl(asset: any) {
+  return asset?.cached_url || asset?.url || null;
 }
 
 function claimDisplayText(claim: any) {
@@ -117,16 +125,59 @@ function selectReaderEvidenceAnchors(paragraphs: string[], claims: any[]) {
   return selected.sort((a, b) => a.paragraphIndex - b.paragraphIndex);
 }
 
-function inlineImagesForParagraph(images: any[], paragraph: string, index: number, total: number) {
-  return images.filter((image, imageIndex) => {
-    const context = String(image?.context_text || "").trim();
+function inlineMediaForParagraph(assets: any[], paragraph: string, index: number, total: number) {
+  return assets.filter((asset, assetIndex) => {
+    const context = String(asset?.context_text || "").trim();
     if (context && (paragraph.includes(context) || context.includes(paragraph))) return true;
     if (!context && total > 5) {
-      const target = Math.min(total - 1, Math.max(1, Math.round(((imageIndex + 1) / (images.length + 1)) * total)));
+      const target = Math.min(total - 1, Math.max(1, Math.round(((assetIndex + 1) / (assets.length + 1)) * total)));
       return index === target;
     }
     return false;
   });
+}
+
+function ReaderMedia({ asset }: { asset: any }) {
+  const kind = String(asset?.type || "").toUpperCase();
+  const caption = asset?.caption || asset?.alt || asset?.title || null;
+  if (kind === "IMAGE") {
+    const src = mediaUrl(asset);
+    if (!src) return null;
+    return <figure className="reader-inline-media reader-media-image">
+      <img src={src} alt={asset?.alt || asset?.caption || "Article visual"} loading="lazy" />
+      {caption && <figcaption>{caption}</figcaption>}
+    </figure>;
+  }
+  if (kind === "VIDEO") {
+    const src = mediaUrl(asset);
+    if (!src) return null;
+    const poster = asset?.poster_cached_url || asset?.poster_url || undefined;
+    return <figure className="reader-inline-media reader-media-video">
+      <video controls preload="metadata" playsInline poster={poster}>
+        <source src={src} type={asset?.mime_type || undefined} />
+        Your browser does not support embedded video.
+      </video>
+      {caption && <figcaption>{caption}</figcaption>}
+      {asset?.url && <a className="reader-media-source" href={asset.url} target="_blank" rel="noreferrer">Open video source ↗</a>}
+    </figure>;
+  }
+  if (kind === "EMBED" && asset?.embed_url) {
+    return <figure className="reader-inline-media reader-media-embed">
+      <div className="reader-embed-frame">
+        <iframe
+          src={asset.embed_url}
+          title={asset?.title || `${asset?.provider || "Embedded"} video`}
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+          referrerPolicy="strict-origin-when-cross-origin"
+          sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
+        />
+      </div>
+      {caption && <figcaption>{caption}</figcaption>}
+    </figure>;
+  }
+  return null;
 }
 
 function ReaderParagraph({ text, index, anchors, selectedClaimId, onSelect }: { text: string; index: number; anchors: EvidenceAnchor[]; selectedClaimId: string | null; onSelect: (claim: any) => void }) {
@@ -331,7 +382,7 @@ export default function AttentionPage() {
     const topMatch = analysis?.kernel_matches?.[0];
     const claims = analysis?.claims || [];
     const readerEvidenceAnchors = selectReaderEvidenceAnchors(paragraphs, claims);
-    const inlineImages = articleImages(selectedSource);
+    const inlineMedia = mediaAssets(selectedSource);
     const activeAnchor = readerEvidenceAnchors.find((anchor) => anchor.paragraphIndex === activeParagraph);
     const activeClaim = claims.find((claim: any) => claim.id === selectedClaimId) || activeAnchor?.claim || null;
     const progressPercent = Math.max(0, Math.min(100, Math.round(readingProgress * 100)));
@@ -382,11 +433,8 @@ export default function AttentionPage() {
                   {paragraphs.map((paragraph, index) => (
                     <React.Fragment key={`${index}-${paragraph.slice(0, 24)}`}>
                       <ReaderParagraph text={paragraph} index={index} anchors={readerEvidenceAnchors} selectedClaimId={selectedClaimId} onSelect={(claim) => setSelectedClaimId(claim.id)} />
-                      {inlineImagesForParagraph(inlineImages, paragraph, index, paragraphs.length).map((image: any, imageIndex: number) => (
-                        <figure className="reader-inline-media" key={`${image.url}-${imageIndex}`}>
-                          <img src={image.url} alt={image.alt || image.caption || "Article visual"} loading="lazy" />
-                          {(image.caption || image.alt) && <figcaption>{image.caption || image.alt}</figcaption>}
-                        </figure>
+                      {inlineMediaForParagraph(inlineMedia, paragraph, index, paragraphs.length).map((asset: any, mediaIndex: number) => (
+                        <ReaderMedia asset={asset} key={`${asset.type}-${asset.embed_url || asset.cached_url || asset.url || mediaIndex}`} />
                       ))}
                     </React.Fragment>
                   ))}

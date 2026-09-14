@@ -1,4 +1,5 @@
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import get_db
@@ -49,6 +50,15 @@ def create_app() -> FastAPI:
     @application.post("/source-edges")
     def source_edges(body: SourceEdgeCreate, db: Session = Depends(get_db)):
         return create_edge(body, db)
+
+    @application.get("/media/{filename}")
+    def media_asset(filename: str):
+        from app.services.media_cache import cached_media_path
+
+        path = cached_media_path(filename)
+        if path is None:
+            raise HTTPException(status_code=404, detail="Media asset not found")
+        return FileResponse(path)
 
     @application.get("/health")
     def health():

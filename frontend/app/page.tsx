@@ -28,7 +28,7 @@ function timeValue(source?: SourceSummary, fallback?: string | null) {
   return source?.raw_metadata?.published || source?.ingested_at || fallback || null;
 }
 function heroImage(source?: SourceSummary) {
-  return source?.raw_metadata?.hero_image_url || null;
+  return source?.raw_metadata?.hero_image_cached_url || source?.raw_metadata?.hero_image_url || null;
 }
 function heroImageAlt(source?: SourceSummary) {
   return source?.raw_metadata?.hero_image_alt || displayTitle(source);

@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     embedding_dimensions: int | None = None
     max_upload_bytes: int = 20 * 1024 * 1024
     url_fetch_timeout_seconds: float = 15.0
+    media_cache_max_bytes: int = 12 * 1024 * 1024
+    media_cache_dir: str = "media_cache"
     scheduler_version: str = "raos-scheduler-0.5.0"
     attention_policy_version: str = "raos-attention-policy-0.5.0"
     decision_strategy_id: str = "one-delta"
