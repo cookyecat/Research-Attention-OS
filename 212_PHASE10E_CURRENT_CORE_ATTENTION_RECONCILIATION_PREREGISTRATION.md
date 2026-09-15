@@ -47,7 +47,21 @@ Reuse the existing decision-strategy seam, execution snapshots, persisted effect
 
 A historical candidate such as `GenerativePotential` is only a probe axis. It is not a Core variable unless fresh matched evidence proves that existing state is insufficient and replication supports a universal factor.
 
-## 4. Gate A — strategy-explicit replay parity
+## 4. Gate 0 — deterministic policy-order coherence
+
+Before replay or Human Gold, audit the current decision algebra itself. Pareto pruning is sound only if its dominance order is compatible with the downstream per-effect Attention policy.
+
+Let `v(e)` be the current Pareto decision vector and `rank(a)` the ordinal Attention rank `DROP < AWARE < WATCH < ENGAGE`. The required coherence condition is:
+
+```math
+v(e_1) \succeq v(e_2) \Rightarrow rank(\pi_{channel}(e_1)) \ge rank(\pi_{channel}(e_2))
+```
+
+If this fails, Pareto may prune an effect that would have produced a stronger Attention action. That is a deterministic Core inconsistency, not a personalization residual and not evidence for a new semantic variable.
+
+The audit must use reachable canonical effect states where possible and may use exhaustive synthetic states only to expose algebraic counterexamples. Any counterexample is then checked against production reachability.
+
+## 5. Gate A — strategy-explicit replay parity
 
 Build or amend the evaluation harness so it never relies on the bare legacy default of `scheduler.route()`.
 
@@ -65,7 +79,7 @@ upstream model calls = 0
 
 Any failure is an instrumentation/replay defect, not Human-Gold evidence.
 
-## 5. Gate B — minimal state-sufficiency probe
+## 6. Gate B — minimal state-sufficiency probe
 
 Only after Gate A passes, run a small randomized matched-pair Human-Gold probe.
 
@@ -82,7 +96,7 @@ same current Core state
 
 A reproducible violation creates a **candidate Core-insufficiency hypothesis**, not an automatic new chip.
 
-## 6. Attribution firewall
+## 7. Attribution firewall
 
 Any mismatch must first be classified as one of:
 
@@ -98,22 +112,26 @@ UNRESOLVED
 
 `USER_SPECIFIC_RESIDUAL` is not allowed unless current Core inputs are correct and the same residual is stable across repeated matched cases. A candidate universal factor requires additional replication before entering the Core.
 
-## 7. Minimality audit of existing chips
+## 8. Occam audit of the active decision stack
 
-Phase 10E does not assume every historical chip must remain forever. As a diagnostic only, replay may test whether removing a chip changes observable decision/provenance behavior on a broad frozen corpus.
+The stability program does not itself require Pareto. Decision-Causal Core is explicitly policy-relative: it is measured under a specified decision strategy. Pareto therefore must be justified by the behavior and structure it contributes, not by Stability Theory alone.
 
-If a chip is observationally redundant, record it as a simplification candidate. Do not remove it during this gate without a separate preregistered equivalence test.
+At the same time, article-level disposition parity is insufficient to declare Pareto redundant. A strategy change can alter decision-cause provenance, load-bearing structure, WATCH responsibility, or counterfactual attribution even when the final disposition is unchanged.
 
-The burden of proof is symmetric:
+The correct simplification test is therefore ordered:
 
 ```text
-new variable/module must prove necessity
-existing module must continue to prove non-redundant function
+1. policy-order coherence;
+2. production-state reachability of any algebraic counterexample;
+3. disposition + decision-cause + load-bearing equivalence on frozen corpora;
+4. only then consider a simpler strategy.
 ```
 
-## 8. Exit rule
+The burden of proof is symmetric: a new variable/module must prove necessity, while an existing module may be removed only after its independent causal/provenance role is shown redundant.
 
-Phase 10E closes after Gate A and Gate B are complete and all mismatches are attributed.
+## 9. Exit rule
+
+Phase 10E closes after Gate 0, Gate A and Gate B are complete and all mismatches are attributed.
 
 - If current state is sufficient, Phase 12 may resume with identity/no-op personalization as the default.
 - If a candidate universal Core omission remains, Core research continues before Phase 12 fitting.
