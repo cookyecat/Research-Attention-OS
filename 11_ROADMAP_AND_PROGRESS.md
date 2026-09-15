@@ -130,7 +130,7 @@ Core invariants:
 | Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **9A PREREGISTERED / OUTCOME SAMPLING PAUSED FOR PARITY GATE** |
 | Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence | **10D.6E CLOSED / 10D.6F SUPPORT-BINDING NEXT** |
 | Phase 11 — External Attention Infrastructure | 11A Acquisition Expansion → 11B Query Expansion → 11C P Evidence → 11D Delivery → 11E Agent Interface | **CLOSED 2026-09-15** |
-| Phase 12 — Personalized Attention Control & Multi-Actor Calibration | 12A boundary/feedback semantics → 12B fresh calibration v2 → 12C trajectory residuals → 12D multi-actor delegation → 12E multi-user scale | **12A ACTIVE / REDESIGNED 2026-09-15** |
+| Phase 12 — Personalized Attention Calibration & Multi-Actor Control | 12A boundary/feedback attribution → 12B residual necessity → 12C bounded calibration (conditional) → 12D multi-actor arbitration → 12E multi-user scale | **12A ACTIVE / REDESIGNED v2 2026-09-15** |
 
 Current strategic position:
 

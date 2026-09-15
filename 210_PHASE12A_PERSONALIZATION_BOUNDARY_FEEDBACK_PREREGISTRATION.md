@@ -1,99 +1,144 @@
-# Phase 12A — Personalization Boundary & Feedback Semantics Preregistration
+# Phase 12A — Personalization Boundary & Feedback Attribution Preregistration
 
-Status: **PREREGISTERED / ACTIVE**
+Status: **PREREGISTERED v2 / ACTIVE**
 Date: 2026-09-15
 Parent: `209_PHASE12_PERSONALIZATION_SCALE_PLAN.md`
 
 ## 1. Question
 
-Can RAOS define a personalization surface that improves human attention allocation without allowing user calibration, passive UI behavior, or external Agents to redefine canonical cognition, D/S/P semantics, or Attention authority?
+Can RAOS establish a causally clean feedback/personalization boundary such that Phase 12 remains an optional calibration layer and cannot absorb errors that belong to Phase 1–10 cognition, D/S/P, Runtime, or the shared Attention Policy?
 
-## 2. Frozen hypotheses
+## 2. Frozen architectural baseline
 
-H1. Personalization belongs primarily in explicit user state/parameters and Attention-policy calibration, not in semantic-variable redefinition.
-
-H2. Passive interaction events are too confounded to serve as direct disposition Gold.
-
-H3. Explicit corrections can be represented as provenance-preserving feedback without mutating the historical `AttentionPlan` that triggered them.
-
-H4. Runtime state is transient context and must remain separable from durable user parameters.
-
-H5. Agent/task context may affect runtime/delegation context but may not create a second Attention authority.
-## 3. Non-goals
-
-12A will not tune scheduler thresholds, train a personalized model, change D/S/P meanings, change the no-Delta gate, or infer preferences from clicks.
-
-The historical 30-case questionnaire is development evidence only and cannot be the confirmatory 12A/12B Gold set.
-
-## 4. Required state separation
-
-The implementation/design review must keep these stores logically distinct:
+Phase 12 does not own the canonical core:
 
 ```text
-K_t      cognitive state / committed world model
-J_u      standing jurisdiction / D profile
-Θ_u      durable Attention-economics calibration
-R_t      transient runtime state
-Λ_u      delivery/channel preferences
-C_a      actor/agent/task context
-F        explicit feedback / correction evidence
+Sensor/Auditor
+→ Delta or no-Delta D/S/P
+→ Runtime-conditioned canonical Attention Policy
+→ AttentionPlan
 ```
 
-No one field may silently stand in for another.
+Runtime `R_t` is a Phase 1–10 core input. It is separate from `Delta`, but it is not a Phase-12 parameter.
 
-## 5. Feedback classes to support
+Null hypothesis for personalization:
 
-Minimum explicit feedback vocabulary:
+```math
+\boxed{A_t^{user}=A_t^{core}}
+```
+
+No `Theta_u` is required unless Phase 12B demonstrates a stable residual after causal attribution.
+
+## 3. Frozen hypotheses
+
+H1. Existing personalization through `K_t` and the D profile may already explain most user specificity.
+
+H2. A user disagreement with an `AttentionPlan` is not automatically a personalization label; its causal layer must be attributed first.
+
+H3. Runtime capture/policy error must not be learned as durable user preference.
+
+H4. Existing append-only `AttentionFeedback` immutability is correct and should be preserved.
+
+H5. Cognitive adjudication and Attention-policy correction are distinct evidence classes even when stored around the same plan.
+
+H6. Passive interaction events are confounded and cannot become direct disposition Gold without separate validation.
+
+H7. External Agent/task context may inform delegation provenance but cannot create a second Attention authority.
+
+## 4. Required attribution vocabulary
+
+Every explicit Phase-12 feedback item must be attributable to one or more named scopes before learning:
 
 ```text
-DISPOSITION_CORRECTION   expected DROP/AWARE/WATCH/ENGAGE
-TIMING_CORRECTION        right item, wrong time / interruption timing
-WATCH_OUTCOME            useful watch / missed trigger / unnecessary watch
-DELIVERY_CORRECTION      should interrupt / should not interrupt
-RATIONALE                optional user explanation
+PERCEPTION_ERROR
+COGNITION_ERROR
+AWARENESS_ERROR
+RUNTIME_CAPTURE_ERROR
+CORE_POLICY_ERROR
+USER_POLICY_RESIDUAL
+DELIVERY_PREFERENCE
+ACTOR_CONTEXT_ERROR
 ```
-## 6. Historical immutability
 
-Feedback must attach to an existing decision/delivery/watch record without rewriting the original evidence, decision cause, disposition, or delivery history.
+Only `USER_POLICY_RESIDUAL` is eligible to update `Theta_u`.
 
-A later calibrated policy may make a different decision on replay/new evidence, but the old decision remains auditable truth.
+`DELIVERY_PREFERENCE` updates delivery configuration only. `RUNTIME_CAPTURE_ERROR` corrects transient context only. A repeated `CORE_POLICY_ERROR` triggers a separate core-policy research question rather than personalization.
 
-## 7. Evidence-strength ordering
+## 5. Existing feedback asset
 
-For later 12C learning, evidence should be ranked rather than flattened:
+`AttentionFeedback` already preserves:
 
 ```text
-explicit correction
-> explicit outcome judgment
-> causally attributable task outcome
-> passive acknowledgement/dismissal/open/dwell
+system_prediction
+user_correction
+corrected_fields
+immutable original AttentionPlan
 ```
 
-Passive signals remain weak/confounded unless separately validated.
+This is retained.
 
-## 8. Measurement plan
+However current rows may mix:
 
-12A will audit current schemas and interaction logs against the state taxonomy above, then implement only the minimal missing feedback boundary needed to preserve explicit corrections.
+```text
+Cognitive adjudication:
+  update / target / delta_content
 
-Primary checks:
+Attention allocation correction:
+  disposition
+```
 
-- no semantic-field reuse for personalization;
-- no mutation of historical AttentionPlan/DeliveryEnvelope;
-- feedback provenance is explicit;
-- actor identity/context is recorded without Attention authority;
-- passive UI events remain behavior logs, not automatic Gold;
-- regression proves current Phase 11 authority boundaries remain intact.
+12A must expose this distinction explicitly in the feedback contract or in a provenance-preserving projection. Historical rows are never rewritten.
+
+## 6. WATCH / Delivery / Agent outcomes
+
+The following are observations, not automatic Gold:
+
+```text
+Delivery ACKNOWLEDGED
+Delivery DISMISSED
+WATCH CANCELLED
+WATCH PROMOTED
+Agent requested analysis
+Agent requested WATCH
+```
+
+They become calibration evidence only when paired with explicit human adjudication or a separately validated causal rule.
+
+## 7. Non-goals
+
+12A will not:
+
+- tune scheduler thresholds;
+- alter Delta semantics;
+- alter D/S/P definitions or estimators;
+- change the no-Delta gate;
+- learn Runtime response coefficients;
+- fit the historical 30-case questionnaire;
+- train a user embedding/model;
+- infer preference from clicks, dwell, acknowledgement, or dismissal.
+
+## 8. Measurement / implementation plan
+
+1. Audit current `AttentionFeedback`, WATCH, Delivery and Agent provenance stores.
+2. Define the minimal attribution fields/projection needed to distinguish causal scopes.
+3. Preserve append-only history and frozen system prediction.
+4. Prove that feedback recording cannot mutate `AnalysisRun`, `AttentionPlan`, `DeliveryEnvelope`, WATCH history, Delta, D/S/P or Runtime snapshots.
+5. Audit existing historical feedback and classify what is actually usable for future calibration.
+6. Produce a Phase 12B fresh residual-necessity instrument only after the boundary is unambiguous.
+
 ## 9. Exit criteria
 
 12A closes only when:
 
-1. the personalization boundary is frozen in docs;
-2. an explicit feedback record can be attached to Attention / WATCH / Delivery outcomes without rewriting history;
-3. feedback provenance distinguishes human explicit correction from passive behavior and Agent-supplied context;
-4. current Phase 11 Agent/Delivery authority tests still pass;
-5. no production scheduler threshold has been tuned using the historical 30-case set;
-6. a fresh Phase 12B calibration instrument can be designed against the current architecture without semantic ambiguity.
+1. core-owned vs Phase-12-owned state is frozen in docs;
+2. Runtime is explicitly excluded from durable personalization ownership;
+3. feedback causal scope is explicit and provenance-preserving;
+4. cognition correction is distinguishable from policy correction;
+5. passive behavior remains non-Gold by default;
+6. current Phase 11 Agent/Delivery and Phase 1–10 cognition/attention regressions still pass;
+7. no production policy has been tuned from old Human Gold;
+8. Phase 12B can test whether a personal residual exists without assuming one.
 
 ## 10. Stop rule
 
-If explicit feedback cannot be represented cleanly without mixing user calibration into D/S/P or cognition semantics, stop and redesign the state boundary before collecting new Gold.
+If apparent personalization gains disappear after correcting Sensor, cognition, D/S/P, Runtime, shared-policy, or data-quality errors, stop. The scientifically correct outcome is an identity calibration layer.
