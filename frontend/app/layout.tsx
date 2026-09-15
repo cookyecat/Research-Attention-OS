@@ -1,5 +1,6 @@
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
+import DeliveryListener from "@/components/DeliveryListener";
 
 export const metadata = {
   title: "Research Attention OS",
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Sidebar />
           <main className="main-content">{children}</main>
         </div>
+        <DeliveryListener />
       </body>
     </html>
   );

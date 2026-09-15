@@ -24,6 +24,16 @@ class Settings(BaseSettings):
     url_fetch_timeout_seconds: float = 15.0
     media_cache_max_bytes: int = 12 * 1024 * 1024
     media_cache_dir: str = "media_cache"
+    # Phase 11D delivery transports. External channels are opt-in.
+    delivery_poll_seconds: float = 1.0
+    delivery_email_to: str | None = None
+    delivery_smtp_host: str | None = None
+    delivery_smtp_port: int = 587
+    delivery_smtp_username: str | None = None
+    delivery_smtp_password: str | None = None
+    delivery_smtp_from: str | None = None
+    delivery_smtp_starttls: bool = True
+    delivery_push_webhook_url: str | None = None
     scheduler_version: str = "raos-scheduler-0.5.0"
     attention_policy_version: str = "raos-attention-policy-0.5.0"
     decision_strategy_id: str = "one-delta"

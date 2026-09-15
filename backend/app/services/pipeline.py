@@ -767,6 +767,8 @@ def run_pipeline(
         )
         db.add(plan)
         db.flush()
+        from app.services.delivery import ensure_delivery_envelope
+        ensure_delivery_envelope(db, plan)
         authorized = _expected_output(draft.expected_output)
         delta, patch_drafts = _execute_authorized_artifacts(
             authorized,
@@ -987,6 +989,8 @@ def _reschedule(
     )
     db.add(plan)
     db.flush()
+    from app.services.delivery import ensure_delivery_envelope
+    ensure_delivery_envelope(db, plan)
     authorized = _expected_output(draft.expected_output)
     provider = provider or get_provider()
     score_debug["artifact_execution"] = analysis_execution_snapshot(provider)

@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from app.api.analysis import router as analysis_router
 from app.api.acquisition import router as acquisition_router
 from app.api.bootstrap import router as bootstrap_router
+from app.api.delivery import router as delivery_router
 from app.api.kernel import router as kernel_router
 from app.api.meta import router as meta_router
 from app.api.sources import router as sources_router
@@ -42,6 +43,7 @@ def create_app() -> FastAPI:
     application.include_router(kernel_router, prefix="/kernel", tags=["kernel"])
     application.include_router(bootstrap_router, prefix="/kernel", tags=["kernel"])
     application.include_router(watches_router, prefix="/watches", tags=["watches"])
+    application.include_router(delivery_router, prefix="/deliveries", tags=["delivery"])
     application.include_router(meta_router, prefix="/meta", tags=["meta"])
 
     from app.api.sources import create_edge

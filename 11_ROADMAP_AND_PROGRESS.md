@@ -129,7 +129,7 @@ Core invariants:
 | Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **CLOSED / OPERATIONAL BASELINE ESTABLISHED** |
 | Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **9A PREREGISTERED / OUTCOME SAMPLING PAUSED FOR PARITY GATE** |
 | Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence | **10D.6E CLOSED / 10D.6F SUPPORT-BINDING NEXT** |
-| Phase 11 — External Attention Infrastructure | 11A Acquisition Expansion → 11B Query Expansion → 11C P Evidence → 11D Delivery → 11E Agent Interface | **11A–11C CLOSED / 11D NEXT** |
+| Phase 11 — External Attention Infrastructure | 11A Acquisition Expansion → 11B Query Expansion → 11C P Evidence → 11D Delivery → 11E Agent Interface | **11A–11D CLOSED / 11E NEXT** |
 | Phase 12 — Personalization / Scale | Questionnaire prior + trajectory residuals + multi-user/product validation | **NOT STARTED / MOVED FROM OLD PHASE 11** |
 
 Current strategic position:
@@ -1492,4 +1492,11 @@ Dogfood exposed and corrected two failure modes before closure: platform-search 
 
 Preregistration: `203_PHASE11C_P_EVIDENCE_SENSOR_ESTIMATOR_PREREGISTRATION.md`. Result: `204_PHASE11C_P_EVIDENCE_SENSOR_ESTIMATOR_RESULT.md`. Public HN/Bilibili/Weibo engagement now enters a compact `AttentionSignalSample` state-segment ledger. Repeated unchanged polls extend intervals; changed metrics or content-age buckets append history. Platform/context magnitude-free normalization is cross-sectional over each item's latest state, emits `UNKNOWN` under insufficient support, and feeds provenance-preserving Event-level P Evidence Packets.
 
-Real dogfood produced 15 current public signal rows across HN/Bilibili/Weibo; four existing HN-linked Events were projected into valid packets and consumed by the already-frozen `collective-attention-estimator-v1`, all returning `NOT_SALIENT` from genuinely low evidence without raw-popularity shortcuts. Phase 11A-H hardening backlog is recorded in `198`. **Phase 11D Delivery Plane is next.**
+Real dogfood produced 15 current public signal rows across HN/Bilibili/Weibo; four existing HN-linked Events were projected into valid packets and consumed by the already-frozen `collective-attention-estimator-v1`, all returning `NOT_SALIENT` from genuinely low evidence without raw-popularity shortcuts. Phase 11A-H hardening backlog is recorded in `198`. Phase 11D then operationalized the resulting Attention decisions through a durable outbox; see below.
+
+
+### Phase 11D — Delivery Plane — CLOSED 2026-09-15
+
+Preregistration: `205_PHASE11D_DELIVERY_PLANE_PREREGISTRATION.md`. Result: `206_PHASE11D_DELIVERY_PLANE_RESULT.md`. Every newly persisted production AttentionPlan now receives exactly one idempotent DeliveryEnvelope. `DROP → SUPPRESSED`, `AWARE → PASSIVE`, `WATCH → HELD_BY_WATCH`, and `ENGAGE → INTERRUPT` are regression-locked; Delivery has no authority to alter the source disposition.
+
+Real dogfood delivered one genuine `ENGAGE / PRIORITY` historical plan over localhost WebSocket, preserved Email/Push as `UNAVAILABLE` because they were not configured, recorded one human interruption, and accepted a production acknowledgement. A global frontend listener now renders only already-authorized realtime ENGAGE envelopes. **Phase 11E Agent Interface / Skill is next.**

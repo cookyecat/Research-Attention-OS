@@ -130,6 +130,8 @@ Phase 11B adds WATCH-driven `ACTIVE_QUERY_BUNDLE` sources. A self-contained WATC
 
 Phase 11C adds a compact public-attention signal ledger for HN/Bilibili/Weibo/X-compatible engagement telemetry. Unchanged signal states extend their observation interval; changed metrics or content-age buckets create a new historical segment. Magnitude-free platform/context normalization uses each item's latest state and returns `UNKNOWN` under insufficient support. These observations project through Event links into the existing P Evidence Packet and frozen `collective-attention-estimator-v1`; raw popularity never becomes P or Attention authority.
 
+Phase 11D adds a durable Delivery Plane downstream of Attention. DROP is suppressed, AWARE is passive, WATCH remains held by delegated monitoring responsibility, and ENGAGE becomes a realtime interrupt envelope. WebSocket/in-app, optional SMTP Email, and optional Push webhook are replaceable transports over the same outbox. Transport configuration or failure never changes the underlying Attention disposition.
+
 ## D / S / P no-Delta awareness
 
 When no legal cognitive effect exists, RAOS does **not** automatically DROP. It evaluates audited event semantics using:

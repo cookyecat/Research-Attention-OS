@@ -887,3 +887,41 @@ html[data-bionic="on"] .reader-note .bionic-prefix { font-weight: var(--bionic-w
 .paper-body .ltx_bibitem { margin-bottom:10px; }
 @media (max-width:760px) { .paper-abstract { padding:18px 0; } .paper-toc { top:4px; margin-inline:-4px; } .paper-toc-label { display:none; } .paper-toc-items { margin-top:0; } .paper-body { font-size:16px; } .paper-body .ltx_title_section { font-size:24px; } }
 .paper-current-section { display:block; margin-top:8px; color:var(--soft); font-size:11px; line-height:1.35; }
+
+.delivery-toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 80;
+  width: min(420px, calc(100vw - 32px));
+  padding: 18px 20px;
+  border: 1px solid var(--border-subtle, rgba(127, 127, 127, 0.28));
+  border-radius: 16px;
+  background: var(--panel, var(--background));
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
+}
+.delivery-toast-kicker {
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  opacity: .68;
+}
+.delivery-toast h2 { margin: 0 0 8px; font-size: 18px; line-height: 1.28; }
+.delivery-toast p { margin: 0; font-size: 14px; line-height: 1.55; opacity: .82; }
+.delivery-toast-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.delivery-toast-actions a,
+.delivery-toast-actions button {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 7px 11px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.delivery-toast-actions .quiet { opacity: .58; }
+.delivery-toast-count { margin-top: 10px; font-size: 12px; opacity: .55; }

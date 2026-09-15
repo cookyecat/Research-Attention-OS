@@ -119,13 +119,21 @@ Audited World Representation
                                                                    ↓
 ──────────────── Attention / Action Plane ────────────────
 DROP / AWARE / WATCH / ENGAGE
-        ↓
-Decision Cause → Public Update / WATCH / authorized KernelPatch
+        ├─→ Decision Cause → Public Update / WATCH / authorized KernelPatch
+        └─→ Delivery Envelope (execution only; no decision authority)
+                 ↓
+          SUPPRESSED / PASSIVE / HELD / INTERRUPT
+                 ↓
+          in-app realtime / digest / configured external transports
+                 ↓
+          human acknowledgement / dismissal
 ```
 
 The two Attention branches are orthogonal. D/S/P is not a substitute for cognitive effects, and cognitive relevance is not a substitute for situational awareness.
 
 Phase 11C realizes the P sensor boundary without changing P semantics. Raw views/likes/comments/ranks are append/extend sensor facts, not P. P remains event-level and is estimated only after event projection; magnitude-free percentiles are diagnostic evidence and remain `UNKNOWN` when reference support is insufficient. Historical signal truth is retained even if future serving layers add current-state/materialized projections for scale.
+
+Phase 11D adds the Delivery Plane as an execution boundary downstream of Attention. Every new persisted `AttentionPlan` owns at most one durable `DeliveryEnvelope`. Delivery policy maps the existing disposition to execution behavior but may never create, promote, downgrade, or reinterpret Attention. WATCH remains delegated future-attention responsibility: only a later canonical WATCH recheck may produce a new AWARE/ENGAGE plan that becomes deliverable. External transport availability/failure cannot mutate the source AttentionPlan.
 
 ## 3. Attention authority split
 
