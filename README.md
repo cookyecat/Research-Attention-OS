@@ -128,6 +128,8 @@ Identity deduplication belongs to Acquisition; semantic event clustering remains
 
 Phase 11B adds WATCH-driven `ACTIVE_QUERY_BUNDLE` sources. A self-contained WATCH observation intent can be expanded into bounded aliases/cross-language retrieval queries and polled across the live HN/Bilibili discovery adapters. A cheap semantic Retrieval Scope Guard rejects search-engine drift before items enter the ordinary Acquisition path. Query Expansion and Scope Guard answer only **where to look / whether a hit is still inside the declared observation scope**; they have no D/S/P, Delta, or Attention authority.
 
+Phase 11C adds a compact public-attention signal ledger for HN/Bilibili/Weibo/X-compatible engagement telemetry. Unchanged signal states extend their observation interval; changed metrics or content-age buckets create a new historical segment. Magnitude-free platform/context normalization uses each item's latest state and returns `UNKNOWN` under insufficient support. These observations project through Event links into the existing P Evidence Packet and frozen `collective-attention-estimator-v1`; raw popularity never becomes P or Attention authority.
+
 ## D / S / P no-Delta awareness
 
 When no legal cognitive effect exists, RAOS does **not** automatically DROP. It evaluates audited event semantics using:

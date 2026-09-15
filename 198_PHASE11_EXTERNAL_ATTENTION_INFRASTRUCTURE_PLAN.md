@@ -78,3 +78,17 @@ The previously planned Phase 11 (`Questionnaire prior + trajectory residuals + m
 ```
 
 Do not advance merely because code exists. Each subphase requires its own preregistered contract, dogfood evidence, residual attribution, and explicit close/continue decision.
+
+## Phase 11A-H — Acquisition Hardening Backlog
+
+Deferred without reopening 11A core. Implement after/alongside Phase 11C when platform signal coverage needs it.
+
+- `X_SEARCH`: Top + Latest lanes with raw engagement + query provenance.
+- `WEIBO_HOT`: hot rank / heat / first-seen / rank-delta as public-attention evidence.
+- shared `PublicTransportPolicy`: browser UA, anonymous visitor state, referer/language, jitter, backoff, Retry-After, host/platform concurrency.
+- platform-aware rate limiting / acquisition budget.
+- account/entity resolution: human/entity name → platform identities / creator SourceDefinitions.
+- freshness normalization by platform / source class.
+- acquisition-only source priority for scheduling; MUST NOT influence D/S/P/Attention authority.
+
+Invariant: copy acquisition transport/signal machinery aggressively; do not copy Hotspot semantics into RAOS truth or cognition authority.

@@ -94,6 +94,9 @@ Source Registry → independent Source Poller → Adapter
                                               ↓ retrieval-scope guard
         ↓
 SourceDefinition → Observation → Information Object → Snapshot
+        ├─→ Attention Signal Ledger (public telemetry state segments)
+        │      ↓ magnitude-free platform/context normalization
+        │   Event-level P Evidence Packet
         ↓
 RAOS Source / Raw Information Boundary
         ↓
@@ -121,6 +124,8 @@ Decision Cause → Public Update / WATCH / authorized KernelPatch
 ```
 
 The two Attention branches are orthogonal. D/S/P is not a substitute for cognitive effects, and cognitive relevance is not a substitute for situational awareness.
+
+Phase 11C realizes the P sensor boundary without changing P semantics. Raw views/likes/comments/ranks are append/extend sensor facts, not P. P remains event-level and is estimated only after event projection; magnitude-free percentiles are diagnostic evidence and remain `UNKNOWN` when reference support is insufficient. Historical signal truth is retained even if future serving layers add current-state/materialized projections for scale.
 
 ## 3. Attention authority split
 

@@ -24,6 +24,7 @@ from app.services.ingestion import ingest_url, persist_normalized
 from app.services.fingerprint import NormalizedSource
 from app.services.pipeline import run_pipeline
 from app.services.acquisition_types import DiscoveredExternalItem
+from app.services.attention_signals import record_attention_signal_sample
 from app.services.social_adapters import WeiboPublicAdapter, XPublicAdapter
 from app.services.active_acquisition import ActiveQueryBundleAdapter
 from app.services.discovery_adapters import (
@@ -339,7 +340,11 @@ def poll_source(db: Session, source: SourceDefinition, *, limit: int = 5, analyz
     adapter = _adapter_for(source)
     discovered = adapter.discover(source.locator)[: max(0, int(limit))]
     adapter_report = getattr(adapter, "last_report", None)
-    counts = {"discovered": len(discovered), "new_items": 0, "new_observations": 0, "new_snapshots": 0, "item_failures": 0}
+    counts = {
+        "discovered": len(discovered), "new_items": 0, "new_observations": 0,
+        "new_snapshots": 0, "item_failures": 0, "signal_samples_new": 0,
+        "signal_samples_extended": 0,
+    }
     delivered_source_ids: list[str] = []
     item_errors: list[dict] = []
     for candidate in discovered:
@@ -347,6 +352,11 @@ def poll_source(db: Session, source: SourceDefinition, *, limit: int = 5, analyz
             with db.begin_nested():
                 item, item_created = _get_or_create_item(db, source, candidate)
                 _, observation_created = _observe(db, source, item, candidate)
+                _, signal_action = record_attention_signal_sample(
+                    db, source=source, item=item, discovered=candidate
+                )
+                counts["signal_samples_new"] += int(signal_action == "CREATED")
+                counts["signal_samples_extended"] += int(signal_action == "EXTENDED")
                 before = _current_snapshot(db, item.id)
                 snapshot = _deliver(db, source, item, candidate, analyze=analyze)
                 counts["new_items"] += int(item_created)
