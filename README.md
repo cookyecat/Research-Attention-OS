@@ -126,6 +126,8 @@ When an article page cannot be fetched but its discovery/feed record contains us
 
 Identity deduplication belongs to Acquisition; semantic event clustering remains downstream. Public social adapters consume only anonymously observable material. Logged-in Following/friends timelines are a separate future authenticated layer and must carry explicit authorization/provenance rather than hidden browser cookies. Acquisition volume is allowed to grow independently of cognition spending: baseline backlog can be persisted without analysis, but genuine post-baseline arrivals normally enter automatic canonical cognition. A persisted Source is always readable before analysis, and merely opening it never triggers cognition; `Analyze with RAOS` exists for recovery or explicit user action.
 
+Phase 11B adds WATCH-driven `ACTIVE_QUERY_BUNDLE` sources. A self-contained WATCH observation intent can be expanded into bounded aliases/cross-language retrieval queries and polled across the live HN/Bilibili discovery adapters. A cheap semantic Retrieval Scope Guard rejects search-engine drift before items enter the ordinary Acquisition path. Query Expansion and Scope Guard answer only **where to look / whether a hit is still inside the declared observation scope**; they have no D/S/P, Delta, or Attention authority.
+
 ## D / S / P no-Delta awareness
 
 When no legal cognitive effect exists, RAOS does **not** automatically DROP. It evaluates audited event semantics using:

@@ -87,7 +87,11 @@ Source Registry → independent Source Poller → Adapter
                                      ├─ WEIBO_PUBLIC / X_PUBLIC
                                      ├─ HACKERNEWS_SEARCH
                                      ├─ BILIBILI_SEARCH / BILIBILI_CREATOR
-                                     └─ SOGOU_SEARCH (blocked residual when public DOM unavailable)
+                                     ├─ SOGOU_SEARCH (blocked residual when public DOM unavailable)
+                                     └─ ACTIVE_QUERY_BUNDLE ← WATCH observation intent
+                                              ↓ query expansion
+                                        child discovery adapters
+                                              ↓ retrieval-scope guard
         ↓
 SourceDefinition → Observation → Information Object → Snapshot
         ↓
@@ -163,7 +167,7 @@ UNKNOWN is not False. If missing components prevent the Boolean result from bein
 ## 4. Current contract versions
 
 ```text
-Acquisition Plane              acquisition-plane-v0.2 / Phase 11A adapter expansion
+Acquisition Plane              acquisition-plane-v0.3 / Phase 11A–11B active acquisition
 Semantic Sensor                semantic-evidence-extractor-v0.2.6
 Semantic Evidence Auditor      semantic-evidence-auditor-v0.1.1
 Cognition                      research-aligned-cognition-v1
@@ -205,6 +209,9 @@ Unknown composition            no-delta-awareness-integration-v1.1 semantics
 18. Discovery adapters may preserve raw engagement/rank/platform telemetry, but raw popularity is evidence only; it has no D/S/P or Attention authority.
 19. Platform-native content with materially incomplete semantics may be persisted under an explicit cognition-defer policy rather than analyzed as if the full content had been observed.
 20. Query-bearing Source locators in Phase 11A are fixed observation scope; automatic Query Expansion is a separate Phase 11B capability and may not become cognition authority.
+21. Query Expansion and Retrieval Scope Guard are Acquisition-side observation machinery only; neither may assign D/S/P, Delta, or Attention.
+22. A WATCH may activate external search only when it projects to a self-contained observation intent; generic trigger labels without sufficient origin context must fail closed rather than broaden silently.
+23. Multiple query/adaptor hits for the same canonical ref merge provenance into one external information identity rather than multiplying facts.
 
 
 

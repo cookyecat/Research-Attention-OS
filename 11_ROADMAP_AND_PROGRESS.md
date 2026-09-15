@@ -129,7 +129,7 @@ Core invariants:
 | Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **CLOSED / OPERATIONAL BASELINE ESTABLISHED** |
 | Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **9A PREREGISTERED / OUTCOME SAMPLING PAUSED FOR PARITY GATE** |
 | Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence | **10D.6E CLOSED / 10D.6F SUPPORT-BINDING NEXT** |
-| Phase 11 — External Attention Infrastructure | 11A Acquisition Expansion → 11B Query Expansion → 11C P Evidence → 11D Delivery → 11E Agent Interface | **11A CLOSED / 11B NEXT** |
+| Phase 11 — External Attention Infrastructure | 11A Acquisition Expansion → 11B Query Expansion → 11C P Evidence → 11D Delivery → 11E Agent Interface | **11A–11B CLOSED / 11C NEXT** |
 | Phase 12 — Personalization / Scale | Questionnaire prior + trajectory residuals + multi-user/product validation | **NOT STARTED / MOVED FROM OLD PHASE 11** |
 
 Current strategic position:
@@ -1481,3 +1481,9 @@ Preregistration: `199_PHASE11A_ACQUISITION_EXPANSION_PREREGISTRATION.md`. Initia
 First dogfood baseline: HN `AI agent` 5/5 items, Bilibili `AI Agent` 5/5 items, zero item failures. HN web discoveries enter existing URL ingestion. Bilibili video search preserves title/description/author/thumbnail/engagement but is marked `METADATA_ONLY` with cognition explicitly deferred until fuller video semantics are acquired. Raw engagement signals remain acquisition evidence only and do not alter D/S/P or Attention.
 
 Phase 11A result: `200_PHASE11A_ACQUISITION_EXPANSION_RESULT.md`. 11A closed with live HN + Bilibili search dogfood, explicit Bilibili Creator/Sogou residuals, preserved raw attention signals, and zero cognition-authority changes. **Phase 11B Query Expansion / Active Acquisition is next.**
+
+### Phase 11B — Query Expansion / Active Acquisition — CLOSED 2026-09-15
+
+Preregistration: `201_PHASE11B_QUERY_EXPANSION_ACTIVE_ACQUISITION_PREREGISTRATION.md`. Result: `202_PHASE11B_QUERY_EXPANSION_ACTIVE_ACQUISITION_RESULT.md`. WATCH responsibilities can now project a self-contained observation intent, expand it into bounded retrieval queries, poll HN/Bilibili through one `ACTIVE_QUERY_BUNDLE`, merge duplicate URL provenance, and fail independently by child query/adapter.
+
+Dogfood exposed and corrected two failure modes before closure: platform-search semantic drift after query expansion, and brittle lexical scope filtering. The final path uses `retrieval-scope-guard-v0.1`, a cheap batch semantic guard with zero D/S/P/Attention authority. Final research-only WATCH A/B moved from 0 original admitted refs to 7 expanded admitted refs while rejecting 19/26 raw expanded candidates as out of scope, with zero child failures. Zero hits on genuinely narrow existing WATCHes remained a valid result. **Phase 11C P Evidence Sensor & Estimator is next.**

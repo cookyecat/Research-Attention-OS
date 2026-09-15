@@ -67,6 +67,13 @@ class WatchCreate(BaseModel):
     triggers: list[str] = Field(default_factory=list)
 
 
+class WatchActiveAcquisitionCreate(BaseModel):
+    max_queries: int = Field(default=6, ge=1, le=12)
+    child_adapters: list[str] = Field(default_factory=lambda: ["HACKERNEWS_SEARCH", "BILIBILI_SEARCH"])
+    per_query_limit: int = Field(default=10, ge=1, le=50)
+    enabled: bool = True
+
+
 class KernelNodeCreate(BaseModel):
     node_type: str
     title: str | None = None

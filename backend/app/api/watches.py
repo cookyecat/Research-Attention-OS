@@ -7,8 +7,9 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models.watch import Watch, WatchCheck, WatchTrigger
-from app.schemas.api import WatchCreate
+from app.schemas.api import WatchActiveAcquisitionCreate, WatchCreate
 from app.services.watch_loop import recheck_watch
+from app.services.active_acquisition import parse_bundle_locator, upsert_watch_query_bundle
 
 router = APIRouter()
 
@@ -36,6 +37,30 @@ def create_watch(body: WatchCreate, db: Session = Depends(get_db)):
 def list_watches(db: Session = Depends(get_db)):
     rows = db.execute(select(Watch).order_by(Watch.created_at.desc())).scalars().all()
     return [_watch_out(db, w) for w in rows]
+
+
+@router.post("/{watch_id}/active-acquisition")
+def create_watch_active_acquisition(
+    watch_id: UUID, body: WatchActiveAcquisitionCreate, db: Session = Depends(get_db)
+):
+    watch = db.get(Watch, watch_id)
+    if watch is None:
+        raise HTTPException(404, "Watch not found")
+    try:
+        source, plan, spec = upsert_watch_query_bundle(
+            db, watch=watch, max_queries=body.max_queries, child_adapters=body.child_adapters,
+            per_query_limit=body.per_query_limit, enabled=body.enabled,
+        )
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+    return {
+        "watch_id": str(watch.id),
+        "source_definition_id": str(source.id),
+        "source_name": source.name,
+        "enabled": source.enabled,
+        "expansion": plan.as_dict(),
+        "bundle": spec.as_dict(),
+    }
 
 
 @router.post("/{watch_id}/triggers/{trigger_id}/fire")

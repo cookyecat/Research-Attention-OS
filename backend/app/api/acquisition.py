@@ -52,6 +52,7 @@ def create_acquisition_source(body: SourceDefinitionCreate, db: Session = Depend
         "BILIBILI_SEARCH",
         "BILIBILI_CREATOR",
         "SOGOU_SEARCH",
+        "ACTIVE_QUERY_BUNDLE",
     }
     if kind not in supported:
         raise HTTPException(400, f"Supported acquisition source types: {', '.join(sorted(supported))}")

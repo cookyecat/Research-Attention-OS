@@ -25,6 +25,7 @@ from app.services.fingerprint import NormalizedSource
 from app.services.pipeline import run_pipeline
 from app.services.acquisition_types import DiscoveredExternalItem
 from app.services.social_adapters import WeiboPublicAdapter, XPublicAdapter
+from app.services.active_acquisition import ActiveQueryBundleAdapter
 from app.services.discovery_adapters import (
     BilibiliCreatorAdapter,
     BilibiliSearchAdapter,
@@ -158,6 +159,8 @@ def _adapter_for(source: SourceDefinition):
         return BilibiliCreatorAdapter()
     if kind == "SOGOU_SEARCH":
         return SogouSearchAdapter()
+    if kind == "ACTIVE_QUERY_BUNDLE":
+        return ActiveQueryBundleAdapter()
     raise ValueError(f"Unsupported acquisition source type: {source.source_type}")
 
 
@@ -333,7 +336,9 @@ def _deliver(db: Session, source: SourceDefinition, item: ExternalInformationIte
 
 
 def poll_source(db: Session, source: SourceDefinition, *, limit: int = 5, analyze: bool = True) -> dict:
-    discovered = _adapter_for(source).discover(source.locator)[: max(0, int(limit))]
+    adapter = _adapter_for(source)
+    discovered = adapter.discover(source.locator)[: max(0, int(limit))]
+    adapter_report = getattr(adapter, "last_report", None)
     counts = {"discovered": len(discovered), "new_items": 0, "new_observations": 0, "new_snapshots": 0, "item_failures": 0}
     delivered_source_ids: list[str] = []
     item_errors: list[dict] = []
@@ -364,6 +369,7 @@ def poll_source(db: Session, source: SourceDefinition, *, limit: int = 5, analyz
         **counts,
         "raos_source_ids": delivered_source_ids,
         "item_errors": item_errors,
+        "adapter_report": adapter_report,
     }
 
 
