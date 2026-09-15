@@ -1,38 +1,57 @@
-# Phase 10E — Core Decision-State Sufficiency Gate Preregistration
+# Phase 10E — Attention Core Validity Gate Preregistration
 
-Date: 2026-09-15
-Status: **PREREGISTERED / NOT YET MEASURED**
+Date: 2026-09-15 / amended 2026-09-16 before canonical Phase-10E measurement
+Status: **IMPLEMENTATION ACTIVE / CANONICAL MEASUREMENT NOT YET RUN**
 Production impact: **none; validation-only gate**
 
-## 1. Physical meaning
+## 1. Purpose
 
-Phase 10E is **not a new RAOS runtime module, state variable, or policy layer**. It is a validation gate on the existing Phase 1–10 core.
+Phase 10E is not a new RAOS runtime module, state variable, policy layer, or attempt to make the theory complete over every imaginable corner case. It is a short pre-Phase-12 health check on the existing Phase 1–10 Attention Core.
 
-The current core assumes that once cognition has been reduced to a decision-relevant state `Z_t`, Attention is determined by the core policy:
+The working principle is:
 
-```math
-A_t = \pi_{core}(Z_t)
+```text
+Theory defines the invariant.
+Engineering estimates enough state to preserve the invariant.
+The flywheel reveals where that approximation actually fails.
 ```
 
-For positive cognitive change, `Z_t` contains only decision-authorized effects plus the already-canonical decision-relevant Kernel facts and Runtime consumed by the active strategy. For no-Delta cases, `Z_t` contains the frozen D/S/P awareness state plus Runtime.
-
-The physical question is therefore **state sufficiency**:
-
-```math
-Z(x_1)=Z(x_2) \Rightarrow A^*(x_1)=A^*(x_2)
-```
-
-If two cases are identical under the current canonical decision state but reproducibly require different Human-Gold Attention, then the current state representation is insufficient. No new variable is assumed in advance.
+The gate therefore validates the common operating regime rather than every logically constructible state.
 
 ## 2. Why this gate is necessary
 
-The historical `Oracle-Delta` harness still routes frozen Delta through legacy `one-delta-v1` when no strategy is supplied. Active dogfood instead uses `research-aligned-cognition-v1` with `pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2`.
+The historical `Oracle-Delta` harness can silently route frozen Delta through legacy `one-delta-v1`, while current dogfood explicitly uses:
 
-Therefore the exploratory replay of the old 30-case questionnaire measured a historical policy, not the current active core. It must not be used to justify current Core or Phase-12 changes.
+```text
+research-aligned-cognition-v1
++ pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2
+```
 
-## 3. Occam constraints
+Therefore the historical 30-case replay is not evidence about the current active Attention Core and may not justify current Core or Phase-12 changes.
 
-Phase 10E may add **measurement code only**. It may not add:
+Phase 10E restores a strategy-explicit, no-LLM measurement path for the current Core.
+
+## 3. Theory / engineering boundary
+
+Let `Z*` denote the ideal decision-relevant state and `Z_hat` the state actually estimated and persisted by the engineering system.
+
+```math
+A^* = \pi^*(Z^*, R)
+```
+
+Production instead operates approximately:
+
+```math
+\hat Z \rightarrow \hat\pi \rightarrow \hat A
+```
+
+A Human-Gold mismatch under the same `Z_hat` does not automatically prove missing theory. It may be estimator error, representation coarseness, runtime capture error, policy error, or a genuine missing universal factor.
+
+Approximate state estimation is allowed; semantic shortcutting is not.
+
+## 4. Occam constraints
+
+Phase 10E may add measurement / replay code only. It may not add:
 
 ```text
 new production state variables
@@ -43,98 +62,118 @@ new LLM stages
 new Attention dispositions
 ```
 
-Reuse the existing decision-strategy seam, execution snapshots, persisted effect/match provenance, D/S/P traces and Runtime records.
+A new Core variable is justified only by repeated evidence that is reachable, reproducible, decision-bearing, and non-negligible in frequency or consequence.
 
-A historical candidate such as `GenerativePotential` is only a probe axis. It is not a Core variable unless fresh matched evidence proves that existing state is insufficient and replication supports a universal factor.
+Synthetic corner cases are diagnostic only. They do not block Phase 12 and do not authorize Core redesign unless they become materially reachable or observed.
 
-## 4. Gate 0 — deterministic policy-order coherence
+## 5. Gate I — Deterministic Integrity
 
-Before replay or Human Gold, audit the current decision algebra itself. Pareto pruning is sound only if its dominance order is compatible with the downstream per-effect Attention policy.
+Gate I requires no Human Gold and no LLM call.
 
-Let `v(e)` be the current Pareto decision vector and `rank(a)` the ordinal Attention rank `DROP < AWARE < WATCH < ENGAGE`. The required coherence condition is:
+### I-A. Strategy-explicit replay parity
 
-```math
-v(e_1) \succeq v(e_2) \Rightarrow rank(\pi_{channel}(e_1)) \ge rank(\pi_{channel}(e_2))
+For persisted current-strategy AnalysisRuns, replay only the frozen decision state using the exact stored decision-strategy id and version.
+
+Fail closed on missing or mismatched strategy identity. Bare `scheduler.route()` defaults are forbidden.
+
+Required invariant:
+
+```text
+same persisted decision state + same strategy snapshot
+→ same disposition
+→ same decision cause
 ```
 
-If this fails, Pareto may prune an effect that would have produced a stronger Attention action. That is a deterministic Core inconsistency, not a personalization residual and not evidence for a new semantic variable.
-
-The audit must use reachable canonical effect states where possible and may use exhaustive synthetic states only to expose algebraic counterexamples. Any counterexample is then checked against production reachability.
-
-## 5. Gate A — strategy-explicit replay parity
-
-Build or amend the evaluation harness so it never relies on the bare legacy default of `scheduler.route()`.
-
-Historical replay must use the exact stored decision-strategy snapshot. Current-core counterfactual replay must explicitly use the current active strategy. Missing or mismatched strategy identity fails closed.
-
-For completed current-architecture AnalysisRuns, freeze the exact inputs already consumed by the decision strategy and replay only the decision path. No Sensor, Auditor, Locate, Relation Mapping, Support Binding, Grounding, Jurisdiction evaluator, or other upstream model call is allowed.
-
-Primary gate:
+Canonical gate:
 
 ```text
 exact disposition parity = 100%
 exact strategy identity parity = 100%
+exact decision-cause parity = 100%
 upstream model calls = 0
 ```
 
-Any failure is an instrumentation/replay defect, not Human-Gold evidence.
+### I-B. Main-regime policy coherence
 
-## 6. Gate B — minimal state-sufficiency probe
-
-Only after Gate A passes, run a small randomized matched-pair Human-Gold probe.
-
-Each pair holds the current canonical decision state `Z_t` fixed while varying one semantic property that the current Core does not represent. Include null-control pairs where only irrelevant wording changes.
-
-Use the smallest probe that can expose a violation; do not recreate the historical 30-question questionnaire by default. Historical findings such as future optionality or generative potential may suggest probe construction, but they are not labels and do not receive privileged status.
-
-The key endpoint is not classifier accuracy. It is whether the invariance claim holds:
+On actually observed non-empty current-strategy effect sets, compare:
 
 ```text
-same current Core state
-→ same Human-Gold Attention
+current: admitted effects → Pareto → channel policy → article join
+counterfactual: admitted effects → same channel policy → article join
 ```
 
-A reproducible violation creates a **candidate Core-insufficiency hypothesis**, not an automatic new chip.
+This is not a proposal to remove Pareto. It asks whether the currently observed operating regime contains a material order-policy conflict.
 
-## 7. Attribution firewall
+A synthetic algebraic counterexample remains a watch item unless canonical reachability and material decision consequence are established.
 
-Any mismatch must first be classified as one of:
+Decision-cause differences with the same disposition are recorded as causal-geometry differences, not automatically labeled failures.
+
+## 6. Gate II — Operating-Regime Adequacy
+
+Only after Gate I passes, collect a small fresh Human-Gold probe over common/high-value operating regimes.
+
+Initial scope should be deliberately small, for example 6–10 matched pairs spanning ordinary REINFORCE, important QUESTION/BOTTLENECK reinforcement, strong CHALLENGE, valid OPEN_NEW, no-Delta D/S/P, and representative Runtime behavior.
+
+The question is not whether `Z_hat` is a mathematically complete sufficient statistic. The practical question is:
+
+> Does the current approximate state representation support stable, reasonable Attention decisions in the operating regimes RAOS actually cares about?
+
+Mismatch attribution order:
 
 ```text
-INSTRUMENT_ERROR
-UPSTREAM_STATE_ERROR
+ESTIMATION_ERROR
+REPRESENTATION_TOO_COARSE
 RUNTIME_CAPTURE_ERROR
-CURRENT_RULE_ERROR
-CANDIDATE_STATE_INSUFFICIENCY
+POLICY_ERROR
+CANDIDATE_UNIVERSAL_MISSING_FACTOR
 USER_SPECIFIC_RESIDUAL
 UNRESOLVED
 ```
 
-`USER_SPECIFIC_RESIDUAL` is not allowed unless current Core inputs are correct and the same residual is stable across repeated matched cases. A candidate universal factor requires additional replication before entering the Core.
+Only a repeated `CANDIDATE_UNIVERSAL_MISSING_FACTOR` may reopen Core theory. Only a residual remaining after Core attribution may proceed to Phase 12 personalization.
 
-## 8. Occam audit of the active decision stack
+## 7. Long-tail rule
 
-The stability program does not itself require Pareto. Decision-Causal Core is explicitly policy-relative: it is measured under a specified decision strategy. Pareto therefore must be justified by the behavior and structure it contributes, not by Stability Theory alone.
-
-At the same time, article-level disposition parity is insufficient to declare Pareto redundant. A strategy change can alter decision-cause provenance, load-bearing structure, WATCH responsibility, or counterfactual attribution even when the final disposition is unchanged.
-
-The correct simplification test is therefore ordered:
+Long-tail and rare corner-case discovery belongs primarily to the operating flywheel:
 
 ```text
-1. policy-order coherence;
-2. production-state reachability of any algebraic counterexample;
-3. disposition + decision-cause + load-bearing equivalence on frozen corpora;
-4. only then consider a simpler strategy.
+real usage
+→ feedback / residuals
+→ recurrence + severity
+→ causal attribution
+→ only then theory / estimator / policy amendment
 ```
 
-The burden of proof is symmetric: a new variable/module must prove necessity, while an existing module may be removed only after its independent causal/provenance role is shown redundant.
+The Core must not be expanded pre-emptively to cover low-probability imagined states.
+
+## 8. Relation to Pareto and Stability Theory
+
+Pareto remains part of the current policy `pi`; it is not an axiom of Distributional Cognitive Stability Theory. Stability metrics and Decision-Causal Core are policy-relative.
+
+The current stance is:
+
+```text
+Pareto = KEEP + MEASURE
+```
+
+Its original motivations remain valid: avoid scalar winner-take-all, preserve incomparable cognitive effects, and avoid inventing pseudo-cardinal precision after Magnitude-Free. Any simplification or repair requires evidence from reachable operating states, not synthetic counterexamples alone.
 
 ## 9. Exit rule
 
-Phase 10E closes after Gate 0, Gate A and Gate B are complete and all mismatches are attributed.
+Phase 10E is intentionally short.
 
-- If current state is sufficient, Phase 12 may resume with identity/no-op personalization as the default.
-- If a candidate universal Core omission remains, Core research continues before Phase 12 fitting.
-- If only stable user-specific residuals remain after Core reconciliation, Phase 12 may test the smallest bounded calibration.
+It closes when:
 
-No production policy change is part of Phase 10E itself.
+```text
+Gate I deterministic integrity passes;
+Gate II common-regime Human Gold shows no material universal Core omission,
+or any observed mismatch has been attributed without requiring a new Core variable.
+```
+
+No observed material failure means no Core redesign.
+
+Phase 12 may then resume with identity/no-op personalization as the default.
+
+## 10. Pre-canonical implementation note
+
+During implementation preflight, non-canonical exploratory checks were used only to verify that the proposed instrument can reconstruct current persisted state and to expose schema/plumbing issues. Those checks are not the canonical Phase-10E result. The canonical artifact must be produced only by the versioned instrument committed for this gate.
