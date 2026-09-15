@@ -1,0 +1,121 @@
+{
+  "name": "phase10e-proxy-human-gold-v0.1",
+  "phase": "10E",
+  "purpose": "Operating-Regime Adequacy proxy Human Gold, frozen before measurement",
+  "label_author": "assistant_proxy_for_user",
+  "delegation_note": "User explicitly delegated an initial Human-Gold pass to the assistant on 2026-09-16; labels are provisional and auditable, not claimed as direct user annotations.",
+  "gating_policy": "Main-regime cases are gating for provisional 10E closure. Rare/synthetic corner cases are excluded and remain flywheel watch items.",
+  "cases": [
+    {
+      "id": "R1_ordinary_reinforce_belief",
+      "regime": "REINFORCE",
+      "operation": "REINFORCE",
+      "node_type": "BELIEF",
+      "importance_band": "LOW",
+      "epistemic_band": "HIGH",
+      "gold_disposition": "AWARE",
+      "rationale": "Ordinary reinforcement updates awareness but does not deserve delegated monitoring or interruption."
+    },
+    {
+      "id": "R2_important_question_reinforce",
+      "regime": "REINFORCE",
+      "operation": "REINFORCE",
+      "node_type": "QUESTION",
+      "importance_band": "HIGH",
+      "epistemic_band": "HIGH",
+      "gold_disposition": "WATCH",
+      "rationale": "An important active question benefits from continued machine responsibility, but reinforcement alone does not justify immediate interruption."
+    },
+    {
+      "id": "R3_important_bottleneck_reinforce_weak",
+      "regime": "REINFORCE",
+      "operation": "REINFORCE",
+      "node_type": "BOTTLENECK",
+      "importance_band": "HIGH",
+      "epistemic_band": "LOW",
+      "gold_disposition": "WATCH",
+      "rationale": "A bottleneck is decision-relevant, but weak evidence should be kept under watch rather than forcing deep attention."
+    },
+    {
+      "id": "C1_important_challenge_direct",
+      "regime": "CHALLENGE",
+      "operation": "CHALLENGE",
+      "node_type": "BELIEF",
+      "importance_band": "HIGH",
+      "epistemic_band": "HIGH",
+      "gold_disposition": "ENGAGE",
+      "rationale": "A well-supported challenge to important committed cognition deserves immediate review."
+    },
+    {
+      "id": "C2_important_challenge_weak",
+      "regime": "CHALLENGE",
+      "operation": "CHALLENGE",
+      "node_type": "BELIEF",
+      "importance_band": "HIGH",
+      "epistemic_band": "LOW",
+      "gold_disposition": "WATCH",
+      "rationale": "An important but weakly supported challenge should be verified and monitored without immediate interruption."
+    },
+    {
+      "id": "O1_open_new_important_direct",
+      "regime": "OPEN_NEW",
+      "operation": "OPEN_NEW",
+      "node_type": null,
+      "importance_band": "HIGH",
+      "epistemic_band": "HIGH",
+      "jurisdiction": "SUPPORTED",
+      "gold_disposition": "ENGAGE",
+      "rationale": "A genuinely new, important, well-supported branch inside RAOS jurisdiction can justify immediate attention."
+    },
+    {
+      "id": "O2_open_new_important_weak",
+      "regime": "OPEN_NEW",
+      "operation": "OPEN_NEW",
+      "node_type": null,
+      "importance_band": "HIGH",
+      "epistemic_band": "LOW",
+      "jurisdiction": "SUPPORTED",
+      "gold_disposition": "WATCH",
+      "rationale": "An important new branch with weak support should preserve future option value through WATCH, not immediate deep attention."
+    },
+    {
+      "id": "RT1_runtime_defer_engage",
+      "regime": "RUNTIME",
+      "operation": "CHALLENGE",
+      "node_type": "BELIEF",
+      "importance_band": "HIGH",
+      "epistemic_band": "HIGH",
+      "runtime": {
+        "deadline_minutes": 60,
+        "interruptibility": "LOW",
+        "threatens_active_work": false
+      },
+      "gold_disposition": "WATCH",
+      "rationale": "A normally ENGAGE-grade item can be deferred when the user is under a tight deadline and interruption is costly."
+    },
+    {
+      "id": "N1_no_delta_material_in_domain",
+      "regime": "NO_DELTA",
+      "operation": null,
+      "awareness": {
+        "domain_fit": true,
+        "event_significance": true,
+        "attention_momentum": false
+      },
+      "gold_disposition": "AWARE",
+      "rationale": "Material in-domain world awareness can be worth seeing even without a cognitive-state transition."
+    },
+    {
+      "id": "N2_no_delta_not_material",
+      "regime": "NO_DELTA",
+      "operation": null,
+      "awareness": {
+        "domain_fit": true,
+        "event_significance": false,
+        "attention_momentum": true
+      },
+      "gold_disposition": "DROP",
+      "rationale": "Without cognitive change, non-material evidence should not consume human-visible attention merely because attention momentum exists."
+    }
+  ]
+}
