@@ -9,6 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db import get_db
+from app.deployment_scope import deployment_contract
 from app.enums import TriggerType, WatchTargetType
 from app.models.acquisition import SourceDefinition
 from app.models.scheduler import AttentionPlan
@@ -47,6 +48,7 @@ def capabilities():
             "multi_actor_watch_sharing": True,
             "actor_identity_trust": "declared_provenance_only",
         },
+        "deployment": deployment_contract(),
         "commands": {
             "today": "Return the current human-visible residue plus delegated WATCH responsibilities.",
             "attention": "Return the latest stored canonical AttentionPlan per candidate.",

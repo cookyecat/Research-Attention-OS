@@ -16,6 +16,7 @@ from app.api.sources import router as sources_router
 from app.api.watches import router as watches_router
 from app.config import settings
 from app.db import Base, engine
+from app.deployment_scope import deployment_contract
 from app.models import (  # noqa: F401
     AnalysisRun,
     Claim,
@@ -66,7 +67,7 @@ def create_app() -> FastAPI:
 
     @application.get("/health")
     def health():
-        return {"ok": True, "product": "RAOS", "version": "1.1.0"}
+        return {"ok": True, "product": "RAOS", "version": "1.1.0", "deployment": deployment_contract()}
 
     return application
 
