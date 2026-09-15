@@ -91,3 +91,12 @@ Residuals intentionally remain outside 11D v0.1: multi-device delivery leases / 
 ## 7. Close decision
 
 **CLOSED.** Delivery now operationalizes `Interrupt sparsely` without introducing a second cognition authority. Phase 11E Agent Interface / Skill is next.
+## 8. Post-close real SMTP dogfood
+
+After Phase 11E closure, SMTP was configured locally with a user-authorized 163.com sender credential; the credential and real recipient addresses remain outside Git. A previously existing genuine `ENGAGE / PRIORITY` envelope whose Email channel had been `UNAVAILABLE` was re-queued at the transport layer only. No AttentionPlan was changed or recreated.
+
+The normal delivery worker completed one real SMTP send with `checked=1`, `email_sent=1`, `failed=0`; the envelope Email channel moved to `SENT` with one attempt and no transport error. A separate SMTP transaction verified both configured recipient domains were accepted at `RCPT TO` with code 250.
+
+163 IMAP authentication succeeded, but mailbox `SELECT` was blocked by the provider's `Unsafe Login` policy, so automated inbox-level receipt confirmation was not claimed. Transport success and mailbox receipt remain distinct evidence.
+
+Multi-recipient SMTP handling was also hardened: `send_message()` recipient refusals are now checked explicitly, and any partial recipient refusal raises a transport failure rather than silently reporting full Email success. Focused Delivery regression remains green.

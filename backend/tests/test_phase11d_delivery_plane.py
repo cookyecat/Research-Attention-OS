@@ -159,7 +159,7 @@ def test_email_transport_supports_implicit_ssl(db, monkeypatch):
         def __enter__(self): return self
         def __exit__(self, *args): return False
         def login(self, username, password): sent.update(username=username, password=password)
-        def send_message(self, message): sent.update(to=message["To"])
+        def send_message(self, message): sent.update(to=message["To"]); return {}
     monkeypatch.setattr(settings, "delivery_email_to", "alpha@example.com;beta@example.org")
     monkeypatch.setattr(settings, "delivery_smtp_host", "smtp.example.test")
     monkeypatch.setattr(settings, "delivery_smtp_port", 465)
@@ -179,3 +179,32 @@ def test_email_transport_supports_implicit_ssl(db, monkeypatch):
     assert sent["username"] == "sender@example.test"
     assert "alpha@example.com" in sent["to"]
     assert "beta@example.org" in sent["to"]
+
+def test_email_transport_rejects_partial_recipient_failure(db, monkeypatch):
+    import app.services.delivery_transports as transports
+    from app.config import settings
+
+    class FakeSMTP:
+        def __init__(self, host, port, timeout): pass
+        def __enter__(self): return self
+        def __exit__(self, *args): return False
+        def login(self, username, password): pass
+        def send_message(self, message): return {"beta@example.org": (550, b"rejected")}
+
+    monkeypatch.setattr(settings, "delivery_email_to", "alpha@example.com,beta@example.org")
+    monkeypatch.setattr(settings, "delivery_smtp_host", "smtp.example.test")
+    monkeypatch.setattr(settings, "delivery_smtp_port", 465)
+    monkeypatch.setattr(settings, "delivery_smtp_username", "sender@example.test")
+    monkeypatch.setattr(settings, "delivery_smtp_password", "secret")
+    monkeypatch.setattr(settings, "delivery_smtp_ssl", True)
+    monkeypatch.setattr(settings, "delivery_smtp_starttls", False)
+    monkeypatch.setattr(transports.smtplib, "SMTP_SSL", FakeSMTP)
+
+    plan = _plan(db, disposition="ENGAGE", urgency="PRIORITY")
+    envelope, _ = ensure_delivery_envelope(db, plan)
+    try:
+        transports.send_email_delivery(envelope)
+    except transports.DeliveryTransportError as exc:
+        assert "refused 1 recipient" in str(exc)
+    else:
+        raise AssertionError("partial SMTP refusal must not report success")

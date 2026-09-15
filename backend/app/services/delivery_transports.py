@@ -46,7 +46,9 @@ def send_email_delivery(envelope: DeliveryEnvelope) -> None:
                 smtp.starttls()
             if settings.delivery_smtp_username:
                 smtp.login(settings.delivery_smtp_username, settings.delivery_smtp_password or "")
-            smtp.send_message(message)
+            refused = smtp.send_message(message)
+            if refused:
+                raise DeliveryTransportError(f"SMTP refused {len(refused)} recipient(s)")
     except Exception as exc:
         raise DeliveryTransportError(str(exc)) from exc
 
