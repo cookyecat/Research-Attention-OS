@@ -1,6 +1,6 @@
 # Phase 12 — Personalized Attention Calibration & Multi-Actor Control
 
-Status: **REDESIGNED v2 / 12A ACTIVE**
+Status: **REDESIGNED v2 / 12A ACTIVE — resumed after Phase 10E validity gate**
 Date: 2026-09-15
 Depends on: Phase 1–10 canonical cognitive/attention core; Phase 11 External Attention Infrastructure CLOSED.
 

@@ -1,0 +1,491 @@
+{
+  "phase": "10E",
+  "instrument": "proxy-human-gold-v0.1",
+  "timestamp_utc": "20260915T193629Z",
+  "git_sha": "558b262d7c4ebc2dac05af286777b0e17450ed81",
+  "manifest": "eval/live/manifest.phase10e_proxy_human_gold.v0_1.json",
+  "label_author": "assistant_proxy_for_user",
+  "delegation_note": "User explicitly delegated an initial Human-Gold pass to the assistant on 2026-09-16; labels are provisional and auditable, not claimed as direct user annotations.",
+  "guardrails": [
+    "Proxy labels were frozen and committed before this measurement.",
+    "No LLM/provider call is made by this instrument.",
+    "No production state is written.",
+    "Proxy Gold can provisionally validate the common operating regime but cannot by itself justify a Core-changing variable."
+  ],
+  "metrics": {
+    "n": 10,
+    "exact": 10,
+    "exact_rate": 1.0,
+    "mismatches": 0
+  },
+  "by_regime": {
+    "CHALLENGE": {
+      "n": 2,
+      "exact": 2
+    },
+    "NO_DELTA": {
+      "n": 2,
+      "exact": 2
+    },
+    "OPEN_NEW": {
+      "n": 2,
+      "exact": 2
+    },
+    "REINFORCE": {
+      "n": 3,
+      "exact": 3
+    },
+    "RUNTIME": {
+      "n": 1,
+      "exact": 1
+    }
+  },
+  "gate": {
+    "operating_regime_proxy_adequacy": "PASS"
+  },
+  "mismatches": [],
+  "rows": [
+    {
+      "id": "R1_ordinary_reinforce_belief",
+      "regime": "REINFORCE",
+      "gold_disposition": "AWARE",
+      "predicted_disposition": "AWARE",
+      "exact_hit": true,
+      "reason": "Pareto frontier=1; article disposition is the join of frontier-channel decisions. Compatibility representative: Magnitude-free: ordinary REINFORCE is awareness, not automatic deep attention.",
+      "decision_cause": {
+        "target_kernel_node_id": "00000000-0000-0000-0000-000000000001",
+        "operation": "REINFORCE",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 1.0,
+        "target_importance": 0.0,
+        "reason": "Phase10E proxy Human-Gold frozen effect",
+        "exploration_candidate": false,
+        "target_node_type": "BELIEF",
+        "support_unit_ids": [
+          "proxy-unit-00"
+        ],
+        "jurisdiction_anchor_ids": [],
+        "grounding_class": "DIRECT",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "PHASE10E_PROXY_FIXTURE"
+      },
+      "strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2",
+        "selection": "ordinal-pareto-frontier-v0.1",
+        "article_aggregation": "attention-join-v0.1",
+        "effect_calibration": {
+          "calibration_id": "magnitude-free",
+          "version": "magnitude-free-v0.1",
+          "uses_raw_change_magnitude": false,
+          "authority": "operation+epistemic-band+importance-band+active-role-band"
+        },
+        "effect_admission": {
+          "admission_id": "effect-anchored-open-new",
+          "version": "effect-anchored-open-new-v0.2",
+          "open_new_requires_effect_jurisdiction_anchor": true,
+          "uses_raw_change_magnitude": false
+        },
+        "public_update_projection": "strategy-decision-cause-with-legacy-unbound-fallback-v0.1",
+        "decision_scope": "strategy-bound-scope-v0.1",
+        "effect_existence": "legal-semantic-relation-v0.1"
+      },
+      "proxy_rationale": "Ordinary reinforcement updates awareness but does not deserve delegated monitoring or interruption."
+    },
+    {
+      "id": "R2_important_question_reinforce",
+      "regime": "REINFORCE",
+      "gold_disposition": "WATCH",
+      "predicted_disposition": "WATCH",
+      "exact_hit": true,
+      "reason": "Pareto frontier=1; article disposition is the join of frontier-channel decisions. Compatibility representative: Magnitude-free: REINFORCE on an important active QUESTION/BOTTLENECK.",
+      "decision_cause": {
+        "target_kernel_node_id": "00000000-0000-0000-0000-000000000002",
+        "operation": "REINFORCE",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 1.0,
+        "target_importance": 1.0,
+        "reason": "Phase10E proxy Human-Gold frozen effect",
+        "exploration_candidate": false,
+        "target_node_type": "QUESTION",
+        "support_unit_ids": [
+          "proxy-unit-01"
+        ],
+        "jurisdiction_anchor_ids": [],
+        "grounding_class": "DIRECT",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "PHASE10E_PROXY_FIXTURE"
+      },
+      "strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2",
+        "selection": "ordinal-pareto-frontier-v0.1",
+        "article_aggregation": "attention-join-v0.1",
+        "effect_calibration": {
+          "calibration_id": "magnitude-free",
+          "version": "magnitude-free-v0.1",
+          "uses_raw_change_magnitude": false,
+          "authority": "operation+epistemic-band+importance-band+active-role-band"
+        },
+        "effect_admission": {
+          "admission_id": "effect-anchored-open-new",
+          "version": "effect-anchored-open-new-v0.2",
+          "open_new_requires_effect_jurisdiction_anchor": true,
+          "uses_raw_change_magnitude": false
+        },
+        "public_update_projection": "strategy-decision-cause-with-legacy-unbound-fallback-v0.1",
+        "decision_scope": "strategy-bound-scope-v0.1",
+        "effect_existence": "legal-semantic-relation-v0.1"
+      },
+      "proxy_rationale": "An important active question benefits from continued machine responsibility, but reinforcement alone does not justify immediate interruption."
+    },
+    {
+      "id": "R3_important_bottleneck_reinforce_weak",
+      "regime": "REINFORCE",
+      "gold_disposition": "WATCH",
+      "predicted_disposition": "WATCH",
+      "exact_hit": true,
+      "reason": "Pareto frontier=1; article disposition is the join of frontier-channel decisions. Compatibility representative: Magnitude-free: REINFORCE on an important active QUESTION/BOTTLENECK.",
+      "decision_cause": {
+        "target_kernel_node_id": "00000000-0000-0000-0000-000000000003",
+        "operation": "REINFORCE",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 0.0,
+        "target_importance": 1.0,
+        "reason": "Phase10E proxy Human-Gold frozen effect",
+        "exploration_candidate": false,
+        "target_node_type": "BOTTLENECK",
+        "support_unit_ids": [
+          "proxy-unit-02"
+        ],
+        "jurisdiction_anchor_ids": [],
+        "grounding_class": "PARTIAL",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "PHASE10E_PROXY_FIXTURE"
+      },
+      "strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2",
+        "selection": "ordinal-pareto-frontier-v0.1",
+        "article_aggregation": "attention-join-v0.1",
+        "effect_calibration": {
+          "calibration_id": "magnitude-free",
+          "version": "magnitude-free-v0.1",
+          "uses_raw_change_magnitude": false,
+          "authority": "operation+epistemic-band+importance-band+active-role-band"
+        },
+        "effect_admission": {
+          "admission_id": "effect-anchored-open-new",
+          "version": "effect-anchored-open-new-v0.2",
+          "open_new_requires_effect_jurisdiction_anchor": true,
+          "uses_raw_change_magnitude": false
+        },
+        "public_update_projection": "strategy-decision-cause-with-legacy-unbound-fallback-v0.1",
+        "decision_scope": "strategy-bound-scope-v0.1",
+        "effect_existence": "legal-semantic-relation-v0.1"
+      },
+      "proxy_rationale": "A bottleneck is decision-relevant, but weak evidence should be kept under watch rather than forcing deep attention."
+    },
+    {
+      "id": "C1_important_challenge_direct",
+      "regime": "CHALLENGE",
+      "gold_disposition": "ENGAGE",
+      "predicted_disposition": "ENGAGE",
+      "exact_hit": true,
+      "reason": "Pareto frontier=1; article disposition is the join of frontier-channel decisions. Compatibility representative: Magnitude-free: important, sufficiently supported CHALLENGE.",
+      "decision_cause": {
+        "target_kernel_node_id": "00000000-0000-0000-0000-000000000004",
+        "operation": "CHALLENGE",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 1.0,
+        "target_importance": 1.0,
+        "reason": "Phase10E proxy Human-Gold frozen effect",
+        "exploration_candidate": false,
+        "target_node_type": "BELIEF",
+        "support_unit_ids": [
+          "proxy-unit-03"
+        ],
+        "jurisdiction_anchor_ids": [],
+        "grounding_class": "DIRECT",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "PHASE10E_PROXY_FIXTURE"
+      },
+      "strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2",
+        "selection": "ordinal-pareto-frontier-v0.1",
+        "article_aggregation": "attention-join-v0.1",
+        "effect_calibration": {
+          "calibration_id": "magnitude-free",
+          "version": "magnitude-free-v0.1",
+          "uses_raw_change_magnitude": false,
+          "authority": "operation+epistemic-band+importance-band+active-role-band"
+        },
+        "effect_admission": {
+          "admission_id": "effect-anchored-open-new",
+          "version": "effect-anchored-open-new-v0.2",
+          "open_new_requires_effect_jurisdiction_anchor": true,
+          "uses_raw_change_magnitude": false
+        },
+        "public_update_projection": "strategy-decision-cause-with-legacy-unbound-fallback-v0.1",
+        "decision_scope": "strategy-bound-scope-v0.1",
+        "effect_existence": "legal-semantic-relation-v0.1"
+      },
+      "proxy_rationale": "A well-supported challenge to important committed cognition deserves immediate review."
+    },
+    {
+      "id": "C2_important_challenge_weak",
+      "regime": "CHALLENGE",
+      "gold_disposition": "WATCH",
+      "predicted_disposition": "WATCH",
+      "exact_hit": true,
+      "reason": "Pareto frontier=1; article disposition is the join of frontier-channel decisions. Compatibility representative: Magnitude-free: important CHALLENGE with weak epistemic support; verify rather than ignore.",
+      "decision_cause": {
+        "target_kernel_node_id": "00000000-0000-0000-0000-000000000005",
+        "operation": "CHALLENGE",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 0.0,
+        "target_importance": 1.0,
+        "reason": "Phase10E proxy Human-Gold frozen effect",
+        "exploration_candidate": false,
+        "target_node_type": "BELIEF",
+        "support_unit_ids": [
+          "proxy-unit-04"
+        ],
+        "jurisdiction_anchor_ids": [],
+        "grounding_class": "PARTIAL",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "PHASE10E_PROXY_FIXTURE"
+      },
+      "strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2",
+        "selection": "ordinal-pareto-frontier-v0.1",
+        "article_aggregation": "attention-join-v0.1",
+        "effect_calibration": {
+          "calibration_id": "magnitude-free",
+          "version": "magnitude-free-v0.1",
+          "uses_raw_change_magnitude": false,
+          "authority": "operation+epistemic-band+importance-band+active-role-band"
+        },
+        "effect_admission": {
+          "admission_id": "effect-anchored-open-new",
+          "version": "effect-anchored-open-new-v0.2",
+          "open_new_requires_effect_jurisdiction_anchor": true,
+          "uses_raw_change_magnitude": false
+        },
+        "public_update_projection": "strategy-decision-cause-with-legacy-unbound-fallback-v0.1",
+        "decision_scope": "strategy-bound-scope-v0.1",
+        "effect_existence": "legal-semantic-relation-v0.1"
+      },
+      "proxy_rationale": "An important but weakly supported challenge should be verified and monitored without immediate interruption."
+    },
+    {
+      "id": "O1_open_new_important_direct",
+      "regime": "OPEN_NEW",
+      "gold_disposition": "ENGAGE",
+      "predicted_disposition": "ENGAGE",
+      "exact_hit": true,
+      "reason": "Pareto frontier=1; article disposition is the join of frontier-channel decisions. Compatibility representative: Magnitude-free: important, sufficiently supported OPEN_NEW branch.",
+      "decision_cause": {
+        "target_kernel_node_id": null,
+        "operation": "OPEN_NEW",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 1.0,
+        "target_importance": 1.0,
+        "reason": "Phase10E proxy Human-Gold frozen effect",
+        "exploration_candidate": true,
+        "target_node_type": null,
+        "support_unit_ids": [
+          "proxy-unit-05"
+        ],
+        "jurisdiction_anchor_ids": [
+          "00000000-0000-0000-0000-000000000006"
+        ],
+        "grounding_class": "DIRECT",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "PHASE10E_PROXY_FIXTURE"
+      },
+      "strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2",
+        "selection": "ordinal-pareto-frontier-v0.1",
+        "article_aggregation": "attention-join-v0.1",
+        "effect_calibration": {
+          "calibration_id": "magnitude-free",
+          "version": "magnitude-free-v0.1",
+          "uses_raw_change_magnitude": false,
+          "authority": "operation+epistemic-band+importance-band+active-role-band"
+        },
+        "effect_admission": {
+          "admission_id": "effect-anchored-open-new",
+          "version": "effect-anchored-open-new-v0.2",
+          "open_new_requires_effect_jurisdiction_anchor": true,
+          "uses_raw_change_magnitude": false
+        },
+        "public_update_projection": "strategy-decision-cause-with-legacy-unbound-fallback-v0.1",
+        "decision_scope": "strategy-bound-scope-v0.1",
+        "effect_existence": "legal-semantic-relation-v0.1"
+      },
+      "proxy_rationale": "A genuinely new, important, well-supported branch inside RAOS jurisdiction can justify immediate attention."
+    },
+    {
+      "id": "O2_open_new_important_weak",
+      "regime": "OPEN_NEW",
+      "gold_disposition": "WATCH",
+      "predicted_disposition": "WATCH",
+      "exact_hit": true,
+      "reason": "Pareto frontier=1; article disposition is the join of frontier-channel decisions. Compatibility representative: Magnitude-free: genuine OPEN_NEW branch worth keeping in view.",
+      "decision_cause": {
+        "target_kernel_node_id": null,
+        "operation": "OPEN_NEW",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 0.0,
+        "target_importance": 1.0,
+        "reason": "Phase10E proxy Human-Gold frozen effect",
+        "exploration_candidate": true,
+        "target_node_type": null,
+        "support_unit_ids": [
+          "proxy-unit-06"
+        ],
+        "jurisdiction_anchor_ids": [
+          "00000000-0000-0000-0000-000000000007"
+        ],
+        "grounding_class": "PARTIAL",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "PHASE10E_PROXY_FIXTURE"
+      },
+      "strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2",
+        "selection": "ordinal-pareto-frontier-v0.1",
+        "article_aggregation": "attention-join-v0.1",
+        "effect_calibration": {
+          "calibration_id": "magnitude-free",
+          "version": "magnitude-free-v0.1",
+          "uses_raw_change_magnitude": false,
+          "authority": "operation+epistemic-band+importance-band+active-role-band"
+        },
+        "effect_admission": {
+          "admission_id": "effect-anchored-open-new",
+          "version": "effect-anchored-open-new-v0.2",
+          "open_new_requires_effect_jurisdiction_anchor": true,
+          "uses_raw_change_magnitude": false
+        },
+        "public_update_projection": "strategy-decision-cause-with-legacy-unbound-fallback-v0.1",
+        "decision_scope": "strategy-bound-scope-v0.1",
+        "effect_existence": "legal-semantic-relation-v0.1"
+      },
+      "proxy_rationale": "An important new branch with weak support should preserve future option value through WATCH, not immediate deep attention."
+    },
+    {
+      "id": "RT1_runtime_defer_engage",
+      "regime": "RUNTIME",
+      "gold_disposition": "WATCH",
+      "predicted_disposition": "WATCH",
+      "exact_hit": true,
+      "reason": "Pareto frontier=1; article disposition is the join of frontier-channel decisions. Compatibility representative: Magnitude-free: important, sufficiently supported CHALLENGE. RuntimeContext: camera-ready/deadline is imminent and interruptibility is LOW. Defer existing ENGAGE to WATCH. Runtime cannot invent attention from Δ=NONE.",
+      "decision_cause": {
+        "target_kernel_node_id": "00000000-0000-0000-0000-000000000008",
+        "operation": "CHALLENGE",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 1.0,
+        "target_importance": 1.0,
+        "reason": "Phase10E proxy Human-Gold frozen effect",
+        "exploration_candidate": false,
+        "target_node_type": "BELIEF",
+        "support_unit_ids": [
+          "proxy-unit-07"
+        ],
+        "jurisdiction_anchor_ids": [],
+        "grounding_class": "DIRECT",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "PHASE10E_PROXY_FIXTURE"
+      },
+      "strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2",
+        "selection": "ordinal-pareto-frontier-v0.1",
+        "article_aggregation": "attention-join-v0.1",
+        "effect_calibration": {
+          "calibration_id": "magnitude-free",
+          "version": "magnitude-free-v0.1",
+          "uses_raw_change_magnitude": false,
+          "authority": "operation+epistemic-band+importance-band+active-role-band"
+        },
+        "effect_admission": {
+          "admission_id": "effect-anchored-open-new",
+          "version": "effect-anchored-open-new-v0.2",
+          "open_new_requires_effect_jurisdiction_anchor": true,
+          "uses_raw_change_magnitude": false
+        },
+        "public_update_projection": "strategy-decision-cause-with-legacy-unbound-fallback-v0.1",
+        "decision_scope": "strategy-bound-scope-v0.1",
+        "effect_existence": "legal-semantic-relation-v0.1"
+      },
+      "proxy_rationale": "A normally ENGAGE-grade item can be deferred when the user is under a tight deadline and interruption is costly."
+    },
+    {
+      "id": "N1_no_delta_material_in_domain",
+      "regime": "NO_DELTA",
+      "gold_disposition": "AWARE",
+      "predicted_disposition": "AWARE",
+      "exact_hit": true,
+      "reason": "Δ=NONE with situational awareness: worth knowing, no cognitive write or watch obligation.",
+      "decision_cause": null,
+      "strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2",
+        "selection": "ordinal-pareto-frontier-v0.1",
+        "article_aggregation": "attention-join-v0.1",
+        "effect_calibration": {
+          "calibration_id": "magnitude-free",
+          "version": "magnitude-free-v0.1",
+          "uses_raw_change_magnitude": false,
+          "authority": "operation+epistemic-band+importance-band+active-role-band"
+        },
+        "effect_admission": {
+          "admission_id": "effect-anchored-open-new",
+          "version": "effect-anchored-open-new-v0.2",
+          "open_new_requires_effect_jurisdiction_anchor": true,
+          "uses_raw_change_magnitude": false
+        },
+        "public_update_projection": "strategy-decision-cause-with-legacy-unbound-fallback-v0.1",
+        "decision_scope": "strategy-bound-scope-v0.1",
+        "effect_existence": "legal-semantic-relation-v0.1"
+      },
+      "proxy_rationale": "Material in-domain world awareness can be worth seeing even without a cognitive-state transition."
+    },
+    {
+      "id": "N2_no_delta_not_material",
+      "regime": "NO_DELTA",
+      "gold_disposition": "DROP",
+      "predicted_disposition": "DROP",
+      "exact_hit": true,
+      "reason": "No canonical cognitive effect. Δ=NONE is DROP; topic/quality/threat cannot invent attention.",
+      "decision_cause": null,
+      "strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2",
+        "selection": "ordinal-pareto-frontier-v0.1",
+        "article_aggregation": "attention-join-v0.1",
+        "effect_calibration": {
+          "calibration_id": "magnitude-free",
+          "version": "magnitude-free-v0.1",
+          "uses_raw_change_magnitude": false,
+          "authority": "operation+epistemic-band+importance-band+active-role-band"
+        },
+        "effect_admission": {
+          "admission_id": "effect-anchored-open-new",
+          "version": "effect-anchored-open-new-v0.2",
+          "open_new_requires_effect_jurisdiction_anchor": true,
+          "uses_raw_change_magnitude": false
+        },
+        "public_update_projection": "strategy-decision-cause-with-legacy-unbound-fallback-v0.1",
+        "decision_scope": "strategy-bound-scope-v0.1",
+        "effect_existence": "legal-semantic-relation-v0.1"
+      },
+      "proxy_rationale": "Without cognitive change, non-material evidence should not consume human-visible attention merely because attention momentum exists."
+    }
+  ]
+}
