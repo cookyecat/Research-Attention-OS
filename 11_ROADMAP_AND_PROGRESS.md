@@ -129,8 +129,8 @@ Core invariants:
 | Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **CLOSED / OPERATIONAL BASELINE ESTABLISHED** |
 | Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **9A PREREGISTERED / OUTCOME SAMPLING PAUSED FOR PARITY GATE** |
 | Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence | **10D.6E CLOSED / 10D.6F SUPPORT-BINDING NEXT** |
-| Phase 11 — External Attention Infrastructure | 11A Acquisition Expansion → 11B Query Expansion → 11C P Evidence → 11D Delivery → 11E Agent Interface | **11A–11D CLOSED / 11E NEXT** |
-| Phase 12 — Personalization / Scale | Questionnaire prior + trajectory residuals + multi-user/product validation | **NOT STARTED / MOVED FROM OLD PHASE 11** |
+| Phase 11 — External Attention Infrastructure | 11A Acquisition Expansion → 11B Query Expansion → 11C P Evidence → 11D Delivery → 11E Agent Interface | **CLOSED 2026-09-15** |
+| Phase 12 — Personalization / Scale | Questionnaire prior + trajectory residuals + multi-user/product validation | **NEXT / MOVED FROM OLD PHASE 11** |
 
 Current strategic position:
 
@@ -1470,7 +1470,7 @@ The 10 existing arXiv Sources were presentation-backfilled from official arXiv H
 
 A dogfood race where compact list data could overwrite full Source detail was removed by separating selected detail state from the compact index. Contents now appears only when a full body exists, uses real smooth-scroll controls with active-section tracking, and paper progress is section-based. No cognition or authority semantics changed.
 
-## Phase 11 — External Attention Infrastructure — STARTED 2026-09-15
+## Phase 11 — External Attention Infrastructure — CLOSED 2026-09-15
 
 Top-level plan: `198_PHASE11_EXTERNAL_ATTENTION_INFRASTRUCTURE_PLAN.md`. The prior Phase 11 Personalization / Scale plan is moved to Phase 12. Phase 11 executes in the frozen order `11A Acquisition Expansion → 11B Query Expansion / Active Acquisition → 11C P Evidence Sensor & Estimator → 11D Delivery Plane → 11E Agent Interface / Skill`. Peripheral machinery may be borrowed aggressively; semantic authority remains RAOS.
 
@@ -1499,4 +1499,11 @@ Real dogfood produced 15 current public signal rows across HN/Bilibili/Weibo; fo
 
 Preregistration: `205_PHASE11D_DELIVERY_PLANE_PREREGISTRATION.md`. Result: `206_PHASE11D_DELIVERY_PLANE_RESULT.md`. Every newly persisted production AttentionPlan now receives exactly one idempotent DeliveryEnvelope. `DROP → SUPPRESSED`, `AWARE → PASSIVE`, `WATCH → HELD_BY_WATCH`, and `ENGAGE → INTERRUPT` are regression-locked; Delivery has no authority to alter the source disposition.
 
-Real dogfood delivered one genuine `ENGAGE / PRIORITY` historical plan over localhost WebSocket, preserved Email/Push as `UNAVAILABLE` because they were not configured, recorded one human interruption, and accepted a production acknowledgement. A global frontend listener now renders only already-authorized realtime ENGAGE envelopes. **Phase 11E Agent Interface / Skill is next.**
+Real dogfood delivered one genuine `ENGAGE / PRIORITY` historical plan over localhost WebSocket, preserved Email/Push as `UNAVAILABLE` because they were not configured, recorded one human interruption, and accepted a production acknowledgement. A global frontend listener now renders only already-authorized realtime ENGAGE envelopes.
+
+
+### Phase 11E — Agent Interface / Skill — CLOSED 2026-09-15
+
+Preregistration: `207_PHASE11E_AGENT_INTERFACE_SKILL_PREREGISTRATION.md`. Result: `208_PHASE11E_AGENT_INTERFACE_SKILL_RESULT.md`. External agents now use one stable `/agent/v1` API plus the `raos` CLI and `skills/raos/SKILL.md`. Read-only `today`, `attention`, `why`, and WATCH inspection never trigger cognition; explicit `analyze` reuses the canonical pipeline; `watch` creates ordinary delegated WATCH responsibility and optional Active Acquisition; `unwatch` cancels responsibility and disables the corresponding query bundle while preserving history.
+
+Real CLI dogfood read Today, explained an existing decision without reanalysis, created `Google EnvHarness` as an Active Acquisition WATCH with four bounded queries, inspected and cancelled it cleanly, and ran explicit Source analysis through canonical Attention + Delivery. Phase 11A–11E focused regression closed at `108 passed`. **Phase 11 is CLOSED; Phase 12 Personalization / Scale is next.**

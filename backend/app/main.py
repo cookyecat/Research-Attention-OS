@@ -6,6 +6,7 @@ from app.db import get_db
 from sqlalchemy.orm import Session
 
 from app.api.analysis import router as analysis_router
+from app.api.agent import router as agent_router
 from app.api.acquisition import router as acquisition_router
 from app.api.bootstrap import router as bootstrap_router
 from app.api.delivery import router as delivery_router
@@ -37,6 +38,7 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     application.include_router(sources_router, prefix="/sources", tags=["sources"])
+    application.include_router(agent_router, prefix="/agent/v1", tags=["agent"])
     application.include_router(acquisition_router, prefix="/acquisition", tags=["acquisition"])
     application.include_router(analysis_router, prefix="/analysis", tags=["analysis"])
     application.include_router(analysis_router, prefix="/scheduler", tags=["scheduler"])

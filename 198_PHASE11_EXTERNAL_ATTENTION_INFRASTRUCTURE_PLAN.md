@@ -1,6 +1,6 @@
 # Phase 11 — External Attention Infrastructure
 
-Status: **TOP-LEVEL PLAN FROZEN / EXECUTION STARTED**
+Status: **CLOSED — 11A–11E COMPLETE 2026-09-15**
 Date: 2026-09-15
 Depends on: Phase 1–10 cognition / attention baselines, Acquisition Plane v0.1, frozen D/S/P semantics.
 
@@ -92,3 +92,9 @@ Deferred without reopening 11A core. Implement after/alongside Phase 11C when pl
 - acquisition-only source priority for scheduling; MUST NOT influence D/S/P/Attention authority.
 
 Invariant: copy acquisition transport/signal machinery aggressively; do not copy Hotspot semantics into RAOS truth or cognition authority.
+
+## 6. Closure
+
+All five subphases closed on 2026-09-15. RAOS now has broad acquisition, WATCH-driven query expansion, real public-attention evidence for event-level P, durable sparse delivery, and a stable external Agent API/CLI/Skill that preserves one canonical cognition authority.
+
+The Acquisition Hardening backlog above remains intentional infrastructure follow-up and does not reopen Phase 11 semantics. Phase 12 — Personalization / Scale — is next.

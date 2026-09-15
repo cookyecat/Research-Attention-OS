@@ -18,6 +18,11 @@ class DeliveryTransportError(RuntimeError):
     pass
 
 
+def _email_recipients() -> list[str]:
+    raw = settings.delivery_email_to or ""
+    return [item.strip() for item in raw.replace(";", ",").split(",") if item.strip()]
+
+
 def _delivery_text(envelope: DeliveryEnvelope) -> str:
     payload = envelope.payload or {}
     title = payload.get("title") or "RAOS attention item"
@@ -25,17 +30,19 @@ def _delivery_text(envelope: DeliveryEnvelope) -> str:
     url = payload.get("canonical_url") or ""
     return f"{title}\n\nRAOS: {envelope.disposition} / {envelope.urgency}\n{reason}\n\n{url}".strip()
 def send_email_delivery(envelope: DeliveryEnvelope) -> None:
-    if not settings.delivery_email_to or not settings.delivery_smtp_host:
+    recipients = _email_recipients()
+    if not recipients or not settings.delivery_smtp_host:
         raise DeliveryTransportError("Email transport is not configured")
     sender = settings.delivery_smtp_from or settings.delivery_smtp_username or "raos@localhost"
     message = EmailMessage()
     message["From"] = sender
-    message["To"] = settings.delivery_email_to
+    message["To"] = ", ".join(recipients)
     message["Subject"] = f"RAOS · {envelope.urgency} · {(envelope.payload or {}).get('title') or 'Attention'}"
     message.set_content(_delivery_text(envelope))
     try:
-        with smtplib.SMTP(settings.delivery_smtp_host, settings.delivery_smtp_port, timeout=20) as smtp:
-            if settings.delivery_smtp_starttls:
+        smtp_cls = smtplib.SMTP_SSL if settings.delivery_smtp_ssl else smtplib.SMTP
+        with smtp_cls(settings.delivery_smtp_host, settings.delivery_smtp_port, timeout=20) as smtp:
+            if settings.delivery_smtp_starttls and not settings.delivery_smtp_ssl:
                 smtp.starttls()
             if settings.delivery_smtp_username:
                 smtp.login(settings.delivery_smtp_username, settings.delivery_smtp_password or "")

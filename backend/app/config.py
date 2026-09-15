@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     delivery_smtp_password: str | None = None
     delivery_smtp_from: str | None = None
     delivery_smtp_starttls: bool = True
+    delivery_smtp_ssl: bool = False
     delivery_push_webhook_url: str | None = None
     scheduler_version: str = "raos-scheduler-0.5.0"
     attention_policy_version: str = "raos-attention-policy-0.5.0"

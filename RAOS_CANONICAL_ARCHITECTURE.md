@@ -135,6 +135,8 @@ Phase 11C realizes the P sensor boundary without changing P semantics. Raw views
 
 Phase 11D adds the Delivery Plane as an execution boundary downstream of Attention. Every new persisted `AttentionPlan` owns at most one durable `DeliveryEnvelope`. Delivery policy maps the existing disposition to execution behavior but may never create, promote, downgrade, or reinterpret Attention. WATCH remains delegated future-attention responsibility: only a later canonical WATCH recheck may produce a new AWARE/ENGAGE plan that becomes deliverable. External transport availability/failure cannot mutate the source AttentionPlan.
 
+Phase 11E adds the Agent Interface boundary. External agents use `/agent/v1`, the `raos` CLI, or `skills/raos/SKILL.md` to invoke existing RAOS capabilities; these surfaces are orchestration/presentation only. Read-only calls never trigger cognition, `analyze` enters the ordinary canonical pipeline, `watch` creates the same durable WATCH object used by RAOS, and `why` explains stored decisions without reanalysis. No Agent surface may instantiate `AttentionPlan`, run an independent importance/relevance model, or mutate Kernel state outside existing authorization paths. MCP/A2A may later wrap this API but must preserve the same semantic authority boundary.
+
 ## 3. Attention authority split
 
 

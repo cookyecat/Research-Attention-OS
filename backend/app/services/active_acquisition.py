@@ -195,9 +195,23 @@ def project_watch_observation_intent(db, watch) -> WatchObservationIntent:
     target = " ".join(str(watch.target_ref or "").split())
     if not target:
         return WatchObservationIntent("INSUFFICIENT_CONTEXT", None, None, "WATCH target_ref is empty")
-    # Long/question-like targets are self-contained enough to monitor. Generic
-    # trigger labels such as `code release` require origin context.
-    self_contained = len(target) >= 48 or "?" in target or len(target.split()) >= 7
+    # Long/question-like targets are self-contained enough to monitor. Short
+    # named entities/topics are also legitimate observation intents; generic
+    # trigger labels such as `code release` still require origin context.
+    generic_triggers = {
+        "code release", "paper release", "benchmark update", "new evidence",
+        "funding event", "adoption event", "independent replication",
+    }
+    named_target_types = {
+        "ENTITY", "COMPANY", "RESEARCHER", "PAPER", "METHOD", "MODEL",
+        "BENCHMARK", "TREND",
+    }
+    self_contained = (
+        len(target) >= 48
+        or "?" in target
+        or len(target.split()) >= 7
+        or (str(watch.target_type).upper() in named_target_types and target.casefold() not in generic_triggers)
+    )
     context_parts = [f"WATCH type: {watch.target_type}", f"Reason: {watch.created_reason}"]
     source = None
     if getattr(watch, "analysis_run_id", None):

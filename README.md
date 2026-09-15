@@ -132,6 +132,16 @@ Phase 11C adds a compact public-attention signal ledger for HN/Bilibili/Weibo/X-
 
 Phase 11D adds a durable Delivery Plane downstream of Attention. DROP is suppressed, AWARE is passive, WATCH remains held by delegated monitoring responsibility, and ENGAGE becomes a realtime interrupt envelope. WebSocket/in-app, optional SMTP Email, and optional Push webhook are replaceable transports over the same outbox. Transport configuration or failure never changes the underlying Attention disposition.
 
+Phase 11E exposes the same canonical attention infrastructure through `/agent/v1`, the `raos` CLI, and `skills/raos/SKILL.md`. External agents may read Today/Attention, request explicit canonical analysis, delegate/cancel WATCH responsibilities, and explain stored decisions; they may not assign Attention dispositions themselves. Run `raos capabilities` to inspect the live contract.
+
+```bash
+raos capabilities
+raos today
+raos analyze <url-or-source-id>
+raos watch "Google EnvHarness"
+raos why <source-id>
+```
+
 ## D / S / P no-Delta awareness
 
 When no legal cognitive effect exists, RAOS does **not** automatically DROP. It evaluates audited event semantics using:
@@ -148,7 +158,7 @@ AWARE iff S AND (D OR P)
 
 ## Database
 
-Current migration head: `0009_acquisition_plane_v01`.
+Current migration head: `0011_delivery_plane`.
 
 SQLite is the active lightweight local dogfood database; PostgreSQL 16+ with pgvector remains the target scalable database.
 
