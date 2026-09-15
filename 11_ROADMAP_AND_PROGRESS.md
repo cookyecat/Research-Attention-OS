@@ -130,7 +130,7 @@ Core invariants:
 | Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **9A PREREGISTERED / OUTCOME SAMPLING PAUSED FOR PARITY GATE** |
 | Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence | **10D.6E CLOSED / 10D.6F SUPPORT-BINDING NEXT** |
 | Phase 11 — External Attention Infrastructure | 11A Acquisition Expansion → 11B Query Expansion → 11C P Evidence → 11D Delivery → 11E Agent Interface | **CLOSED 2026-09-15** |
-| Phase 12 — Personalization / Scale | Questionnaire prior + trajectory residuals + multi-user/product validation | **NEXT / MOVED FROM OLD PHASE 11** |
+| Phase 12 — Personalized Attention Control & Multi-Actor Calibration | 12A boundary/feedback semantics → 12B fresh calibration v2 → 12C trajectory residuals → 12D multi-actor delegation → 12E multi-user scale | **12A ACTIVE / REDESIGNED 2026-09-15** |
 
 Current strategic position:
 
@@ -1506,4 +1506,4 @@ Real dogfood delivered one genuine `ENGAGE / PRIORITY` historical plan over loca
 
 Preregistration: `207_PHASE11E_AGENT_INTERFACE_SKILL_PREREGISTRATION.md`. Result: `208_PHASE11E_AGENT_INTERFACE_SKILL_RESULT.md`. External agents now use one stable `/agent/v1` API plus the `raos` CLI and `skills/raos/SKILL.md`. Read-only `today`, `attention`, `why`, and WATCH inspection never trigger cognition; explicit `analyze` reuses the canonical pipeline; `watch` creates ordinary delegated WATCH responsibility and optional Active Acquisition; `unwatch` cancels responsibility and disables the corresponding query bundle while preserving history.
 
-Real CLI dogfood read Today, explained an existing decision without reanalysis, created `Google EnvHarness` as an Active Acquisition WATCH with four bounded queries, inspected and cancelled it cleanly, and ran explicit Source analysis through canonical Attention + Delivery. Phase 11A–11E focused regression closed at `108 passed`. **Phase 11 is CLOSED; Phase 12 Personalization / Scale is next.**
+Real CLI dogfood read Today, explained an existing decision without reanalysis, created `Google EnvHarness` as an Active Acquisition WATCH with four bounded queries, inspected and cancelled it cleanly, and ran explicit Source analysis through canonical Attention + Delivery. Phase 11A–11E focused regression closed at `108 passed`. **Phase 11 is CLOSED; redesigned Phase 12A Personalization Boundary & Feedback Semantics is ACTIVE.**
