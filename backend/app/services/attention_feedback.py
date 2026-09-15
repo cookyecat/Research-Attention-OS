@@ -21,6 +21,24 @@ TARGETED_OPERATIONS = frozenset(
     {CognitiveEffectKind.REINFORCE.value, CognitiveEffectKind.CHALLENGE.value}
 )
 
+CAUSAL_SCOPES = frozenset({
+    "PERCEPTION_ERROR",
+    "COGNITION_ERROR",
+    "AWARENESS_ERROR",
+    "RUNTIME_CAPTURE_ERROR",
+    "CORE_POLICY_ERROR",
+    "USER_POLICY_RESIDUAL",
+    "DELIVERY_PREFERENCE",
+    "ACTOR_CONTEXT_ERROR",
+})
+EVIDENCE_PROVENANCE = frozenset({
+    "HUMAN_EXPLICIT",
+    "ASSISTANT_PROXY",
+    "PASSIVE_BEHAVIOR",
+    "AGENT_CONTEXT",
+    "SYSTEM_INFERRED",
+})
+
 
 def _operation_value(raw) -> str | None:
     if raw is None:
@@ -208,6 +226,70 @@ def merge_correction(system: dict, overrides: dict, db: Session | None = None) -
     return merged
 
 
+def _feedback_class(kind: str, corrected_fields: list[str]) -> str:
+    if str(kind).upper() == FeedbackKind.CONFIRM.value:
+        return "CONFIRMATION"
+    cognitive = any(field == "delta_content" or field == "update" or field.startswith("update.") for field in corrected_fields)
+    policy = "disposition" in corrected_fields
+    if cognitive and policy:
+        return "MIXED_CORRECTION"
+    if cognitive:
+        return "COGNITIVE_ADJUDICATION"
+    if policy:
+        return "ATTENTION_POLICY_CORRECTION"
+    return "UNRESOLVED"
+
+
+def build_attribution(
+    *,
+    kind: str,
+    corrected_fields: list[str],
+    causal_scope: str | None,
+    evidence_provenance: str | None,
+    rationale: str | None,
+) -> dict:
+    feedback_class = _feedback_class(kind, corrected_fields)
+    provenance = str(evidence_provenance or "HUMAN_EXPLICIT").upper()
+    if provenance not in EVIDENCE_PROVENANCE:
+        raise HTTPException(422, f"Invalid evidence_provenance: {evidence_provenance}")
+
+    explicit_scope = str(causal_scope).upper() if causal_scope else None
+    if explicit_scope is not None and explicit_scope not in CAUSAL_SCOPES:
+        raise HTTPException(422, f"Invalid causal_scope: {causal_scope}")
+
+    if str(kind).upper() == FeedbackKind.CONFIRM.value:
+        scope = "NONE"
+        scope_source = "CONFIRMATION"
+    elif explicit_scope is not None:
+        scope = explicit_scope
+        scope_source = "EXPLICIT"
+    elif feedback_class == "COGNITIVE_ADJUDICATION":
+        scope = "COGNITION_ERROR"
+        scope_source = "CONSERVATIVE_DERIVATION"
+    else:
+        scope = "UNRESOLVED"
+        scope_source = "UNRESOLVED"
+
+    if scope == "USER_POLICY_RESIDUAL" and feedback_class != "ATTENTION_POLICY_CORRECTION":
+        raise HTTPException(422, "USER_POLICY_RESIDUAL requires a disposition-only Attention-policy correction")
+    if scope == "COGNITION_ERROR" and feedback_class not in {"COGNITIVE_ADJUDICATION", "MIXED_CORRECTION"}:
+        raise HTTPException(422, "COGNITION_ERROR requires a cognitive adjudication field")
+
+    personalization_eligible = (
+        scope == "USER_POLICY_RESIDUAL"
+        and feedback_class == "ATTENTION_POLICY_CORRECTION"
+        and provenance == "HUMAN_EXPLICIT"
+    )
+    return {
+        "causal_scope": scope,
+        "scope_source": scope_source,
+        "feedback_class": feedback_class,
+        "evidence_provenance": provenance,
+        "personalization_eligible": personalization_eligible,
+        "rationale": str(rationale) if rationale else None,
+    }
+
+
 def feedback_public(row: AttentionFeedback) -> dict:
     return {
         "id": str(row.id),
@@ -217,6 +299,7 @@ def feedback_public(row: AttentionFeedback) -> dict:
         "system_prediction": row.system_prediction,
         "user_correction": row.user_correction,
         "corrected_fields": row.corrected_fields or [],
+        "attribution": row.attribution or {},
         "created_at": row.created_at.isoformat() if row.created_at else None,
     }
 
@@ -273,6 +356,9 @@ def record_feedback(
     plan_id: UUID,
     kind: str,
     overrides: dict | None = None,
+    causal_scope: str | None = None,
+    evidence_provenance: str | None = "HUMAN_EXPLICIT",
+    attribution_rationale: str | None = None,
 ) -> AttentionFeedback:
     plan = db.get(AttentionPlan, plan_id)
     if plan is None:
@@ -303,6 +389,14 @@ def record_feedback(
         if not corrected_fields:
             raise HTTPException(422, "CORRECT must change at least one field from the system prediction")
 
+    attribution = build_attribution(
+        kind=kind_upper,
+        corrected_fields=corrected_fields,
+        causal_scope=causal_scope,
+        evidence_provenance=evidence_provenance,
+        rationale=attribution_rationale,
+    )
+
     row = AttentionFeedback(
         attention_plan_id=plan.id,
         analysis_run_id=plan.analysis_run_id,
@@ -310,6 +404,7 @@ def record_feedback(
         system_prediction=system,
         user_correction=user,
         corrected_fields=corrected_fields,
+        attribution=attribution,
         system_attention_state=system.get("disposition"),
         user_attention_state=user.get("disposition"),
         system_modes=[],

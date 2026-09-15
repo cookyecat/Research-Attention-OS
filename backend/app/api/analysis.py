@@ -155,6 +155,9 @@ def submit_attention_feedback(plan_id: UUID, body: AttentionFeedbackIn, db: Sess
         plan_id=plan_id,
         kind=body.kind,
         overrides=overrides_from_body(body),
+        causal_scope=body.causal_scope,
+        evidence_provenance=body.evidence_provenance,
+        attribution_rationale=body.attribution_rationale,
     )
     db.commit()
     return feedback_public(row)

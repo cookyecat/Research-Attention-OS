@@ -55,6 +55,7 @@ class AttentionFeedback(UUIDPrimaryKeyMixin, Base):
     system_prediction: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     user_correction: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     corrected_fields: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    attribution: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     # Legacy compatibility columns (mirrored from cognitive contract when present).
     system_attention_state: Mapped[str | None] = mapped_column(String, nullable=True)
     user_attention_state: Mapped[str | None] = mapped_column(String, nullable=True)

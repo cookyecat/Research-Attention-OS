@@ -98,6 +98,9 @@ class AttentionFeedbackIn(BaseModel):
     disposition: str | None = None
     update: CognitiveUpdateFeedbackIn | None = None
     delta_content: str | None = None
+    causal_scope: str | None = None
+    evidence_provenance: str = "HUMAN_EXPLICIT"
+    attribution_rationale: str | None = None
 
 
 class SourceEdgeCreate(BaseModel):
