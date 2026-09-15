@@ -22,6 +22,7 @@ class Watch(UUIDPrimaryKeyMixin, TimestampMixin, Base):
 
     triggers: Mapped[list["WatchTrigger"]] = relationship(back_populates="watch", cascade="all, delete-orphan")
     checks: Mapped[list["WatchCheck"]] = relationship(cascade="all, delete-orphan")
+    delegations: Mapped[list["WatchDelegation"]] = relationship(cascade="all, delete-orphan")
 
 
 class WatchTrigger(UUIDPrimaryKeyMixin, TimestampMixin, Base):
@@ -46,3 +47,14 @@ class WatchCheck(UUIDPrimaryKeyMixin, Base):
     disposition: Mapped[str] = mapped_column(String, nullable=False)
     outcome: Mapped[str] = mapped_column(String, nullable=False)
     checked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class WatchDelegation(UUIDPrimaryKeyMixin, TimestampMixin, Base):
+    __tablename__ = "watch_delegations"
+
+    watch_id: Mapped[UUID] = mapped_column(Uuid, ForeignKey("watches.id"), nullable=False, index=True)
+    declared_actor_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    status: Mapped[str] = mapped_column(String, nullable=False, default="ACTIVE", index=True)
+    request_context: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    created_reason: Mapped[str] = mapped_column(Text, nullable=False)
+    cancelled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

@@ -14,13 +14,24 @@ from app.models.acquisition import SourceDefinition
 from app.models.scheduler import AttentionPlan
 from app.models.source import Source
 from app.models.watch import Watch, WatchCheck, WatchTrigger
+from app.services.agent_delegations import (
+    DEFAULT_DECLARED_ACTOR_ID,
+    cancel_delegation,
+    canonical_trigger_types,
+    delegation_public,
+    delegations_for_watch,
+    ensure_delegation,
+    find_shared_agent_watch,
+    normalize_actor_id,
+    watch_is_core_owned,
+)
 from app.services.active_acquisition import parse_bundle_locator, upsert_watch_query_bundle
 from app.services.analysis_runs import attention_plans_for_run, latest_run_for_source, plan_public, run_public
 from app.services.ingestion import ingest_url
 from app.services.pipeline import run_pipeline
 
 router = APIRouter()
-AGENT_API_VERSION = "agent-interface-v0.1"
+AGENT_API_VERSION = "agent-interface-v0.2"
 
 
 @router.get("/capabilities")
@@ -33,14 +44,16 @@ def capabilities():
             "read_only_commands": ["capabilities", "today", "attention", "watch-status", "why"],
             "cognition_commands": ["analyze"],
             "delegation_commands": ["watch", "unwatch"],
+            "multi_actor_watch_sharing": True,
+            "actor_identity_trust": "declared_provenance_only",
         },
         "commands": {
             "today": "Return the current human-visible residue plus delegated WATCH responsibilities.",
             "attention": "Return the latest stored canonical AttentionPlan per candidate.",
             "analyze": "Ingest or reuse a Source and run the canonical RAOS pipeline.",
-            "watch": "Delegate future-attention responsibility and optionally start active acquisition.",
+            "watch": "Delegate actor provenance into a canonical WATCH and optionally start active acquisition.",
             "watch-status": "Inspect a WATCH and its accumulated checks without cognition.",
-            "unwatch": "Cancel the responsibility and disable its active acquisition bundle.",
+            "unwatch": "Cancel this actor delegation; release an agent-only WATCH only when no delegation remains.",
             "why": "Explain the latest stored canonical judgment without reanalysis.",
         },
     }
@@ -59,6 +72,10 @@ class AgentAnalyzeIn(BaseModel):
 
 
 class AgentWatchIn(BaseModel):
+    model_config = {"extra": "forbid"}
+
+    actor_id: str = Field(default=DEFAULT_DECLARED_ACTOR_ID, min_length=1, max_length=200)
+    request_context: dict = Field(default_factory=dict)
     topic: str = Field(min_length=1, max_length=1000)
     target_type: str = "TREND"
     reason: str = "Delegated by an external agent through the RAOS Agent Interface."
@@ -74,6 +91,7 @@ class AgentWatchIn(BaseModel):
     def validate_semantics(self):
         allowed_types = {item.value for item in WatchTargetType}
         allowed_triggers = {item.value for item in TriggerType}
+        self.actor_id = normalize_actor_id(self.actor_id)
         self.target_type = self.target_type.upper()
         self.triggers = [str(item).upper() for item in self.triggers]
         if self.target_type not in allowed_types:
@@ -84,6 +102,11 @@ class AgentWatchIn(BaseModel):
         if not self.triggers:
             raise ValueError("WATCH requires at least one trigger")
         return self
+
+
+class AgentWatchCancelIn(BaseModel):
+    model_config = {"extra": "forbid"}
+    actor_id: str = Field(default=DEFAULT_DECLARED_ACTOR_ID, min_length=1, max_length=200)
 
 
 def _source_summary(source: Source | None) -> dict | None:
@@ -138,6 +161,7 @@ def _watch_public(db: Session, watch: Watch) -> dict:
     checks = db.execute(
         select(WatchCheck).where(WatchCheck.watch_id == watch.id).order_by(WatchCheck.checked_at)
     ).scalars().all()
+    delegations = delegations_for_watch(db, watch.id)
     return {
         "id": str(watch.id),
         "target_type": watch.target_type,
@@ -145,6 +169,8 @@ def _watch_public(db: Session, watch: Watch) -> dict:
         "status": watch.status,
         "created_reason": watch.created_reason,
         "created_at": watch.created_at.isoformat() if watch.created_at else None,
+        "delegation_count": sum(1 for row in delegations if row.status == "ACTIVE"),
+        "delegations": [delegation_public(row) for row in delegations],
         "triggers": [
             {"id": str(row.id), "trigger_type": row.trigger_type,
              "last_triggered_at": row.last_triggered_at.isoformat() if row.last_triggered_at else None}
@@ -239,20 +265,50 @@ def analyze(body: AgentAnalyzeIn, db: Session = Depends(get_db)):
 
 @router.post("/watch")
 def create_agent_watch(body: AgentWatchIn, db: Session = Depends(get_db)):
-    watch = Watch(
-        target_type=body.target_type,
-        target_ref=body.topic.strip(),
-        status="ACTIVE",
-        created_reason=body.reason,
-        kernel_target_ids=[],
+    watch = find_shared_agent_watch(
+        db, target_type=body.target_type, target_ref=body.topic
     )
-    db.add(watch)
-    db.flush()
-    for trigger in body.triggers:
-        db.add(WatchTrigger(watch_id=watch.id, trigger_type=trigger, trigger_config={}))
-    db.flush()
+    shared_watch_reused = watch is not None
+    if watch is not None:
+        existing_triggers = canonical_trigger_types(db, watch.id)
+        requested_triggers = tuple(sorted(set(body.triggers)))
+        if existing_triggers != requested_triggers:
+            raise HTTPException(
+                409,
+                "An active shared WATCH exists for this target with different trigger semantics; "
+                "Phase 12D v0.1 will not silently broaden or duplicate the responsibility.",
+            )
+    else:
+        watch = Watch(
+            target_type=body.target_type,
+            target_ref=body.topic.strip(),
+            status="ACTIVE",
+            created_reason=body.reason,
+            kernel_target_ids=[],
+        )
+        db.add(watch)
+        db.flush()
+        for trigger in body.triggers:
+            db.add(WatchTrigger(watch_id=watch.id, trigger_type=trigger, trigger_config={}))
+        db.flush()
+
+    context = dict(body.request_context or {})
+    context.update({
+        "active_acquisition_requested": bool(body.active_acquisition),
+        "triggers": list(body.triggers),
+        "interface_version": AGENT_API_VERSION,
+    })
+    delegation, delegation_created = ensure_delegation(
+        db,
+        watch=watch,
+        declared_actor_id=body.actor_id,
+        reason=body.reason,
+        request_context=context,
+    )
+
     acquisition = None
-    if body.active_acquisition:
+    bundle = _active_bundle_for_watch(db, watch.id)
+    if body.active_acquisition and (bundle is None or not bundle.enabled):
         try:
             source_def, expansion, spec = upsert_watch_query_bundle(
                 db,
@@ -270,9 +326,19 @@ def create_agent_watch(body: AgentWatchIn, db: Session = Depends(get_db)):
             }
         except ValueError as exc:
             raise HTTPException(400, str(exc)) from exc
+    elif bundle is not None:
+        acquisition = {
+            "source_definition_id": str(bundle.id),
+            "enabled": bundle.enabled,
+            "shared_existing_bundle": True,
+        }
+
     return {
         "version": AGENT_API_VERSION,
         "watch": _watch_public(db, watch),
+        "delegation": delegation_public(delegation),
+        "delegation_created": delegation_created,
+        "shared_watch_reused": shared_watch_reused,
         "active_acquisition": acquisition,
     }
 
@@ -294,19 +360,44 @@ def watch_status(watch_id: UUID, db: Session = Depends(get_db)):
 
 
 @router.post("/watch/{watch_id}/cancel")
-def cancel_watch(watch_id: UUID, db: Session = Depends(get_db)):
+def cancel_watch(
+    watch_id: UUID,
+    body: AgentWatchCancelIn | None = None,
+    db: Session = Depends(get_db),
+):
     watch = db.get(Watch, watch_id)
     if watch is None:
         raise HTTPException(404, "Watch not found")
-    watch.status = "CANCELLED"
+    actor_id = normalize_actor_id(body.actor_id if body is not None else DEFAULT_DECLARED_ACTOR_ID)
+    all_delegations = delegations_for_watch(db, watch.id)
+    cancelled = cancel_delegation(db, watch=watch, declared_actor_id=actor_id)
+
+    # Legacy pre-12D Agent Watches have no delegation rows. Preserve the old
+    # cancel behavior only for that historical shape. Shared Watches fail
+    # closed when the caller does not own an active delegation.
+    if cancelled is None and all_delegations:
+        raise HTTPException(404, "No active WATCH delegation exists for this declared actor")
+
+    remaining = delegations_for_watch(db, watch.id, active_only=True)
     bundle = _active_bundle_for_watch(db, watch_id)
-    if bundle is not None:
-        bundle.enabled = False
+    disabled = False
+    if not remaining and not watch_is_core_owned(watch):
+        watch.status = "CANCELLED"
+        if bundle is not None:
+            bundle.enabled = False
+            disabled = True
+    elif cancelled is None and not all_delegations:
+        watch.status = "CANCELLED"
+        if bundle is not None:
+            bundle.enabled = False
+            disabled = True
     db.flush()
     return {
         "version": AGENT_API_VERSION,
         "watch": _watch_public(db, watch),
-        "active_acquisition_disabled": bool(bundle is not None),
+        "cancelled_delegation": delegation_public(cancelled) if cancelled is not None else None,
+        "remaining_active_delegations": len(remaining),
+        "active_acquisition_disabled": disabled,
     }
 
 

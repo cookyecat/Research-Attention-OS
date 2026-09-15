@@ -37,6 +37,8 @@ http://127.0.0.1:8000/agent/v1
 
 Override with `RAOS_AGENT_API_BASE` or `--api-base`.
 
+For persistent WATCH delegation, set a stable declared actor provenance id with `RAOS_AGENT_ACTOR_ID` or `--actor-id`. This id is provenance only; it is not authentication and never grants Attention authority.
+
 Use `--json` whenever structured output is easier for the calling agent to consume.
 
 ## Commands
@@ -73,11 +75,13 @@ Use when the user says variants of:
 
 WATCH is not a bookmark. It means RAOS accepts responsibility for future re-evaluation.
 
+Multiple Agents that declare the same normalized target and compatible trigger semantics share one canonical WATCH. Agent count does not raise importance or Attention severity.
+
 ### `raos watch-status <watch-id>`
 Read-only. Shows the responsibility state and accumulated WATCH checks.
 
 ### `raos unwatch <watch-id>`
-Cancels the future-attention responsibility and disables its Active Acquisition bundle while preserving historical evidence and checks.
+Cancels only the current declared actor's WATCH delegation. The canonical WATCH remains active while another Agent delegation or core-owned responsibility still exists. When the last Agent delegation leaves an agent-only WATCH, RAOS cancels that WATCH and disables its Active Acquisition bundle while preserving historical evidence and checks.
 
 ## Agent behavior
 

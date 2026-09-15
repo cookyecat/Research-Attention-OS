@@ -11,6 +11,7 @@ import httpx
 DEFAULT_API_BASE = os.getenv(
     "RAOS_AGENT_API_BASE", "http://127.0.0.1:8000/agent/v1"
 ).rstrip("/")
+DEFAULT_ACTOR_ID = os.getenv("RAOS_AGENT_ACTOR_ID", "agent-default")
 
 
 def _client(args) -> httpx.Client:
@@ -77,12 +78,19 @@ def _emit(args, data: dict) -> None:
             _print_plan(row)
     elif command == "watch":
         _print_watch(data["watch"])
+        delegation = data.get("delegation") or {}
+        if delegation:
+            print(f"  delegation: {delegation.get('declared_actor_id')} · {delegation.get('status')}")
         acquisition = data.get("active_acquisition")
         if acquisition:
             print("  active acquisition: enabled")
     elif command in {"watch-status", "unwatch"}:
         _print_watch(data["watch"])
         if command == "unwatch":
+            cancelled = data.get("cancelled_delegation") or {}
+            if cancelled:
+                print("  cancelled delegation:", cancelled.get("declared_actor_id"))
+            print("  remaining delegations:", data.get("remaining_active_delegations"))
             print("  active acquisition disabled:", data.get("active_acquisition_disabled"))
     elif command == "why":
         source = data.get("source") or {}
@@ -115,6 +123,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="raos", description="RAOS Agent Interface CLI")
     parser.add_argument("--api-base", default=DEFAULT_API_BASE)
     parser.add_argument("--timeout", type=float, default=60.0)
+    parser.add_argument("--actor-id", default=DEFAULT_ACTOR_ID, help="Declared Agent provenance id (not authentication)")
     parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON")
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -159,6 +168,7 @@ def _dispatch(args):
         return _request(args, "POST", "/analyze", payload=payload)
     if args.command == "watch":
         payload = {
+            "actor_id": args.actor_id,
             "topic": args.topic,
             "target_type": args.target_type,
             "reason": args.reason,
@@ -169,7 +179,7 @@ def _dispatch(args):
     if args.command == "watch-status":
         return _request(args, "GET", f"/watch/{args.watch_id}")
     if args.command == "unwatch":
-        return _request(args, "POST", f"/watch/{args.watch_id}/cancel")
+        return _request(args, "POST", f"/watch/{args.watch_id}/cancel", payload={"actor_id": args.actor_id})
     if args.command == "why":
         return _request(args, "GET", f"/why/{args.source_id}")
     raise SystemExit(f"Unsupported command: {args.command}")
