@@ -1,7 +1,7 @@
 # Phase 10E — Attention Core Validity Gate Preregistration
 
 Date: 2026-09-15 / amended 2026-09-16 before canonical Phase-10E measurement
-Status: **IMPLEMENTATION ACTIVE / CANONICAL MEASUREMENT NOT YET RUN**
+Status: **GATE I MEASURED / PASS; GATE II HUMAN GOLD DEFERRED — see `214_PHASE10E_DETERMINISTIC_INTEGRITY_INTERIM_RESULT.md`**
 Production impact: **none; validation-only gate**
 
 ## 1. Purpose

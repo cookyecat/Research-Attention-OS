@@ -1,0 +1,2241 @@
+{
+  "phase": "10E",
+  "instrument": "core-validity-gate-v0.1",
+  "timestamp_utc": "20260915T182340Z",
+  "git_sha": "7c0f0063d9678347c1c0b461419c5da362561455",
+  "database": {
+    "url": "sqlite:///./backend/raos.db",
+    "completed_analysis_runs": 80
+  },
+  "frozen_strategy": {
+    "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+    "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+  },
+  "guardrails": [
+    "No LLM/provider calls.",
+    "No production writes.",
+    "Replay requires an explicit stored decision-strategy id and version.",
+    "Synthetic corner cases are not a hard gate; observed reachable states define the current operating-regime check."
+  ],
+  "metrics": {
+    "eligible_current_strategy_runs": 78,
+    "audit_errors": 0,
+    "exact_disposition_replay": 78,
+    "exact_strategy_identity_replay": 78,
+    "exact_decision_cause_replay": 78,
+    "observed_nonempty_effect_runs": 3,
+    "observed_pareto_vs_all_join_disposition_diffs": 0,
+    "observed_pareto_vs_all_join_cause_diffs": 0,
+    "skipped_noncurrent_or_unversioned_runs": 2
+  },
+  "gates": {
+    "deterministic_replay_parity": "PASS",
+    "observed_main_regime_policy_coherence": "PASS",
+    "phase10e_deterministic_integrity": "PASS"
+  },
+  "observed_disposition_differences": [],
+  "observed_cause_differences": [],
+  "audit_errors": [],
+  "skipped_summary": {
+    "count": 2,
+    "reasons": {
+      "missing_strategy_snapshot": 1,
+      "non_current_strategy": 1
+    }
+  },
+  "rows": [
+    {
+      "run_id": "d20b65dd-48eb-454f-80b7-4d5c50f1ff14",
+      "persisted_disposition": "WATCH",
+      "replay_disposition": "WATCH",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": {
+        "target_kernel_node_id": "0a5f2563-ed1f-4cad-99b9-dd0918661495",
+        "operation": "REINFORCE",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 0.0,
+        "target_importance": 1.0,
+        "reason": "The measured latency mismatch between required high-frequency control and large-model action rates provides concrete evidence for the bottleneck of lacking latency × energy × task-success evaluation for high-frequency embodied control.",
+        "exploration_candidate": false,
+        "target_node_type": "BOTTLENECK",
+        "support_unit_ids": [
+          "8dd8a4c6-52b0-4bd5-ab4b-feb4ffd62b51:neu-0002"
+        ],
+        "jurisdiction_anchor_ids": [],
+        "grounding_class": "PARTIAL",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "PARTIAL_WEAK"
+      },
+      "replay_decision_cause": {
+        "target_kernel_node_id": "0a5f2563-ed1f-4cad-99b9-dd0918661495",
+        "operation": "REINFORCE",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 0.0,
+        "target_importance": 1.0,
+        "reason": "The measured latency mismatch between required high-frequency control and large-model action rates provides concrete evidence for the bottleneck of lacking latency × energy × task-success evaluation for high-frequency embodied control.",
+        "exploration_candidate": false,
+        "target_node_type": "BOTTLENECK",
+        "support_unit_ids": [
+          "8dd8a4c6-52b0-4bd5-ab4b-feb4ffd62b51:neu-0002"
+        ],
+        "jurisdiction_anchor_ids": [],
+        "grounding_class": "PARTIAL",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "PARTIAL_WEAK"
+      },
+      "decision_cause_parity": true,
+      "effect_count": 3,
+      "admitted_effect_count": 3,
+      "pareto_frontier_count": 3,
+      "all_effect_join_disposition": "WATCH",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": {
+        "target_kernel_node_id": "0a5f2563-ed1f-4cad-99b9-dd0918661495",
+        "operation": "REINFORCE",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 0.0,
+        "target_importance": 1.0,
+        "reason": "The measured latency mismatch between required high-frequency control and large-model action rates provides concrete evidence for the bottleneck of lacking latency × energy × task-success evaluation for high-frequency embodied control.",
+        "exploration_candidate": false,
+        "target_node_type": "BOTTLENECK",
+        "support_unit_ids": [
+          "8dd8a4c6-52b0-4bd5-ab4b-feb4ffd62b51:neu-0002"
+        ],
+        "jurisdiction_anchor_ids": [],
+        "grounding_class": "PARTIAL",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "PARTIAL_WEAK"
+      },
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-12T20:31:25.624283"
+    },
+    {
+      "run_id": "3b2ea02c-8c39-406a-b44c-208113676fe5",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-13T06:56:33.742990"
+    },
+    {
+      "run_id": "695abb3f-55f5-49ce-8e94-11d5e340d21a",
+      "persisted_disposition": "AWARE",
+      "replay_disposition": "AWARE",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "AWARE",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-13T10:00:39.479594"
+    },
+    {
+      "run_id": "4e09945f-2aaa-4e82-a5e3-e282da51e80c",
+      "persisted_disposition": "AWARE",
+      "replay_disposition": "AWARE",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "AWARE",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-13T12:37:39.024764"
+    },
+    {
+      "run_id": "d9858e23-d14a-4f5f-a817-7d128e23e564",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-13T12:39:00.552560"
+    },
+    {
+      "run_id": "1e8c5215-5a19-4546-9d40-f1ce902d091c",
+      "persisted_disposition": "WATCH",
+      "replay_disposition": "WATCH",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": {
+        "target_kernel_node_id": "0a5f2563-ed1f-4cad-99b9-dd0918661495",
+        "operation": "REINFORCE",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 1.0,
+        "target_importance": 1.0,
+        "reason": "The source attributes the agent brain and the stable, continuous low-level motion to company claims rather than independent verification, and provides no latency, energy, or task-success metrics for the high-frequency control loop, which supports the existence of the evaluation gap described by this bottleneck.",
+        "exploration_candidate": false,
+        "target_node_type": "BOTTLENECK",
+        "support_unit_ids": [
+          "0eba9ed6-a721-4040-8442-4402cd1365e4:0eba9ed6-a721-4040-8442-4402cd1365e4-evt-0001:uncertainty:2",
+          "0eba9ed6-a721-4040-8442-4402cd1365e4:0eba9ed6-a721-4040-8442-4402cd1365e4-evt-0001:action_change:2",
+          "0eba9ed6-a721-4040-8442-4402cd1365e4:0eba9ed6-a721-4040-8442-4402cd1365e4-evt-0001:action_change:3"
+        ],
+        "jurisdiction_anchor_ids": [],
+        "grounding_class": "DIRECT",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "DIRECT_PRIMARY"
+      },
+      "replay_decision_cause": {
+        "target_kernel_node_id": "0a5f2563-ed1f-4cad-99b9-dd0918661495",
+        "operation": "REINFORCE",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 1.0,
+        "target_importance": 1.0,
+        "reason": "The source attributes the agent brain and the stable, continuous low-level motion to company claims rather than independent verification, and provides no latency, energy, or task-success metrics for the high-frequency control loop, which supports the existence of the evaluation gap described by this bottleneck.",
+        "exploration_candidate": false,
+        "target_node_type": "BOTTLENECK",
+        "support_unit_ids": [
+          "0eba9ed6-a721-4040-8442-4402cd1365e4:0eba9ed6-a721-4040-8442-4402cd1365e4-evt-0001:uncertainty:2",
+          "0eba9ed6-a721-4040-8442-4402cd1365e4:0eba9ed6-a721-4040-8442-4402cd1365e4-evt-0001:action_change:2",
+          "0eba9ed6-a721-4040-8442-4402cd1365e4:0eba9ed6-a721-4040-8442-4402cd1365e4-evt-0001:action_change:3"
+        ],
+        "jurisdiction_anchor_ids": [],
+        "grounding_class": "DIRECT",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "DIRECT_PRIMARY"
+      },
+      "decision_cause_parity": true,
+      "effect_count": 4,
+      "admitted_effect_count": 4,
+      "pareto_frontier_count": 1,
+      "all_effect_join_disposition": "WATCH",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": {
+        "target_kernel_node_id": "0a5f2563-ed1f-4cad-99b9-dd0918661495",
+        "operation": "REINFORCE",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 1.0,
+        "target_importance": 1.0,
+        "reason": "The source attributes the agent brain and the stable, continuous low-level motion to company claims rather than independent verification, and provides no latency, energy, or task-success metrics for the high-frequency control loop, which supports the existence of the evaluation gap described by this bottleneck.",
+        "exploration_candidate": false,
+        "target_node_type": "BOTTLENECK",
+        "support_unit_ids": [
+          "0eba9ed6-a721-4040-8442-4402cd1365e4:0eba9ed6-a721-4040-8442-4402cd1365e4-evt-0001:uncertainty:2",
+          "0eba9ed6-a721-4040-8442-4402cd1365e4:0eba9ed6-a721-4040-8442-4402cd1365e4-evt-0001:action_change:2",
+          "0eba9ed6-a721-4040-8442-4402cd1365e4:0eba9ed6-a721-4040-8442-4402cd1365e4-evt-0001:action_change:3"
+        ],
+        "jurisdiction_anchor_ids": [],
+        "grounding_class": "DIRECT",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "DIRECT_PRIMARY"
+      },
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-13T12:42:20.975966"
+    },
+    {
+      "run_id": "0f220692-81de-4658-9635-0d93d9bb4c7d",
+      "persisted_disposition": "WATCH",
+      "replay_disposition": "WATCH",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": {
+        "target_kernel_node_id": "f8ac3025-199f-4b67-bd1e-a46327c5bd70",
+        "operation": "REINFORCE",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 0.0,
+        "target_importance": 1.0,
+        "reason": "The evidence presents world models as the core technical route for embodied intelligence, including learning shared world regularities from cross-task, cross-robot data (WHALE) and training VLA models inside interactive world models—materially supporting the question of whether shared world models can reduce explicit communication in large-scale multi-agent embodied systems.",
+        "exploration_candidate": false,
+        "target_node_type": "QUESTION",
+        "support_unit_ids": [
+          "b0c3b8d5-ffd9-4bf8-b567-e1eff49557b0:b0c3b8d5-ffd9-4bf8-b567-e1eff49557b0-neu-0008",
+          "b0c3b8d5-ffd9-4bf8-b567-e1eff49557b0:b0c3b8d5-ffd9-4bf8-b567-e1eff49557b0-neu-0010"
+        ],
+        "jurisdiction_anchor_ids": [],
+        "grounding_class": "PARTIAL",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "PARTIAL_WEAK"
+      },
+      "replay_decision_cause": {
+        "target_kernel_node_id": "f8ac3025-199f-4b67-bd1e-a46327c5bd70",
+        "operation": "REINFORCE",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 0.0,
+        "target_importance": 1.0,
+        "reason": "The evidence presents world models as the core technical route for embodied intelligence, including learning shared world regularities from cross-task, cross-robot data (WHALE) and training VLA models inside interactive world models—materially supporting the question of whether shared world models can reduce explicit communication in large-scale multi-agent embodied systems.",
+        "exploration_candidate": false,
+        "target_node_type": "QUESTION",
+        "support_unit_ids": [
+          "b0c3b8d5-ffd9-4bf8-b567-e1eff49557b0:b0c3b8d5-ffd9-4bf8-b567-e1eff49557b0-neu-0008",
+          "b0c3b8d5-ffd9-4bf8-b567-e1eff49557b0:b0c3b8d5-ffd9-4bf8-b567-e1eff49557b0-neu-0010"
+        ],
+        "jurisdiction_anchor_ids": [],
+        "grounding_class": "PARTIAL",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "PARTIAL_WEAK"
+      },
+      "decision_cause_parity": true,
+      "effect_count": 6,
+      "admitted_effect_count": 6,
+      "pareto_frontier_count": 4,
+      "all_effect_join_disposition": "WATCH",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": {
+        "target_kernel_node_id": "f8ac3025-199f-4b67-bd1e-a46327c5bd70",
+        "operation": "REINFORCE",
+        "change_magnitude": 0.0,
+        "epistemic_strength": 0.0,
+        "target_importance": 1.0,
+        "reason": "The evidence presents world models as the core technical route for embodied intelligence, including learning shared world regularities from cross-task, cross-robot data (WHALE) and training VLA models inside interactive world models—materially supporting the question of whether shared world models can reduce explicit communication in large-scale multi-agent embodied systems.",
+        "exploration_candidate": false,
+        "target_node_type": "QUESTION",
+        "support_unit_ids": [
+          "b0c3b8d5-ffd9-4bf8-b567-e1eff49557b0:b0c3b8d5-ffd9-4bf8-b567-e1eff49557b0-neu-0008",
+          "b0c3b8d5-ffd9-4bf8-b567-e1eff49557b0:b0c3b8d5-ffd9-4bf8-b567-e1eff49557b0-neu-0010"
+        ],
+        "jurisdiction_anchor_ids": [],
+        "grounding_class": "PARTIAL",
+        "provenance_role": "PRIMARY_SOURCE",
+        "authority_reason": "PARTIAL_WEAK"
+      },
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-13T12:51:07.533271"
+    },
+    {
+      "run_id": "28062ffc-d02d-40b3-a253-e4c822789f19",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-13T13:10:37.649761"
+    },
+    {
+      "run_id": "e1847070-37bc-422b-b5c7-df70e5211d56",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-13T14:41:28.297713"
+    },
+    {
+      "run_id": "5875c8ad-24a9-4d89-9769-9621aec222cd",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-13T17:42:26.074017"
+    },
+    {
+      "run_id": "fc2fcd91-19d6-4fa3-9a35-9eb20e6b8136",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-13T18:42:57.817691"
+    },
+    {
+      "run_id": "8286cbec-7130-425f-b11a-c82c0168769d",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-13T19:43:37.505651"
+    },
+    {
+      "run_id": "fdc1c607-0b07-414c-b692-23065dcfab35",
+      "persisted_disposition": "AWARE",
+      "replay_disposition": "AWARE",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "AWARE",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T07:27:41.671392"
+    },
+    {
+      "run_id": "d6c24c05-79ea-434b-996c-3af9cf189473",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T10:29:40.596020"
+    },
+    {
+      "run_id": "6bc37d25-aedc-4cc4-a8c4-dc400d171c74",
+      "persisted_disposition": "AWARE",
+      "replay_disposition": "AWARE",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "AWARE",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T10:30:08.473728"
+    },
+    {
+      "run_id": "904df969-0796-41f3-bebe-8c2ff1690895",
+      "persisted_disposition": "AWARE",
+      "replay_disposition": "AWARE",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "AWARE",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T10:31:02.969951"
+    },
+    {
+      "run_id": "59d47327-cb27-4805-a2b8-76665148b0f1",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T10:32:20.551464"
+    },
+    {
+      "run_id": "1595b747-59e2-4be5-8679-723f72409f79",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T10:40:00.242795"
+    },
+    {
+      "run_id": "7ab5c1f8-7bc6-440e-abe7-80f349ac8bb7",
+      "persisted_disposition": "AWARE",
+      "replay_disposition": "AWARE",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "AWARE",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T11:16:24.137851"
+    },
+    {
+      "run_id": "6892572b-4070-40a0-8126-70309747a4aa",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T11:28:59.422812"
+    },
+    {
+      "run_id": "e43d5c6f-c06b-4ee3-b6a4-9ed2a2feaddc",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T11:29:16.689663"
+    },
+    {
+      "run_id": "43add6e4-7f60-4107-b9f6-5143ccb54963",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T12:40:20.373894"
+    },
+    {
+      "run_id": "4c0e7284-4abe-4aab-9eea-498101ea5695",
+      "persisted_disposition": "AWARE",
+      "replay_disposition": "AWARE",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "AWARE",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T13:18:21.042936"
+    },
+    {
+      "run_id": "f97f0f09-a6dd-40ef-81db-877fa48aa4af",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T14:20:24.761921"
+    },
+    {
+      "run_id": "6496ef38-a3cf-44b1-86c6-5f59c9818adb",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T15:15:32.934252"
+    },
+    {
+      "run_id": "64f63282-e5be-452a-939e-08d96552d3cc",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T15:22:23.604240"
+    },
+    {
+      "run_id": "dea42f97-be3a-47d1-b066-31ff672b1cb1",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T15:53:30.636515"
+    },
+    {
+      "run_id": "a6322397-a7af-4bb9-b0c3-cce579c726b1",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T15:54:18.892737"
+    },
+    {
+      "run_id": "77f7a2ab-9971-45c8-95a9-ce18bf415e04",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T16:28:00.484796"
+    },
+    {
+      "run_id": "7420aeed-5879-487f-a4df-33cd58caeb98",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T16:45:57.309015"
+    },
+    {
+      "run_id": "b06f46bc-cb38-446c-8311-c318a5f0a708",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T16:56:17.445866"
+    },
+    {
+      "run_id": "c11abfd2-9598-4ca7-949e-ab21c6ef0d0d",
+      "persisted_disposition": "AWARE",
+      "replay_disposition": "AWARE",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "AWARE",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T17:27:05.333046"
+    },
+    {
+      "run_id": "3f9b9487-ee5a-4a7f-9618-7b4999332d37",
+      "persisted_disposition": "AWARE",
+      "replay_disposition": "AWARE",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "AWARE",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T17:27:48.012780"
+    },
+    {
+      "run_id": "15455ee0-acfb-4296-92cc-da58ed1beb80",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T17:28:27.070862"
+    },
+    {
+      "run_id": "100d7a6f-3884-4484-93ae-af1a09c93e49",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T17:29:34.371558"
+    },
+    {
+      "run_id": "b904e0c4-dcfc-4765-a519-8ed4127b91df",
+      "persisted_disposition": "AWARE",
+      "replay_disposition": "AWARE",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "AWARE",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T17:30:54.083928"
+    },
+    {
+      "run_id": "c0a34ce0-b592-43ee-9906-ca96384680c7",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T18:02:15.277425"
+    },
+    {
+      "run_id": "adbf752f-eb24-4f3b-915f-a04ed60f9b40",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T21:50:16.724129"
+    },
+    {
+      "run_id": "47563744-1d30-4414-8c27-b31d1dea3ea6",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T23:07:05.517665"
+    },
+    {
+      "run_id": "d655e844-99ed-4e50-b8ce-36b63beb4cb5",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T23:08:20.441200"
+    },
+    {
+      "run_id": "7fd96542-f36e-424b-a02e-7e1b5c56f8ef",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T23:09:00.092397"
+    },
+    {
+      "run_id": "d55b0234-7bec-49c2-a38b-71044abc2c4a",
+      "persisted_disposition": "AWARE",
+      "replay_disposition": "AWARE",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "AWARE",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T23:09:54.316795"
+    },
+    {
+      "run_id": "07d047bc-5d70-4255-ba8b-3e254dd2284d",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-14T23:10:37.172624"
+    },
+    {
+      "run_id": "4b7eed1b-49a8-4127-94d6-e550316974aa",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T00:18:26.010609"
+    },
+    {
+      "run_id": "0059544e-f332-4707-b4bc-7d93b79cecf6",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T00:18:52.645094"
+    },
+    {
+      "run_id": "904159ef-275e-417a-80ca-e267cd502ade",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T00:19:23.776948"
+    },
+    {
+      "run_id": "206ea43e-833d-4ceb-af3b-f64550ded749",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T00:19:56.140549"
+    },
+    {
+      "run_id": "9936af20-8345-4891-9967-9470c4f4ee0f",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T00:24:28.372479"
+    },
+    {
+      "run_id": "c6dff24e-9d64-4772-a2aa-6e4d79ad29da",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T00:24:51.407912"
+    },
+    {
+      "run_id": "7986a814-892c-4cd9-896e-de419a4ec4a8",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T00:25:36.221283"
+    },
+    {
+      "run_id": "ee580866-5f4b-4b95-a76c-f65ee815c2f3",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T00:26:09.760761"
+    },
+    {
+      "run_id": "3c6c8012-116b-44cd-8673-b532539e9cdd",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T00:26:34.163145"
+    },
+    {
+      "run_id": "d5f08347-e094-456d-aff0-342325f65b4e",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T00:43:03.749959"
+    },
+    {
+      "run_id": "9295863f-4a8d-43c3-a907-7434ed56d3bb",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T00:51:46.433086"
+    },
+    {
+      "run_id": "5defad6f-0062-4969-8473-5817ed83378e",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T01:02:06.274605"
+    },
+    {
+      "run_id": "a7253f9e-bfda-4a63-a58f-13628aabef77",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T01:12:39.480908"
+    },
+    {
+      "run_id": "c17ae9c4-9517-4b1a-a167-63b51733a8e3",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T01:28:05.397056"
+    },
+    {
+      "run_id": "e366ceb8-b600-447b-9adc-2fe8dac6d287",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T01:33:12.600388"
+    },
+    {
+      "run_id": "dea4caae-678c-436a-9415-301a8cc971bc",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T01:43:49.511978"
+    },
+    {
+      "run_id": "5e39fc7f-3db9-41f3-8229-2298f59c885d",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T01:54:11.367213"
+    },
+    {
+      "run_id": "c82577a7-eedb-4875-aaed-7e3cc31ec5a5",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T02:04:30.988906"
+    },
+    {
+      "run_id": "6ec0ff61-fbfd-4c04-8797-8d0a576488e7",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T02:14:48.627437"
+    },
+    {
+      "run_id": "2604c64b-a149-4ef7-8486-e6043df26a4d",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T02:25:12.611438"
+    },
+    {
+      "run_id": "a15739ba-c591-458d-8b82-ab3e61de5e54",
+      "persisted_disposition": "AWARE",
+      "replay_disposition": "AWARE",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "AWARE",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T02:35:59.743667"
+    },
+    {
+      "run_id": "10616a9b-c140-46b6-96a0-7859681a0b80",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T02:36:44.690715"
+    },
+    {
+      "run_id": "51a46579-8ffd-420c-a89b-840923f0a4b3",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T02:47:27.369223"
+    },
+    {
+      "run_id": "e7c6d1e0-59ab-4e99-998d-15dfc9f9e5ea",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T03:18:49.631887"
+    },
+    {
+      "run_id": "8ca93878-0ee2-4479-bdc1-2316f9189cab",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T03:19:11.435640"
+    },
+    {
+      "run_id": "78671243-41d0-40d0-aec7-7af0844237b8",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T04:31:44.207406"
+    },
+    {
+      "run_id": "ed27d067-f78a-4974-89d4-b255780e9829",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T04:32:40.008423"
+    },
+    {
+      "run_id": "5f8c43ff-5e38-45fd-8b6b-1e8ef926dce3",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T04:33:55.358875"
+    },
+    {
+      "run_id": "7804ce50-4ee3-44dc-ad5e-986023cd8bc0",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T04:34:38.331933"
+    },
+    {
+      "run_id": "bbcd2f96-3019-4ab8-b2ff-07feb19ae619",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T04:35:56.820414"
+    },
+    {
+      "run_id": "24861228-c619-48f9-80ac-fe8e8637290a",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T07:19:29.902185"
+    },
+    {
+      "run_id": "db6ced37-6475-43b2-83d3-749ed4441494",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T07:52:03.084113"
+    },
+    {
+      "run_id": "1810a9d9-fd67-475b-b795-98efd2d1a343",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T09:14:46.432951"
+    },
+    {
+      "run_id": "f327587d-9131-4f77-9873-8e040a027870",
+      "persisted_disposition": "DROP",
+      "replay_disposition": "DROP",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "DROP",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T09:22:06.583989"
+    },
+    {
+      "run_id": "bcb614ea-c8b5-46f9-a352-038d8fcbd3ff",
+      "persisted_disposition": "AWARE",
+      "replay_disposition": "AWARE",
+      "disposition_parity": true,
+      "stored_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "replay_strategy": {
+        "strategy_id": "pareto-multidelta-cardinal-free-effect-anchored-open-new",
+        "version": "pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2"
+      },
+      "strategy_identity_parity": true,
+      "persisted_decision_cause": null,
+      "replay_decision_cause": null,
+      "decision_cause_parity": true,
+      "effect_count": 0,
+      "admitted_effect_count": 0,
+      "pareto_frontier_count": 0,
+      "all_effect_join_disposition": "AWARE",
+      "pareto_vs_all_join_disposition_parity": true,
+      "all_effect_join_decision_cause": null,
+      "pareto_vs_all_join_cause_parity": true,
+      "created_at": "2026-09-15T09:28:46.702443"
+    }
+  ],
+  "skipped": [
+    {
+      "run_id": "18f2e142-0878-4070-95cf-9d7509155e43",
+      "reason": "missing_strategy_snapshot"
+    },
+    {
+      "run_id": "7f1924fe-9bfa-4586-95fa-fa66c26ea03c",
+      "reason": "non_current_strategy",
+      "strategy_id": "pareto-multidelta-magnitude-free-anchored-open-new",
+      "version": "pareto-multidelta-magnitude-free-anchored-open-new-v0.1"
+    }
+  ]
+}
