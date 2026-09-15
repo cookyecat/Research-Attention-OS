@@ -1,6 +1,6 @@
 # Phase 12A — Personalization Boundary & Feedback Attribution Preregistration
 
-Status: **PREREGISTERED v2 / ACTIVE**
+Status: **CLOSED / RESULT: `217_PHASE12A_FEEDBACK_ATTRIBUTION_RESULT.md`**
 Date: 2026-09-15
 Parent: `209_PHASE12_PERSONALIZATION_SCALE_PLAN.md`
 

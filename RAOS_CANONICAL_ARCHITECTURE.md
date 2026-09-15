@@ -198,6 +198,7 @@ S                              material-consequence-estimator-v1
 P                              collective-attention-estimator-v1
 No-Delta gate                  aware-iff-s-and-d-or-p-v1
 Unknown composition            no-delta-awareness-integration-v1.1 semantics
+Feedback attribution           phase12a-feedback-attribution-v0.1
 ```
 
 
@@ -227,6 +228,8 @@ Unknown composition            no-delta-awareness-integration-v1.1 semantics
 21. Query Expansion and Retrieval Scope Guard are Acquisition-side observation machinery only; neither may assign D/S/P, Delta, or Attention.
 22. A WATCH may activate external search only when it projects to a self-contained observation intent; generic trigger labels without sufficient origin context must fail closed rather than broaden silently.
 23. Multiple query/adaptor hits for the same canonical ref merge provenance into one external information identity rather than multiplying facts.
+24. Human feedback is append-only attribution evidence; it never rewrites the frozen AnalysisRun or historical AttentionPlan.
+25. A disagreement is not automatically personalization evidence. Only explicit `HUMAN_EXPLICIT` disposition-only feedback causally attributed to `USER_POLICY_RESIDUAL` is eligible for future `Theta_u`; unresolved, cognitive, runtime, passive, Agent-context, and delivery evidence fail closed outside personalization.
 
 
 

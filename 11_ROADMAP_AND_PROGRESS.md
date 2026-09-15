@@ -128,9 +128,9 @@ Core invariants:
 | Phase 7 — Perception Fidelity | External World Model fidelity, dynamic P evidence, minimal trusted Brain World Model | **CLOSED / WORKING BASELINE** |
 | Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **CLOSED / OPERATIONAL BASELINE ESTABLISHED** |
 | Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **9A PREREGISTERED / OUTCOME SAMPLING PAUSED FOR PARITY GATE** |
-| Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence, Core decision-state sufficiency validation | **10E CORE DECISION-STATE SUFFICIENCY GATE ACTIVE 2026-09-15** |
+| Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence, Attention Core validity | **10E CLOSED FOR FORWARD PROGRESS 2026-09-16** |
 | Phase 11 — External Attention Infrastructure | 11A Acquisition Expansion → 11B Query Expansion → 11C P Evidence → 11D Delivery → 11E Agent Interface | **CLOSED 2026-09-15** |
-| Phase 12 — Personalized Attention Calibration & Multi-Actor Control | 12A boundary/feedback attribution → 12B residual necessity → 12C bounded calibration (conditional) → 12D multi-actor arbitration → 12E multi-user scale | **PAUSED BY PHASE 10E CORE GATE** |
+| Phase 12 — Personalized Attention Calibration & Multi-Actor Control | 12A boundary/feedback attribution → 12B residual necessity → 12C bounded calibration (conditional) → 12D multi-actor arbitration → 12E multi-user scale | **12A CLOSED / 12B ACTIVE 2026-09-16** |
 
 Current strategic position:
 
@@ -1508,7 +1508,7 @@ Preregistration: `207_PHASE11E_AGENT_INTERFACE_SKILL_PREREGISTRATION.md`. Result
 
 Real CLI dogfood read Today, explained an existing decision without reanalysis, created `Google EnvHarness` as an Active Acquisition WATCH with four bounded queries, inspected and cancelled it cleanly, and ran explicit Source analysis through canonical Attention + Delivery. Phase 11A–11E focused regression closed at `108 passed`. **Phase 11 is CLOSED. Phase 12 was redesigned, then paused by the Phase 10E current-core reconciliation gate before calibration began.**
 
-### Phase 10E — Attention Core Validity Gate — GATE I PASS / GATE II DEFERRED 2026-09-16
+### Phase 10E — Attention Core Validity Gate — CLOSED FOR FORWARD PROGRESS 2026-09-16
 
 Preregistration: `212_PHASE10E_CURRENT_CORE_ATTENTION_RECONCILIATION_PREREGISTRATION.md`. Architecture review: `213_PHASE10E_PARETO_ORDER_COHERENCE_REVIEW.md`. Interim result: `214_PHASE10E_DETERMINISTIC_INTEGRITY_INTERIM_RESULT.md`.
 
@@ -1516,6 +1516,8 @@ The historical `eval/live/oracle_policy.py` issue is now scoped precisely: Oracl
 
 Gate I canonical deterministic replay passed on 78/78 eligible current-strategy persisted AnalysisRuns: exact disposition, strategy identity, and decision cause all replayed at 100%, with zero audit errors and no upstream model calls. Three current-strategy runs contained non-empty effect sets; on those actually observed states, current Pareto routing and the all-admitted-effects join counterfactual had 0 disposition differences and 0 decision-cause differences. The earlier 25/946 synthetic pair differences remain recorded theoretical edge cases, not observed production failures.
 
-Operational decision: **continue the current Core as-is for dogfood; Pareto = KEEP + MEASURE; no scheduler tuning and no new Core variable.** Gate II — a small fresh Human-Gold operating-regime adequacy check — is intentionally deferred until the user chooses to run it.
+Operational decision: **continue the current Core as-is for dogfood; Pareto = KEEP + MEASURE; no scheduler tuning and no new Core variable.** A separately frozen assistant-proxy Human-Gold Gate II subsequently passed 10/10 across the common/high-value operating regimes; see `215_PHASE10E_PROXY_HUMAN_GOLD_PREREGISTRATION.md` and `216_PHASE10E_PROXY_GOLD_RESULT_AND_CLOSURE.md`. Phase 10E is closed for forward progress.
 
-**Phase 12 calibration remains paused while Gate II is deferred. Ordinary RAOS dogfood may continue.**
+### Phase 12A — Personalization Boundary & Feedback Attribution — CLOSED 2026-09-16
+
+Preregistration: `210_PHASE12A_PERSONALIZATION_BOUNDARY_FEEDBACK_PREREGISTRATION.md`. Result: `217_PHASE12A_FEEDBACK_ATTRIBUTION_RESULT.md`. Existing append-only `AttentionFeedback` now carries one minimal attribution JSON. Disposition disagreement without causal scope fails closed to `UNRESOLVED`; cognitive adjudication is separate from Attention-policy correction; only explicit human, disposition-only `USER_POLICY_RESIDUAL` evidence is personalization-eligible. Migration `0012_feedback_attribution` was applied to the dogfood DB. Focused Feedback tests passed 30/30 and broader Core/Delivery/Agent/WATCH regression passed 138/138. **12B residual necessity is now ACTIVE; no calibration has been fitted.**
