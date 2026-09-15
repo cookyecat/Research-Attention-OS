@@ -1,6 +1,6 @@
 # Phase 12 — Personalized Attention Calibration & Multi-Actor Control
 
-Status: **REDESIGNED v2 / 12A CLOSED / 12B CLOSED / 12C SKIPPED / 12D CLOSED / 12E REVIEW ACTIVE**
+Status: **CLOSED FOR CURRENT SINGLE-USER DOGFOOD — 12A/12B/12D CLOSED; 12C SKIPPED; 12E BOUNDARY CLOSED / TENANTIZATION DEFERRED**
 Date: 2026-09-15
 Depends on: Phase 1–10 canonical cognitive/attention core; Phase 11 External Attention Infrastructure CLOSED.
 
@@ -138,8 +138,8 @@ Current deterministic audit found zero personalization-eligible residual rows an
 ### 12D — Multi-Actor Attention Arbitration — CLOSED
 Many Agents now share canonical WATCH responsibilities through `WatchDelegation` provenance. Exact normalized agent delegations reuse one canonical Watch, actor-local cancellation preserves remaining responsibility, and the last delegation releases only an agent-only Watch. No actor priority, quota or fairness weight was added because no material contention has been observed.
 
-### 12E — Multi-user & Product Scale
-Test whether a shared core plus small optional calibration generalizes across users. Add user-local privacy boundaries, serving projections, lifecycle/versioning of calibration profiles and product-scale storage only after semantic validity is established.
+### 12E — Multi-user & Product Scale Boundary — CLOSED / TENANTIZATION DEFERRED
+The state-ownership boundary is frozen as shared external-world state versus private Brain/Attention/authenticated-observation state. The runtime now declares `SINGLE_USER_DOGFOOD` and `multi_user_isolation=false`. No schema-wide tenantization is justified before an actual second-user or external deployment requirement exists.
 
 ## 7. Feedback semantics
 
