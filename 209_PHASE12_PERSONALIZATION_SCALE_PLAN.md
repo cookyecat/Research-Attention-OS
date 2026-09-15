@@ -1,6 +1,6 @@
 # Phase 12 — Personalized Attention Calibration & Multi-Actor Control
 
-Status: **REDESIGNED v2 / 12A CLOSED / 12B ACTIVE**
+Status: **REDESIGNED v2 / 12A CLOSED / 12B CLOSED / 12C SKIPPED / 12D CLOSED / 12E REVIEW ACTIVE**
 Date: 2026-09-15
 Depends on: Phase 1–10 canonical cognitive/attention core; Phase 11 External Attention Infrastructure CLOSED.
 
@@ -135,8 +135,8 @@ Current deterministic audit found zero personalization-eligible residual rows an
 ### 12C — Bounded Attention Calibration — SKIPPED
 12B did not demonstrate a repeatable causally clean personal residual. No calibration model is introduced. Reopen only if the flywheel later produces repeated eligible `USER_POLICY_RESIDUAL` evidence.
 
-### 12D — Multi-Actor Attention Arbitration
-Multiple Agents may delegate analysis/WATCH responsibility and supply task provenance, but they share one human attention budget and one canonical RAOS authority. Study contention, quotas, provenance, cancellation and delegation permissions; do not give each Agent an independent importance function.
+### 12D — Multi-Actor Attention Arbitration — CLOSED
+Many Agents now share canonical WATCH responsibilities through `WatchDelegation` provenance. Exact normalized agent delegations reuse one canonical Watch, actor-local cancellation preserves remaining responsibility, and the last delegation releases only an agent-only Watch. No actor priority, quota or fairness weight was added because no material contention has been observed.
 
 ### 12E — Multi-user & Product Scale
 Test whether a shared core plus small optional calibration generalizes across users. Add user-local privacy boundaries, serving projections, lifecycle/versioning of calibration profiles and product-scale storage only after semantic validity is established.

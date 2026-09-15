@@ -1521,3 +1521,11 @@ Operational decision: **continue the current Core as-is for dogfood; Pareto = KE
 ### Phase 12A — Personalization Boundary & Feedback Attribution — CLOSED 2026-09-16
 
 Preregistration: `210_PHASE12A_PERSONALIZATION_BOUNDARY_FEEDBACK_PREREGISTRATION.md`. Result: `217_PHASE12A_FEEDBACK_ATTRIBUTION_RESULT.md`. Existing append-only `AttentionFeedback` now carries one minimal attribution JSON. Disposition disagreement without causal scope fails closed to `UNRESOLVED`; cognitive adjudication is separate from Attention-policy correction; only explicit human, disposition-only `USER_POLICY_RESIDUAL` evidence is personalization-eligible. Migration `0012_feedback_attribution` was applied to the dogfood DB. Focused Feedback tests passed 30/30 and broader Core/Delivery/Agent/WATCH regression passed 138/138. **12B residual necessity is now ACTIVE; no calibration has been fitted.**
+
+### Phase 12B — Residual Necessity Test — CLOSED 2026-09-16
+
+Preregistration: `218_PHASE12B_RESIDUAL_NECESSITY_PREREGISTRATION.md`. Result: `219_PHASE12B_RESIDUAL_NECESSITY_RESULT.md`. The deterministic audit found zero `AttentionFeedback` rows and zero personalization-eligible residuals; Phase-10E assistant-proxy operating-regime Gold remained 10/10 exact and is not personalization training evidence. `Theta_u = identity`; Phase 12C is NOT JUSTIFIED / SKIPPED unless the flywheel later produces repeated causally clean `USER_POLICY_RESIDUAL` evidence.
+
+### Phase 12D — Multi-Actor Attention Arbitration — CLOSED 2026-09-16
+
+Preregistration: `220_PHASE12D_MULTI_ACTOR_ATTENTION_ARBITRATION_PREREGISTRATION.md`. Result: `221_PHASE12D_MULTI_ACTOR_ATTENTION_ARBITRATION_RESULT.md`. Multiple external Agents now delegate through `WatchDelegation` provenance into one canonical Watch rather than multiplying WATCH responsibilities or Attention authority. Actor-local cancellation preserves shared responsibility until the last delegation leaves; core-owned Watches are preserved. Migration `0013_watch_delegations` is live in dogfood. Focused and adjacent regression closed at 165 passed. Real localhost two-actor dogfood passed all 11 shared-responsibility checks. No actor-priority, quota, or fairness weight is added before real contention evidence. **Phase 12E isolation-boundary review is next.**

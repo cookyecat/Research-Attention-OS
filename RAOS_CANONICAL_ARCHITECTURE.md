@@ -199,6 +199,7 @@ P                              collective-attention-estimator-v1
 No-Delta gate                  aware-iff-s-and-d-or-p-v1
 Unknown composition            no-delta-awareness-integration-v1.1 semantics
 Feedback attribution           phase12a-feedback-attribution-v0.1
+Multi-actor delegation         watch-delegation-v0.1
 ```
 
 
@@ -230,6 +231,8 @@ Feedback attribution           phase12a-feedback-attribution-v0.1
 23. Multiple query/adaptor hits for the same canonical ref merge provenance into one external information identity rather than multiplying facts.
 24. Human feedback is append-only attribution evidence; it never rewrites the frozen AnalysisRun or historical AttentionPlan.
 25. A disagreement is not automatically personalization evidence. Only explicit `HUMAN_EXPLICIT` disposition-only feedback causally attributed to `USER_POLICY_RESIDUAL` is eligible for future `Theta_u`; unresolved, cognitive, runtime, passive, Agent-context, and delivery evidence fail closed outside personalization.
+26. Agent delegation provenance is not Attention authority. Multiple Agents may share one canonical Watch through `WatchDelegation`; actor count must not alter D/S/P, Delta, urgency, disposition, or Delivery severity.
+27. Cancelling an Agent delegation is actor-local. An agent-only Watch is released only after the last active delegation disappears; core-owned Watch responsibility is preserved.
 
 
 

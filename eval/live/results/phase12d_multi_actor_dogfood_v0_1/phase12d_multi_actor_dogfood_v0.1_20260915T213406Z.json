@@ -1,0 +1,362 @@
+{
+  "phase": "12D",
+  "instrument": "multi-actor-dogfood-v0.1",
+  "timestamp_utc": "20260915T213406Z",
+  "git_sha": "17d6edb490d9b1dc2862d18a2569aab58d4fefd3",
+  "topic": "Phase12D Shared Arbitration Dogfood 20260915T213406Z",
+  "actors": [
+    "phase12d-dogfood-agent-a",
+    "phase12d-dogfood-agent-b"
+  ],
+  "watch_id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+  "checks": {
+    "single_attention_authority": true,
+    "agent_cannot_assign_attention": true,
+    "same_canonical_watch": true,
+    "second_reused_shared_watch": true,
+    "two_active_delegations_after_join": true,
+    "cancel_a_preserves_watch": true,
+    "one_delegation_remains": true,
+    "cancel_b_releases_agent_only_watch": true,
+    "no_delegation_remains": true,
+    "final_watch_cancelled": true,
+    "no_external_acquisition_used": true
+  },
+  "pass": true,
+  "guardrails": [
+    "Localhost Agent API only.",
+    "Active Acquisition disabled; no external retrieval is needed for this arbitration smoke.",
+    "Declared actor ids are provenance, not authentication or Attention authority."
+  ],
+  "observed": {
+    "first": {
+      "version": "agent-interface-v0.2",
+      "watch": {
+        "id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+        "target_type": "TREND",
+        "target_ref": "Phase12D Shared Arbitration Dogfood 20260915T213406Z",
+        "status": "ACTIVE",
+        "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+        "created_at": "2026-09-15T21:34:06",
+        "delegation_count": 1,
+        "delegations": [
+          {
+            "id": "43552ba3-437b-4f48-9439-1e020c9ab766",
+            "watch_id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+            "declared_actor_id": "phase12d-dogfood-agent-a",
+            "status": "ACTIVE",
+            "request_context": {
+              "active_acquisition_requested": false,
+              "triggers": [
+                "NEW_EVIDENCE"
+              ],
+              "interface_version": "agent-interface-v0.2"
+            },
+            "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+            "created_at": "2026-09-15T21:34:06",
+            "cancelled_at": null
+          }
+        ],
+        "triggers": [
+          {
+            "id": "afe7953a-cdf0-4b95-b3cd-256260fbae7e",
+            "trigger_type": "NEW_EVIDENCE",
+            "last_triggered_at": null
+          }
+        ],
+        "checks": []
+      },
+      "delegation": {
+        "id": "43552ba3-437b-4f48-9439-1e020c9ab766",
+        "watch_id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+        "declared_actor_id": "phase12d-dogfood-agent-a",
+        "status": "ACTIVE",
+        "request_context": {
+          "active_acquisition_requested": false,
+          "triggers": [
+            "NEW_EVIDENCE"
+          ],
+          "interface_version": "agent-interface-v0.2"
+        },
+        "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+        "created_at": "2026-09-15T21:34:06",
+        "cancelled_at": null
+      },
+      "delegation_created": true,
+      "shared_watch_reused": false,
+      "active_acquisition": null
+    },
+    "second": {
+      "version": "agent-interface-v0.2",
+      "watch": {
+        "id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+        "target_type": "TREND",
+        "target_ref": "Phase12D Shared Arbitration Dogfood 20260915T213406Z",
+        "status": "ACTIVE",
+        "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+        "created_at": "2026-09-15T21:34:06",
+        "delegation_count": 2,
+        "delegations": [
+          {
+            "id": "1c5d028d-8bff-431b-92b9-d4011548a6a8",
+            "watch_id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+            "declared_actor_id": "phase12d-dogfood-agent-b",
+            "status": "ACTIVE",
+            "request_context": {
+              "active_acquisition_requested": false,
+              "triggers": [
+                "NEW_EVIDENCE"
+              ],
+              "interface_version": "agent-interface-v0.2"
+            },
+            "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+            "created_at": "2026-09-15T21:34:06",
+            "cancelled_at": null
+          },
+          {
+            "id": "43552ba3-437b-4f48-9439-1e020c9ab766",
+            "watch_id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+            "declared_actor_id": "phase12d-dogfood-agent-a",
+            "status": "ACTIVE",
+            "request_context": {
+              "active_acquisition_requested": false,
+              "triggers": [
+                "NEW_EVIDENCE"
+              ],
+              "interface_version": "agent-interface-v0.2"
+            },
+            "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+            "created_at": "2026-09-15T21:34:06",
+            "cancelled_at": null
+          }
+        ],
+        "triggers": [
+          {
+            "id": "afe7953a-cdf0-4b95-b3cd-256260fbae7e",
+            "trigger_type": "NEW_EVIDENCE",
+            "last_triggered_at": null
+          }
+        ],
+        "checks": []
+      },
+      "delegation": {
+        "id": "1c5d028d-8bff-431b-92b9-d4011548a6a8",
+        "watch_id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+        "declared_actor_id": "phase12d-dogfood-agent-b",
+        "status": "ACTIVE",
+        "request_context": {
+          "active_acquisition_requested": false,
+          "triggers": [
+            "NEW_EVIDENCE"
+          ],
+          "interface_version": "agent-interface-v0.2"
+        },
+        "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+        "created_at": "2026-09-15T21:34:06",
+        "cancelled_at": null
+      },
+      "delegation_created": true,
+      "shared_watch_reused": true,
+      "active_acquisition": null
+    },
+    "cancel_a": {
+      "version": "agent-interface-v0.2",
+      "watch": {
+        "id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+        "target_type": "TREND",
+        "target_ref": "Phase12D Shared Arbitration Dogfood 20260915T213406Z",
+        "status": "ACTIVE",
+        "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+        "created_at": "2026-09-15T21:34:06",
+        "delegation_count": 1,
+        "delegations": [
+          {
+            "id": "1c5d028d-8bff-431b-92b9-d4011548a6a8",
+            "watch_id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+            "declared_actor_id": "phase12d-dogfood-agent-b",
+            "status": "ACTIVE",
+            "request_context": {
+              "active_acquisition_requested": false,
+              "triggers": [
+                "NEW_EVIDENCE"
+              ],
+              "interface_version": "agent-interface-v0.2"
+            },
+            "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+            "created_at": "2026-09-15T21:34:06",
+            "cancelled_at": null
+          },
+          {
+            "id": "43552ba3-437b-4f48-9439-1e020c9ab766",
+            "watch_id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+            "declared_actor_id": "phase12d-dogfood-agent-a",
+            "status": "CANCELLED",
+            "request_context": {
+              "active_acquisition_requested": false,
+              "triggers": [
+                "NEW_EVIDENCE"
+              ],
+              "interface_version": "agent-interface-v0.2"
+            },
+            "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+            "created_at": "2026-09-15T21:34:06",
+            "cancelled_at": "2026-09-15T21:34:06.685755+00:00"
+          }
+        ],
+        "triggers": [
+          {
+            "id": "afe7953a-cdf0-4b95-b3cd-256260fbae7e",
+            "trigger_type": "NEW_EVIDENCE",
+            "last_triggered_at": null
+          }
+        ],
+        "checks": []
+      },
+      "cancelled_delegation": {
+        "id": "43552ba3-437b-4f48-9439-1e020c9ab766",
+        "watch_id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+        "declared_actor_id": "phase12d-dogfood-agent-a",
+        "status": "CANCELLED",
+        "request_context": {
+          "active_acquisition_requested": false,
+          "triggers": [
+            "NEW_EVIDENCE"
+          ],
+          "interface_version": "agent-interface-v0.2"
+        },
+        "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+        "created_at": "2026-09-15T21:34:06",
+        "cancelled_at": "2026-09-15T21:34:06.685755+00:00"
+      },
+      "remaining_active_delegations": 1,
+      "active_acquisition_disabled": false
+    },
+    "cancel_b": {
+      "version": "agent-interface-v0.2",
+      "watch": {
+        "id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+        "target_type": "TREND",
+        "target_ref": "Phase12D Shared Arbitration Dogfood 20260915T213406Z",
+        "status": "CANCELLED",
+        "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+        "created_at": "2026-09-15T21:34:06",
+        "delegation_count": 0,
+        "delegations": [
+          {
+            "id": "1c5d028d-8bff-431b-92b9-d4011548a6a8",
+            "watch_id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+            "declared_actor_id": "phase12d-dogfood-agent-b",
+            "status": "CANCELLED",
+            "request_context": {
+              "active_acquisition_requested": false,
+              "triggers": [
+                "NEW_EVIDENCE"
+              ],
+              "interface_version": "agent-interface-v0.2"
+            },
+            "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+            "created_at": "2026-09-15T21:34:06",
+            "cancelled_at": "2026-09-15T21:34:06.688349+00:00"
+          },
+          {
+            "id": "43552ba3-437b-4f48-9439-1e020c9ab766",
+            "watch_id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+            "declared_actor_id": "phase12d-dogfood-agent-a",
+            "status": "CANCELLED",
+            "request_context": {
+              "active_acquisition_requested": false,
+              "triggers": [
+                "NEW_EVIDENCE"
+              ],
+              "interface_version": "agent-interface-v0.2"
+            },
+            "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+            "created_at": "2026-09-15T21:34:06",
+            "cancelled_at": "2026-09-15T21:34:06.685755"
+          }
+        ],
+        "triggers": [
+          {
+            "id": "afe7953a-cdf0-4b95-b3cd-256260fbae7e",
+            "trigger_type": "NEW_EVIDENCE",
+            "last_triggered_at": null
+          }
+        ],
+        "checks": []
+      },
+      "cancelled_delegation": {
+        "id": "1c5d028d-8bff-431b-92b9-d4011548a6a8",
+        "watch_id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+        "declared_actor_id": "phase12d-dogfood-agent-b",
+        "status": "CANCELLED",
+        "request_context": {
+          "active_acquisition_requested": false,
+          "triggers": [
+            "NEW_EVIDENCE"
+          ],
+          "interface_version": "agent-interface-v0.2"
+        },
+        "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+        "created_at": "2026-09-15T21:34:06",
+        "cancelled_at": "2026-09-15T21:34:06.688349+00:00"
+      },
+      "remaining_active_delegations": 0,
+      "active_acquisition_disabled": false
+    },
+    "final": {
+      "version": "agent-interface-v0.2",
+      "watch": {
+        "id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+        "target_type": "TREND",
+        "target_ref": "Phase12D Shared Arbitration Dogfood 20260915T213406Z",
+        "status": "CANCELLED",
+        "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+        "created_at": "2026-09-15T21:34:06",
+        "delegation_count": 0,
+        "delegations": [
+          {
+            "id": "1c5d028d-8bff-431b-92b9-d4011548a6a8",
+            "watch_id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+            "declared_actor_id": "phase12d-dogfood-agent-b",
+            "status": "CANCELLED",
+            "request_context": {
+              "active_acquisition_requested": false,
+              "triggers": [
+                "NEW_EVIDENCE"
+              ],
+              "interface_version": "agent-interface-v0.2"
+            },
+            "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+            "created_at": "2026-09-15T21:34:06",
+            "cancelled_at": "2026-09-15T21:34:06.688349"
+          },
+          {
+            "id": "43552ba3-437b-4f48-9439-1e020c9ab766",
+            "watch_id": "5fef5021-e15a-41ca-8b7b-eaee2810054a",
+            "declared_actor_id": "phase12d-dogfood-agent-a",
+            "status": "CANCELLED",
+            "request_context": {
+              "active_acquisition_requested": false,
+              "triggers": [
+                "NEW_EVIDENCE"
+              ],
+              "interface_version": "agent-interface-v0.2"
+            },
+            "created_reason": "Delegated by an external agent through the RAOS Agent Interface.",
+            "created_at": "2026-09-15T21:34:06",
+            "cancelled_at": "2026-09-15T21:34:06.685755"
+          }
+        ],
+        "triggers": [
+          {
+            "id": "afe7953a-cdf0-4b95-b3cd-256260fbae7e",
+            "trigger_type": "NEW_EVIDENCE",
+            "last_triggered_at": null
+          }
+        ],
+        "checks": []
+      },
+      "active_acquisition": null
+    }
+  }
+}
