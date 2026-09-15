@@ -128,9 +128,9 @@ Core invariants:
 | Phase 7 — Perception Fidelity | External World Model fidelity, dynamic P evidence, minimal trusted Brain World Model | **CLOSED / WORKING BASELINE** |
 | Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **CLOSED / OPERATIONAL BASELINE ESTABLISHED** |
 | Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **9A PREREGISTERED / OUTCOME SAMPLING PAUSED FOR PARITY GATE** |
-| Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence | **10D.6E CLOSED / 10D.6F SUPPORT-BINDING NEXT** |
+| Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence, current-core Attention reconciliation | **10E CURRENT-CORE ATTENTION RECONCILIATION ACTIVE 2026-09-15** |
 | Phase 11 — External Attention Infrastructure | 11A Acquisition Expansion → 11B Query Expansion → 11C P Evidence → 11D Delivery → 11E Agent Interface | **CLOSED 2026-09-15** |
-| Phase 12 — Personalized Attention Calibration & Multi-Actor Control | 12A boundary/feedback attribution → 12B residual necessity → 12C bounded calibration (conditional) → 12D multi-actor arbitration → 12E multi-user scale | **12A ACTIVE / REDESIGNED v2 2026-09-15** |
+| Phase 12 — Personalized Attention Calibration & Multi-Actor Control | 12A boundary/feedback attribution → 12B residual necessity → 12C bounded calibration (conditional) → 12D multi-actor arbitration → 12E multi-user scale | **PAUSED BY PHASE 10E CORE GATE** |
 
 Current strategic position:
 
@@ -1506,4 +1506,12 @@ Real dogfood delivered one genuine `ENGAGE / PRIORITY` historical plan over loca
 
 Preregistration: `207_PHASE11E_AGENT_INTERFACE_SKILL_PREREGISTRATION.md`. Result: `208_PHASE11E_AGENT_INTERFACE_SKILL_RESULT.md`. External agents now use one stable `/agent/v1` API plus the `raos` CLI and `skills/raos/SKILL.md`. Read-only `today`, `attention`, `why`, and WATCH inspection never trigger cognition; explicit `analyze` reuses the canonical pipeline; `watch` creates ordinary delegated WATCH responsibility and optional Active Acquisition; `unwatch` cancels responsibility and disables the corresponding query bundle while preserving history.
 
-Real CLI dogfood read Today, explained an existing decision without reanalysis, created `Google EnvHarness` as an Active Acquisition WATCH with four bounded queries, inspected and cancelled it cleanly, and ran explicit Source analysis through canonical Attention + Delivery. Phase 11A–11E focused regression closed at `108 passed`. **Phase 11 is CLOSED; redesigned Phase 12A Personalization Boundary & Feedback Semantics is ACTIVE.**
+Real CLI dogfood read Today, explained an existing decision without reanalysis, created `Google EnvHarness` as an Active Acquisition WATCH with four bounded queries, inspected and cancelled it cleanly, and ran explicit Source analysis through canonical Attention + Delivery. Phase 11A–11E focused regression closed at `108 passed`. **Phase 11 is CLOSED. Phase 12 was redesigned, then paused by the Phase 10E current-core reconciliation gate before calibration began.**
+
+### Phase 10E — Current-Core Attention Reconciliation — ACTIVE 2026-09-15
+
+Preregistration: `212_PHASE10E_CURRENT_CORE_ATTENTION_RECONCILIATION_PREREGISTRATION.md`. Architecture audit found that the historical `eval/live/oracle_policy.py` still routes frozen Delta through the legacy `one-delta-v1` strategy when no strategy is supplied, while active developer dogfood explicitly uses `pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2`. Therefore the exploratory 30-case replay is not evidence about the current active Attention Core.
+
+Phase 10E restores the Oracle idea under current semantics: build a current-core frozen-effect-set harness, prove exact parity against stored production AttentionPlans, then collect fresh Core-completeness Human Gold. Historical Human Gold may generate hypotheses (for example generative potential or future optionality) but is not current calibration Gold. Any universal missing factor returns to Core research; only stable residuals remaining after Core reconciliation may proceed to Phase 12.
+
+**Phase 12A is paused until the Phase 10E gate closes. No personalization fitting or scheduler tuning is authorized during this gate.**
