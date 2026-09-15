@@ -1,7 +1,7 @@
 # Phase 12B — Residual Necessity Test Preregistration
 
 Date: 2026-09-16
-Status: **PREREGISTERED / NOT YET MEASURED**
+Status: **MEASURED / CLOSED — see `219_PHASE12B_RESIDUAL_NECESSITY_RESULT.md`**
 Parent: `209_PHASE12_PERSONALIZATION_SCALE_PLAN.md`
 Depends on: Phase 12A CLOSED; Phase 10E forward-progress closure.
 

@@ -129,11 +129,11 @@ This distinction is crucial: **user-specific does not automatically mean Phase-1
 ### 12A — Personalization Boundary & Feedback Attribution
 Separate cognition correction, awareness/sensor error, runtime correction, core-policy error, true user-policy residual, delivery preference, and Agent context. Preserve every historical decision and correction.
 
-### 12B — Residual Necessity Test
-Collect fresh current-architecture Human Gold only to answer whether stable user-specific residuals remain **after** canonical inputs are correct. This is not yet model fitting. The historical 30-case questionnaire is hypothesis-generation evidence only.
+### 12B — Residual Necessity Test — CLOSED
+Current deterministic audit found zero personalization-eligible residual rows and the Phase-10E proxy operating-regime probe had zero mismatches. `Theta_u = identity`; no non-identity calibration is currently justified.
 
-### 12C — Bounded Attention Calibration
-Run only if 12B demonstrates a repeatable personal residual that is not better explained by core/runtime/sensor errors. Compare identity baseline against the smallest auditable calibration family. Prefer ordinal/anchored/bounded adjustments over opaque per-user models.
+### 12C — Bounded Attention Calibration — SKIPPED
+12B did not demonstrate a repeatable causally clean personal residual. No calibration model is introduced. Reopen only if the flywheel later produces repeated eligible `USER_POLICY_RESIDUAL` evidence.
 
 ### 12D — Multi-Actor Attention Arbitration
 Multiple Agents may delegate analysis/WATCH responsibility and supply task provenance, but they share one human attention budget and one canonical RAOS authority. Study contention, quotas, provenance, cancellation and delegation permissions; do not give each Agent an independent importance function.

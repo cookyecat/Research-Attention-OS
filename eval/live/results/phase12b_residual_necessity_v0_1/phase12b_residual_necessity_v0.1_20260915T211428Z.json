@@ -1,0 +1,38 @@
+{
+  "phase": "12B",
+  "instrument": "residual-necessity-v0.1",
+  "timestamp_utc": "20260915T211428Z",
+  "git_sha": "2106ab47b83e7190207fa2b06c55b13cdf6c4663",
+  "database_url": "sqlite:////Users/liyang/Developer/Research-Attention-OS/backend/raos.db",
+  "feedback": {
+    "total_feedback_rows": 0,
+    "personalization_eligible_rows": 0,
+    "personalization_eligible_ids": [],
+    "unresolved_or_missing_attribution_rows": 0,
+    "causal_scope_counts": {},
+    "provenance_counts": {},
+    "feedback_class_counts": {},
+    "residual_evidence_state": "NO_ELIGIBLE_RESIDUAL_EVIDENCE",
+    "calibration_decision": "IDENTITY_RETAINED"
+  },
+  "proxy_operating_regime": {
+    "artifact": "eval/live/results/phase10e_proxy_human_gold_v0_1/phase10e_proxy_human_gold_v0.1_20260915T193629Z.json",
+    "label_author": "assistant_proxy_for_user",
+    "n": 10,
+    "exact": 10,
+    "mismatches": 0,
+    "used_as_personalization_training_gold": false
+  },
+  "decision": {
+    "non_identity_calibration_justified": false,
+    "theta_u": "IDENTITY",
+    "phase12c": "SKIP",
+    "conclusion": "NO_NON_IDENTITY_CALIBRATION_JUSTIFIED"
+  },
+  "guardrails": [
+    "No LLM/provider calls.",
+    "No feedback synthesis.",
+    "Assistant-proxy Gold cannot itself authorize personalization.",
+    "Absence of evidence is interpreted as no justification for extra model capacity, not proof that future residuals cannot exist."
+  ]
+}
