@@ -1,127 +1,122 @@
-# Phase 10E — Current-Core Attention Reconciliation Preregistration
+# Phase 10E — Core Decision-State Sufficiency Gate Preregistration
 
 Date: 2026-09-15
 Status: **PREREGISTERED / NOT YET MEASURED**
-Production impact: **none before a measured gate**
+Production impact: **none; validation-only gate**
 
-## 1. Why this phase exists
+## 1. Physical meaning
 
-Phase 12 personalization review exposed an instrumentation mismatch: the historical `Oracle-Δ` harness still routes frozen Delta through the legacy `one-delta-v1` strategy, while active developer dogfood uses `research-aligned-cognition-v1` with `pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2`.
+Phase 10E is **not a new RAOS runtime module, state variable, or policy layer**. It is a validation gate on the existing Phase 1–10 core.
 
-Therefore the exploratory 30-case replay cannot be interpreted as a measurement of the current active Attention Core.
+The current core assumes that once cognition has been reduced to a decision-relevant state `Z_t`, Attention is determined by the core policy:
 
-Phase 10E restores the original scientific purpose of Oracle-Δ under the current architecture: freeze cognition, remove upstream stochasticity, and test only the active Attention decision machinery.
-
-## 2. Frozen active Core under test
-
-The positive cognitive-effect branch under test is exactly:
-
-```text
-frozen authorized CognitiveEffect set
-→ effect-specific OPEN_NEW admission
-→ Magnitude-Free calibration
-→ Pareto frontier
-→ article-level Attention join
-→ Runtime overlay
+```math
+A_t = \pi_{core}(Z_t)
 ```
 
-The no-Delta branch remains separate:
+For positive cognitive change, `Z_t` contains only decision-authorized effects plus the already-canonical decision-relevant Kernel facts and Runtime consumed by the active strategy. For no-Delta cases, `Z_t` contains the frozen D/S/P awareness state plus Runtime.
 
-```text
-Delta = NONE
-→ frozen/oracle D/S/P semantics
-→ AWARE iff S AND (D OR P)
-→ Runtime only where already authorized by the current Core
+The physical question is therefore **state sufficiency**:
+
+```math
+Z(x_1)=Z(x_2) \Rightarrow A^*(x_1)=A^*(x_2)
 ```
 
-No Phase 12 calibration parameter is present in this phase.
+If two cases are identical under the current canonical decision state but reproducibly require different Human-Gold Attention, then the current state representation is insufficient. No new variable is assumed in advance.
 
-## 3. Research questions
+## 2. Why this gate is necessary
 
-RQ10E.1 — Can a current-core Oracle harness reproduce active production Attention exactly when supplied the same frozen post-cognition inputs?
+The historical `Oracle-Delta` harness still routes frozen Delta through legacy `one-delta-v1` when no strategy is supplied. Active dogfood instead uses `research-aligned-cognition-v1` with `pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2`.
 
-RQ10E.2 — After upstream cognition is held correct, does the current active Attention Core reproduce fresh Human Gold without needing additional latent variables?
+Therefore the exploratory replay of the old 30-case questionnaire measured a historical policy, not the current active core. It must not be used to justify current Core or Phase-12 changes.
 
-RQ10E.3 — If mismatches remain, are they attributable to an existing Core rule, a missing universal Core variable, Runtime capture, or a truly user-specific residual?
+## 3. Occam constraints
 
-## 4. 10E.1 — Current-Core Oracle Harness
+Phase 10E may add **measurement code only**. It may not add:
 
-The new harness must not call Extract, Sensor, Auditor, Locate, Relation Mapping, Support Binding, Grounding, or Jurisdiction models.
+```text
+new production state variables
+new database tables
+new scheduler parameters
+new personalization parameters
+new LLM stages
+new Attention dispositions
+```
 
-It consumes a frozen authorized effect set containing exact operation, target/jurisdiction, support provenance, grounding, importance band, epistemic band, and effect-specific jurisdiction anchors, plus frozen Runtime.
+Reuse the existing decision-strategy seam, execution snapshots, persisted effect/match provenance, D/S/P traces and Runtime records.
 
-It must explicitly route through the active decision strategy snapshot rather than relying on the legacy default of `scheduler.route()`.
+A historical candidate such as `GenerativePotential` is only a probe axis. It is not a Core variable unless fresh matched evidence proves that existing state is insufficient and replication supports a universal factor.
 
-## 5. 10E.2 — Production-Parity Replay
+## 4. Gate A — strategy-explicit replay parity
 
-Before collecting any new Human Gold, replay a set of completed `research-aligned-cognition-v1` AnalysisRuns from the dogfood database.
+Build or amend the evaluation harness so it never relies on the bare legacy default of `scheduler.route()`.
 
-For each run, reconstruct the frozen post-cognition effect set and Runtime from stored provenance, then compare Oracle output against the persisted production AttentionPlan.
+Historical replay must use the exact stored decision-strategy snapshot. Current-core counterfactual replay must explicitly use the current active strategy. Missing or mismatched strategy identity fails closed.
+
+For completed current-architecture AnalysisRuns, freeze the exact inputs already consumed by the decision strategy and replay only the decision path. No Sensor, Auditor, Locate, Relation Mapping, Support Binding, Grounding, Jurisdiction evaluator, or other upstream model call is allowed.
 
 Primary gate:
 
 ```text
 exact disposition parity = 100%
-exact decision-strategy identity parity = 100%
-no upstream model call = 100%
+exact strategy identity parity = 100%
+upstream model calls = 0
 ```
 
-Any failure here is an instrumentation defect. Human-Gold interpretation is forbidden until parity is restored.
+Any failure is an instrumentation/replay defect, not Human-Gold evidence.
 
-## 6. 10E.3 — Fresh Core-Completeness Human-Gold Probe
+## 5. Gate B — minimal state-sufficiency probe
 
-Only after 10E.2 parity passes, collect fresh controlled judgments against current semantics.
+Only after Gate A passes, run a small randomized matched-pair Human-Gold probe.
 
-The probe is not a personalization questionnaire. It is a Core completeness test. Cases should isolate current decision dimensions and historical candidate omissions while keeping upstream cognition frozen.
+Each pair holds the current canonical decision state `Z_t` fixed while varying one semantic property that the current Core does not represent. Include null-control pairs where only irrelevant wording changes.
 
-High-value probe families:
+Use the smallest probe that can expose a violation; do not recreate the historical 30-question questionnaire by default. Historical findings such as future optionality or generative potential may suggest probe construction, but they are not labels and do not receive privileged status.
+
+The key endpoint is not classifier accuracy. It is whether the invariance claim holds:
 
 ```text
-REINFORCE / CHALLENGE with ordinal importance × epistemic authority
-OPEN_NEW with valid jurisdiction but varied generative potential
-WATCH-worthy optionality with otherwise matched current-core inputs
-multi-effect / Pareto cases
-separate Runtime perturbations using already-canonical Runtime fields
-Delta=NONE with complete oracle D/S/P inputs
+same current Core state
+→ same Human-Gold Attention
 ```
 
-The historical 30-case questionnaire may inform case construction but is not current Gold and must not be scored as a confirmatory dataset.
+A reproducible violation creates a **candidate Core-insufficiency hypothesis**, not an automatic new chip.
 
-## 7. Attribution firewall
+## 6. Attribution firewall
 
-Every fresh mismatch must be classified before any policy change:
+Any mismatch must first be classified as one of:
 
 ```text
 INSTRUMENT_ERROR
-CURRENT_RULE_ERROR
-MISSING_UNIVERSAL_CORE_VARIABLE
+UPSTREAM_STATE_ERROR
 RUNTIME_CAPTURE_ERROR
-NO_DELTA_DSP_ERROR
+CURRENT_RULE_ERROR
+CANDIDATE_STATE_INSUFFICIENCY
 USER_SPECIFIC_RESIDUAL
 UNRESOLVED
 ```
 
-`USER_SPECIFIC_RESIDUAL` is not allowed unless all canonical Core inputs are judged correct and the same residual is stable across repeated matched cases.
+`USER_SPECIFIC_RESIDUAL` is not allowed unless current Core inputs are correct and the same residual is stable across repeated matched cases. A candidate universal factor requires additional replication before entering the Core.
 
-A candidate such as `GenerativePotential` can return to Core only if fresh matched cases show that current authorized inputs are insufficient to explain systematic Human Gold differences. It must not be introduced merely because it appeared in the historical pilot.
+## 7. Minimality audit of existing chips
 
-## 8. Exit and handoff
+Phase 10E does not assume every historical chip must remain forever. As a diagnostic only, replay may test whether removing a chip changes observable decision/provenance behavior on a broad frozen corpus.
 
-Phase 10E closes when:
+If a chip is observationally redundant, record it as a simplification candidate. Do not remove it during this gate without a separate preregistered equivalence test.
+
+The burden of proof is symmetric:
 
 ```text
-10E.1 current-core Oracle harness exists and is versioned;
-10E.2 production-parity replay passes the preregistered exact gate;
-10E.3 fresh Human-Gold probe is completed and mismatches are causally attributed;
-10E.4 any Core amendment, if required, is separately preregistered and revalidated.
+new variable/module must prove necessity
+existing module must continue to prove non-redundant function
 ```
 
-If fresh evidence finds no stable residual beyond the Core, Phase 12 personalization remains identity/no-op by default.
+## 8. Exit rule
 
-If a stable universal missing factor is found, it returns to the Core research line first; it must not be absorbed as personalization.
+Phase 10E closes after Gate A and Gate B are complete and all mismatches are attributed.
 
-If stable user-specific residuals remain only after Core reconciliation, Phase 12 may resume with bounded calibration.
+- If current state is sufficient, Phase 12 may resume with identity/no-op personalization as the default.
+- If a candidate universal Core omission remains, Core research continues before Phase 12 fitting.
+- If only stable user-specific residuals remain after Core reconciliation, Phase 12 may test the smallest bounded calibration.
 
-## 9. Immediate decision
-
-Phase 12A is **PAUSED BY CORE GATE** until Phase 10E completes. No personalization fitting, questionnaire calibration, or scheduler tuning is authorized during this gate.
+No production policy change is part of Phase 10E itself.
