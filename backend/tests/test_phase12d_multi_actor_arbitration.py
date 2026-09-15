@@ -123,6 +123,45 @@ def test_core_owned_watch_survives_last_agent_delegation_cancel(client, db):
     assert response.json()["watch"]["status"] == "ACTIVE"
 
 
+
+def test_shared_watch_reuses_single_active_acquisition_bundle(client, db, monkeypatch):
+    class Expansion:
+        def as_dict(self):
+            return {"status": "CONTROLLED"}
+
+    calls = {"n": 0}
+
+    def fake_upsert(db_, *, watch, **_kwargs):
+        calls["n"] += 1
+        spec = ActiveQueryBundleSpec(
+            watch_id=str(watch.id), intent=watch.target_ref, queries=(watch.target_ref,)
+        )
+        row = SourceDefinition(
+            name="controlled shared bundle", source_type="ACTIVE_QUERY_BUNDLE",
+            locator=spec.to_locator(), enabled=True, poll_interval_seconds=1800,
+        )
+        db_.add(row); db_.flush()
+        return row, Expansion(), spec
+
+    monkeypatch.setattr("app.api.agent.upsert_watch_query_bundle", fake_upsert)
+    first = client.post("/agent/v1/watch", json={
+        "actor_id": "agent-bundle-a", "topic": "Shared Bundle Target",
+        "active_acquisition": True,
+    })
+    second = client.post("/agent/v1/watch", json={
+        "actor_id": "agent-bundle-b", "topic": "Shared Bundle Target",
+        "active_acquisition": True,
+    })
+    assert first.status_code == 200, first.text
+    assert second.status_code == 200, second.text
+    assert first.json()["watch"]["id"] == second.json()["watch"]["id"]
+    assert calls["n"] == 1
+    bundles = db.execute(
+        select(SourceDefinition).where(SourceDefinition.source_type == "ACTIVE_QUERY_BUNDLE")
+    ).scalars().all()
+    matching = [row for row in bundles if str(first.json()["watch"]["id"]) in row.locator]
+    assert len(matching) == 1
+
 def test_agent_watch_request_cannot_smuggle_attention_authority(client):
     response = client.post("/agent/v1/watch", json={
         "actor_id": "agent-bad", "topic": "No direct authority",
