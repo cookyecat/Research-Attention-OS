@@ -1,8 +1,8 @@
 # Research Attention OS — Roadmap and Progress
 
 Status: **ACTIVE PROJECT ROADMAP**  
-Date: 2026-09-11
-Current integrated baseline referenced: Phase 10D.4 production dogfood checkpoint (tag: `phase10d4-production-dogfood-v1`)
+Date: 2026-09-16
+Current integrated baseline referenced: Phase 12 closed for current single-user dogfood; Phase 13 Execution Integrity V1.0 preregistered at committed HEAD `88c3516`, with V1 core implementation active in the working tree
 Semantic baseline: `08_COGNITIVE_TRANSITION_MODEL_V2.1.md` + Phase II-B AWARE semantics in `10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md`  
 D semantic baseline: `16_STANDING_ATTENTION_JURISDICTION.md`  
 D final validation: `17_STANDING_RADAR_FIT_V3_FINAL_VALIDATION.md`  
@@ -127,34 +127,47 @@ Core invariants:
 | Phase 6 — Integrated Cognitive Attention Loop | Raw Source → Sensor/Auditor → D/S/P + Δ → four Attention Actions → human-gated Kernel proposal | **CLOSED** |
 | Phase 7 — Perception Fidelity | External World Model fidelity, dynamic P evidence, minimal trusted Brain World Model | **CLOSED / WORKING BASELINE** |
 | Phase 8 — Narrow Continuous Attention Loop | Narrow real ingest/cluster/route plus real WATCH re-check responsibility | **CLOSED / OPERATIONAL BASELINE ESTABLISHED** |
-| Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **9A PREREGISTERED / OUTCOME SAMPLING PAUSED FOR PARITY GATE** |
+| Phase 9 — Longitudinal Cognitive Alignment | Keep Kernel and future decisions aligned as cognition changes | **CLOSED / CAUSAL ALIGNMENT SUPPORTED 2026-09-13** |
 | Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence, Attention Core validity | **10E CLOSED FOR FORWARD PROGRESS 2026-09-16** |
 | Phase 11 — External Attention Infrastructure | 11A Acquisition Expansion → 11B Query Expansion → 11C P Evidence → 11D Delivery → 11E Agent Interface | **CLOSED 2026-09-15** |
-| Phase 12 — Personalized Attention Calibration & Multi-Actor Control | 12A boundary/feedback attribution → 12B residual necessity → 12C bounded calibration (conditional) → 12D multi-actor arbitration → 12E multi-user scale | **12A CLOSED / 12B ACTIVE 2026-09-16** |
+| Phase 12 — Personalized Attention Calibration & Multi-Actor Control | 12A boundary/feedback attribution → 12B residual necessity → 12C bounded calibration (conditional) → 12D multi-actor arbitration → 12E multi-user scale | **CLOSED FOR CURRENT SINGLE-USER DOGFOOD 2026-09-16; 12C DORMANT / CONDITIONALLY DEFERRED** |
+| Phase 13 — Execution Integrity | Explicit execution identity, attestation-derived authority, graceful degradation, reconciliation, Manual/Service runtime operation | **ACTIVE / V1 CORE IMPLEMENTATION WORKING 2026-09-16** |
 
 Current strategic position:
 
 $$
-\boxed{Phase\ 10D.4:\ Real\text{-}Web\ Basin\ Persistence\ COMPLETE}
+\boxed{Phase\ 10E:\ Attention\ Core\ Validity\ CLOSED\ FOR\ FORWARD\ PROGRESS}
 $$
 
 $$
-\boxed{RAOS\ Distributional\ Cognitive\ Stability\ Theory\ V1.0\ FORMALIZED}
+\boxed{Phase\ 12:\ CLOSED\ FOR\ CURRENT\ SINGLE\text{-}USER\ DOGFOOD}
 $$
 
-Current research position: `Phase 10D.6E authority-band calibration closed → Phase 10D.6F support-binding/evidence-class authority next; Phase 9A remains preregistered and paused`. Phase 9A now tests whether explicit accepted Kernel changes produce directionally correct shifts beyond the fixed-K stochastic basin. The frozen `one-delta-v1` strategy remains preserved for historical replay and rollback.
+$$
+\boxed{Phase\ 13:\ Execution\ Integrity\ V1.0\ ACTIVE}
+$$
+
+Current research/product position: Phase 9A is closed with causal alignment supported; Phase 10E validated the current Attention Core for forward progress; Phase 11 external attention infrastructure and Phase 12 personalization/multi-actor/scale-boundary work are closed for the current single-user dogfood. Phase 12C remains a dormant conditional calibration module and may activate only after repeated, cross-context stable, causally clean `USER_POLICY_RESIDUAL` evidence. The current active gate is Phase 13: make execution identity, Attention authority, degraded operation, and recovery explicit so a live process cannot silently fall back to a historical cognition contract. Frozen `one-delta-v1` remains available only for explicit compatibility/replay, not as accidental canonical dogfood authority.
+
+The 2026-09-16 Google-language false-ENGAGE incident established the new engineering invariant:
+
+```text
+process alive != semantically authoritative RAOS
+```
+
+Current canonical Mac profile is `research-dogfood-v1`. At this roadmap update, the profile attests correctly but model credentials are unavailable, so the intended safe state is `Observation=READY`, `Cognition=BLOCKED`, `Attention=BLOCKED`, overall `DEGRADED`; Acquisition continues preserving new observations for later reconciliation rather than falling back to legacy cognition.
 
 D semantic research is closed. The v3 D estimator has attributable implementation residuals and is not certified as a passed estimator; do not expand D into another offline synthetic benchmark now.
 
 S semantic research is closed. The frozen S estimator v1 passed its fresh first-run validation 12/12 with both class recalls at 1.0 and zero technical failures; further synthetic S benchmark work is stopped.
 
-P semantic calibration is now closed/frozen. Current work is to approximate the frozen theoretical P variable from realistically available evidence without redefining the variable around present data limitations.
+P semantic calibration is closed/frozen. Phase 11C supplied the current operational public-attention evidence path; future P refinement is driven by attributable dogfood residuals rather than by reopening the theoretical variable.
 
-The project is still answering:
+The project is now answering:
 
-> **Can RAOS reason about attention reliably enough for genuine personal use?**
+> **Can RAOS sustain genuine personal use under continuous autonomous operation while preserving explicit semantic authority, provenance, and safe recovery?**
 
-Do not move to broad continuous monitoring until this is good enough; do not over-polish offline policy once the phase exit condition is met.
+Do not over-polish offline policy once a gate is met. The current priority is Execution Integrity and reliable dogfood operation, not a speculative new cognition variable.
 
 ---
 
@@ -238,7 +251,7 @@ Baseline commit:
 
 Synthetic truth-table results and Human-elicited results remain provenance-separated. Synthetic 8/8 is a wiring test, not Human Gold generalization evidence.
 
-Production does not yet estimate the real-world awareness signals.
+This paragraph is historical baseline context. Current dogfood restores the no-Delta D/S/P branch, and Phase 11C supplies a provenance-preserving public-attention evidence path for P.
 
 ---
 
@@ -527,7 +540,7 @@ The 12/12 result is evidence that the frozen semantic contract was cleanly imple
 
 ---
 
-## 8. P study — SEMANTICS CLOSED / ESTIMATOR MODELING ACTIVE
+## 8. P study — SEMANTICS CLOSED / OPERATIONAL ESTIMATOR BASELINE
 
 ### 8.1 Canonical P definition
 
@@ -615,10 +628,13 @@ P semantic definition                  CLOSED / FROZEN
 Objective Attention Constituency       CLOSED / FROZEN CONCEPT
 Reference-scale normalization          CLOSED / FROZEN PRINCIPLE
 Temporal inertia                       CLOSED / FROZEN PRINCIPLE
-P estimator architecture               ACTIVE MODELING
-Fresh P Human Gold                     NOT CREATED
-First scored P measurement             NOT RUN
+P estimator architecture               CLOSED / OPERATIONAL BASELINE
+Public attention evidence sensor       CLOSED IN PHASE 11C
+Fresh open-world P Human Gold          NOT CREATED
+Further P work                         DOGFOOD-RESIDUAL DRIVEN ONLY
 ```
+
+Phase 11C operationalized the engineering side of P with provenance-preserving HN/Bilibili/Weibo signal samples and Event-level evidence packets feeding the frozen `collective-attention-estimator-v1`. This does not claim perfect open-world P measurement; it closes the current architecture/engineering gate and leaves future refinement to attributable real-use residuals.
 
 ---
 
@@ -627,20 +643,28 @@ First scored P measurement             NOT RUN
 Execute in this order:
 
 ```text
-Phase 7A — External World Model Fidelity
+Phase 13 P0 containment / degraded operation
   ↓
-Measure whether Sensor/Auditor representation preserves downstream decision-sufficient meaning
+Preserve Observation while canonical cognition credentials are unavailable
   ↓
-Attribute causal representation failures before tuning Sensor
+Complete Execution Integrity V1 core implementation + full regression
   ↓
-Phase 7B — Dynamic P evidence interface using controlled/simulated time-varying evidence first
+Update canonical architecture and commit the implementation checkpoint
   ↓
-Phase 7C — Minimal Trusted Brain World Model with explicit value/source/authority boundaries
+Add append-only integrity finding / remediation for the Google false-ENGAGE artifacts
   ↓
-Phase 8 — Narrow Continuous Attention Loop / real WATCH re-check dogfooding
+Restore canonical model credential securely; never place secrets in Git
+  ↓
+Re-run the frozen Google incident under the canonical Core
+  ↓
+Verify the false lexical-overlap → unrelated CHALLENGE → ENGAGE chain cannot recur
+  ↓
+Run Cognition Reconciliation for genuine deferred post-baseline arrivals
+  ↓
+Resume real dogfood; let the flywheel reveal the next residual
 ```
 
-Do not wait for perception perfection. Move to Phase 8 once remaining errors are bounded, observable, and attributable.
+Do **not** start a speculative Phase 14 or redesign the Attention Core from this incident. The current failure was first a runtime execution-identity regression and second an illustration of why the historical legacy rule path is not robust enough for silent production fallback. Manual versus Service installation remains a user deployment choice; Service mode must not invent semantic configuration.
 
 ## 10. Phase II-B exit condition
 
@@ -683,7 +707,7 @@ Start with a narrow measurable real-source loop, not a giant crawler or recommen
 
 ---
 
-## 12. Phase IV — Longitudinal Cognitive Alignment
+## 12. Phase IV — Longitudinal Cognitive Alignment — HISTORICAL PLAN, REALIZED BY PHASE 9A
 
 Once continuous information flow exists:
 
@@ -695,11 +719,12 @@ Test whether accepted Kernel changes correctly alter future Locate/Impact/Attent
 
 ---
 
-## 13. Phase V — Personalization
+## 13. Phase V — Personalization — SUPERSEDED BY PHASE 12 RESIDUAL-FIRST DESIGN
 
-Only after real trajectories exist should personalization move beyond initial calibration.
+Phase 12 replaced the old assumption that personalization should automatically become a trained policy. Current evidence supports identity calibration; non-identity personalization remains conditional on repeated causally clean user-policy residuals.
 
-Candidate architecture:
+Historical candidate architecture:
+
 
 $$
 \boxed{
@@ -1520,16 +1545,96 @@ Operational decision: **continue the current Core as-is for dogfood; Pareto = KE
 
 ### Phase 12A — Personalization Boundary & Feedback Attribution — CLOSED 2026-09-16
 
-Preregistration: `210_PHASE12A_PERSONALIZATION_BOUNDARY_FEEDBACK_PREREGISTRATION.md`. Result: `217_PHASE12A_FEEDBACK_ATTRIBUTION_RESULT.md`. Existing append-only `AttentionFeedback` now carries one minimal attribution JSON. Disposition disagreement without causal scope fails closed to `UNRESOLVED`; cognitive adjudication is separate from Attention-policy correction; only explicit human, disposition-only `USER_POLICY_RESIDUAL` evidence is personalization-eligible. Migration `0012_feedback_attribution` was applied to the dogfood DB. Focused Feedback tests passed 30/30 and broader Core/Delivery/Agent/WATCH regression passed 138/138. **12B residual necessity is now ACTIVE; no calibration has been fitted.**
+Preregistration: `210_PHASE12A_PERSONALIZATION_BOUNDARY_FEEDBACK_PREREGISTRATION.md`. Result: `217_PHASE12A_FEEDBACK_ATTRIBUTION_RESULT.md`. Existing append-only `AttentionFeedback` now carries one minimal attribution JSON. Disposition disagreement without causal scope fails closed to `UNRESOLVED`; cognitive adjudication is separate from Attention-policy correction; only explicit human, disposition-only `USER_POLICY_RESIDUAL` evidence is personalization-eligible. Migration `0012_feedback_attribution` was applied to the dogfood DB. Focused Feedback tests passed 30/30 and broader Core/Delivery/Agent/WATCH regression passed 138/138. Phase 12B subsequently closed with identity calibration; no non-identity calibration was fitted.
 
 ### Phase 12B — Residual Necessity Test — CLOSED 2026-09-16
 
-Preregistration: `218_PHASE12B_RESIDUAL_NECESSITY_PREREGISTRATION.md`. Result: `219_PHASE12B_RESIDUAL_NECESSITY_RESULT.md`. The deterministic audit found zero `AttentionFeedback` rows and zero personalization-eligible residuals; Phase-10E assistant-proxy operating-regime Gold remained 10/10 exact and is not personalization training evidence. `Theta_u = identity`; Phase 12C is NOT JUSTIFIED / SKIPPED unless the flywheel later produces repeated causally clean `USER_POLICY_RESIDUAL` evidence.
+Preregistration: `218_PHASE12B_RESIDUAL_NECESSITY_PREREGISTRATION.md`. Result: `219_PHASE12B_RESIDUAL_NECESSITY_RESULT.md`. The deterministic audit found zero `AttentionFeedback` rows and zero personalization-eligible residuals; Phase-10E assistant-proxy operating-regime Gold remained 10/10 exact and is not personalization training evidence. `Theta_u = identity`; current evidence does not justify non-identity calibration.
+
+### Phase 12C — Bounded Attention Calibration — DORMANT / CONDITIONALLY DEFERRED 2026-09-16
+
+12C remains part of the architecture but is not activated by default. It may reopen only after evidence is **repeated + cross-context stable + causally clean + Core-unexplained**, with 12A attribution resolving the discrepancy to explicit-human `USER_POLICY_RESIDUAL`. If activated, start with the smallest interpretable residual correction rather than a second black-box Attention policy. Absence of current eligible residuals means “not justified now,” not “personalization can never exist.”
 
 ### Phase 12D — Multi-Actor Attention Arbitration — CLOSED 2026-09-16
 
-Preregistration: `220_PHASE12D_MULTI_ACTOR_ATTENTION_ARBITRATION_PREREGISTRATION.md`. Result: `221_PHASE12D_MULTI_ACTOR_ATTENTION_ARBITRATION_RESULT.md`. Multiple external Agents now delegate through `WatchDelegation` provenance into one canonical Watch rather than multiplying WATCH responsibilities or Attention authority. Actor-local cancellation preserves shared responsibility until the last delegation leaves; core-owned Watches are preserved. Migration `0013_watch_delegations` is live in dogfood. Focused and adjacent regression closed at 165 passed. Real localhost two-actor dogfood passed all 11 shared-responsibility checks. No actor-priority, quota, or fairness weight is added before real contention evidence. **Phase 12E isolation-boundary review is next.**
+Preregistration: `220_PHASE12D_MULTI_ACTOR_ATTENTION_ARBITRATION_PREREGISTRATION.md`. Result: `221_PHASE12D_MULTI_ACTOR_ATTENTION_ARBITRATION_RESULT.md`. Multiple external Agents now delegate through `WatchDelegation` provenance into one canonical Watch rather than multiplying WATCH responsibilities or Attention authority. Actor-local cancellation preserves shared responsibility until the last delegation leaves; core-owned Watches are preserved. Migration `0013_watch_delegations` is live in dogfood. Focused and adjacent regression closed at 165 passed. Real localhost two-actor dogfood passed all 11 shared-responsibility checks. No actor-priority, quota, or fairness weight is added before real contention evidence. Phase 12E subsequently closed the ownership/scale boundary with tenantization deferred.
 
 ### Phase 12E — Multi-User Scale Boundary — CLOSED / TENANTIZATION DEFERRED 2026-09-16
 
 Preregistration: `222_PHASE12E_MULTI_USER_SCALE_BOUNDARY_PREREGISTRATION.md`. Result: `223_PHASE12E_MULTI_USER_SCALE_BOUNDARY_RESULT.md`. Current backend/frontend contain no authenticated user/tenant identity, so 12E deliberately did not add schema-wide `user_id` fields or pretend multi-user safety. The frozen ownership split is shareable external-world state versus private Brain/Attention state and private authority for authenticated observation. `deployment-scope-v0.1` now exposes `SINGLE_USER_DOGFOOD`, `authenticated_user_identity=false`, and `multi_user_isolation=false` through live health/capability surfaces. Focused regression passed 91 tests and live localhost endpoints agreed. Actual tenantization reopens only with a real second-user/external deployment requirement. **Phase 12 is CLOSED FOR CURRENT SINGLE-USER DOGFOOD.**
+
+## Phase 13 — Execution Integrity V1.0 — ACTIVE / CORE IMPLEMENTATION WORKING 2026-09-16
+
+Preregistration: `224_PHASE13_EXECUTION_INTEGRITY_PREREGISTRATION.md`. Trigger fixture: `eval/incidents/20260916_google_language_false_engage/fixture.json`. Preregistration commit: `88c3516` (`research: preregister phase13 execution integrity`).
+
+Phase 13 was triggered by a real dogfood false positive: **Google: AI for everyone in every language** surfaced as `ENGAGE`. Forensic inspection showed the live post-reboot Acquisition worker had not executed the current research-aligned Core. The local `.env` no longer contained canonical cognition identity, so restart selected repository compatibility defaults: `rule + legacy + one-delta-v1`. The legacy path then amplified broad lexical overlap plus an unrelated `rather than` cue into a false `CHALLENGE` against the swarm-intelligence BELIEF, forced meaningful change magnitude, and produced `ENGAGE`, an automatic WATCH, and a proposed KernelPatch. The proposed patch never mutated Kernel because human authorization remained intact.
+
+The incident established two permanent distinctions:
+
+```text
+process liveness != semantic authority
+identity integrity != dependency availability
+```
+
+Execution Integrity V1.0 freezes four invariants:
+
+1. every authoritative run has explicit desired and resolved execution identity;
+2. Attention authority is derived from execution purpose + deterministic attestation + required capability readiness;
+3. failure removes only invalidated capability and never silently selects another semantic contract;
+4. temporary cognition failure preserves observation and remains recoverable without rewriting original observation time.
+
+Current V1 implementation exists in the working tree but is **not yet committed at this roadmap checkpoint**. It adds a versioned `research-dogfood-v1` runtime profile, deterministic execution attestation, capability-aware health, a pre-`AttentionPlan` authority gate, deferred-cognition reconciliation, Manual/Service runtime scripts, and `raosctl doctor`. Compatibility/replay remains available when explicitly selected; canonical dogfood may not silently inherit legacy authority.
+
+Focused and adjacent regression completed so far:
+
+```text
+Phase 13 focused tests                    4 passed
+Phase 13 + acquisition/degradation       15 passed
+Broader related regression               61 passed
+New failures                             0
+Known warning                            existing Starlette/httpx warning
+Full backend regression                  NOT YET RUN FOR PHASE 13
+```
+
+Real Mac dogfood now starts through the new Manual runtime path using the canonical profile. Latest measured runtime state at this checkpoint:
+
+```text
+purpose        CANONICAL
+attestation    ATTESTED
+mismatches     []
+Observation    READY
+Cognition      BLOCKED
+Attention      BLOCKED
+Delivery       READY
+overall         DEGRADED
+reason          missing llm_api_key
+```
+
+This is the intended safe behavior: Acquisition may continue preserving genuine new arrivals; canonical cognition and Attention authority remain unavailable until the required model credential returns. No fallback to `rule + one-delta` is permitted. Eligible post-baseline arrivals are marked for Cognition Reconciliation; baseline history and explicit metadata-only deferrals are not promoted into reconciliation work.
+
+Manual and Service deployment semantics are frozen as orthogonal to cognition identity:
+
+```text
+Manual  = user starts RAOS after reboot
+Service = OS launchd starts/restarts RAOS automatically
+```
+
+Both must select the same versioned canonical runtime profile. Service installation is opt-in and must never create or override semantic policy.
+
+Remaining Phase 13 closure work:
+
+```text
+1. clean stale unmanaged process/session residue
+2. run full backend regression
+3. update RAOS_CANONICAL_ARCHITECTURE.md for Execution Integrity / Authority Gate
+4. commit and push the current Phase 13 implementation checkpoint
+5. add append-only ExecutionIntegrityFinding / historical artifact invalidation semantics
+6. remediate the Google false ENGAGE/WATCH/Patch without deleting forensic history
+7. restore the canonical model credential securely
+8. rerun the frozen Google incident under the canonical Core
+9. prove the forbidden lexical-overlap → unrelated CHALLENGE → ENGAGE mechanism is absent
+10. run reconciliation over genuine deferred arrivals
+11. resume normal dogfood and wait for the next real residual
+```
+
+Do not declare Phase 13 closed merely because processes are alive. Closure requires semantic identity, authority gating, recovery, regression, incident remediation, and canonical-architecture documentation to agree.
