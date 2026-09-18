@@ -1,7 +1,7 @@
 # Research Attention OS — Roadmap and Progress
 
 Status: **ACTIVE PROJECT ROADMAP**  
-Date: 2026-09-16
+Date: 2026-09-17
 Current integrated baseline referenced: Phase 12 closed for current single-user dogfood; Phase 13 Execution Integrity V1.0 preregistered at committed HEAD `88c3516`, with V1 core implementation active in the working tree
 Semantic baseline: `08_COGNITIVE_TRANSITION_MODEL_V2.1.md` + Phase II-B AWARE semantics in `10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md`  
 D semantic baseline: `16_STANDING_ATTENTION_JURISDICTION.md`  
@@ -131,7 +131,7 @@ Core invariants:
 | Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence, Attention Core validity | **10E CLOSED FOR FORWARD PROGRESS 2026-09-16** |
 | Phase 11 — External Attention Infrastructure | 11A Acquisition Expansion → 11B Query Expansion → 11C P Evidence → 11D Delivery → 11E Agent Interface | **CLOSED 2026-09-15** |
 | Phase 12 — Personalized Attention Calibration & Multi-Actor Control | 12A boundary/feedback attribution → 12B residual necessity → 12C bounded calibration (conditional) → 12D multi-actor arbitration → 12E multi-user scale | **CLOSED FOR CURRENT SINGLE-USER DOGFOOD 2026-09-16; 12C DORMANT / CONDITIONALLY DEFERRED** |
-| Phase 13 — Execution Integrity | Explicit execution identity, attestation-derived authority, graceful degradation, reconciliation, Manual/Service runtime operation | **ACTIVE / V1 CORE IMPLEMENTATION WORKING 2026-09-16** |
+| Phase 13 — Execution Integrity | Explicit execution identity, attestation-derived authority, graceful degradation, reconciliation, Manual/Service runtime operation | **ACTIVE / V1.1 TRUST ROOT HARDENED 2026-09-17** |
 
 Current strategic position:
 
@@ -155,7 +155,7 @@ The 2026-09-16 Google-language false-ENGAGE incident established the new enginee
 process alive != semantically authoritative RAOS
 ```
 
-Current canonical Mac profile is `research-dogfood-v1`. At this roadmap update, the profile attests correctly but model credentials are unavailable, so the intended safe state is `Observation=READY`, `Cognition=BLOCKED`, `Attention=BLOCKED`, overall `DEGRADED`; Acquisition continues preserving new observations for later reconciliation rather than falling back to legacy cognition.
+Current canonical Mac profile is `research-dogfood-v1`. Model credentials have been restored and the live Manual dogfood runtime currently attests `ATTESTED / READY` with Observation, Cognition, Attention, and Delivery all READY. The degraded-operation contract remains unchanged: if canonical cognition requirements disappear later, Observation may remain READY while Cognition/Attention block and eligible arrivals wait for reconciliation rather than falling back to legacy cognition.
 
 D semantic research is closed. The v3 D estimator has attributable implementation residuals and is not certified as a passed estimator; do not expand D into another offline synthetic benchmark now.
 
@@ -1638,3 +1638,155 @@ Remaining Phase 13 closure work:
 ```
 
 Do not declare Phase 13 closed merely because processes are alive. Closure requires semantic identity, authority gating, recovery, regression, incident remediation, and canonical-architecture documentation to agree.
+
+### Phase 13 V1.1 — identity absence fail-closed / trust-root hardening — 2026-09-17
+
+Result: `229_PHASE13_IDENTITY_ABSENCE_FAIL_CLOSED_RESULT.md`. A real maintenance-shell correction exposed that V1.0 blocked canonical identity mismatch but still treated `runtime_profile=None` as implicitly trusted compatibility. A naked shell could therefore resolve repository defaults (`rule + legacy + one-delta-v1`) and obtain side-effect authority even though no desired identity existed. The temporary maintenance artifacts were rolled back and the corrected Sources were reconciled only under the canonical ATTESTED runtime.
+
+Execution Integrity is now `execution-integrity-v0.2`. Default execution purpose is `UNSPECIFIED`; no-profile execution is BLOCKED before AnalysisRun creation. Explicit `REPLAY / FORENSIC / COMPATIBILITY` may perform forensic cognition only and cannot persist canonical AttentionPlan/WATCH/Patch/Delivery side effects. Existing-run `_reschedule()` now passes through the same authority boundary, and Delivery independently revalidates both worker authority and stored AnalysisRun authority before human interruption.
+
+Permanent trust-root rule:
+
+```text
+identity mismatch → fail closed
+identity absence  → fail closed
+explicit replay   → forensic only
+canonical side effects → explicit identity + ATTESTED + capability ready
+```
+
+Validation after hardening: focused Phase13+Delivery regression `19 passed`; full backend `815 passed / 63 skipped / 1 pre-existing Case-K PREEMPT residual`. Live Manual dogfood restarted `CANONICAL / ATTESTED / READY` with zero mismatches. Phase 13 remains ACTIVE pending its previously frozen closure gates; this hardens the trust root but does not declare the phase closed.
+
+## RAOS Productization Track — PRIVATE PAID BETA TARGET FROZEN 2026-09-17
+
+Reference: `226_RAOS_PRODUCTIZATION_PRIVATE_PAID_BETA_V1.md`.
+
+RAOS has crossed from research prototype toward a research-grade cognitive product kernel. The next primary objective is no longer to invent additional cognition variables by default; it is to productize the existing Core for unknown paying users. Cognitive research continues only in response to repeated, cross-context stable, causally clean, Core-unexplained dogfood residuals.
+
+Frozen launch target:
+
+```text
+Private Paid Beta
+50–200 users
+self-registration
+self-payment
+self-service Source connection
+self-serve initial Context / Kernel / D bootstrap
+no routine founder database repair or per-user shell intervention
+```
+
+Productization is now an explicit parallel track covering: Identity/Tenancy/Security; durable Production Runtime; Observability; Cost/Metering/Quota/Billing; Cold Start (`Zero → Useful Kernel`); Trust UX; Acquisition reliability/legal boundaries; and multi-week real-user product evidence.
+
+Launch readiness is judged by seven gates rather than Phase count: **Identity, Reliability, Authority, Cost, Trust, Cold Start, Dogfood Evidence.**
+
+Product goal: **10 minutes to start → 24 hours to see value → 7 days to form dependency → 30 days to be willing to renew.**
+
+Permanent product principle: **the deeper RAOS becomes internally, the simpler its default surface should become.**
+## Trust UX V4 — CALM COMMAND CENTER / CAUSAL LEGIBILITY DOGFOOD READY 2026-09-17
+
+Reference: `227_RAOS_TRUST_UX_V4_CALM_COMMAND_CENTER_RESULT.md`.
+
+Real dogfood exposed a presentation-level trust residual: Today still behaved too much like a polished news homepage, internal Attention labels leaked into normal User Space, WATCH competed with awareness content for editorial prominence, and wide desktop layouts left a large accidental void to the right of dense left-aligned content.
+
+Trust UX V4 freezes a five-second Today contract: the page should tell the user **what is worth knowing, why it matters to them, whether they need to act now, and what RAOS is already carrying so they do not need to remember it**. The default emotional target is calm confidence rather than novelty/engagement.
+
+User Space now translates canonical states into human language (`ENGAGE → Needs you`, `WATCH → Being watched`, `AWARE → Worth knowing`, `DROP → Filtered`) while Inspector/System retain canonical terminology. Today separates ENGAGE/AWARE editorial content from WATCH responsibility, adds grounded `Why this is here` explanations, shows explicit Watch waiting-for triggers, and replaces policy-budget language with `Behind the quiet` evidence of filtered work.
+
+The global User Space canvas is now centered and wider on large displays while line-length-sensitive Reader/form surfaces remain bounded. Wide-screen Chromium validation covered Today, Inbox, Attention, and Watch. Frontend typecheck/build passed and live Execution Integrity remained `READY / ATTESTED` with zero mismatches.
+
+Frozen Trust principle: **Trust = Legibility + Causality + Agency. The deeper RAOS becomes internally, the simpler its default surface should become.**
+
+## Trust UX V4.1 — CONTINUITY / CONCRETE CAUSALITY / VISUAL RESTRAINT 2026-09-17
+
+Dogfood refinement after Trust UX V4. The Today surface now uses a visit-session model instead of treating every page load as a new visit, moves `Behind the quiet` directly below the caught-up state, strengthens Brief causal legibility, and gates Hero visuals into editorial / evidence / none presentation.
+
+`WHY THIS IS HERE` now prefers concrete event change + standing radar + closest user context over generic D/S/P template language. The target remains: **causally correct + individually concrete**.
+
+Single-user dogfood keeps visit continuity in browser-local state with a 30-minute inactivity boundary. Private Paid Beta must move this to authenticated user/workspace state for cross-device continuity.
+
+## Structured Article Reader V1 — CLEAN STRUCTURE / PRESENTATION BACKFILL DOGFOOD READY 2026-09-17
+
+Reference: `228_RAOS_STRUCTURED_ARTICLE_READER_V1_RESULT.md`.
+
+Real NVIDIA and The Verge dogfood exposed a presentation-fidelity residual: canonical URL text was cognitively usable but headings/lists could be flattened, body images could be missed, and naive DOM preservation could import newsletter/share/related/byline chrome into Reader.
+
+The URL presentation contract is now `url-html-v9-publisher-adapters / structured-blocks-v3-tables`. Canonical `content_text` remains the cognition input; cleaned `article_blocks` carry presentation-only headings, paragraphs, lists, quotations and substantive body media. Trafilatura cleaned-main structure and a filtered DOM fallback are arbitrated rather than treating publisher DOM as Reader truth.
+
+Historical presentation backfill is fail-closed: current canonical text must exactly equal frozen Source text before metadata may be hydrated. The initial V2-clean dogfood upgraded 132/168 eligible URL Sources; 35 changed pages and one current 403 were preserved without rewriting history. The maintenance tool now targets the current V3 table/media presentation contract without weakening that canonical-text equality gate. Source / AnalysisRun / AttentionPlan counts remained unchanged. Latest full backend regression: 811 passed, 63 skipped, with only the pre-existing Case-K `PREEMPT` residual.
+
+Frozen principle: **Preserve the information object, not the publisher machinery. Presentation fidelity and cognition fidelity are separate contracts.**
+
+
+### Dogfood acquisition-fidelity residual — 2026-09-17
+
+Real use exposed three upstream presentation/perception residuals: a Weibo long-text preview persisted with an inert `... 全文` marker, Nature outer-page chrome polluted article extraction and flattened headings, and Elastic semantic tables were flattened to text. The remediation is acquisition/presentation-only: `url-html-v9-publisher-adapters / structured-blocks-v3-tables`, explicit semantic article-body priority, first-class table blocks, and Weibo detail hydration from explicit truncation signals.
+
+Where recovered content changes canonical semantics, historical Sources/AnalysisRuns remain immutable and a corrected Snapshot is appended and reconciled only under the canonical ATTESTED runtime. No Attention-Core, Sensor/Auditor, D/S/P, or Pareto semantics were changed.
+
+### Retrieval & Context Continuity — DOGFOOD READY (2026-09-18)
+
+Implemented global full-text `Search RAOS` (`Cmd/Ctrl+K`) and durable Inbox working-context navigation.
+
+Frozen principle:
+
+> **Retrieval should preserve context.**
+
+Inbox query/state/origin/visible-depth are URL-addressable and source links carry a return context; long-list scroll position is restored best-effort. Search operates over full preserved Source text rather than compact list previews. See `230_RAOS_RETRIEVAL_CONTEXT_CONTINUITY_RESULT.md`.
+
+- **2026-09-18 — OpenAI publisher acquisition hardening / self-healing fallback:** `url-html-v9-publisher-adapters` now recovers OpenAI semantic article structure through `article [data-toc-content]`, uses bounded validated fallback retries when publisher-direct fetch is blocked, exposes media-completeness limits instead of silently dropping client-only media, and treats RSS fallback as a recoverable append-only state that can later upgrade itself to a full-body Snapshot without rewriting historical cognition. Focused acquisition/URL regression: 32 passed; full backend: 830 passed, 63 skipped, 1 known Case-K urgency residual.
+
+### WeChat Official Account Acquisition V1 — DOGFOOD READY 2026-09-18
+
+Reference: `231_RAOS_WECHAT_ACCOUNT_ACQUISITION_V1_RESULT.md`.
+
+RAOS now supports first-class `WECHAT_ACCOUNT` acquisition for 机器之心、新智元、量子位. Public feeds provide discovery and full-body transport fallback; every candidate is verified against configured `__biz`, and stable identity is `biz + mid + idx` so query churn cannot manufacture duplicate Information Objects. Publisher-direct `mp.weixin.qq.com` remains preferred; WeChat challenge pages are never accepted as article truth.
+
+Wechat2RSS fallback is explicitly a transport path, **not independent evidence**. Original `mmbiz.qpic.cn` media identities are restored before caching/deduplication, WeChat mpvideo embeds are recognized when available, and publisher-specific span normalization prevents rich-text DOM boundaries from inventing spaces inside words/numbers. Three controlled baseline articles per account were captured without cognition; append-only corrections preserved historical Sources where canonical whitespace semantics changed.
+
+Validation: focused WeChat/URL regression `20 passed`; full backend `835 passed / 63 skipped / 1 pre-existing Case-K urgency residual`; live Manual dogfood remains `CANONICAL / ATTESTED / READY`.
+
+### Analysis Job Continuity / Source-Level Cognition Lease — DOGFOOD READY 2026-09-18
+
+Reference: `232_RAOS_ANALYSIS_JOB_CONTINUITY_RESULT.md`.
+
+Reader refresh now reattaches to an active async cognition job instead of reverting to an enabled Analyze button. Analyze and Reprocess share one source-level authoritative cognition lease, so one current Source can have at most one QUEUED/RUNNING job. Existing AnalysisRun identity uniqueness remains defense-in-depth rather than the primary token-conservation mechanism. Browser refresh and multi-tab continuity are covered; durable process-restart job persistence remains a Private Paid Beta runtime requirement.
+
+### Information Landscape / Coverage Graph V1 — ADOPTED 2026-09-18
+
+Reference: `233_INFORMATION_LANDSCAPE_COVERAGE_GRAPH_V1_PLAN.md`.
+
+RAOS formally distinguishes Source-level observation from Event/Claim-level attention. Inbox remains Source-oriented; Attention is planned to converge toward World Event / material Claim Change; P is planned to become event-level collective attention. Coverage (same event) and Related reading (different event/context) are separate relations. Coverage is visible context; Related is opt-in and folded.
+
+V1A adds a Source landscape API/Reader surface over existing Event/EventSource/SourceGraph facts with an authority gate: historical CANDIDATE Event clusters are not sufficient for user-visible Coverage. Only CONFIRMED Events or high-confidence provenance edges may surface. Coverage is explicitly `NOT_YET_AUTHORIZED` as P input. Next phases are shadow Same-event candidate generation, high-precision adjudication, then gated Coverage→P integration, and only later Event-level Attention compression.
+
+Positive Core dogfood case preserved: 量子位 “被英伟达点名的杭州团队，补上了AI for Science的「最后一公里」” correctly produced D=IN / S=NOT_MATERIAL / P=UNKNOWN → DROP. Do not tune Core against this case absent contrary real evidence.
+
+### World-State-Centric RAOS Architecture V1 — FROZEN THEORY / IMPLEMENTATION ACTIVE 2026-09-18
+
+Reference: `234_WORLD_STATE_CENTRIC_RAOS_ARCHITECTURE_V1.md`.
+
+RAOS now freezes its long-term architecture around a world-state-centric decision subject. Sources remain immutable observation evidence; Event / material Claim Change is the long-term decision subject; Attention is the human-facing output. Canonical flow is Acquisition → Semantic Perception → World Representation → Cognition & Decision → Attention & Responsibility → Delivery, with Agent as a Control Plane and Phase 13 as a cross-cutting Trust / Integrity Plane.
+
+Canonical decision input is planned as a frozen Representation Snapshot `R_t = Assemble({AuditedSourceEvidence_i})`, consumed by both cognitive-effect and no-Delta branches. D/S/P remains a no-Delta mechanism rather than the representation layer. Attention and presentation are separated as `AttentionDecision(Event/ClaimChange)` versus `PresentationPolicy(Event, Sources)`.
+
+Implementation sequence is now active: Representation Snapshot + dual digests → pipeline recording without changing current Core mathematics → provenance/reference relation auditing → shadow same-event adjudication → authority gate → Coverage→P authorization → Event/Claim-level Attention → Event-aware Delivery and Agent APIs. Only `decision_representation_digest` may invalidate cognition identity for representation changes; Related/UI-only enrichment is excluded.
+
+### World Representation Snapshot V0.1 — DOGFOOD READY 2026-09-18
+
+Reference: `235_WORLD_REPRESENTATION_SNAPSHOT_V01_RESULT.md`.
+
+`FrozenRepresentationSnapshot` is now a canonical pipeline input artifact with separate `graph_digest` and `decision_representation_digest`. Candidate/Related/UI graph enrichment cannot invalidate cognition; current decision-relevant SourceGraph independence facts and no-Delta collective-attention evidence do. Mid-run decision-representation drift fails closed. Canonical live smoke on the previously validated 量子位 AI-for-Science DROP case preserved D=IN / S=NOT_MATERIAL / P=UNKNOWN → DROP under CANONICAL / ATTESTED authority.
+
+Validation: 17 focused passed; 102 expanded cognition/identity tests passed; full backend 848 passed / 63 skipped / 1 pre-existing Case-K urgency residual. Next active work: explicit provenance/reference extraction and relation auditing.
+
+
+### Explicit Reference Provenance V0.1 — DOGFOOD READY 2026-09-19
+
+Reference: `236_EXPLICIT_REFERENCE_PROVENANCE_V01_RESULT.md`.
+
+The strongest literal provenance path is now active end-to-end: URL/WeChat explicit hyperlinks become `reference_candidates`, append-only `ParserRun.references`, resolved SourceGraph `CITES` edges, Landscape API provenance, and Reader **References** context. Authority remains deliberately narrow: an explicit link proves only `CITES`; it does not establish `SAME_EVENT`, `DERIVED_FROM`, `INDEPENDENT_REPORT`, `ORIGINAL_SOURCE`, or P evidence.
+
+Historical hydration remains append-only and fail-closed. Real dogfood on 新智元 “Claude狂写80%代码，差点干崩Anthropic！CI半年暴涨25倍” re-fetched the recorded WeChat transport, required exact canonical-text equality (2275 == 2275), then appended a new reference-extractor ParserRun and resolved exactly two substantive references: Addy Osmani’s X post and the Anthropic official blog. A Wechat2RSS transport self-link residual was caught during dry-run and removed by proxy unwrapping before persistence.
+
+Digest evidence matched the frozen Representation contract: `graph_digest` changed while `decision_representation_digest` remained exactly unchanged. Focused provenance/Landscape/Representation regression: 16 passed. Frontend typecheck/build PASS. Full backend: 855 passed / 63 skipped / 1 pre-existing Case-K urgency residual.
+
+Next active gate: bounded Representation Auditor work over stronger provenance roles, then shadow same-event adjudication. Do not promote CITES directly into stronger relation authority.

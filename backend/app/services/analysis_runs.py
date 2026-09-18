@@ -116,14 +116,21 @@ def identity_key(
     embedding_model_version: str,
     pipeline_version: str,
     relational_digest: str = "",
+    decision_representation_digest: str = "",
     execution_digest: str = "",
 ) -> str:
-    """Cognitive Analysis identity. Scheduler version and runtime context are excluded."""
+    """Cognitive Analysis identity. Scheduler version and runtime context are excluded.
+
+    relational_digest remains as a compatibility input for historical callers.
+    New pipeline code supplies decision_representation_digest so only
+    representation facts authorized to affect cognition invalidate the run.
+    """
+    effective_representation_digest = decision_representation_digest or relational_digest or ""
     raw = "|".join(
         [
             input_digest,
             kernel_digest,
-            relational_digest or "",
+            effective_representation_digest,
             provider_type,
             provider_version,
             model_name or "none",
@@ -148,6 +155,7 @@ def compute_identity(
     model_name: str | None,
     embedding_model_version: str = EMBEDDING_MODEL_VERSION_NONE,
     relational_digest: str = "",
+    decision_representation_digest: str = "",
     execution_digest: str = "",
 ) -> str:
     return identity_key(
@@ -164,6 +172,7 @@ def compute_identity(
         embedding_model_version=embedding_model_version,
         pipeline_version=PIPELINE_VERSION,
         relational_digest=relational_digest,
+        decision_representation_digest=decision_representation_digest,
         execution_digest=execution_digest,
     )
 
@@ -196,15 +205,21 @@ def find_live_run(db: Session, key: str) -> AnalysisRun | None:
 
 
 def latest_run_for_source(db: Session, source_id: UUID) -> AnalysisRun | None:
-    return (
+    from app.execution_integrity import stored_run_authority
+
+    rows = (
         db.execute(
             select(AnalysisRun)
             .where(AnalysisRun.source_id == source_id, AnalysisRun.status == "COMPLETED")
             .order_by(AnalysisRun.completed_at.desc(), AnalysisRun.created_at.desc())
         )
         .scalars()
-        .first()
+        .all()
     )
+    for row in rows:
+        if stored_run_authority(row).get("authoritative"):
+            return row
+    return None
 
 
 def next_attempt(db: Session, key: str) -> int:
@@ -383,7 +398,17 @@ def _normalize_public_contract(payload: dict) -> dict:
 
     Historical raw attention_plan / result_payload remain as stored. Current
     top-level public contract uses the same v2.1 interpretation as the latest plan.
+    Quarantined Phase-13 runs intentionally have no canonical AttentionPlan; do
+    not project them back into one through legacy compatibility logic.
     """
+    authority = payload.get("execution_authority") if isinstance(payload.get("execution_authority"), dict) else {}
+    if authority and not ((authority.get("authority") or {}).get("attention_authorized", False)):
+        payload["disposition"] = None
+        payload["update"] = None
+        payload["delta_content"] = None
+        payload["latest_attention_plan"] = None
+        payload["attention_plan_history"] = []
+        return payload
     stored = payload.get("attention_plan")
     if isinstance(stored, dict) and not stored.get("disposition"):
         stored = dict(stored)

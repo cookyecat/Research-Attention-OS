@@ -5,6 +5,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { api, apiOrNull } from "@/lib/api";
 import { formatBeijingTime, formatRelativeTime, timestampMs } from "@/lib/time";
+import { attentionLabel } from "@/lib/attentionPresentation";
 import KernelPatchCard from "@/components/KernelPatchCard";
 import AttentionFeedbackPanel from "@/components/AttentionFeedbackPanel";
 import BionicText from "@/components/BionicText";
@@ -90,6 +91,10 @@ function articleImages(source?: SourceSummary) {
   const images = source?.raw_metadata?.article_images;
   return Array.isArray(images) ? images.filter((image) => image?.url) : [];
 }
+function articleBlocks(source?: SourceSummary) {
+  const blocks = source?.raw_metadata?.article_blocks;
+  return Array.isArray(blocks) ? blocks.filter((block) => block?.type) : [];
+}
 function mediaAssets(source?: SourceSummary) {
   const assets = source?.raw_metadata?.media_assets;
   if (Array.isArray(assets)) return assets.filter((asset) => asset?.type && (asset?.url || asset?.embed_url));
@@ -97,6 +102,16 @@ function mediaAssets(source?: SourceSummary) {
 }
 function mediaUrl(asset: any) {
   return asset?.cached_url || asset?.url || null;
+}
+function isSocialSource(source?: SourceSummary) {
+  return Boolean(source?.raw_metadata?.social_platform);
+}
+function socialMediaAssets(source?: SourceSummary) {
+  const assets = mediaAssets(source);
+  if (assets.length) return assets;
+  const raw = source?.raw_metadata || {};
+  const fallback = raw.hero_image_cached_url || raw.hero_image_url;
+  return fallback ? [{ type: "IMAGE", cached_url: raw.hero_image_cached_url, url: raw.hero_image_url, media_id: "hero" }] : [];
 }
 
 function claimDisplayText(claim: any) {
@@ -212,6 +227,40 @@ function ReaderMedia({ asset }: { asset: any }) {
   return null;
 }
 
+function SocialMediaGallery({ assets }: { assets: any[] }) {
+  const [expanded, setExpanded] = useState<number | null>(null);
+  const visible = assets.filter((asset) => mediaUrl(asset));
+  if (!visible.length) return null;
+  return <section className={`social-media-gallery count-${Math.min(visible.length, 9)}`} aria-label="Source media">
+    {visible.map((asset, index) => {
+      const kind = String(asset?.type || "IMAGE").toUpperCase();
+      const src = mediaUrl(asset);
+      const poster = asset?.poster_cached_url || asset?.poster_url || undefined;
+      const isExpanded = expanded === index;
+      const label = asset?.media_kind === "LIVEPHOTO" ? "LIVE" : kind === "VIDEO" ? "VIDEO" : null;
+      if (kind === "VIDEO" && isExpanded) {
+        return <div className="social-media-item expanded video" key={`${asset.media_id || index}-${src}`}>
+          <video controls autoPlay preload="metadata" playsInline poster={poster}>
+            <source src={src} type={asset?.mime_type || undefined} />
+          </video>
+          <button type="button" className="social-media-collapse" onClick={() => setExpanded(null)}>收起</button>
+        </div>;
+      }
+      return <button
+        type="button"
+        className={`social-media-item ${isExpanded ? "expanded" : ""}`}
+        key={`${asset.media_id || index}-${src}`}
+        onClick={() => setExpanded(isExpanded ? null : index)}
+        aria-label={isExpanded ? "收起媒体" : "展开媒体"}
+      >
+        {kind === "VIDEO" ? <video muted preload="metadata" playsInline poster={poster}><source src={src} type={asset?.mime_type || undefined} /></video> : <img src={src} alt={asset?.alt || asset?.caption || "微博图片"} loading="lazy" />}
+        {label && <span className="social-media-kind">{label}</span>}
+      </button>;
+    })}
+  </section>;
+}
+
+
 function ReaderParagraph({ text, index, anchors, selectedClaimId, onSelect }: { text: string; index: number; anchors: EvidenceAnchor[]; selectedClaimId: string | null; onSelect: (claim: any) => void }) {
   const ranges = anchors.filter((anchor) => anchor.paragraphIndex === index);
   if (ranges.length === 0) return <p className="reader-paragraph" data-reader-index={index}><BionicText text={text} /></p>;
@@ -225,6 +274,88 @@ function ReaderParagraph({ text, index, anchors, selectedClaimId, onSelect }: { 
   });
   if (cursor < text.length) nodes.push(<BionicText key="plain-tail" text={text.slice(cursor)} />);
   return <p className="reader-paragraph" data-reader-index={index}>{nodes}</p>;
+}
+
+function structuredMediaPlacements(blocks: any[], assets: any[]) {
+  const placements = new Map<number, any[]>();
+  const contentIndexes = blocks
+    .map((block, index) => (["paragraph", "heading", "list", "quote"].includes(String(block?.type || "").toLowerCase()) ? index : -1))
+    .filter((index) => index >= 0);
+
+  const blockText = (block: any) => {
+    const type = String(block?.type || "").toLowerCase();
+    if (type === "list") return (Array.isArray(block?.items) ? block.items : []).map((item: any) => typeof item === "string" ? item : item?.text || "").join(" ");
+    return String(block?.text || "");
+  };
+  const add = (index: number, asset: any) => placements.set(index, [...(placements.get(index) || []), asset]);
+
+  assets.forEach((asset, assetIndex) => {
+    const context = normalizedLine(String(asset?.context_text || ""));
+    let target = -1;
+    if (context) {
+      target = blocks.findIndex((block) => {
+        const text = normalizedLine(blockText(block));
+        return Boolean(text) && (text === context || (context.length >= 24 && (text.includes(context) || context.includes(text))));
+      });
+    }
+    if (target < 0 && contentIndexes.length) {
+      const slot = Math.min(contentIndexes.length - 1, Math.max(0, Math.round(((assetIndex + 1) / (assets.length + 1)) * (contentIndexes.length - 1))));
+      target = contentIndexes[slot];
+    }
+    if (target >= 0) add(target, asset);
+  });
+  return placements;
+}
+
+function StructuredArticleBody({ blocks, media, anchors, selectedClaimId, onSelect }: { blocks: any[]; media: any[]; anchors: EvidenceAnchor[]; selectedClaimId: string | null; onSelect: (claim: any) => void }) {
+  let paragraphIndex = 0;
+  const mediaPlacements = structuredMediaPlacements(blocks, media);
+
+  return <div className="reader-body structured-reader-body">
+    {blocks.map((block, blockIndex) => {
+      const type = String(block?.type || "").toLowerCase();
+      let content: React.ReactNode = null;
+      if (type === "heading") {
+        const level = Number(block.level || 2);
+        const text = String(block.text || "");
+        if (level >= 4) content = <h4 className="reader-section-heading level-4"><BionicText text={text} /></h4>;
+        else if (level === 3) content = <h3 className="reader-section-heading level-3"><BionicText text={text} /></h3>;
+        else content = <h2 className="reader-section-heading level-2"><BionicText text={text} /></h2>;
+      } else if (type === "paragraph") {
+        const index = paragraphIndex++;
+        content = <ReaderParagraph text={String(block.text || "")} index={index} anchors={anchors} selectedClaimId={selectedClaimId} onSelect={onSelect} />;
+      } else if (type === "list") {
+        const Tag = block.ordered ? "ol" : "ul";
+        const items = Array.isArray(block.items) ? block.items : [];
+        content = <Tag className="reader-structured-list">{items.map((item: any, itemIndex: number) => {
+          const text = typeof item === "string" ? item : String(item?.text || "");
+          const lead = typeof item === "object" ? String(item?.lead || "").trim() : "";
+          const tail = lead && text.startsWith(lead) ? text.slice(lead.length).trimStart() : text;
+          return <li key={`${blockIndex}-${itemIndex}`}>{lead && <strong className="reader-list-lead"><BionicText text={lead} /></strong>}{lead && tail ? " " : null}<BionicText text={tail} /></li>;
+        })}</Tag>;
+      } else if (type === "quote") {
+        content = <blockquote className="reader-structured-quote"><BionicText text={String(block.text || "")} /></blockquote>;
+      } else if (type === "table") {
+        const headers = Array.isArray(block.headers) ? block.headers : [];
+        const rows = Array.isArray(block.rows) ? block.rows : [];
+        const width = Math.max(headers.length, ...rows.map((row: any[]) => Array.isArray(row) ? row.length : 0), 1);
+        content = <div className="reader-table-scroll" role="region" aria-label="Article table" tabIndex={0}>
+          <table className="reader-structured-table">
+            {headers.length > 0 && <thead><tr>{Array.from({ length: width }).map((_, cellIndex) => <th key={`h-${cellIndex}`}><BionicText text={String(headers[cellIndex] || "")} /></th>)}</tr></thead>}
+            <tbody>{rows.map((row: any[], rowIndex: number) => <tr key={`r-${rowIndex}`}>{Array.from({ length: width }).map((_, cellIndex) => <td key={`c-${rowIndex}-${cellIndex}`}><BionicText text={String((Array.isArray(row) ? row[cellIndex] : "") || "")} /></td>)}</tr>)}</tbody>
+          </table>
+        </div>;
+      } else if (type === "image") {
+        content = <ReaderMedia asset={{ type: "IMAGE", ...block }} />;
+      }
+      const placedMedia = mediaPlacements.get(blockIndex) || [];
+      if (!content && !placedMedia.length) return null;
+      return <React.Fragment key={`block-${blockIndex}`}>
+        {content}
+        {placedMedia.map((asset: any, mediaIndex: number) => <ReaderMedia asset={asset} key={`structured-media-${blockIndex}-${asset.embed_url || asset.cached_url || asset.url || mediaIndex}`} />)}
+      </React.Fragment>;
+    })}
+  </div>;
 }
 
 function displayTitle(source?: SourceSummary) {
@@ -253,12 +384,83 @@ function displayP(value: unknown) {
   return String(value);
 }
 
+type DspCompletion = { D: string; S: string; P: string; outcome: "AWARE" | "DROP" };
+
+function dspGateOutcome(d: string, s: string, p: string): "AWARE" | "DROP" {
+  return s === "MATERIAL" && (d === "IN" || p === "SALIENT") ? "AWARE" : "DROP";
+}
+
+function dspChoices(value: unknown, positive: string, negative: string) {
+  return value == null ? [positive, negative] : [String(value)];
+}
+
+function dspComposition(event: any, awareness: any) {
+  if (!event) return null;
+  const states = event.component_states || {};
+  const d = states.D ?? null;
+  const s = states.S ?? null;
+  const p = states.P ?? null;
+  const rows: DspCompletion[] = [];
+  for (const dc of dspChoices(d, "IN", "OUT")) {
+    for (const sc of dspChoices(s, "MATERIAL", "NOT_MATERIAL")) {
+      for (const pc of dspChoices(p, "SALIENT", "NOT_SALIENT")) {
+        rows.push({ D: dc, S: sc, P: pc, outcome: dspGateOutcome(dc, sc, pc) });
+      }
+    }
+  }
+  const outcomes = Array.from(new Set(rows.map((row) => row.outcome)));
+  const determined = outcomes.length === 1 ? outcomes[0] : null;
+  const unknown = [d == null ? "D" : null, s == null ? "S" : null, p == null ? "P" : null].filter(Boolean) as string[];
+  let explanation = "All three signals are known, so the gate can be evaluated directly.";
+  if (s === "NOT_MATERIAL") {
+    explanation = "S is decisive here. Because the event is not materially consequential, the AWARE gate is false regardless of D or P. Missing collective-attention evidence cannot change this decision.";
+  } else if (s === "MATERIAL" && d === "IN") {
+    explanation = "D and S already satisfy the gate. The event is inside your standing world and materially consequential, so P is not needed to determine AWARE.";
+  } else if (s === "MATERIAL" && d === "OUT" && p == null) {
+    explanation = "P is decision-critical here. With D outside your standing world, collective attention would decide whether this material event becomes AWARE or remains DROP.";
+  } else if (determined && unknown.length) {
+    explanation = `The missing ${unknown.join(" / ")} evidence is not decision-critical here: every valid completion leads to ${determined}.`;
+  } else if (!determined && unknown.length) {
+    explanation = `The missing ${unknown.join(" / ")} evidence can change the outcome, so the no-Delta gate is not logically determined yet.`;
+  }
+  let examples = rows;
+  if (rows.length > 4) {
+    if (determined) examples = [rows[0], rows[rows.length - 1]];
+    else {
+      const aware = rows.find((row) => row.outcome === "AWARE");
+      const drop = rows.find((row) => row.outcome === "DROP");
+      examples = [aware, drop].filter(Boolean) as DspCompletion[];
+    }
+  }
+  return {
+    formula: "AWARE iff S AND (D OR P)",
+    explanation,
+    rows,
+    examples,
+    determined,
+    unknown,
+    actual: event.disposition || awareness?.disposition || null,
+  };
+}
+
 function normalizedLine(value: string) {
   return value.toLowerCase().replace(/[\s\p{P}\p{S}]+/gu, " ").trim();
 }
 
+function readerContentText(source?: SourceSummary) {
+  const corrected = source?.raw_metadata?.display_content_text;
+  return typeof corrected === "string" && corrected.trim() ? corrected : (source?.content_text || "");
+}
+
 function readerParagraphs(source?: SourceSummary) {
-  const content = source?.content_text || "";
+  const structured = articleBlocks(source);
+  if (structured.length > 0) {
+    return structured
+      .filter((block) => block?.type === "paragraph")
+      .map((block) => String(block.text || "").trim())
+      .filter(Boolean);
+  }
+  const content = readerContentText(source);
   if (!content.trim()) return [];
   const fullTitle = source?.title || "";
   const shortTitle = fullTitle.replace(/\s*\|\s*[^|]+$/, "").trim();
@@ -273,7 +475,7 @@ function readerParagraphs(source?: SourceSummary) {
 function readingMinutes(source?: SourceSummary) {
   const paperWords = Number(source?.raw_metadata?.paper_word_count || 0);
   if (paperWords > 0) return Math.max(1, Math.round(paperWords / 230));
-  const content = source?.content_text || "";
+  const content = readerContentText(source);
   if (!content.trim()) return null;
   const cjk = (content.match(/[\u3400-\u9fff]/g) || []).length;
   const words = content.replace(/[\u3400-\u9fff]/g, " ").trim().split(/\s+/).filter(Boolean).length;
@@ -318,11 +520,19 @@ export default function AttentionPage() {
   const params = useSearchParams();
   const sourceId = params.get("source");
   const viewParam = params.get("view");
+  const returnToRaw = params.get("returnTo");
+  const returnTo = returnToRaw && returnToRaw.startsWith("/") && !returnToRaw.startsWith("//") ? returnToRaw : "/attention";
+  const returnLabel = params.get("returnLabel") || (returnTo.startsWith("/inbox") ? "Inbox" : "Attention");
   const [plans, setPlans] = useState<any[]>([]);
   const [sources, setSources] = useState<Record<string, SourceSummary>>({});
   const [analysis, setAnalysis] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
+  const [activeAnalysisJob, setActiveAnalysisJob] = useState<any>(null);
+  const [analysisStatusChecking, setAnalysisStatusChecking] = useState(false);
+  const [jobSubmitting, setJobSubmitting] = useState(false);
+  const busy = analysisStatusChecking || jobSubmitting || Boolean(
+    activeAnalysisJob && ["QUEUED", "RUNNING"].includes(String(activeAnalysisJob.status || ""))
+  );
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("CURRENT");
   const [query, setQuery] = useState("");
   const [detailView, setDetailView] = useState<"reader" | "inspector">("reader");
@@ -331,6 +541,7 @@ export default function AttentionPage() {
   const [selectedClaimId, setSelectedClaimId] = useState<string | null>(null);
   const [selectedSourceDetail, setSelectedSourceDetail] = useState<SourceSummary | null>(null);
   const [sourceDetailLoading, setSourceDetailLoading] = useState(false);
+  const [landscape, setLandscape] = useState<any>(null);
 
   async function loadPlans() {
     const [nextPlans, nextSources] = await Promise.all([api<any[]>("/kernel/attention"), api<SourceSummary[]>("/sources?compact=true")]);
@@ -340,33 +551,111 @@ export default function AttentionPage() {
 
   async function loadAnalysis(mode: "read" | "analyze" | "reprocess" = "read") {
     if (!sourceId) return;
-    setBusy(true); if (mode !== "read") setError(null);
+    const targetSourceId = sourceId;
+    if (mode === "read") {
+      setAnalysis(await apiOrNull<any>(`/analysis/by-source/${targetSourceId}`));
+      return;
+    }
+    if (activeAnalysisJob && ["QUEUED", "RUNNING"].includes(String(activeAnalysisJob.status || ""))) return;
+
+    setError(null);
+    setJobSubmitting(true);
     try {
-      if (mode === "reprocess") {
-        setAnalysis(await api("/analysis/reprocess", { method: "POST", body: JSON.stringify({ source_id: sourceId }) }));
-      } else if (mode === "analyze") {
-        setAnalysis(await api("/analysis/extract", { method: "POST", body: JSON.stringify({ source_id: sourceId }) }));
-        await loadPlans();
-      } else {
-        setAnalysis(await apiOrNull<any>(`/analysis/by-source/${sourceId}`));
-      }
-    } catch (e: unknown) { setError(e instanceof Error ? e.message : String(e)); }
-    finally { setBusy(false); }
+      const job = await api<any>(`/analysis/jobs?reprocess=${mode === "reprocess" ? "true" : "false"}`, {
+        method: "POST", body: JSON.stringify({ source_id: targetSourceId }),
+      });
+      setActiveAnalysisJob(job);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setJobSubmitting(false);
+    }
   }
+
 
   useEffect(() => { loadPlans().catch((e) => setError(String(e.message || e))); }, []);
   useEffect(() => {
     let cancelled = false;
     setSelectedSourceDetail(null);
+    setLandscape(null);
     if (!sourceId) return () => { cancelled = true; };
     setSourceDetailLoading(true);
-    api<SourceSummary>(`/sources/${sourceId}`)
-      .then((source) => { if (!cancelled) setSelectedSourceDetail(source); })
+    Promise.all([
+      api<SourceSummary>(`/sources/${sourceId}`),
+      apiOrNull<any>(`/sources/${sourceId}/landscape`),
+    ])
+      .then(([source, world]) => {
+        if (cancelled) return;
+        setSelectedSourceDetail(source);
+        setLandscape(world);
+      })
       .catch(() => undefined)
       .finally(() => { if (!cancelled) setSourceDetailLoading(false); });
     return () => { cancelled = true; };
   }, [sourceId]);
-  useEffect(() => { setAnalysis(null); setDetailView(viewParam === "system" ? "inspector" : "reader"); loadAnalysis("read"); }, [sourceId, viewParam]);
+  useEffect(() => {
+    let cancelled = false;
+    setAnalysis(null);
+    setActiveAnalysisJob(null);
+    setDetailView(viewParam === "system" ? "inspector" : "reader");
+    if (!sourceId) return () => { cancelled = true; };
+
+    setAnalysisStatusChecking(true);
+    Promise.all([
+      apiOrNull<any>(`/analysis/by-source/${sourceId}`),
+      api<any>(`/analysis/jobs/source/${sourceId}/active`),
+    ]).then(([existing, active]) => {
+      if (cancelled) return;
+      setAnalysis(existing);
+      setActiveAnalysisJob(active?.active ? active.job : null);
+    }).catch((e: unknown) => {
+      if (!cancelled) setError(e instanceof Error ? e.message : String(e));
+    }).finally(() => {
+      if (!cancelled) setAnalysisStatusChecking(false);
+    });
+    return () => { cancelled = true; };
+  }, [sourceId, viewParam]);
+
+  useEffect(() => {
+    const jobId = activeAnalysisJob?.id;
+    if (!jobId || !sourceId) return;
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    const poll = async () => {
+      try {
+        const job = await api<any>(`/analysis/jobs/${jobId}`);
+        if (cancelled) return;
+        setActiveAnalysisJob(job);
+        if (job.status === "COMPLETED") {
+          const completed = await apiOrNull<any>(`/analysis/by-source/${sourceId}`);
+          if (cancelled) return;
+          if (completed) setAnalysis(completed);
+          setActiveAnalysisJob(null);
+          const refreshedLandscape = await apiOrNull<any>(`/sources/${sourceId}/landscape`);
+          if (!cancelled) setLandscape(refreshedLandscape);
+          await loadPlans();
+          return;
+        }
+        if (job.status === "FAILED") {
+          setError(job.error || "RAOS analysis failed.");
+          setActiveAnalysisJob(null);
+          return;
+        }
+        timer = setTimeout(poll, 1200);
+      } catch (e: unknown) {
+        if (cancelled) return;
+        setError(e instanceof Error ? e.message : String(e));
+        timer = setTimeout(poll, 2500);
+      }
+    };
+
+    poll();
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
+  }, [activeAnalysisJob?.id, sourceId]);
 
   const currentPlans = useMemo(() => {
     const latest = new Map<string, any>();
@@ -378,6 +667,7 @@ export default function AttentionPage() {
   }, [plans]);
 
   const shown = useMemo(() => currentPlans.filter((p) => {
+    if (!sources[p.candidate_id]) return false;
     if (isSystemFixture(sources[p.candidate_id])) return false;
     if (filter === "CURRENT" && p.disposition === "DROP") return false;
     if (filter !== "CURRENT" && p.disposition !== filter) return false;
@@ -387,7 +677,7 @@ export default function AttentionPage() {
   }), [currentPlans, filter, query, sources]);
 
   const counts = useMemo(() => {
-    const visible = currentPlans.filter((p) => !isSystemFixture(sources[p.candidate_id]));
+    const visible = currentPlans.filter((p) => sources[p.candidate_id] && !isSystemFixture(sources[p.candidate_id]));
     return Object.fromEntries(FILTERS.map((f) => [f, f === "CURRENT" ? visible.filter((p) => p.disposition !== "DROP").length : visible.filter((p) => p.disposition === f).length]));
   }, [currentPlans, sources]);
   const editorialShown = useMemo(() => [...shown].sort((a, b) =>
@@ -437,7 +727,8 @@ export default function AttentionPage() {
   if (sourceId) {
     const plan = analysis ? (analysis.latest_attention_plan || analysis.attention_plan) : null;
     const awareness = analysis?.no_delta_awareness;
-    const awarenessEvent = awareness?.events?.[0];
+    const awarenessEvent = awareness?.events?.find((event: any) => event?.event_id === awareness?.witness_event_id) || awareness?.events?.[0];
+    const composition = awareness?.applicable ? dspComposition(awarenessEvent, awareness) : null;
     const operation = analysis?.update?.operation || plan?.update?.operation || null;
     const paperMode = isPaperSource(selectedSource) && Boolean(selectedSource?.raw_metadata?.paper_profile);
     const paperMeta = selectedSource?.raw_metadata || {};
@@ -448,8 +739,12 @@ export default function AttentionPage() {
     const minutes = readingMinutes(selectedSource);
     const topMatch = analysis?.kernel_matches?.[0];
     const claims = analysis?.claims || [];
+    const structuredBlocks = articleBlocks(selectedSource);
+    const structuredMedia = structuredBlocks.length > 0 ? mediaAssets(selectedSource).filter((asset) => String(asset?.type || "").toUpperCase() !== "IMAGE") : [];
+    const socialMode = isSocialSource(selectedSource);
+    const socialMedia = socialMode ? socialMediaAssets(selectedSource) : [];
     const readerEvidenceAnchors = paperMode ? [] : selectReaderEvidenceAnchors(paragraphs, claims);
-    const inlineMedia = paperMode ? [] : mediaAssets(selectedSource);
+    const inlineMedia = paperMode || socialMode || structuredBlocks.length > 0 ? [] : mediaAssets(selectedSource);
     const activeAnchor = paperMode ? null : readerEvidenceAnchors.find((anchor) => anchor.paragraphIndex === activeParagraph);
     const activeClaim = paperMode ? null : (claims.find((claim: any) => claim.id === selectedClaimId) || activeAnchor?.claim || null);
     const progressPercent = Math.max(0, Math.min(100, Math.round(readingProgress * 100)));
@@ -458,7 +753,7 @@ export default function AttentionPage() {
     return (
       <>
         <div className="detail-toolbar">
-          <Link className="back-link" href="/attention">← Back to Attention</Link>
+          <Link className="back-link" href={returnTo}>← Back to {returnLabel}</Link>
           <div className="view-switch" role="tablist" aria-label="Detail view">
             <button className={detailView === "reader" ? "active" : ""} onClick={() => setDetailView("reader")}>Reader</button>
             <button className={detailView === "inspector" ? "active" : ""} onClick={() => setDetailView("inspector")}>RAOS Inspector</button>
@@ -484,11 +779,11 @@ export default function AttentionPage() {
                 {paperMode && paperAffiliationList.length > 0 && <details className="paper-affiliations"><summary>{paperAuthorList.length} authors · {paperAffiliationList.length} affiliations</summary><div>{paperAffiliationList.map((item: string) => <span key={item}>{item}</span>)}</div></details>}
                 <div className="reader-header-decision-row">
                   {plan ? <div className={`reader-status reader-header-status ${plan.disposition}`}>
-                    <span className={`badge ${plan.disposition}`}>{plan.disposition}</span>
+                    <span className={`human-state ${plan.disposition}`} title={`RAOS state: ${plan.disposition}`}>{attentionLabel(plan.disposition)}</span>
                     <strong>{actionCopy(plan.disposition)}</strong>
                   </div> : <div className="reader-status reader-header-status UNANALYZED">
                     <span className="badge">UNANALYZED</span>
-                    <strong>Available to read. RAOS has not analyzed this source yet.</strong>
+                    <strong>{busy ? "RAOS is analyzing in the background. You can keep reading." : "Available to read. RAOS has not analyzed this source yet."}</strong>
                     <button className="ghost" disabled={busy} onClick={() => loadAnalysis("analyze")}>{busy ? "Analyzing…" : "Analyze with RAOS"}</button>
                   </div>}
                   {paperMode ? <div className="paper-primary-actions">
@@ -499,7 +794,7 @@ export default function AttentionPage() {
                 </div>
               </header>
 
-              {!paperMode && heroImage(selectedSource) && (
+              {!paperMode && !socialMode && heroImage(selectedSource) && (
                 <figure className="reader-hero-media">
                   <img src={heroImage(selectedSource)} alt={heroImageAlt(selectedSource)} loading="eager" />
                   {selectedSource?.raw_metadata?.hero_image_alt && <figcaption>{selectedSource.raw_metadata.hero_image_alt}</figcaption>}
@@ -509,6 +804,12 @@ export default function AttentionPage() {
               {selectedSource?.raw_metadata?.feed_fallback && <div className="reader-status feed-fallback-status">
                 <span className="badge AWARE">FEED SUMMARY</span>
                 <strong>The publisher page was unavailable to the crawler, so RAOS preserved the publisher-provided RSS summary instead.</strong>
+                {selectedSource.canonical_url && <a href={selectedSource.canonical_url} target="_blank" rel="noreferrer">Open original ↗</a>}
+              </div>}
+
+              {selectedSource?.raw_metadata?.publisher_dynamic_media_status && selectedSource.raw_metadata.publisher_dynamic_media_status !== "captured" && <div className="reader-status media-integrity-status">
+                <span className="badge">MEDIA PARTIAL</span>
+                <strong>Some publisher media may not be included in this saved view.</strong>
                 {selectedSource.canonical_url && <a href={selectedSource.canonical_url} target="_blank" rel="noreferrer">Open original ↗</a>}
               </div>}
 
@@ -526,7 +827,15 @@ export default function AttentionPage() {
                   <h3>arXiv does not provide a full HTML reading view for this version.</h3>
                   <p>The abstract and scholarly metadata are preserved here. Use PDF or arXiv for the complete paper.</p>
                 </div>}
-              </> : paragraphs.length > 0 ? (
+              </> : structuredBlocks.length > 0 ? (
+                <StructuredArticleBody
+                  blocks={structuredBlocks}
+                  media={structuredMedia}
+                  anchors={readerEvidenceAnchors}
+                  selectedClaimId={selectedClaimId}
+                  onSelect={(claim) => setSelectedClaimId(claim.id)}
+                />
+              ) : paragraphs.length > 0 ? (
                 <div className="reader-body">
                   {paragraphs.map((paragraph, index) => (
                     <React.Fragment key={`${index}-${paragraph.slice(0, 24)}`}>
@@ -543,6 +852,98 @@ export default function AttentionPage() {
                   <p>RAOS has the analysis record, but this source does not contain a preserved text body.</p>
                   {selectedSource?.canonical_url && <a className="button-link" href={selectedSource.canonical_url} target="_blank" rel="noreferrer">Read at source ↗</a>}
                 </div>
+              )}
+
+              {!paperMode && socialMode && socialMedia.length > 0 && <SocialMediaGallery assets={socialMedia} />}
+
+              {landscape && ((landscape.references?.count || 0) > 0 || (landscape.coverage?.other_source_count || 0) > 0 || (landscape.related?.count || 0) > 0) && (
+                <section className="reader-landscape" aria-label="Source world context">
+                  <div className="reader-landscape-head">
+                    <div>
+                      <div className="eyebrow">World context</div>
+                      <h3>{landscape.event?.title || "How this source sits in the information landscape"}</h3>
+                    </div>
+                    {landscape.coverage?.source_count > 1 && <span className="landscape-count">{landscape.coverage.source_count} sources</span>}
+                  </div>
+
+                  {(landscape.references?.count || 0) > 0 && <div className="landscape-group">
+                    <div className="landscape-group-title">
+                      <strong>References · {landscape.references.count}</strong>
+                      <span>Explicit links preserved as provenance. A link proves CITES only; it does not by itself prove original source, derivation, independence, or same-event identity.</span>
+                    </div>
+                    <div className="landscape-source-list">
+                      {landscape.references.sources.map((item: any) => (
+                        item.canonical_url ? (
+                          <a className="landscape-source-row" key={item.source_id} href={item.canonical_url} target="_blank" rel="noreferrer">
+                            <span>
+                              <strong>{item.title || item.publisher || item.canonical_url || "Referenced source"}</strong>
+                              <small>{item.publisher || item.source_type || "Source"} · {String(item.relationship || "CITES").toLowerCase()}{item.stub ? " · reference stub" : ""}</small>
+                            </span>
+                            <span aria-hidden="true">↗</span>
+                          </a>
+                        ) : (
+                          <Link
+                            className="landscape-source-row"
+                            key={item.source_id}
+                            href={`/attention?source=${item.source_id}&returnTo=${encodeURIComponent(returnTo)}&returnLabel=${encodeURIComponent(returnLabel)}`}
+                          >
+                            <span>
+                              <strong>{item.title || item.publisher || "Referenced source"}</strong>
+                              <small>{item.publisher || item.source_type || "Source"} · {String(item.relationship || "CITES").toLowerCase()}{item.stub ? " · reference stub" : ""}</small>
+                            </span>
+                            <span aria-hidden="true">→</span>
+                          </Link>
+                        )
+                      ))}
+                    </div>
+                    <div className="landscape-audit-line">Provenance authority: literal explicit-link relation only.</div>
+                  </div>}
+
+                  {(landscape.coverage?.other_source_count || 0) > 0 && <div className="landscape-group">
+                    <div className="landscape-group-title">
+                      <strong>Coverage · {landscape.coverage.source_count} sources</strong>
+                      <span>Same world event. Shown for provenance and cross-source context, not as extra events.</span>
+                    </div>
+                    <div className="landscape-source-list">
+                      {landscape.coverage.sources.map((item: any) => (
+                        <Link
+                          className="landscape-source-row"
+                          key={item.source_id}
+                          href={`/attention?source=${item.source_id}&returnTo=${encodeURIComponent(returnTo)}&returnLabel=${encodeURIComponent(returnLabel)}`}
+                        >
+                          <span>
+                            <strong>{item.title || item.publisher || "Source"}</strong>
+                            <small>{item.publisher || "Unknown publisher"} · {String(item.relationship || "REPORTS_SAME_EVENT").replaceAll("_", " ").toLowerCase()}</small>
+                          </span>
+                          <span aria-hidden="true">→</span>
+                        </Link>
+                      ))}
+                    </div>
+                    {landscape.coverage?.independence && <div className="landscape-audit-line">
+                      Graph view: {landscape.coverage.independence.independent_sources} independent · {landscape.coverage.independence.secondary_reports} secondary
+                    </div>}
+                  </div>}
+
+                  {(landscape.related?.count || 0) > 0 && <details className="landscape-related">
+                    <summary>Related reading · {landscape.related.count}</summary>
+                    <p>Different event or claim context. Kept folded so RAOS does not turn reading into an endless recommendation loop.</p>
+                    <div className="landscape-source-list">
+                      {landscape.related.sources.map((item: any) => (
+                        <Link
+                          className="landscape-source-row"
+                          key={item.source_id}
+                          href={`/attention?source=${item.source_id}&returnTo=${encodeURIComponent(returnTo)}&returnLabel=${encodeURIComponent(returnLabel)}`}
+                        >
+                          <span>
+                            <strong>{item.title || item.publisher || "Source"}</strong>
+                            <small>{item.publisher || "Unknown publisher"} · {String(item.relationship || "RELATED").replaceAll("_", " ").toLowerCase()}</small>
+                          </span>
+                          <span aria-hidden="true">→</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </details>}
+                </section>
               )}
             </article>
 
@@ -632,6 +1033,23 @@ export default function AttentionPage() {
                       <div className="signal-card"><strong>S · Material consequence</strong><span>Material disturbance to a consequential shared system?</span><span className="signal-state">{displayP(awarenessEvent?.component_states?.S)}</span></div>
                       <div className="signal-card"><strong>P · Collective attention</strong><span>Observed salience among the relevant constituency?</span><span className="signal-state">{displayP(awarenessEvent?.component_states?.P)}</span></div>
                     </div>
+                    {composition && <div className={`dsp-composition ${composition.determined ? composition.determined.toLowerCase() : "unresolved"}`}>
+                      <div className="dsp-composition-head">
+                        <div><span>Decision composition</span><strong>Why these signals become {composition.actual || plan.disposition}</strong></div>
+                        <code>{composition.formula}</code>
+                      </div>
+                      <p>{composition.explanation}</p>
+                      <div className="dsp-completion-grid">
+                        {composition.examples.map((row: DspCompletion, index: number) => <div className="dsp-completion-row" key={`${row.D}-${row.S}-${row.P}-${index}`}>
+                          <span>D = <b>{row.D}</b></span>
+                          <span>S = <b>{row.S}</b></span>
+                          <span>P = <b>{row.P}</b></span>
+                          <span className="dsp-arrow">→</span>
+                          <strong className={`dsp-outcome ${row.outcome}`}>{row.outcome}</strong>
+                        </div>)}
+                      </div>
+                      {composition.rows.length > composition.examples.length && <small>RAOS checked {composition.rows.length} valid completions of the unknown signals. {composition.determined ? `All lead to ${composition.determined}.` : "At least two lead to different outcomes."}</small>}
+                    </div>}
                     <details className="technical-details">
                       <summary>Estimator reasoning</summary>
                       <div className="technical-body">
@@ -640,6 +1058,23 @@ export default function AttentionPage() {
                         {awarenessEvent?.P?.reason && <p><strong>P:</strong> {awarenessEvent.P.reason}</p>}
                       </div>
                     </details>
+                  </section>
+                )}
+
+                {awareness && awareness.applicable === false && (
+                  <section className="section card">
+                    <div className="eyebrow">No-Delta awareness path</div>
+                    <h3>D / S / P was not applicable to this source</h3>
+                    <p className="muted">RAOS found no canonical cognitive effect, but it also could not legally route this source into an audited event for the D / S / P branch.</p>
+                    <div className="reason-grid">
+                      <div className="signal-card"><strong>D · Standing world</strong><span>Not evaluated: no routable audited event.</span><span className="signal-state">NOT EVALUATED</span></div>
+                      <div className="signal-card"><strong>S · Material consequence</strong><span>Not evaluated: no routable audited event.</span><span className="signal-state">NOT EVALUATED</span></div>
+                      <div className="signal-card"><strong>P · Collective attention</strong><span>Not evaluated: no routable audited event.</span><span className="signal-state">NOT EVALUATED</span></div>
+                    </div>
+                    <div className="technical-body no-delta-not-applicable">
+                      <p><strong>Why:</strong> {awareness.reason || "The audited event projection was not eligible for D / S / P evaluation."}</p>
+                      <p><strong>Decision consequence:</strong> No canonical cognitive effect existed, and the no-Delta branch had no legal event to promote into situational awareness.</p>
+                    </div>
                   </section>
                 )}
 
@@ -671,7 +1106,13 @@ export default function AttentionPage() {
                     <summary>Evidence & pipeline trace</summary>
                     <div className="technical-body">
                       <div className="trace-grid">
-                        <div className="trace-block"><h4>AnalysisRun</h4><p>provider {analysis.analysis_run?.provider_type} · {analysis.analysis_run?.status}</p><p>pipeline {analysis.analysis_run?.pipeline_version}<br/>extractor {analysis.analysis_run?.extractor_version}<br/>matcher {analysis.analysis_run?.matcher_version}<br/>prompt {analysis.analysis_run?.prompt_version}</p></div>
+                        <div className="trace-block">
+                          <h4>AnalysisRun</h4>
+                          <p>provider {analysis.analysis_run?.provider_type} · {analysis.analysis_run?.status}</p>
+                          <p>strategy {plan.score_debug?.decision_strategy?.strategy_id || "unknown"}<br/>version {plan.score_debug?.decision_strategy?.version || "unknown"}</p>
+                          <p>authority {analysis.execution_authority?.purpose || analysis.execution_snapshot?.execution_context?.purpose || "unknown"} · {analysis.execution_authority?.attestation?.status || analysis.execution_snapshot?.execution_context?.attestation?.status || "unknown"}</p>
+                          <p>pipeline {analysis.analysis_run?.pipeline_version}<br/>extractor {analysis.analysis_run?.extractor_version}<br/>matcher {analysis.analysis_run?.matcher_version}<br/>prompt {analysis.analysis_run?.prompt_version}</p>
+                        </div>
                         <div className="trace-block"><h4>Decision trace</h4><p>{plan.reason}</p><p>Strategy details and provenance remain frozen in the AnalysisRun.</p></div>
                       </div>
                       <h3 style={{marginTop: 22}}>Extracted evidence</h3>
@@ -713,7 +1154,7 @@ export default function AttentionPage() {
 
       <div className="section-heading">
         <div className="filter-bar">
-          {FILTERS.map((value) => <button className={filter === value ? "filter-chip active" : "filter-chip"} key={value} onClick={() => setFilter(value)}>{value === "CURRENT" ? "Current" : value} · {counts[value] || 0}</button>)}
+          {FILTERS.map((value) => <button className={filter === value ? "filter-chip active" : "filter-chip"} key={value} onClick={() => setFilter(value)}>{value === "CURRENT" ? "Current" : attentionLabel(value)} · {counts[value] || 0}</button>)}
         </div>
         <input className="search-input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search current attention…" />
       </div>
@@ -729,7 +1170,7 @@ export default function AttentionPage() {
             return (
               <Link className={`${newsroom && index === 0 ? "attention-lead" : "attention-story-card"} disposition-${p.disposition}`} href={`/attention?source=${p.candidate_id}`} key={p.id}>
                 {heroImage(source) && <img className="story-visual" src={heroImage(source)} alt={heroImageAlt(source)} loading="lazy" />}
-                <div className="story-kicker"><span className={`badge ${p.disposition}`}>{p.disposition}</span><span>{sourceOrigin(source)}</span>{when && <><span>·</span><span title={formatBeijingTime(when)}>{formatRelativeTime(when)}</span></>}</div>
+                <div className="story-kicker"><span className={`human-state ${p.disposition}`} title={`RAOS state: ${p.disposition}`}>{attentionLabel(p.disposition)}</span><span>{sourceOrigin(source)}</span>{when && <><span>·</span><span title={formatBeijingTime(when)}>{formatRelativeTime(when)}</span></>}</div>
                 <h2>{title}</h2>
                 <p>{sourceExcerpt(source, newsroom && index === 0 ? 300 : 165)}</p>
                 <div className="story-footer"><strong>{actionCopy(p.disposition)}</strong><span>Read →</span></div>

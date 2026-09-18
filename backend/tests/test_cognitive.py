@@ -101,7 +101,9 @@ def test_model_provider_structured_parse_and_constitution():
     assert not any("probably means the system is robust" in i.text.lower() for i in extraction.inferences)
 
 
-def test_model_failure_falls_back_to_rule(client: TestClient, monkeypatch):
+def test_model_failure_falls_back_to_rule(client: TestClient, monkeypatch, test_execution_identity):
+    test_execution_identity(provider="model")
+
     def _provider(**_kwargs):
         return FallbackProvider(ModelBackedCognitiveProvider(chat_fn=BoomChat()), RuleBasedCognitiveProvider())
 
@@ -133,7 +135,9 @@ def test_disagreement_is_not_low_relevance(client: TestClient):
     assert plan["disposition"] != "DROP"
 
 
-def test_structural_relevance_can_be_high_with_low_topic(client: TestClient, monkeypatch):
+def test_structural_relevance_can_be_high_with_low_topic(client: TestClient, monkeypatch, test_execution_identity):
+    test_execution_identity(provider="model")
+
     def _provider(**_kwargs):
         return FallbackProvider(
             ModelBackedCognitiveProvider(chat_fn=SemanticFakeChat()),

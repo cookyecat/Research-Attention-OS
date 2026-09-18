@@ -1,6 +1,12 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
+
+# Tests use an explicit versioned execution identity. They never inherit the
+# production dogfood profile and never rely on no-profile compatibility authority.
+_TEST_RUNTIME_PROFILE = Path(__file__).resolve().parents[2] / "config" / "runtime" / "test-rule-one-delta-v1.yaml"
+os.environ["RAOS_RUNTIME_PROFILE"] = os.environ.get("RAOS_TEST_RUNTIME_PROFILE", str(_TEST_RUNTIME_PROFILE))
 
 import pytest
 from fastapi.testclient import TestClient
@@ -77,6 +83,46 @@ def db(engine):
     finally:
         session.close()
 
+
+
+
+@pytest.fixture
+def test_execution_identity(monkeypatch):
+    """Declare an explicit ephemeral execution identity for tests using non-default strategies/providers."""
+    def _set(
+        *,
+        provider: str = "rule",
+        cognition_contract: str = "legacy",
+        strategy_id: str = "one-delta",
+        strategy_version: str = "one-delta-v1",
+        no_delta_awareness_contract: str = "disabled",
+    ):
+        import app.execution_integrity as integrity
+
+        profile = {
+            "profile_id": f"pytest-{provider}-{strategy_id}-{strategy_version}",
+            "profile_version": 1,
+            "execution_purpose": "TEST",
+            "authority": {
+                "cognition_provider": provider,
+                "cognition_contract": cognition_contract,
+                "decision_strategy_id": strategy_id,
+                "decision_strategy_version": strategy_version,
+                "no_delta_awareness_contract": no_delta_awareness_contract,
+            },
+            "requirements": {"secrets": []},
+            "policy": {"allow_side_effects": True},
+        }
+        monkeypatch.setattr(integrity, "runtime_profile", profile)
+        monkeypatch.setattr(integrity, "runtime_profile_path", "/pytest/explicit-runtime-profile.yaml")
+        monkeypatch.setattr(integrity.settings, "execution_purpose", "TEST")
+        monkeypatch.setattr(integrity.settings, "cognitive_provider", provider)
+        monkeypatch.setattr(integrity.settings, "cognitive_contract", cognition_contract)
+        monkeypatch.setattr(integrity.settings, "decision_strategy_id", strategy_id)
+        monkeypatch.setattr(integrity.settings, "no_delta_awareness_contract", no_delta_awareness_contract)
+        return profile
+
+    return _set
 
 @pytest.fixture
 def client(engine) -> TestClient:

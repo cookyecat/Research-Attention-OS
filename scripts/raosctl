@@ -1,0 +1,160 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+RUNTIME_DIR="$ROOT/.runtime"
+PID_DIR="$RUNTIME_DIR/pids"
+LOG_DIR="$RUNTIME_DIR/logs"
+SERVICE="$ROOT/scripts/raos-service-macos.sh"
+PROFILE="$ROOT/config/runtime/research-dogfood-v1.yaml"
+
+service_installed() {
+  [[ "$(uname -s)" == "Darwin" ]] || return 1
+  [[ -f "$HOME/Library/LaunchAgents/ai.raos.backend.plist" ]] &&
+    [[ -f "$HOME/Library/LaunchAgents/ai.raos.acquisition.plist" ]] &&
+    [[ -f "$HOME/Library/LaunchAgents/ai.raos.delivery.plist" ]] &&
+    [[ -f "$HOME/Library/LaunchAgents/ai.raos.frontend.plist" ]]
+}
+
+require_manual_runtime() {
+  [[ -x "$ROOT/backend/.venv/bin/python" ]] || { echo "Backend venv missing; run scripts/install-raos.sh manual." >&2; exit 2; }
+  [[ -x "$ROOT/backend/.venv/bin/uvicorn" ]] || { echo "uvicorn missing from backend venv." >&2; exit 2; }
+  [[ -f "$ROOT/frontend/.next/BUILD_ID" ]] || { echo "Frontend build missing; run scripts/install-raos.sh manual." >&2; exit 2; }
+  [[ -f "$ROOT/frontend/node_modules/next/dist/bin/next" ]] || { echo "Frontend dependencies missing." >&2; exit 2; }
+  [[ -f "$ROOT/.env" ]] || { echo "$ROOT/.env is missing." >&2; exit 2; }
+  [[ -f "$PROFILE" ]] || { echo "Canonical runtime profile missing: $PROFILE" >&2; exit 2; }
+}
+
+pid_path() { printf '%s/%s.pid' "$PID_DIR" "$1"; }
+log_path() { printf '%s/%s.log' "$LOG_DIR" "$1"; }
+pid_running() {
+  local name="$1" file pid
+  file="$(pid_path "$name")"
+  [[ -f "$file" ]] || return 1
+  pid="$(cat "$file" 2>/dev/null || true)"
+  [[ -n "$pid" ]] && kill -0 "$pid" >/dev/null 2>&1
+}
+
+start_bg() {
+  local name="$1" cwd="$2"
+  shift 2
+  if pid_running "$name"; then
+    echo "$name already running (pid $(cat "$(pid_path "$name")"))."
+    return
+  fi
+  mkdir -p "$PID_DIR" "$LOG_DIR"
+  (
+    cd "$cwd"
+    nohup env \
+      RAOS_RUNTIME_INSTALL_MODE=manual \
+      RAOS_RUNTIME_PROFILE="$PROFILE" \
+      RAOS_EXECUTION_PURPOSE=CANONICAL \
+      "$@" >>"$(log_path "$name")" 2>&1 &
+    echo $! >"$(pid_path "$name")"
+  )
+  sleep 0.2
+  pid_running "$name" || { echo "$name failed to stay running; see $(log_path "$name")" >&2; exit 1; }
+  echo "started $name (pid $(cat "$(pid_path "$name")"))"
+}
+
+manual_start() {
+  require_manual_runtime
+  mkdir -p "$PID_DIR" "$LOG_DIR"
+  if lsof -tiTCP:8000 -sTCP:LISTEN >/dev/null 2>&1 && ! pid_running backend; then
+    echo "Port 8000 is occupied by an unmanaged process; refusing duplicate backend." >&2; exit 1
+  fi
+  if lsof -tiTCP:3000 -sTCP:LISTEN >/dev/null 2>&1 && ! pid_running frontend; then
+    echo "Port 3000 is occupied by an unmanaged process; refusing duplicate frontend." >&2; exit 1
+  fi
+  local node
+  node="$(command -v node || true)"
+  [[ -n "$node" ]] || { echo "node is required." >&2; exit 2; }
+
+  start_bg backend "$ROOT/backend" "$ROOT/backend/.venv/bin/uvicorn" app.main:app --host 127.0.0.1 --port 8000 --env-file "$ROOT/.env"
+  start_bg acquisition "$ROOT/backend" "$ROOT/backend/.venv/bin/python" -m app.acquisition_worker --env-file "$ROOT/.env" --interval 60 --limit-per-source 5
+  start_bg delivery "$ROOT/backend" "$ROOT/backend/.venv/bin/python" -m app.delivery_worker --env-file "$ROOT/.env"
+  start_bg frontend "$ROOT/frontend" "$node" "$ROOT/frontend/node_modules/next/dist/bin/next" start -H 127.0.0.1 -p 3000
+}
+
+stop_one() {
+  local name="$1" file pid
+  file="$(pid_path "$name")"
+  [[ -f "$file" ]] || return 0
+  pid="$(cat "$file" 2>/dev/null || true)"
+  if [[ -n "$pid" ]] && kill -0 "$pid" >/dev/null 2>&1; then
+    kill "$pid" >/dev/null 2>&1 || true
+    for _ in {1..30}; do
+      kill -0 "$pid" >/dev/null 2>&1 || break
+      sleep 0.1
+    done
+    kill -9 "$pid" >/dev/null 2>&1 || true
+  fi
+  rm -f "$file"
+  echo "stopped $name"
+}
+
+manual_stop() {
+  stop_one frontend
+  stop_one delivery
+  stop_one acquisition
+  stop_one backend
+}
+manual_status() {
+  echo "install_mode=manual"
+  for name in backend acquisition delivery frontend; do
+    if pid_running "$name"; then
+      printf '%-12s RUNNING pid=%s\n' "$name" "$(cat "$(pid_path "$name")")"
+    else
+      printf '%-12s STOPPED\n' "$name"
+    fi
+  done
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsS http://127.0.0.1:8000/health >/dev/null 2>&1 && echo "backend_health=ok" || echo "backend_health=unavailable"
+    curl -fsS http://127.0.0.1:3000 >/dev/null 2>&1 && echo "frontend_health=ok" || echo "frontend_health=unavailable"
+  fi
+}
+
+doctor() {
+  echo "RAOS Runtime Doctor"
+  echo "profile=$PROFILE"
+  if service_installed; then
+    "$SERVICE" status
+  else
+    manual_status
+  fi
+  echo "--- execution integrity ---"
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "curl unavailable"
+    return 1
+  fi
+  local payload
+  payload="$(curl -fsS http://127.0.0.1:8000/health/integrity 2>/dev/null || true)"
+  if [[ -z "$payload" ]]; then
+    echo "backend integrity endpoint unavailable"
+    return 1
+  fi
+  printf '%s' "$payload" | python3 -c 'import json,sys; d=json.load(sys.stdin); print("overall="+str(d.get("overall"))); print("purpose="+str(d.get("purpose"))); print("profile_hash="+str(d.get("runtime_profile_hash"))); a=d.get("attestation") or {}; print("attestation="+str(a.get("status"))); print("mismatches="+json.dumps(a.get("mismatches") or [], ensure_ascii=False)); c=d.get("capabilities") or {}; print("capabilities="+json.dumps(c, ensure_ascii=False)); b=d.get("build") or {}; print("git_sha="+str(b.get("git_sha"))); print("dirty="+str(b.get("dirty")))'
+}
+
+usage() {
+  echo "usage: $0 {start|stop|restart|status|doctor}" >&2
+  exit 2
+}
+
+cmd="${1:-}"
+if service_installed; then
+  case "$cmd" in
+    start|stop|restart|status) exec "$SERVICE" "$cmd" ;;
+    doctor) doctor ;;
+    *) usage ;;
+  esac
+else
+  case "$cmd" in
+    start) manual_start ;;
+    stop) manual_stop ;;
+    restart) manual_stop; manual_start ;;
+    status) manual_status ;;
+    doctor) doctor ;;
+    *) usage ;;
+  esac
+fi

@@ -17,8 +17,9 @@ from tests.pdf_util import pdf_with_text
 
 
 @pytest.fixture
-def semantic_fake_provider(monkeypatch):
+def semantic_fake_provider(monkeypatch, test_execution_identity):
     """Opt-in model-path double for Locate/prose. Domain matching stays in the test fake."""
+    test_execution_identity(provider="model")
 
     def _provider(**_kwargs):
         return FallbackProvider(

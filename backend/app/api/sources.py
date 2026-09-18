@@ -2,15 +2,19 @@ from datetime import datetime, timezone
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.db import get_db
+from app.models.acquisition import InformationSnapshot
 from app.models.source import Source, SourceEdge
 from app.schemas.api import SourceCreate, SourceEdgeCreate, SourceOut
 from app.services.ingestion import ingest_observation, ingest_pdf, ingest_text, ingest_url
+from app.services.information_landscape import source_information_landscape
+from app.services.same_event_candidates import same_event_candidates
 from app.services.source_graph import independence_report, persist_source_edge, resolve_references
+from app.services.source_versions import current_source_id
 
 router = APIRouter()
 
@@ -62,6 +66,23 @@ async def create_pdf(
 @router.get("", response_model=list[SourceOut])
 def list_sources(compact: bool = False, db: Session = Depends(get_db)):
     rows = db.execute(select(Source).where(Source.deleted_at.is_(None)).order_by(Source.ingested_at.desc())).scalars().all()
+
+    # Acquisition can preserve multiple immutable Source versions for one external
+    # information item. User-facing Source Library surfaces only the newest snapshot;
+    # historical versions remain addressable for provenance and replay.
+    snapshots = db.execute(
+        select(InformationSnapshot).order_by(InformationSnapshot.captured_at.desc())
+    ).scalars().all()
+    versioned_source_ids = {snapshot.raos_source_id for snapshot in snapshots}
+    current_source_ids = set()
+    seen_items = set()
+    for snapshot in snapshots:
+        if snapshot.external_item_id in seen_items:
+            continue
+        seen_items.add(snapshot.external_item_id)
+        current_source_ids.add(snapshot.raos_source_id)
+    rows = [row for row in rows if row.id not in versioned_source_ids or row.id in current_source_ids]
+
     if not compact:
         return rows
     compact_rows = []
@@ -76,12 +97,89 @@ def list_sources(compact: bool = False, db: Session = Depends(get_db)):
     return compact_rows
 
 
+@router.get("/search", response_model=list[SourceOut])
+def search_sources(q: str, limit: int = 20, db: Session = Depends(get_db)):
+    query = q.strip()
+    if not query:
+        return []
+    limit = max(1, min(limit, 200))
+    pattern = f"%{query}%"
+    rows = db.execute(
+        select(Source)
+        .where(
+            Source.deleted_at.is_(None),
+            or_(
+                Source.title.ilike(pattern),
+                Source.content_text.ilike(pattern),
+                Source.publisher.ilike(pattern),
+                Source.canonical_url.ilike(pattern),
+            ),
+        )
+        .order_by(Source.ingested_at.desc())
+    ).scalars().all()
+
+    snapshots = db.execute(select(InformationSnapshot).order_by(InformationSnapshot.captured_at.desc())).scalars().all()
+    versioned_source_ids = {snapshot.raos_source_id for snapshot in snapshots}
+    current_source_ids = set()
+    seen_items = set()
+    for snapshot in snapshots:
+        if snapshot.external_item_id in seen_items:
+            continue
+        seen_items.add(snapshot.external_item_id)
+        current_source_ids.add(snapshot.raos_source_id)
+
+    out = []
+    for row in rows:
+        if row.id in versioned_source_ids and row.id not in current_source_ids:
+            continue
+        payload = SourceOut.model_validate(row).model_dump()
+        text = payload.get("content_text") or ""
+        if len(text) > 900:
+            payload["content_text"] = text[:900].rstrip() + "…"
+        metadata = dict(payload.get("raw_metadata") or {})
+        metadata.pop("paper_body_html", None)
+        payload["raw_metadata"] = metadata
+        out.append(SourceOut(**payload))
+        if len(out) >= limit:
+            break
+    return out
+
+
 @router.get("/{source_id}", response_model=SourceOut)
 def get_source(source_id: UUID, db: Session = Depends(get_db)):
-    source = db.get(Source, source_id)
+    resolved_id = current_source_id(db, source_id)
+    source = db.get(Source, resolved_id)
     if source is None or source.deleted_at is not None:
         raise HTTPException(404, "Source not found")
     return source
+
+
+@router.get("/{source_id}/landscape")
+def get_source_landscape(source_id: UUID, db: Session = Depends(get_db)):
+    resolved_id = current_source_id(db, source_id)
+    try:
+        return source_information_landscape(db, resolved_id)
+    except ValueError as exc:
+        raise HTTPException(404, str(exc)) from exc
+
+
+@router.get("/{source_id}/same-event-candidates")
+def get_same_event_candidates(
+    source_id: UUID,
+    limit: int = 20,
+    max_window_hours: float = 168.0,
+    db: Session = Depends(get_db),
+):
+    resolved_id = current_source_id(db, source_id)
+    try:
+        return same_event_candidates(
+            db,
+            resolved_id,
+            limit=limit,
+            max_window_hours=max_window_hours,
+        )
+    except ValueError as exc:
+        raise HTTPException(404, str(exc)) from exc
 
 
 @router.get("/{source_id}/references")

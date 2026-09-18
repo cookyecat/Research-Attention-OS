@@ -94,7 +94,8 @@ def test_schema_invalid_then_retry_valid():
     assert any(e.get("status") == "repaired" for e in events)
 
 
-def test_schema_invalid_twice_raises_then_fallback(client: TestClient, monkeypatch):
+def test_schema_invalid_twice_raises_then_fallback(client: TestClient, monkeypatch, test_execution_identity):
+    test_execution_identity(provider="model")
     def _provider(**_kwargs):
         return FallbackProvider(ModelBackedCognitiveProvider(chat_fn=AlwaysInvalidChat()), RuleBasedCognitiveProvider())
 
@@ -143,7 +144,8 @@ def test_unexpected_field_retries_then_succeeds():
     assert any(e.get("status") == "repaired" for e in events)
 
 
-def test_unexpected_field_twice_falls_back(client: TestClient, monkeypatch):
+def test_unexpected_field_twice_falls_back(client: TestClient, monkeypatch, test_execution_identity):
+    test_execution_identity(provider="model")
     def _provider(**_kwargs):
         return FallbackProvider(ModelBackedCognitiveProvider(chat_fn=AlwaysExtraFieldChat()), RuleBasedCognitiveProvider())
 
@@ -173,7 +175,8 @@ def test_malformed_affected_kernel_nodes_fail_validation():
         )
 
 
-def test_malformed_affected_kernel_nodes_follow_repair_fallback(client: TestClient, monkeypatch):
+def test_malformed_affected_kernel_nodes_follow_repair_fallback(client: TestClient, monkeypatch, test_execution_identity):
+    test_execution_identity(provider="model")
     def _provider(**_kwargs):
         return FallbackProvider(ModelBackedCognitiveProvider(chat_fn=BadAffectedNodesChat()), RuleBasedCognitiveProvider())
 

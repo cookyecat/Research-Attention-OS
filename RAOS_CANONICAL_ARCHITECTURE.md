@@ -19,10 +19,16 @@ RAOS maintains a changing model of the outside information world and allocates s
 
 RAOS should observe the world as broadly as practical, understand genuinely new arrivals automatically, and disturb the human as little as possible.
 
+The product promise is stronger than "better recommendations": the user should not have to scan the world personally. RAOS should already have observed and judged the incoming world, so the user can understand within seconds **why these items surfaced, why the rest did not, and whether anything requires action now**.
+
 ```text
 Observe broadly.
 Understand automatically.
 Interrupt sparsely.
+
+用户不必自己扫描世界。
+RAOS 已经替他看过、判断过；
+用户只需要迅速知道：为什么是这些、为什么不是那些、现在到底要不要做什么。
 ```
 
 Canonical product loop:
@@ -131,6 +137,8 @@ DROP / AWARE / WATCH / ENGAGE
 
 The two Attention branches are orthogonal. D/S/P is not a substitute for cognitive effects, and cognitive relevance is not a substitute for situational awareness.
 
+For ordinary URL Sources, Acquisition also preserves a structured article view. `content_text` remains the canonical cognition input, while cleaned `article_blocks` preserve headings, paragraphs, semantic lists, quotations, semantic tables and substantive body media for Reader. Publisher chrome (newsletter/share/related/byline/navigation/access-wall furniture) is excluded from Reader structure. Explicit publisher article-body containers are a stronger extraction boundary than an outer page/article shell. Presentation-only hydration may update historical rendering when canonical historical `content_text` is unchanged. If a newly recovered body proves the historical canonical text was incomplete or polluted, RAOS appends a corrected Source/Snapshot and routes it through canonical reconciliation rather than rewriting historical cognition; an explicitly labelled presentation correction may still repair the old Reader link.
+
 Phase 11C realizes the P sensor boundary without changing P semantics. Raw views/likes/comments/ranks are append/extend sensor facts, not P. P remains event-level and is estimated only after event projection; magnitude-free percentiles are diagnostic evidence and remain `UNKNOWN` when reference support is insufficient. Historical signal truth is retained even if future serving layers add current-state/materialized projections for scale.
 
 Phase 11D adds the Delivery Plane as an execution boundary downstream of Attention. Every new persisted `AttentionPlan` owns at most one durable `DeliveryEnvelope`. Delivery policy maps the existing disposition to execution behavior but may never create, promote, downgrade, or reinterpret Attention. WATCH remains delegated future-attention responsibility: only a later canonical WATCH recheck may produce a new AWARE/ENGAGE plan that becomes deliverable. External transport availability/failure cannot mutate the source AttentionPlan.
@@ -183,8 +191,11 @@ UNKNOWN is not False. If missing components prevent the Boolean result from bein
 
 ```text
 Acquisition Plane              acquisition-plane-v0.3 / Phase 11A–11B active acquisition
+URL article presentation       url-html-v9-publisher-adapters / structured-blocks-v3-tables
 Semantic Sensor                semantic-evidence-extractor-v0.2.6
 Semantic Evidence Auditor      semantic-evidence-auditor-v0.1.1
+World Representation           world-representation-v0.1 / decision-representation-v0.1
+Explicit reference provenance  explicit-cites-v0.1 / append-only-parser-hydration
 Cognition                      research-aligned-cognition-v1
 Relation Mapping               Phase 9A v0.2 frozen contract
 Support Binding                Phase 10D.6L.3 frozen contract
@@ -201,6 +212,7 @@ Unknown composition            no-delta-awareness-integration-v1.1 semantics
 Feedback attribution           phase12a-feedback-attribution-v0.1
 Multi-actor delegation         watch-delegation-v0.1
 Deployment scope               deployment-scope-v0.1 / SINGLE_USER_DOGFOOD
+Execution Integrity            execution-integrity-v0.2 / explicit-identity-fail-closed
 ```
 
 
@@ -236,6 +248,21 @@ Deployment scope               deployment-scope-v0.1 / SINGLE_USER_DOGFOOD
 27. Cancelling an Agent delegation is actor-local. An agent-only Watch is released only after the last active delegation disappears; core-owned Watch responsibility is preserved.
 28. External-world artifacts may be shared only when their access provenance permits it; Kernel-, Runtime-, AnalysisRun-, Attention-, WATCH-, Delivery-, and authorization-dependent state is user/workspace-private by default.
 29. Current developer dogfood has no authenticated user identity and no multi-user isolation. No deployment surface may imply multi-user readiness until identity-scoped persistence and authorization are explicitly implemented and validated.
+30. Structured presentation is compositional: `article_blocks` may represent cleaned text structure and inline still images, while `media_assets` may carry supplemental video, trusted embeds, or other live media. Enabling structured Reader rendering must never silently suppress preserved substantive media. Presentation composition must not alter canonical `content_text` or cognition history.
+31. Presentation fidelity and cognition fidelity are separate contracts. Reader may recompose preserved structure and media for legibility, but presentation metadata may not silently alter canonical Source text, Sensor input, historical AnalysisRun semantics, or Attention authority.
+32. Explicit semantic article-body containers outrank outer page/article chrome for URL extraction. Compatibility banners, access walls, navigation, recirculation and recommendation furniture must not become canonical cognition input merely because they are descendants of an outer `<article>` or `<main>`.
+33. Semantic tables are first-class article structure. When a publisher exposes a real table, Acquisition should preserve its row/column semantics for Reader instead of flattening it into an undifferentiated paragraph stream.
+34. A public-social preview carrying an explicit long-text truncation signal such as “... 全文” is not a complete semantic observation. Acquisition must attempt detail hydration (with stable public identifiers where available) or fail/defer explicitly; it must not silently treat the preview as full content.
+35. Presentation-only backfill may upgrade `article_blocks`, `article_structure_version`, `media_assets`, cached presentation media, and an explicit `presentation_hydration` audit record only when canonical `content_text` is unchanged. It must preserve the historical canonical parser/acquisition identity rather than relabel an old Source as if it had originally been acquired under the newer parser.
+36. Execution identity absence fails closed just like identity mismatch. A process with no runtime profile and no explicit forensic purpose has no cognition or Attention side-effect authority.
+37. `REPLAY`, `FORENSIC`, and explicit compatibility execution may compute forensic cognition, but may not persist canonical AttentionPlan, WATCH, KernelPatch, or Delivery side effects.
+38. Existing-run rescheduling is authority-bearing and must pass the same Execution Authority Gate as a fresh cognition run; cached/completed cognition is not a side-effect capability token.
+39. Delivery is defense-in-depth: the delivery worker must itself have side-effect authority, and an envelope may reach a human only when its AttentionPlan is backed by an authoritative stored AnalysisRun.
+40. Degraded acquisition is recoverable, not terminal. A persisted RSS/discovery fallback remains a valid historical observation, but later polls should retry the publisher URL and append a new full-body Snapshot when the source becomes available; failure to recover must preserve the fallback and record the retry error rather than corrupt or delete history.
+41. Media completeness is part of acquisition provenance. When a publisher fallback can recover text structure but cannot verify client-hydrated media, RAOS must record that limitation explicitly and must not present the saved Reader view as media-complete.
+42. An explicit article hyperlink authorizes only the literal `CITES` relation. It must not silently imply `SAME_EVENT`, `DERIVED_FROM`, `INDEPENDENT_REPORT`, or `ORIGINAL_SOURCE`; stronger relations require Representation-level adjudication.
+43. Historical reference hydration is append-only. New reference extraction may add a new ParserRun and SourceGraph facts, but it may not rewrite the historical parser run or canonical Source text; real historical hydration must fail closed if the freshly extracted canonical text differs.
+44. Under `decision-representation-v0.1`, `CITES` is graph/audit context only: it changes `graph_digest` but not `decision_representation_digest`. Transport-only redirect/self-links must not become provenance facts.
 
 
 

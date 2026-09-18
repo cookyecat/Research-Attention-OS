@@ -81,17 +81,27 @@ def create_stub_source(db: Session, candidate: dict) -> Source:
         external["doi"] = candidate["doi"]
     if candidate.get("arxiv_id"):
         external["arxiv_id"] = candidate["arxiv_id"]
+
+    # A literal web reference is not a paper merely because it was cited.
+    # Bibliographic references without a URL remain PAPER stubs; explicit
+    # ordinary hyperlinks become URL stubs until/if later acquisition hydrates them.
+    is_paper = bool(candidate.get("doi") or candidate.get("arxiv_id") or not candidate.get("url"))
+    source_type = SourceType.PAPER if is_paper else SourceType.URL
     normalized = NormalizedSource(
-        source_type=SourceType.PAPER,
-        title=candidate.get("title") or candidate.get("raw_text", "")[:200],
+        source_type=source_type,
+        title=candidate.get("title") or candidate.get("raw_text", "")[:200] or candidate.get("url"),
         canonical_url=candidate.get("url"),
         content_text=None,
         external_ids=external,
-        raw_metadata={"stub": True, "raw_text": candidate.get("raw_text")},
+        raw_metadata={
+            "stub": True,
+            "raw_text": candidate.get("raw_text"),
+            "reference_candidate": dict(candidate),
+        },
         ingestion_method="REFERENCE_STUB",
     )
     source = Source(
-        source_type=SourceType.PAPER,
+        source_type=source_type,
         title=normalized.title,
         canonical_url=normalized.canonical_url,
         content_text=None,
@@ -112,10 +122,33 @@ def resolve_references(db: Session, source_id: UUID, *, max_depth: int = 1) -> l
     source = db.get(Source, source_id)
     if source is None:
         return []
-    run = db.execute(select(ParserRun).where(ParserRun.source_id == source_id)).scalars().first()
-    refs = []
-    if run and run.output_metadata:
-        refs = list(run.output_metadata.get("references") or [])
+    runs = (
+        db.execute(
+            select(ParserRun)
+            .where(ParserRun.source_id == source_id)
+            .order_by(ParserRun.created_at.asc(), ParserRun.id.asc())
+        )
+        .scalars()
+        .all()
+    )
+    refs: list[dict] = []
+    seen_refs: set[str] = set()
+    for run in runs:
+        if not run.output_metadata:
+            continue
+        for candidate in list(run.output_metadata.get("references") or []):
+            key = "|".join(
+                [
+                    str(candidate.get("doi") or "").strip().lower(),
+                    str(candidate.get("arxiv_id") or "").strip().lower(),
+                    str(candidate.get("url") or "").strip(),
+                    str(candidate.get("raw_text") or "").strip(),
+                ]
+            )
+            if key in seen_refs:
+                continue
+            seen_refs.add(key)
+            refs.append(candidate)
     if not refs and source.content_text:
         refs = extract_reference_candidates(source.content_text)
         db.add(

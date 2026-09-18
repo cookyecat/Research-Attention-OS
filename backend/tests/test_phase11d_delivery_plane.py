@@ -4,15 +4,51 @@ from uuid import UUID, uuid4
 
 from sqlalchemy import select
 
+from app.models.analysis import AnalysisRun
 from app.models.delivery import DeliveryEnvelope
 from app.models.scheduler import AttentionPlan
-from app.services.delivery import delivery_metrics, delivery_policy, ensure_delivery_envelope
+from app.cognitive.rule_provider import RuleBasedCognitiveProvider
+from app.execution_integrity import execution_context
+from app.services.scheduler import get_decision_strategy
+from app.services.delivery import (
+    delivery_metrics,
+    delivery_policy,
+    ensure_delivery_envelope,
+    list_visible_deliveries,
+    pending_realtime_deliveries,
+)
 
 
 def _plan(db, *, disposition: str, urgency: str = "NORMAL") -> AttentionPlan:
+    candidate_id = uuid4()
+    authority = execution_context(
+        provider=RuleBasedCognitiveProvider(),
+        decision_strategy=get_decision_strategy("one-delta"),
+    )
+    run = AnalysisRun(
+        source_id=candidate_id,
+        extra_source_ids=[],
+        identity_key=f"delivery-test-{uuid4()}",
+        extractor_version="test",
+        matcher_version="test",
+        evidence_reasoner_version="test",
+        delta_version="test",
+        scheduler_version="test",
+        prompt_version="test",
+        provider_version="test",
+        embedding_model_version="none",
+        pipeline_version="test",
+        provider_type="rule",
+        model_name=None,
+        input_hash=f"input-{uuid4()}",
+        kernel_snapshot_hash=f"kernel-{uuid4()}",
+        status="COMPLETED",
+        result_payload={"execution_authority": authority},
+    )
+    db.add(run); db.flush()
     row = AttentionPlan(
         candidate_type="SOURCE",
-        candidate_id=uuid4(),
+        candidate_id=candidate_id,
         disposition=disposition,
         processing_modes=[],
         urgency=urgency,
@@ -24,6 +60,7 @@ def _plan(db, *, disposition: str, urgency: str = "NORMAL") -> AttentionPlan:
         scheduler_version="test",
         attention_policy_version="test",
         score_debug={},
+        analysis_run_id=run.id,
     )
     db.add(row); db.flush()
     return row
@@ -104,6 +141,31 @@ def test_websocket_delivers_only_interrupt_envelopes(client, db):
     assert aware_env.state == "PASSIVE"
 
 
+def test_non_authoritative_envelope_is_not_visible_or_realtime(db):
+    plan = AttentionPlan(
+        candidate_type="SOURCE",
+        candidate_id=uuid4(),
+        disposition="ENGAGE",
+        processing_modes=[],
+        urgency="PRIORITY",
+        cognitive_budget_minutes=None,
+        kernel_target_ids=[],
+        expected_output="NONE",
+        reason="unauthorized delivery probe",
+        watch_after_processing=False,
+        scheduler_version="test",
+        attention_policy_version="test",
+        score_debug={},
+        analysis_run_id=None,
+    )
+    db.add(plan); db.flush()
+    envelope, _ = ensure_delivery_envelope(db, plan)
+    db.flush()
+    assert envelope.delivery_class == "INTERRUPT"
+    assert list_visible_deliveries(db) == []
+    assert pending_realtime_deliveries(db) == []
+
+
 def test_pipeline_created_attention_plan_owns_delivery_envelope(client, db):
     # Use the ordinary production analysis path; Delivery must be a side effect
     # of persisted AttentionPlan creation, not an alternate decision path.
@@ -130,7 +192,7 @@ def test_external_worker_ignores_unavailable_channels(db, monkeypatch):
     envelope, _ = ensure_delivery_envelope(db, plan)
     db.commit()
     counts = deliver_external_once(limit=10)
-    assert counts == {'checked': 0, 'email_sent': 0, 'push_sent': 0, 'failed': 0}
+    assert counts == {'checked': 0, 'email_sent': 0, 'push_sent': 0, 'failed': 0, 'authority_blocked': 0}
     db.refresh(envelope)
     assert envelope.channel_status['EMAIL']['state'] == 'UNAVAILABLE'
     assert envelope.channel_status['PUSH']['state'] == 'UNAVAILABLE'

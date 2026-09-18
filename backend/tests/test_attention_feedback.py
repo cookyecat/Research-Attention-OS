@@ -615,7 +615,9 @@ def test_http_unknown_operation_and_illegal_open_new_target_rejected(client: Tes
     assert illegal_open.status_code == 422
 
 
-def test_reschedule_system_prediction_uses_latest_plan_disposition(client: TestClient, monkeypatch):
+def test_reschedule_system_prediction_uses_latest_plan_disposition(client: TestClient, monkeypatch, test_execution_identity):
+    test_execution_identity(provider="model")
+
     def _provider(**_kwargs):
         return FallbackProvider(
             ModelBackedCognitiveProvider(chat_fn=SemanticFakeChat()),

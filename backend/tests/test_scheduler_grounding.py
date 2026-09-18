@@ -192,7 +192,8 @@ def test_heavy_evidence_runs_for_observations_vs_claims():
     assert extraction.evidence_stage_skipped is False
 
 
-def test_galaxy_style_no_spurious_decision_or_conflict(client: TestClient, monkeypatch):
+def test_galaxy_style_no_spurious_decision_or_conflict(client: TestClient, monkeypatch, test_execution_identity):
+    test_execution_identity(provider="model")
     chat = GalaxyInflatedChat()
 
     def _provider(**_kwargs):

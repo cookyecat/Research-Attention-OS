@@ -41,7 +41,11 @@ from app.services.analysis_execution import (
     analysis_execution_snapshot,
     uses_embedding_retrieval,
 )
-from app.services.source_graph import freeze_analysis_relational_context
+from app.services.representation_snapshot import (
+    DECISION_REPRESENTATION_VERSION,
+    REPRESENTATION_SNAPSHOT_VERSION,
+    freeze_representation_snapshot,
+)
 
 
 def _active_kernel(db: Session) -> list[KernelNode]:
@@ -507,12 +511,21 @@ def run_pipeline(
 
         extraction_bridge = research_aligned_extraction_bridge()
     decision_strategy = decision_strategy or get_decision_strategy()
+    from app.execution_integrity import require_cognition_ready
+
+    execution_context = require_cognition_ready(
+        provider=provider, decision_strategy=decision_strategy
+    )
     nodes = _active_kernel(db)
     in_hash = input_hash(source, extras)
     k_hash = kernel_snapshot_hash(nodes)
-    event_source_ids = [source.id] + [e.id for e in extras]
-    rel_ctx = freeze_analysis_relational_context(db, event_source_ids)
+    representation = freeze_representation_snapshot(db, source, extras)
+    rel_ctx = representation.relational_context
     exec_snapshot = analysis_execution_snapshot(provider)
+    exec_snapshot["representation"] = {
+        "schema_version": REPRESENTATION_SNAPSHOT_VERSION,
+        "decision_version": DECISION_REPRESENTATION_VERSION,
+    }
     no_delta_awareness_enabled = settings.no_delta_awareness_contract == "dsp-v1"
     if no_delta_awareness_enabled:
         from app.services.no_delta_awareness import execution_snapshot as no_delta_execution_snapshot
@@ -520,6 +533,7 @@ def run_pipeline(
         exec_snapshot["no_delta_awareness"] = no_delta_execution_snapshot()
     strategy_execution = decision_strategy_snapshot(decision_strategy)
     exec_snapshot["decision_strategy"] = strategy_execution
+    exec_snapshot["execution_context"] = execution_context
     bridge_execution = None
     if extraction_bridge is not None:
         bridge_execution = dict(extraction_bridge.execution_snapshot() or {})
@@ -536,7 +550,7 @@ def run_pipeline(
         provider_type=provider_type,
         model_name=model_name,
         embedding_model_version=emb_version,
-        relational_digest=rel_ctx.digest,
+        decision_representation_digest=representation.decision_representation_digest,
         execution_digest=exec_digest,
     )
     kind, run = acquire_run(
@@ -562,6 +576,7 @@ def run_pipeline(
                 runtime_context_id=runtime_context_id,
                 decision_strategy=decision_strategy,
                 provider=provider,
+                execution_context=execution_context,
             )
         return hydrate_run(db, run)
     if kind == "existing" and run.status == "RUNNING":
@@ -577,6 +592,7 @@ def run_pipeline(
                         runtime_context_id=runtime_context_id,
                         decision_strategy=decision_strategy,
                         provider=provider,
+                        execution_context=execution_context,
                     )
                 return hydrate_run(db, run)
             if run.status in {"FAILED", "SUPERSEDED"}:
@@ -602,6 +618,10 @@ def run_pipeline(
             "independent_source_ids": list(rel_ctx.independent_source_ids),
             "secondary_source_ids": list(rel_ctx.secondary_source_ids),
             "relational_digest": rel_ctx.digest,
+            "representation_graph_digest": representation.graph_digest,
+            "decision_representation_digest": representation.decision_representation_digest,
+            "representation_schema_version": representation.schema_version,
+            "representation_decision_version": representation.decision_version,
         }
         blob = " ".join(
             [source.content_text or "", source.title or ""] + [e.content_text or "" for e in extras]
@@ -668,6 +688,19 @@ def run_pipeline(
             kernel_snapshot_hash=k_hash,
         )
         view = runtime_view_from_brain_snapshot(brain_snapshot)
+
+        # Prevent a hybrid decision where LLM extraction saw representation R0
+        # but the final Core decision consumes relation/P facts from R1.
+        live_representation = freeze_representation_snapshot(db, source, extras)
+        if (
+            live_representation.decision_representation_digest
+            != representation.decision_representation_digest
+        ):
+            raise RuntimeError(
+                "Decision-relevant Representation Snapshot changed during analysis; "
+                "refusing hybrid representation identity"
+            )
+
         assessment = provider.assess_cognitive_impact(
             blob,
             extraction,
@@ -689,11 +722,7 @@ def run_pipeline(
         if no_delta_awareness_enabled and draft.decision_effect_bound and draft.decision_effect is None:
             from app.services.no_delta_awareness import evaluate_no_delta_awareness
 
-            p_packets: dict = {}
-            for src in [source, *extras]:
-                candidate = (src.raw_metadata or {}).get("collective_attention_evidence_packets")
-                if isinstance(candidate, dict):
-                    p_packets.update(candidate)
+            p_packets = dict(representation.collective_attention_evidence_packets)
             no_delta = evaluate_no_delta_awareness(
                 extraction_diagnostics,
                 p_packets=p_packets or None,
@@ -714,6 +743,61 @@ def run_pipeline(
                         decision_strategy=decision_strategy,
                     )
                 )
+        if not execution_context["authority"]["attention_authorized"]:
+            payload = serialize_quarantined_analysis(
+                source=source,
+                extraction=extraction,
+                claims=claims,
+                observations=observations,
+                inferences=inferences,
+                links=links,
+                matches=matches,
+                draft=draft,
+                features=features,
+                assessment=assessment,
+                retrieval=retrieval,
+                execution_context=execution_context,
+                decision_strategy=decision_strategy,
+            )
+            from app.services.impact_input import capture_impact_input
+
+            payload["impact_input"] = capture_impact_input(
+                source_text=blob,
+                extraction=extraction,
+                matches=matches,
+                nodes=nodes,
+                is_duplicate=is_duplicate,
+                independent_source_count=rel_ctx.independent_sources,
+                secondary_report_count=rel_ctx.secondary_reports,
+                analysis_run_id=str(run.id),
+                input_hash=in_hash,
+                kernel_snapshot_hash=k_hash,
+                assessment=assessment,
+            )
+            payload["relational_context"] = rel_ctx.as_dict()
+            payload["representation_snapshot"] = representation.as_dict()
+            payload["cognition_trace"] = dict(getattr(provider, "last_cognition_trace", None) or {})
+            payload["no_delta_awareness"] = no_delta_awareness_trace
+            payload["execution_digest"] = exec_digest
+            payload["execution_snapshot"] = exec_snapshot
+            payload["analysis_run"] = {
+                "id": str(run.id),
+                "identity_key": ident,
+                "provider_type": provider_type,
+                "fallback_used": bool(getattr(provider, "fallback_used", False)),
+                "pipeline_version": PIPELINE_VERSION,
+            }
+            complete_run(
+                run,
+                payload,
+                fallback_used=bool(getattr(provider, "fallback_used", False)),
+                meta=getattr(provider, "last_meta", None),
+                stage_provenance=getattr(provider, "stage_provenance", None),
+                actual_provider_type=getattr(provider, "provider_type", provider_type),
+            )
+            payload["analysis_run"] = run_public(run)
+            return payload
+
         plan = AttentionPlan(
             candidate_type=CandidateType.SOURCE,
             candidate_id=source.id,
@@ -834,10 +918,12 @@ def run_pipeline(
             assessment=assessment,
         )
         payload["relational_context"] = rel_ctx.as_dict()
+        payload["representation_snapshot"] = representation.as_dict()
         payload["cognition_trace"] = dict(getattr(provider, "last_cognition_trace", None) or {})
         payload["no_delta_awareness"] = no_delta_awareness_trace
         payload["execution_digest"] = exec_digest
         payload["execution_snapshot"] = exec_snapshot
+        payload["execution_authority"] = execution_context
         payload["extraction_path"] = {
             "mode": "bridge" if extraction_bridge is not None else "legacy",
             "bridge_execution": bridge_execution,
@@ -886,6 +972,7 @@ def _reschedule(
     runtime_context_id: UUID | None = None,
     decision_strategy=None,
     provider=None,
+    execution_context: dict | None = None,
 ) -> dict:
     from app.cognitive.factory import get_provider
     from app.services.analysis_runs import fresh_kernel_snapshot_hash, hydrate_run, plan_public
@@ -897,6 +984,23 @@ def _reschedule(
         matches_from_snapshot,
     )
     from app.services.scheduler import SchedulerFeatures, matches_from_debug
+
+    if execution_context is None:
+        from app.execution_integrity import require_cognition_ready
+
+        provider = provider or get_provider()
+        decision_strategy = decision_strategy or get_decision_strategy()
+        execution_context = require_cognition_ready(
+            provider=provider, decision_strategy=decision_strategy
+        )
+    if not ((execution_context.get("authority") or {}).get("side_effects_authorized")):
+        response = hydrate_run(db, run)
+        response["execution_request_authority"] = execution_context
+        response["reschedule_suppressed"] = {
+            "reason": "execution-authority-required",
+            "runtime_requested": True,
+        }
+        return response
 
     stored_payload = dict(run.result_payload or {})
     original_plan = stored_payload.get("attention_plan")
@@ -1043,6 +1147,82 @@ def _reschedule(
     assert run.result_payload == original_payload
     assert run.result_payload.get("attention_plan") == original_plan
     return response
+
+
+def serialize_quarantined_analysis(
+    *,
+    source: Source,
+    extraction: ExtractionResult,
+    claims: list[Claim],
+    observations: list[Observation],
+    inferences: list[Inference],
+    links: list[EvidenceLink],
+    matches: list[KernelMatch],
+    draft,
+    features: SchedulerFeatures,
+    assessment: CognitiveImpactAssessment,
+    retrieval: dict | None,
+    execution_context: dict,
+    decision_strategy=None,
+) -> dict:
+    """Persist forensic cognition without creating canonical Attention authority."""
+    candidate = {
+        "disposition": draft.disposition.value,
+        "urgency": getattr(draft.urgency, "value", draft.urgency),
+        "expected_output": getattr(draft.expected_output, "value", draft.expected_output),
+        "reason": draft.reason,
+        "watch_after_processing": bool(draft.watch_after_processing),
+        "decision_cause": draft.decision_effect.as_dict() if draft.decision_effect is not None else None,
+        "decision_scope": {
+            "node_ids": list(draft.decision_scope_node_ids),
+            "kind": draft.decision_scope_kind,
+            "provenance": draft.decision_scope_provenance,
+        },
+    }
+    return {
+        "source_id": str(source.id),
+        "disposition": None,
+        "candidate_attention": candidate,
+        "attention_plan": None,
+        "execution_authority": execution_context,
+        "claims": [_claim_dict(c) for c in claims],
+        "observations": [_obs_dict(o) for o in observations],
+        "inferences": [_inf_dict(i) for i in inferences],
+        "evidence_links": [_link_dict(x) for x in links],
+        "separations": {
+            "current_facts": extraction.current_facts,
+            "future_plans": extraction.future_plans,
+            "technical_claims": extraction.technical_claims,
+            "promotional_framing": extraction.promotional_framing,
+        },
+        "kernel_matches": [
+            {
+                "node_id": str(m.node_id),
+                "node_type": m.node_type,
+                "title": m.title,
+                "score": m.score,
+                "reason": m.reason,
+                "structural": m.structural,
+                "relevance_type": getattr(m, "relevance_type", "TOPIC"),
+            }
+            for m in matches
+        ],
+        "model_delta": None,
+        "kernel_patches": [],
+        "watch_suggestions": [],
+        "watches": [],
+        "features": features.as_dict(),
+        "cognitive_impact": assessment.as_dict(),
+        "evidence_stage_skipped": bool(extraction.evidence_stage_skipped),
+        "evidence_skip_reason": extraction.evidence_skip_reason,
+        "retrieval": retrieval or {
+            "embedding_model": None,
+            "embedding_used": False,
+            "lexical_fallback": True,
+            "method": "lexical",
+            "query_instruct_applied": False,
+        },
+    }
 
 
 def serialize_analysis(

@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db import get_db
@@ -11,6 +11,7 @@ from app.schemas.api import AttentionFeedbackIn, ExtractIn, ImpactReplayAbIn, Im
 from app.services.analysis_runs import hydrate_run, latest_run_for_source
 from app.services.pipeline import run_pipeline
 from app.services.scheduler import RuntimeView
+from app.services.source_versions import current_source_id
 
 router = APIRouter()
 
@@ -18,9 +19,10 @@ router = APIRouter()
 @router.post("/extract")
 def extract(body: ExtractIn, db: Session = Depends(get_db)):
     try:
+        resolved_source_id = current_source_id(db, body.source_id)
         return run_pipeline(
             db,
-            body.source_id,
+            resolved_source_id,
             extra_source_ids=body.extra_source_ids,
             persist_suggested_watches=body.persist_suggested_watches,
             reprocess=False,
@@ -38,12 +40,67 @@ def run(body: ExtractIn, db: Session = Depends(get_db)):
     return extract(body, db)
 
 
+@router.post("/jobs", status_code=202)
+def start_analysis_job(
+    body: ExtractIn,
+    background_tasks: BackgroundTasks,
+    reprocess: bool = False,
+    db: Session = Depends(get_db),
+):
+    from app.execution_integrity import health_contract
+    from app.services.analysis_jobs import enqueue_analysis_job, run_analysis_job
+
+    health = health_contract()
+    authority = health.get("authority") or {}
+    if not authority.get("side_effects_authorized"):
+        raise HTTPException(503, "Authoritative cognition is not ready")
+    resolved_source_id = current_source_id(db, body.source_id)
+    if db.get(Source, resolved_source_id) is None:
+        raise HTTPException(404, "Source not found")
+    job, dispatch_required = enqueue_analysis_job(
+        source_id=resolved_source_id,
+        reprocess=reprocess,
+        extra_source_ids=body.extra_source_ids,
+        persist_suggested_watches=body.persist_suggested_watches,
+    )
+    if dispatch_required:
+        background_tasks.add_task(
+            run_analysis_job,
+            job["id"],
+            extra_source_ids=body.extra_source_ids,
+            persist_suggested_watches=body.persist_suggested_watches,
+        )
+    return job
+
+
+@router.get("/jobs/source/{source_id}/active")
+def get_active_analysis_job_status(source_id: UUID, db: Session = Depends(get_db)):
+    from app.services.analysis_jobs import get_active_analysis_job
+
+    resolved_source_id = current_source_id(db, source_id)
+    if db.get(Source, resolved_source_id) is None:
+        raise HTTPException(404, "Source not found")
+    job = get_active_analysis_job(resolved_source_id)
+    return {"active": job is not None, "job": job}
+
+
+@router.get("/jobs/{job_id}")
+def get_analysis_job_status(job_id: str):
+    from app.services.analysis_jobs import get_analysis_job
+
+    job = get_analysis_job(job_id)
+    if job is None:
+        raise HTTPException(404, "Analysis job not found")
+    return job
+
+
 @router.post("/reprocess")
 def reprocess(body: ExtractIn, db: Session = Depends(get_db)):
     try:
+        resolved_source_id = current_source_id(db, body.source_id)
         return run_pipeline(
             db,
-            body.source_id,
+            resolved_source_id,
             extra_source_ids=body.extra_source_ids,
             persist_suggested_watches=body.persist_suggested_watches,
             reprocess=True,
@@ -58,10 +115,11 @@ def reprocess(body: ExtractIn, db: Session = Depends(get_db)):
 
 @router.get("/by-source/{source_id}")
 def get_by_source(source_id: UUID, db: Session = Depends(get_db)):
-    source = db.get(Source, source_id)
+    resolved_source_id = current_source_id(db, source_id)
+    source = db.get(Source, resolved_source_id)
     if source is None:
         raise HTTPException(404, "Source not found")
-    run = latest_run_for_source(db, source_id)
+    run = latest_run_for_source(db, resolved_source_id)
     if run is None:
         raise HTTPException(404, "No analysis run for this source")
     return hydrate_run(db, run)

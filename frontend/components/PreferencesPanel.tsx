@@ -8,20 +8,17 @@ type ThemePreference = "dark" | "light" | "system";
 type TextSize = "compact" | "default" | "large";
 type BionicMode = "off" | "on";
 type BionicWeight = 1 | 2 | 3 | 4 | 5;
+type ReadingSkin = "classic" | "bionic-soft";
 
 const THEME_KEY = "raos-theme";
 const SIZE_KEY = "raos-text-size";
 const BIONIC_KEY = "raos-bionic-reading";
 const BIONIC_STRENGTH_KEY = "raos-bionic-strength";
 const BIONIC_WEIGHT_KEY = "raos-bionic-weight";
+const READING_SKIN_KEY = "raos-reading-skin";
 const READING_PREFERENCES_EVENT = "raos-reading-preferences-changed";
-const BIONIC_WEIGHT_STYLES: Record<BionicWeight, { fontWeight: number; shadow: string }> = {
-  1: { fontWeight: 400, shadow: "none" },
-  2: { fontWeight: 600, shadow: "none" },
-  3: { fontWeight: 700, shadow: "0.3px 0 0 currentColor, -0.3px 0 0 currentColor, 0 0.3px 0 currentColor, 0 -0.3px 0 currentColor" },
-  4: { fontWeight: 800, shadow: "0.5px 0 0 currentColor, -0.5px 0 0 currentColor, 0 0.5px 0 currentColor, 0 -0.5px 0 currentColor" },
-  5: { fontWeight: 900, shadow: "0.75px 0 0 currentColor, -0.75px 0 0 currentColor, 0 0.75px 0 currentColor, 0 -0.75px 0 currentColor" },
-};
+const CLASSIC_BIONIC_WEIGHTS: Record<BionicWeight, number> = { 1: 400, 2: 600, 3: 700, 4: 800, 5: 900 };
+const SOFT_BIONIC_WEIGHTS: Record<BionicWeight, number> = { 1: 460, 2: 520, 3: 580, 4: 640, 5: 700 };
 
 function resolveTheme(preference: ThemePreference) {
   if (preference !== "system") return preference;
@@ -40,16 +37,17 @@ function normalizeStrength(raw: string | null) {
   return Math.max(10, Math.min(100, Number.isFinite(value) ? Math.round(value / 5) * 5 : 60));
 }
 
-function applyPreferences(theme: ThemePreference, size: TextSize, bionic: BionicMode, strength: number, weight: BionicWeight) {
+function applyPreferences(theme: ThemePreference, size: TextSize, bionic: BionicMode, strength: number, weight: BionicWeight, skin: ReadingSkin) {
   const root = document.documentElement;
-  const weightStyle = BIONIC_WEIGHT_STYLES[weight];
+  const fontWeight = skin === "bionic-soft" ? SOFT_BIONIC_WEIGHTS[weight] : CLASSIC_BIONIC_WEIGHTS[weight];
   root.dataset.theme = resolveTheme(theme);
   root.dataset.fontScale = size;
   root.dataset.bionic = bionic;
   root.dataset.bionicStrength = String(strength);
   root.dataset.bionicWeight = String(weight);
-  root.style.setProperty("--bionic-weight", String(weightStyle.fontWeight));
-  root.style.setProperty("--bionic-shadow", bionic === "on" ? weightStyle.shadow : "none");
+  root.dataset.readingSkin = skin;
+  root.style.setProperty("--bionic-weight", String(fontWeight));
+  root.style.setProperty("--bionic-shadow", "none");
   window.dispatchEvent(new Event(READING_PREFERENCES_EVENT));
 }
 
@@ -60,6 +58,7 @@ export default function PreferencesPanel() {
   const [bionic, setBionic] = useState<BionicMode>("off");
   const [bionicStrength, setBionicStrength] = useState(60);
   const [bionicWeight, setBionicWeight] = useState<BionicWeight>(3);
+  const [readingSkin, setReadingSkin] = useState<ReadingSkin>("classic");
 
   useEffect(() => {
     const storedTheme = (localStorage.getItem(THEME_KEY) as ThemePreference | null) || "system";
@@ -67,8 +66,9 @@ export default function PreferencesPanel() {
     const storedBionic = (localStorage.getItem(BIONIC_KEY) as BionicMode | null) || "off";
     const storedStrength = normalizeStrength(localStorage.getItem(BIONIC_STRENGTH_KEY));
     const storedWeight = normalizeWeight(localStorage.getItem(BIONIC_WEIGHT_KEY));
-    setTheme(storedTheme); setSize(storedSize); setBionic(storedBionic); setBionicStrength(storedStrength); setBionicWeight(storedWeight);
-    applyPreferences(storedTheme, storedSize, storedBionic, storedStrength, storedWeight);
+    const storedSkin = (localStorage.getItem(READING_SKIN_KEY) as ReadingSkin | null) || "classic";
+    setTheme(storedTheme); setSize(storedSize); setBionic(storedBionic); setBionicStrength(storedStrength); setBionicWeight(storedWeight); setReadingSkin(storedSkin);
+    applyPreferences(storedTheme, storedSize, storedBionic, storedStrength, storedWeight, storedSkin);
     const media = window.matchMedia("(prefers-color-scheme: light)");
     const updateSystem = () => {
       if ((localStorage.getItem(THEME_KEY) || "system") === "system") document.documentElement.dataset.theme = media.matches ? "light" : "dark";
@@ -77,16 +77,24 @@ export default function PreferencesPanel() {
     return () => media.removeEventListener("change", updateSystem);
   }, []);
 
-  function persist(nextTheme = theme, nextSize = size, nextBionic = bionic, nextStrength = bionicStrength, nextWeight = bionicWeight) {
+  function persist(nextTheme = theme, nextSize = size, nextBionic = bionic, nextStrength = bionicStrength, nextWeight = bionicWeight, nextSkin = readingSkin) {
     localStorage.setItem(THEME_KEY, nextTheme); localStorage.setItem(SIZE_KEY, nextSize);
-    localStorage.setItem(BIONIC_KEY, nextBionic); localStorage.setItem(BIONIC_STRENGTH_KEY, String(nextStrength)); localStorage.setItem(BIONIC_WEIGHT_KEY, String(nextWeight));
-    applyPreferences(nextTheme, nextSize, nextBionic, nextStrength, nextWeight);
+    localStorage.setItem(BIONIC_KEY, nextBionic); localStorage.setItem(BIONIC_STRENGTH_KEY, String(nextStrength)); localStorage.setItem(BIONIC_WEIGHT_KEY, String(nextWeight)); localStorage.setItem(READING_SKIN_KEY, nextSkin);
+    applyPreferences(nextTheme, nextSize, nextBionic, nextStrength, nextWeight, nextSkin);
   }
-  function changeTheme(next: ThemePreference) { setTheme(next); persist(next, size, bionic, bionicStrength, bionicWeight); }
-  function changeSize(next: TextSize) { setSize(next); persist(theme, next, bionic, bionicStrength, bionicWeight); }
-  function changeBionic(next: BionicMode) { setBionic(next); persist(theme, size, next, bionicStrength, bionicWeight); }
-  function changeStrength(next: number) { setBionicStrength(next); persist(theme, size, bionic, next, bionicWeight); }
-  function changeWeight(next: number) { const weight = Math.max(1, Math.min(5, Math.round(next))) as BionicWeight; setBionicWeight(weight); persist(theme, size, bionic, bionicStrength, weight); }
+  function changeTheme(next: ThemePreference) { setTheme(next); persist(next, size, bionic, bionicStrength, bionicWeight, readingSkin); }
+  function changeSize(next: TextSize) { setSize(next); persist(theme, next, bionic, bionicStrength, bionicWeight, readingSkin); }
+  function changeBionic(next: BionicMode) { setBionic(next); persist(theme, size, next, bionicStrength, bionicWeight, readingSkin); }
+  function changeStrength(next: number) { setBionicStrength(next); persist(theme, size, bionic, next, bionicWeight, readingSkin); }
+  function changeWeight(next: number) { const weight = Math.max(1, Math.min(5, Math.round(next))) as BionicWeight; setBionicWeight(weight); persist(theme, size, bionic, bionicStrength, weight, readingSkin); }
+  function changeSkin(next: ReadingSkin) {
+    const soft = next === "bionic-soft";
+    const nextBionic: BionicMode = soft ? "on" : bionic;
+    const nextStrength = soft && readingSkin !== "bionic-soft" ? 50 : bionicStrength;
+    const nextWeight: BionicWeight = soft && readingSkin !== "bionic-soft" ? 3 : bionicWeight;
+    setReadingSkin(next); setBionic(nextBionic); setBionicStrength(nextStrength); setBionicWeight(nextWeight);
+    persist(theme, size, nextBionic, nextStrength, nextWeight, next);
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -106,10 +114,11 @@ export default function PreferencesPanel() {
         <header><div><div className="eyebrow">Preferences</div><h2>Make RAOS comfortable to read.</h2></div><button className="icon-button" onClick={() => setOpen(false)} aria-label="Close">×</button></header>
         <PreferenceRow title="Theme" description="Changes the entire RAOS interface"><div className="segmented-control">{(["dark","light","system"] as ThemePreference[]).map(v => <button key={v} className={theme===v?"active":""} onClick={()=>changeTheme(v)}>{v[0].toUpperCase()+v.slice(1)}</button>)}</div></PreferenceRow>
         <PreferenceRow title="Text size" description="Applies to navigation, cards, and Reader."><div className="segmented-control">{(["compact","default","large"] as TextSize[]).map(v => <button key={v} className={size===v?"active":""} onClick={()=>changeSize(v)}>{v==="default"?"Default":v[0].toUpperCase()+v.slice(1)}</button>)}</div></PreferenceRow>
+        <PreferenceRow title="Reading skin" description="Switch the Reader typography without changing source text or cognition."><div className="segmented-control"><button className={readingSkin==="classic"?"active":""} onClick={()=>changeSkin("classic")}>Classic</button><button className={readingSkin==="bionic-soft"?"active":""} onClick={()=>changeSkin("bionic-soft")}>Bionic Soft</button></div></PreferenceRow>
         <PreferenceRow title="Half-bold reading" description="Create visual fixation points at the beginning of Latin words."><div className="segmented-control"><button className={bionic==="off"?"active":""} onClick={()=>changeBionic("off")}>Off</button><button className={bionic==="on"?"active":""} onClick={()=>changeBionic("on")}>On</button></div></PreferenceRow>
         <PreferenceRow title="Half-bold strength" description="How much of each word becomes the fixation point."><RangeControl value={bionicStrength} min={10} max={100} step={5} suffix="%" onChange={changeStrength} /></PreferenceRow>
         <PreferenceRow title="Half-bold weight" description="How heavy the fixation letters appear; independent from strength."><RangeControl value={bionicWeight} min={1} max={5} step={1} onChange={changeWeight} /></PreferenceRow>
-        {bionic === "on" && <div className="reader-note" style={{ marginTop: 18 }}><div className="eyebrow">Live preview</div><p style={{ fontSize: 16, lineHeight: 1.65 }}><BionicText text="Research attention should feel easier to scan without changing the words." strength={bionicStrength / 100} /></p></div>}
+        {bionic === "on" && <div className="reader-note preference-reading-preview" style={{ marginTop: 18 }}><div className="eyebrow">Live preview</div><p><BionicText text="Research attention should feel easier to scan without changing the words. 仿生阅读应该帮助视线自然落点，而不是把文字切成一块一块。" strength={bionicStrength / 100} /></p></div>}
         <p className="preferences-note">Saved in this browser. Strength changes the highlighted word fraction; weight changes only visual boldness. Source text and RAOS cognition remain untouched.</p>
       </section>
     </div>,

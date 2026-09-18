@@ -149,7 +149,19 @@ def reject_patch(patch_id: UUID, db: Session = Depends(get_db)):
 
 @router.get("/attention")
 def list_attention(db: Session = Depends(get_db)):
-    plans = db.execute(select(AttentionPlan).order_by(AttentionPlan.created_at.desc())).scalars().all()
+    from app.execution_integrity import desired_identity, stored_run_authority
+    from app.models.analysis import AnalysisRun
+
+    rows = db.execute(select(AttentionPlan).order_by(AttentionPlan.created_at.desc())).scalars().all()
+    plans = []
+    for plan in rows:
+        run = db.get(AnalysisRun, plan.analysis_run_id) if plan.analysis_run_id else None
+        if run is None:
+            if desired_identity() is None:
+                plans.append(plan)
+            continue
+        if stored_run_authority(run).get("authoritative"):
+            plans.append(plan)
     return [
         {
             "id": str(p.id),

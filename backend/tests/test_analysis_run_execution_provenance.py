@@ -120,7 +120,7 @@ def test_evidence_and_impact_use_frozen_independence_not_extra_count(client: Tes
     assert frozen["secondary_reports"] == independence["secondary_reports"]
 
 
-def test_mid_run_sourcegraph_mutation_keeps_frozen_run_then_new_identity(client: TestClient, db, monkeypatch):
+def test_mid_run_decision_relevant_sourcegraph_mutation_fails_closed(client: TestClient, db, monkeypatch):
     primary = add_text(client, "A technical paper about motor intelligence latency.", title="frz-mid-p")
     extra = add_text(client, "Derived motor intelligence latency reprint.", title="frz-mid-e")
     other = add_text(client, "Unrelated target used only for the new edge.", title="frz-mid-t")
@@ -141,15 +141,24 @@ def test_mid_run_sourcegraph_mutation_keeps_frozen_run_then_new_identity(client:
         return original(session, *args, **kwargs)
 
     monkeypatch.setattr(pipeline_mod, "extract_source", mutating_extract)
-    first = analyze(client, primary["id"], extra_ids=[extra["id"]])
-    assert first["attention_plan"]["score_debug"]["independence"]["independent_sources"] == 1
-    assert first["relational_context"]["independence"]["is_duplicate"] is False
-    g0 = first["relational_context"]["digest"]
+    first = client.post(
+        "/analysis/extract",
+        json={
+            "source_id": primary["id"],
+            "extra_source_ids": [extra["id"]],
+            "persist_suggested_watches": False,
+        },
+    )
+    assert first.status_code == 500
+    assert "Decision-relevant Representation Snapshot changed during analysis" in first.text
 
+    # The request transaction rolls back its own test mutation. Once the
+    # representation is stable again, the same source can be analyzed normally.
     monkeypatch.undo()
     second = analyze(client, primary["id"], extra_ids=[extra["id"]])
-    assert second["analysis_run"]["id"] != first["analysis_run"]["id"]
-    assert second["relational_context"]["digest"] != g0
+    assert second["relational_context"]["independence"]["independent_sources"] == 1
+    assert second["relational_context"]["independence"]["secondary_reports"] == 1
+    assert second["representation_snapshot"]["decision_representation_digest"]
 
 
 def test_impact_assessor_version_changes_execution_digest_and_run(client: TestClient, monkeypatch):

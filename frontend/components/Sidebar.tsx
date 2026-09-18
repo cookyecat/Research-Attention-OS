@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import PreferencesPanel from "@/components/PreferencesPanel";
+import GlobalSearch from "@/components/GlobalSearch";
 
 const LINKS = [
   ["/", "Today", "What needs you now"],
@@ -21,6 +22,7 @@ export default function Sidebar() {
         <Link className="brand" href="/">RAOS</Link>
         <span className="brand-subtitle">Research Attention OS</span>
       </div>
+      <GlobalSearch />
       <div>
         <div className="nav-section-label">User space</div>
         <nav className="primary-nav" aria-label="Primary navigation">

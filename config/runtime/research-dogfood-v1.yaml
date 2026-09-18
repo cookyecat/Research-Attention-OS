@@ -1,0 +1,19 @@
+profile_id: research-dogfood-v1
+profile_version: 1
+execution_purpose: CANONICAL
+
+authority:
+  cognition_provider: model
+  cognition_contract: research-aligned-v1
+  decision_strategy_id: pareto-multidelta-cardinal-free-effect-anchored-open-new
+  decision_strategy_version: pareto-multidelta-cardinal-free-effect-anchored-open-new-v0.2
+  no_delta_awareness_contract: dsp-v1
+
+requirements:
+  secrets:
+    - llm_api_key
+  minimum_schema_revision: 0013_watch_delegations
+
+policy:
+  allow_dirty_build: true
+  canonical_attention_requires_attestation: true

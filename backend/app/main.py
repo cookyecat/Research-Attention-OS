@@ -17,6 +17,7 @@ from app.api.watches import router as watches_router
 from app.config import settings
 from app.db import Base, engine
 from app.deployment_scope import deployment_contract
+from app.execution_integrity import health_contract as execution_health_contract
 from app.models import (  # noqa: F401
     AnalysisRun,
     Claim,
@@ -67,7 +68,28 @@ def create_app() -> FastAPI:
 
     @application.get("/health")
     def health():
-        return {"ok": True, "product": "RAOS", "version": "1.1.0", "deployment": deployment_contract()}
+        execution = execution_health_contract()
+        return {
+            "ok": execution.get("overall") != "BLOCKED",
+            "product": "RAOS",
+            "version": "1.1.0",
+            "deployment": deployment_contract(),
+            "execution_integrity": execution,
+        }
+
+    @application.get("/health/integrity")
+    def health_integrity():
+        return execution_health_contract()
+
+    @application.get("/health/ready")
+    def health_ready():
+        execution = execution_health_contract()
+        return {
+            "ready": execution.get("overall") == "READY",
+            "overall": execution.get("overall"),
+            "capabilities": execution.get("capabilities"),
+            "attestation": execution.get("attestation"),
+        }
 
     return application
 

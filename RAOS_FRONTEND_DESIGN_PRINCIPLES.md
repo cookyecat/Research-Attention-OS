@@ -207,3 +207,19 @@ For papers, prioritize title, authors, affiliations, abstract, section hierarchy
 Section navigation must be functional and grounded in the actual preserved body. Never display an interactive-looking table of contents when the corresponding body is unavailable. Paper reading progress should follow sections, not arbitrary paragraph counts.
 
 List/index payloads may remain compact, but detail reading must fetch the full Source separately; compact list state must never overwrite a full Reader detail object.
+## 12. Structured publisher articles use cleaned semantic structure
+
+For ordinary publisher webpages, Reader should reconstruct article semantics rather than mirror publisher DOM or flatten everything into plain text.
+
+```text
+canonical content_text → cognition
+clean article_blocks   → presentation
+```
+
+Preferred presentation structure includes headings, paragraphs, semantic lists, quotations, substantive figures, captions, and meaningful inline media. Newsletter modules, follow/share controls, bylines/author avatars, related-story recirculation, comments, navigation, advertising and publisher furniture are not Reader body content.
+
+When multiple extraction views disagree, choose the representation that best preserves the article's semantic hierarchy while excluding publisher chrome. A cleaned main-content extractor may define the editorial boundary; DOM may conservatively recover captions, emphasis and missing body media.
+
+Historical presentation hydration must fail closed when current canonical text differs from the frozen Source text. Improving how an old Source is rendered must never silently rewrite the information that historical cognition actually saw.
+
+> **Preserve the information object, not the publisher machinery.**

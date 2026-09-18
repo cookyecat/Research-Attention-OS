@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "@/lib/api";
 import { formatBeijingTime } from "@/lib/time";
+import { attentionLabel, watchTriggerLabel } from "@/lib/attentionPresentation";
 
 type Watch = any;
 
@@ -10,16 +11,6 @@ function humanReason(watch: Watch) {
   if (watch.target_type === "KERNEL") return "RAOS is monitoring for new evidence that could change or strengthen this part of your current context.";
   if (watch.target_type === "METHOD") return "RAOS is waiting for stronger evidence or a concrete release so you do not have to remember to check again.";
   return "RAOS has accepted responsibility for the next meaningful update.";
-}
-
-function triggerLabel(trigger: string) {
-  const labels: Record<string, string> = {
-    NEW_EVIDENCE: "new evidence",
-    PAPER_RELEASE: "a paper release",
-    CODE_RELEASE: "a code release",
-    INDEPENDENT_REPLICATION: "independent replication",
-  };
-  return labels[trigger] || trigger.toLowerCase().replaceAll("_", " ");
 }
 
 export default function WatchPage() {
@@ -71,11 +62,11 @@ export default function WatchPage() {
           const active = group.some((watch) => watch.status === "ACTIVE");
           const triggers = Array.from(new Set(group.flatMap((watch) => (watch.triggers || []).map((trigger: any) => trigger.trigger_type))));
           const lastTriggered = group.flatMap((watch) => (watch.triggers || []).map((trigger: any) => trigger.last_triggered_at).filter(Boolean)).sort().at(-1);
-          const waitingFor = triggers.map((trigger) => triggerLabel(String(trigger))).join(", ");
+          const waitingFor = triggers.map((trigger) => watchTriggerLabel(String(trigger))).join(", ");
           return (
             <article className="card watch-card" key={`${primary.target_type}:${primary.target_ref}`}>
               <div>
-                <div className="row"><span className="badge WATCH">WATCH</span></div>
+                <div className="row"><span className="human-state WATCH" title="RAOS state: WATCH">{attentionLabel("WATCH")}</span></div>
                 <h3>{primary.target_ref}</h3>
                 <p className="attention-summary">{humanReason(primary)}</p>
                 {waitingFor && <p className="watch-waiting"><span>Waiting for</span> {waitingFor}</p>}

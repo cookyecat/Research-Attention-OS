@@ -126,11 +126,20 @@ def _source_summary(source: Source | None) -> dict | None:
 
 
 def _latest_plans(db: Session) -> list[AttentionPlan]:
+    from app.execution_integrity import desired_identity, stored_run_authority
+    from app.models.analysis import AnalysisRun
+
     rows = db.execute(
         select(AttentionPlan).order_by(AttentionPlan.created_at.desc(), AttentionPlan.id.desc())
     ).scalars().all()
     latest: dict[tuple[str, UUID], AttentionPlan] = {}
     for row in rows:
+        run = db.get(AnalysisRun, row.analysis_run_id) if row.analysis_run_id else None
+        if run is None:
+            if desired_identity() is not None:
+                continue
+        elif not stored_run_authority(run).get("authoritative"):
+            continue
         key = (str(row.candidate_type), row.candidate_id)
         if key not in latest:
             latest[key] = row

@@ -169,8 +169,24 @@ def envelope_out(envelope: DeliveryEnvelope) -> dict:
         "last_error": envelope.last_error,
         "created_at": envelope.created_at.isoformat() if envelope.created_at else None,
     }
+def delivery_authority(db: Session, envelope: DeliveryEnvelope) -> dict:
+    """Return whether a persisted envelope is backed by an authoritative AnalysisRun."""
+    from app.execution_integrity import stored_run_authority
+    from app.models.analysis import AnalysisRun
+
+    plan = db.get(AttentionPlan, envelope.attention_plan_id)
+    if plan is None:
+        return {"authoritative": False, "reason": "missing-attention-plan"}
+    if plan.analysis_run_id is None:
+        return {"authoritative": False, "reason": "missing-analysis-run"}
+    run = db.get(AnalysisRun, plan.analysis_run_id)
+    if run is None:
+        return {"authoritative": False, "reason": "missing-analysis-run"}
+    return stored_run_authority(run)
+
+
 def list_visible_deliveries(db: Session, *, limit: int = 100) -> list[DeliveryEnvelope]:
-    return list(
+    rows = list(
         db.execute(
             select(DeliveryEnvelope)
             .where(DeliveryEnvelope.delivery_class.in_(["PASSIVE", "INTERRUPT"]))
@@ -178,6 +194,7 @@ def list_visible_deliveries(db: Session, *, limit: int = 100) -> list[DeliveryEn
             .limit(max(1, min(int(limit), 500)))
         ).scalars().all()
     )
+    return [row for row in rows if delivery_authority(db, row).get("authoritative")]
 
 
 def pending_realtime_deliveries(db: Session, *, limit: int = 20) -> list[DeliveryEnvelope]:
@@ -193,6 +210,7 @@ def pending_realtime_deliveries(db: Session, *, limit: int = 20) -> list[Deliver
     return [
         row for row in rows
         if ((row.channel_status or {}).get("IN_APP_REALTIME") or {}).get("state") == "PENDING"
+        and delivery_authority(db, row).get("authoritative")
     ]
 
 

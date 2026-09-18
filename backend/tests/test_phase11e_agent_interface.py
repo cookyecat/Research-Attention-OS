@@ -11,10 +11,39 @@ from app.models.analysis import AnalysisRun
 from app.models.delivery import DeliveryEnvelope
 from app.models.scheduler import AttentionPlan
 from app.models.watch import Watch
+from app.cognitive.rule_provider import RuleBasedCognitiveProvider
+from app.execution_integrity import execution_context
+from app.services.scheduler import get_decision_strategy
 from app.services.active_acquisition import ActiveQueryBundleSpec, project_watch_observation_intent
 
 
 def _plan(db, *, candidate_id, disposition, minutes=0, created_at=None):
+    authority = execution_context(
+        provider=RuleBasedCognitiveProvider(),
+        decision_strategy=get_decision_strategy("one-delta"),
+    )
+    run = AnalysisRun(
+        source_id=candidate_id,
+        extra_source_ids=[],
+        identity_key=f"agent-interface-test-{uuid4()}",
+        extractor_version="test",
+        matcher_version="test",
+        evidence_reasoner_version="test",
+        delta_version="test",
+        scheduler_version="test",
+        prompt_version="test",
+        provider_version="test",
+        embedding_model_version="none",
+        pipeline_version="test",
+        provider_type="rule",
+        model_name=None,
+        input_hash=f"input-{uuid4()}",
+        kernel_snapshot_hash=f"kernel-{uuid4()}",
+        status="COMPLETED",
+        result_payload={"execution_authority": authority},
+        completed_at=created_at or datetime.now(timezone.utc),
+    )
+    db.add(run); db.flush()
     row = AttentionPlan(
         candidate_type="SOURCE",
         candidate_id=candidate_id,
@@ -29,6 +58,7 @@ def _plan(db, *, candidate_id, disposition, minutes=0, created_at=None):
         scheduler_version="test",
         attention_policy_version="test",
         score_debug={},
+        analysis_run_id=run.id,
         created_at=created_at or datetime.now(timezone.utc),
     )
     db.add(row); db.flush()

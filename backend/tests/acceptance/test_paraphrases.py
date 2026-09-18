@@ -12,7 +12,9 @@ from tests.fakes import SemanticFakeChat
 
 
 @pytest.fixture
-def model_client(client: TestClient, monkeypatch) -> TestClient:
+def model_client(client: TestClient, monkeypatch, test_execution_identity) -> TestClient:
+    test_execution_identity(provider="model")
+
     def _provider(**_kwargs):
         return FallbackProvider(
             ModelBackedCognitiveProvider(chat_fn=SemanticFakeChat()),

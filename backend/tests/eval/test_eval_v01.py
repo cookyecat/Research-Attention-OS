@@ -88,7 +88,9 @@ def test_eval_v01_rule(client: TestClient, case: dict):
 
 
 @pytest.mark.parametrize("case", [c for c in CASES if "model" in c.get("backends", [])], ids=lambda c: c["id"] + "-model")
-def test_eval_v01_model(client: TestClient, monkeypatch, case: dict):
+def test_eval_v01_model(client: TestClient, monkeypatch, case: dict, test_execution_identity):
+    test_execution_identity(provider="model")
+
     def _provider(**_kwargs):
         return FallbackProvider(
             ModelBackedCognitiveProvider(chat_fn=SemanticFakeChat()),

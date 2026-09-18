@@ -1,0 +1,17 @@
+profile_id: test-rule-one-delta-v1
+profile_version: 1
+execution_purpose: TEST
+
+authority:
+  cognition_provider: rule
+  cognition_contract: legacy
+  decision_strategy_id: one-delta
+  decision_strategy_version: one-delta-v1
+  no_delta_awareness_contract: disabled
+
+requirements:
+  secrets: []
+
+policy:
+  allow_side_effects: true
+  canonical_attention_requires_attestation: true

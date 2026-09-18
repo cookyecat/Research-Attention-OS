@@ -90,6 +90,78 @@ def test_repeated_poll_is_idempotent_at_information_and_snapshot_layer(db, monke
     assert len(analyses) == 1
 
 
+def test_inline_public_content_change_creates_new_snapshot(client, db, monkeypatch):
+    source = SourceDefinition(name="Weibo test", source_type="WEIBO_PUBLIC", locator="1912085257", poll_interval_seconds=1800)
+    db.add(source)
+    db.flush()
+    payload = {"text": "预览正文"}
+
+    def discover(self, locator):
+        return [DiscoveredExternalItem(
+            ref="https://weibo.com/1912085257/AbCd",
+            external_id="456",
+            title="微博测试",
+            metadata={
+                "content_text": payload["text"],
+                "social_author": "测试用户",
+                "hero_image_url": "https://example.com/hero.jpg",
+            },
+        )]
+
+    monkeypatch.setattr(acquisition.WeiboPublicAdapter, "discover", discover)
+    monkeypatch.setattr(acquisition, "cache_remote_media", lambda url: "/api/media/cached-hero.jpg")
+    first = poll_source(db, source, analyze=False)
+    payload["text"] = "完整正文\n\n第二段"
+    second = poll_source(db, source, analyze=False)
+
+    snapshots = db.execute(select(InformationSnapshot).order_by(InformationSnapshot.captured_at)).scalars().all()
+    assert first["new_snapshots"] == 1
+    assert second["new_snapshots"] == 1
+    assert len(snapshots) == 2
+    assert len(db.execute(select(AcquisitionObservation)).scalars().all()) == 1
+    current = db.get(acquisition.Source, snapshots[-1].raos_source_id)
+    assert current.content_text == "完整正文\n\n第二段"
+    assert current.raw_metadata["hero_image_cached_url"] == "/api/media/cached-hero.jpg"
+    listed_ids = {row["id"] for row in client.get("/sources").json()}
+    assert str(snapshots[-1].raos_source_id) in listed_ids
+    assert str(snapshots[0].raos_source_id) not in listed_ids
+    old_detail = client.get(f"/sources/{snapshots[0].raos_source_id}").json()
+    assert old_detail["id"] == str(snapshots[-1].raos_source_id)
+    assert old_detail["content_text"] == "完整正文\n\n第二段"
+
+
+def test_inline_media_hydration_does_not_create_new_snapshot_or_require_reanalysis(db, monkeypatch):
+    source = SourceDefinition(name="Weibo media hydrate", source_type="WEIBO_PUBLIC", locator="1912085257", poll_interval_seconds=1800)
+    db.add(source)
+    db.flush()
+    state = {"with_media": False}
+
+    def discover(self, locator):
+        metadata = {"content_text": "正文不变", "social_author": "测试用户"}
+        if state["with_media"]:
+            metadata.update({
+                "hero_image_url": "https://example.com/p1.jpg",
+                "media_assets": [{"type": "IMAGE", "url": "https://example.com/p1.jpg", "media_id": "p1"}],
+                "weibo_media_hydrated": True,
+            })
+        return [DiscoveredExternalItem(ref="https://weibo.com/1912085257/Hydrate1", external_id="h1", title="媒体补全", metadata=metadata)]
+
+    monkeypatch.setattr(acquisition.WeiboPublicAdapter, "discover", discover)
+    monkeypatch.setattr(acquisition, "cache_remote_media", lambda url: "/api/media/p1.jpg")
+    first = poll_source(db, source, analyze=False)
+    state["with_media"] = True
+    second = poll_source(db, source, analyze=False)
+
+    snapshots = db.execute(select(InformationSnapshot)).scalars().all()
+    assert first["new_snapshots"] == 1
+    assert second["new_snapshots"] == 0
+    assert len(snapshots) == 1
+    current = db.get(acquisition.Source, snapshots[0].raos_source_id)
+    assert current.raw_metadata["media_assets"][0]["cached_url"] == "/api/media/p1.jpg"
+    assert current.raw_metadata["weibo_media_hydrated"] is True
+    assert current.raw_metadata["media_hydration"]["version"] == "social-media-v1"
+
+
 def test_same_information_from_two_sources_is_one_item_two_observations(db, monkeypatch):
     analyses = _fake_delivery(monkeypatch)
     feed_a = _source(db, "Feed A", "https://example.com/feed-a.xml")
@@ -212,3 +284,129 @@ def test_feed_content_fallback_preserves_item_when_page_fetch_fails(db, monkeypa
     assert stored.ingestion_method == "RSS_FALLBACK"
     assert stored.content_text == "Publisher supplied summary text."
     assert stored.raw_metadata["feed_fallback"] is True
+
+
+
+
+def test_feed_fallback_recovers_to_full_body_on_later_poll(db, monkeypatch):
+    source = _source(db, "Recovering Feed", "https://example.com/recovering.xml")
+    item = DiscoveredExternalItem(
+        ref="https://example.com/article",
+        title="Article",
+        metadata={"feed_format": "RSS", "feed_content_text": "Publisher summary."},
+    )
+    monkeypatch.setattr(acquisition.RSSAdapter, "discover", lambda self, locator: [item])
+    calls = {"n": 0}
+
+    def fake_ingest(db, url):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise RuntimeError("temporary 403")
+        row = ingest_text(db, "Full recovered article body.", title="Article")
+        row.canonical_url = url
+        return row
+
+    monkeypatch.setattr(acquisition, "ingest_url", fake_ingest)
+    first = poll_source(db, source, analyze=False)
+    second = poll_source(db, source, analyze=False)
+
+    snapshots = db.execute(select(InformationSnapshot).order_by(InformationSnapshot.captured_at)).scalars().all()
+    from app.models.source import Source
+    assert first["new_snapshots"] == 1
+    assert second["new_snapshots"] == 1
+    assert len(snapshots) == 2
+    old = db.get(Source, snapshots[0].raos_source_id)
+    new = db.get(Source, snapshots[1].raos_source_id)
+    assert old.raw_metadata["feed_fallback"] is True
+    assert old.content_text == "Publisher summary."
+    assert new.content_text == "Full recovered article body."
+    assert snapshots[1].snapshot_metadata["recovered_from_feed_fallback"] is True
+    assert snapshots[1].snapshot_metadata["previous_snapshot_id"] == str(snapshots[0].id)
+
+
+def test_feed_fallback_retry_failure_keeps_existing_snapshot(db, monkeypatch):
+    source = _source(db, "Still Blocked Feed", "https://example.com/still-blocked.xml")
+    item = DiscoveredExternalItem(
+        ref="https://example.com/blocked",
+        title="Blocked",
+        metadata={"feed_format": "RSS", "feed_content_text": "Publisher summary."},
+    )
+    monkeypatch.setattr(acquisition.RSSAdapter, "discover", lambda self, locator: [item])
+    monkeypatch.setattr(acquisition, "ingest_url", lambda db, url: (_ for _ in ()).throw(RuntimeError("still 403")))
+
+    first = poll_source(db, source, analyze=False)
+    second = poll_source(db, source, analyze=False)
+    snapshots = db.execute(select(InformationSnapshot)).scalars().all()
+    assert first["new_snapshots"] == 1
+    assert second["new_snapshots"] == 0
+    assert len(snapshots) == 1
+    meta = snapshots[0].snapshot_metadata
+    assert "still 403" in meta["fallback_recovery_last_error"]
+    assert meta["fallback_recovery_last_attempt_at"]
+
+
+def test_cognition_failure_preserves_snapshot_for_reconciliation(db, monkeypatch):
+    source = _source(db, "Recoverable Feed", "https://example.com/recoverable.xml")
+    source.last_polled_at = datetime(2026, 9, 16, tzinfo=timezone.utc)
+    monkeypatch.setattr(acquisition.RSSAdapter, "discover", lambda self, locator: [
+        DiscoveredExternalItem(ref="https://example.com/recoverable-item", title="Recoverable")
+    ])
+
+    def fake_ingest(db, url):
+        row = ingest_text(db, "Recoverable body", title="Recoverable")
+        row.canonical_url = url
+        return row
+
+    monkeypatch.setattr(acquisition, "ingest_url", fake_ingest)
+    monkeypatch.setattr(
+        acquisition,
+        "run_pipeline",
+        lambda db, source_id: (_ for _ in ()).throw(RuntimeError("canonical cognition unavailable")),
+    )
+
+    result = poll_source(db, source, analyze=True)
+    snapshots = db.execute(select(InformationSnapshot)).scalars().all()
+
+    assert result["new_snapshots"] == 1
+    assert result["item_failures"] == 0
+    assert len(snapshots) == 1
+    meta = snapshots[0].snapshot_metadata
+    assert meta["cognition_deferred"] is True
+    assert meta["cognition_reconcile_eligible"] is True
+    assert meta["cognition_defer_reason"] == "technical_cognition_failure"
+    assert "canonical cognition unavailable" in meta["last_cognition_error"]
+
+
+def test_operator_no_analyze_marks_genuine_arrival_recoverable(db, monkeypatch):
+    source = _source(db, "Deferred Feed", "https://example.com/deferred.xml")
+    source.last_polled_at = datetime(2026, 9, 16, tzinfo=timezone.utc)
+    monkeypatch.setattr(acquisition.RSSAdapter, "discover", lambda self, locator: [
+        DiscoveredExternalItem(ref="https://example.com/deferred-item", title="Deferred")
+    ])
+    monkeypatch.setattr(acquisition, "ingest_url", lambda db, url: ingest_text(db, "Deferred body", title="Deferred"))
+
+    result = poll_source(
+        db,
+        source,
+        analyze=False,
+        cognition_defer_reason="execution_integrity_deferred",
+    )
+    snapshot = db.execute(select(InformationSnapshot)).scalar_one()
+
+    assert result["new_snapshots"] == 1
+    assert snapshot.snapshot_metadata["cognition_deferred"] is True
+    assert snapshot.snapshot_metadata["cognition_reconcile_eligible"] is True
+    assert snapshot.snapshot_metadata["cognition_defer_reason"] == "execution_integrity_deferred"
+
+
+def test_bootstrap_is_deferred_but_not_reconciliation_eligible(db, monkeypatch):
+    _fake_delivery(monkeypatch)
+    source = _source(db, "Baseline Feed", "https://example.com/baseline.xml")
+
+    results = poll_due_sources(db, limit_per_source=5, analyze=True)
+    snapshot = db.execute(select(InformationSnapshot)).scalar_one()
+
+    assert results[0]["bootstrap"] is True
+    assert snapshot.snapshot_metadata["cognition_deferred"] is True
+    assert snapshot.snapshot_metadata["cognition_reconcile_eligible"] is False
+    assert snapshot.snapshot_metadata["cognition_defer_reason"] == "baseline"

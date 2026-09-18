@@ -11,6 +11,7 @@ from app.connectors.manual_observation import ManualObservationConnector
 from app.connectors.manual_text import ManualTextConnector
 from app.connectors.pdf import PDFConnector
 from app.connectors.url import URLConnector
+from app.connectors.wechat import WechatArticleConnector
 from app.enums import EventStatus, IngestionStatus, SourceType
 from app.models.event import Event, EventSource
 from app.models.ingestion import IngestionJob, ParserRun
@@ -84,6 +85,41 @@ def ingest_url(db: Session, url: str) -> Source:
     try:
         job.status = IngestionStatus.PARSING
         normalized = URLConnector().ingest(url)
+        job.status = IngestionStatus.NORMALIZING
+        return persist_normalized(db, normalized, job=job)
+    except Exception as exc:
+        job.status = IngestionStatus.FETCH_FAILED
+        job.error_message = str(exc)
+        job.finished_at = datetime.now(timezone.utc)
+        db.flush()
+        raise
+
+
+def ingest_wechat_article(
+    db: Session,
+    url: str,
+    *,
+    title: str | None,
+    account: str,
+    biz: str,
+    published_at,
+    fallback_html: str | None,
+    feed_url: str | None,
+) -> Source:
+    job = IngestionJob(connector_type="WECHAT", input_ref=url, status=IngestionStatus.FETCHING)
+    db.add(job)
+    db.flush()
+    try:
+        job.status = IngestionStatus.PARSING
+        normalized = WechatArticleConnector().ingest(
+            url,
+            title=title,
+            account=account,
+            biz=biz,
+            published_at=published_at,
+            fallback_html=fallback_html,
+            feed_url=feed_url,
+        )
         job.status = IngestionStatus.NORMALIZING
         return persist_normalized(db, normalized, job=job)
     except Exception as exc:

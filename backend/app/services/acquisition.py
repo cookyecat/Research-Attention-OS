@@ -20,13 +20,15 @@ from app.models.acquisition import (
     SourceDefinition,
 )
 from app.models.source import Source
-from app.services.ingestion import ingest_url, persist_normalized
-from app.services.fingerprint import NormalizedSource
+from app.services.ingestion import ingest_url, ingest_wechat_article, persist_normalized
+from app.services.fingerprint import NormalizedSource, content_hash
+from app.services.media_cache import cache_remote_media
 from app.services.pipeline import run_pipeline
 from app.services.acquisition_types import DiscoveredExternalItem
 from app.services.attention_signals import record_attention_signal_sample
 from app.services.social_adapters import WeiboPublicAdapter, XPublicAdapter
 from app.services.active_acquisition import ActiveQueryBundleAdapter
+from app.services.wechat_adapters import WechatAccountAdapter
 from app.services.discovery_adapters import (
     BilibiliCreatorAdapter,
     BilibiliSearchAdapter,
@@ -162,10 +164,16 @@ def _adapter_for(source: SourceDefinition):
         return SogouSearchAdapter()
     if kind == "ACTIVE_QUERY_BUNDLE":
         return ActiveQueryBundleAdapter()
+    if kind == "WECHAT_ACCOUNT":
+        return WechatAccountAdapter()
     raise ValueError(f"Unsupported acquisition source type: {source.source_type}")
 
 
 def _identity_key(source: SourceDefinition, item: DiscoveredExternalItem) -> str:
+    if source.source_type.upper() == "WECHAT_ACCOUNT":
+        stable = str((item.metadata or {}).get("wechat_identity_key") or "").strip()
+        if stable:
+            return stable
     if item.ref:
         parsed = urlparse(item.ref)
         normalized = parsed._replace(fragment="").geturl().rstrip("/")
@@ -182,7 +190,7 @@ def _get_or_create_item(db: Session, source: SourceDefinition, discovered: Disco
     if item is None:
         item = ExternalInformationItem(
             identity_key=key,
-            item_type=str((discovered.metadata or {}).get("item_type") or ("ARTICLE" if source.source_type.upper() == "RSS" else "POST")),
+            item_type=str((discovered.metadata or {}).get("item_type") or ("ARTICLE" if source.source_type.upper() in {"RSS", "WECHAT_ACCOUNT"} else "POST")),
             canonical_url=discovered.ref,
             title=discovered.title,
             published_at=discovered.published_at,
@@ -243,8 +251,56 @@ def _persist_feed_fallback(db: Session, source: SourceDefinition, item: External
     return persist_normalized(db, normalized)
 
 
+def _cache_inline_media(metadata: dict) -> dict:
+    metadata = dict(metadata)
+    cached_assets = []
+    for raw in metadata.get("media_assets") or []:
+        if not isinstance(raw, dict):
+            continue
+        asset = dict(raw)
+        url = str(asset.get("url") or "").strip()
+        if url and not asset.get("cached_url"):
+            cached = cache_remote_media(url)
+            if cached:
+                asset["cached_url"] = cached
+        poster = str(asset.get("poster_url") or "").strip()
+        if poster and not asset.get("poster_cached_url"):
+            cached_poster = cache_remote_media(poster)
+            if cached_poster:
+                asset["poster_cached_url"] = cached_poster
+        cached_assets.append(asset)
+    if cached_assets:
+        metadata["media_assets"] = cached_assets
+
+    hero = str(metadata.get("hero_image_url") or "").strip()
+    if hero and not metadata.get("hero_image_cached_url"):
+        first_cached_image = next((asset.get("cached_url") for asset in cached_assets if str(asset.get("type") or "").upper() == "IMAGE" and asset.get("url") == hero and asset.get("cached_url")), None)
+        cached = first_cached_image or cache_remote_media(hero)
+        if cached:
+            metadata["hero_image_cached_url"] = cached
+    return metadata
+
+
+def _hydrate_existing_inline_media(db: Session, snapshot: InformationSnapshot, metadata: dict) -> None:
+    current = db.get(Source, snapshot.raos_source_id)
+    if current is None:
+        return
+    enriched = _cache_inline_media(metadata)
+    raw = dict(current.raw_metadata or {})
+    changed = False
+    for key in ("media_assets", "hero_image_url", "hero_image_cached_url", "weibo_media_hydrated"):
+        value = enriched.get(key)
+        if value not in (None, [], "") and raw.get(key) != value:
+            raw[key] = value
+            changed = True
+    if changed:
+        raw["media_hydration"] = {"version": "social-media-v1", "hydrated_at": datetime.now(timezone.utc).isoformat()}
+        current.raw_metadata = raw
+        db.flush()
+
+
 def _persist_inline_item(db: Session, source: SourceDefinition, item: ExternalInformationItem, discovered: DiscoveredExternalItem) -> Source:
-    metadata = dict(discovered.metadata or {})
+    metadata = _cache_inline_media(dict(discovered.metadata or {}))
     text = str(metadata.get("content_text") or "").strip()
     if not text:
         raise ValueError("Platform item has no public text")
@@ -293,17 +349,61 @@ def _persist_discovery_fallback(db: Session, source: SourceDefinition, item: Ext
     return persist_normalized(db, normalized)
 
 
-def _deliver(db: Session, source: SourceDefinition, item: ExternalInformationItem, discovered: DiscoveredExternalItem, *, analyze: bool) -> InformationSnapshot:
+def _deliver(
+    db: Session,
+    source: SourceDefinition,
+    item: ExternalInformationItem,
+    discovered: DiscoveredExternalItem,
+    *,
+    analyze: bool,
+    cognition_defer_reason: str | None = None,
+) -> InformationSnapshot:
     existing = _current_snapshot(db, item.id)
-    if existing is not None:
-        return existing
     metadata = dict(discovered.metadata or {})
     kind = source.source_type.upper()
-    delivery_mode = str(metadata.get("delivery_mode") or ("URL_FETCH" if kind == "RSS" else "INLINE_PUBLIC")).upper()
-    if delivery_mode == "URL_FETCH":
+    delivery_mode = str(
+        metadata.get("delivery_mode")
+        or ("URL_FETCH" if kind == "RSS" else "INLINE_PUBLIC")
+    ).upper()
+    current_source = db.get(Source, existing.raos_source_id) if existing is not None else None
+    recovering_feed_fallback = bool(
+        existing is not None
+        and delivery_mode == "URL_FETCH"
+        and current_source is not None
+        and (current_source.raw_metadata or {}).get("feed_fallback") is True
+    )
+    if existing is not None:
+        if delivery_mode != "INLINE_PUBLIC" and not recovering_feed_fallback:
+            return existing
+        if delivery_mode == "INLINE_PUBLIC":
+            inline_text = str(metadata.get("content_text") or "").strip()
+            if not inline_text:
+                return existing
+            if content_hash(inline_text) == current_source.content_hash:
+                _hydrate_existing_inline_media(db, existing, metadata)
+                return existing
+    if delivery_mode == "WECHAT_ARTICLE":
+        raos_source = ingest_wechat_article(
+            db,
+            item.canonical_url,
+            title=item.title,
+            account=str(metadata.get("wechat_account") or source.name),
+            biz=str(metadata.get("wechat_biz") or ""),
+            published_at=item.published_at,
+            fallback_html=metadata.get("wechat_feed_html"),
+            feed_url=metadata.get("wechat_feed_url"),
+        )
+    elif delivery_mode == "URL_FETCH":
         try:
             raos_source = ingest_url(db, item.canonical_url)
-        except Exception:
+        except Exception as exc:
+            if recovering_feed_fallback:
+                snapshot_meta = dict(existing.snapshot_metadata or {})
+                snapshot_meta["fallback_recovery_last_attempt_at"] = datetime.now(timezone.utc).isoformat()
+                snapshot_meta["fallback_recovery_last_error"] = f"{type(exc).__name__}: {exc}"[:1000]
+                existing.snapshot_metadata = snapshot_meta
+                db.flush()
+                return existing
             if kind == "RSS" and metadata.get("feed_content_text"):
                 raos_source = _persist_feed_fallback(db, source, item, discovered)
             elif metadata.get("fallback_content_text"):
@@ -318,25 +418,53 @@ def _deliver(db: Session, source: SourceDefinition, item: ExternalInformationIte
         **(raos_source.raw_metadata or {}),
         "acquisition": {"external_item_id": str(item.id), "identity_key": item.identity_key},
     }
+    explicit_defer = bool(metadata.get("defer_cognition"))
+    effective_defer_reason = metadata.get("defer_cognition_reason") or cognition_defer_reason
+    operator_defer = (not analyze) and bool(cognition_defer_reason)
     snapshot = InformationSnapshot(
         external_item_id=item.id,
         raos_source_id=raos_source.id,
+        captured_at=datetime.now(timezone.utc),
         content_hash=raos_source.content_hash,
         snapshot_metadata={
             "delivery": delivery_mode,
             "source_type": kind,
-            "cognition_deferred": bool(metadata.get("defer_cognition")),
-            "cognition_defer_reason": metadata.get("defer_cognition_reason"),
+            "cognition_deferred": bool(explicit_defer or operator_defer),
+            "cognition_defer_reason": effective_defer_reason,
+            "cognition_reconcile_eligible": bool(operator_defer and cognition_defer_reason != "baseline"),
+            "recovered_from_feed_fallback": bool(recovering_feed_fallback),
+            "previous_snapshot_id": str(existing.id) if recovering_feed_fallback and existing is not None else None,
         },
     )
     db.add(snapshot)
     db.flush()
     if analyze and not metadata.get("defer_cognition"):
-        run_pipeline(db, raos_source.id)
+        try:
+            run_pipeline(db, raos_source.id)
+        except Exception as exc:
+            # Observation authority is stronger than temporary cognition availability.
+            # Preserve the genuine arrival and let the reconciler retry later rather
+            # than rolling the external-world observation back with cognition.
+            snapshot.snapshot_metadata = {
+                **(snapshot.snapshot_metadata or {}),
+                "cognition_deferred": True,
+                "cognition_defer_reason": "technical_cognition_failure",
+                "cognition_reconcile_eligible": True,
+                "last_cognition_error": f"{type(exc).__name__}: {exc}"[:1000],
+                "original_captured_at": snapshot.captured_at.isoformat() if snapshot.captured_at else None,
+            }
+            db.flush()
     return snapshot
 
 
-def poll_source(db: Session, source: SourceDefinition, *, limit: int = 5, analyze: bool = True) -> dict:
+def poll_source(
+    db: Session,
+    source: SourceDefinition,
+    *,
+    limit: int = 5,
+    analyze: bool = True,
+    cognition_defer_reason: str | None = None,
+) -> dict:
     adapter = _adapter_for(source)
     discovered = adapter.discover(source.locator)[: max(0, int(limit))]
     adapter_report = getattr(adapter, "last_report", None)
@@ -358,10 +486,13 @@ def poll_source(db: Session, source: SourceDefinition, *, limit: int = 5, analyz
                 counts["signal_samples_new"] += int(signal_action == "CREATED")
                 counts["signal_samples_extended"] += int(signal_action == "EXTENDED")
                 before = _current_snapshot(db, item.id)
-                snapshot = _deliver(db, source, item, candidate, analyze=analyze)
+                snapshot = _deliver(
+                    db, source, item, candidate, analyze=analyze,
+                    cognition_defer_reason=cognition_defer_reason,
+                )
                 counts["new_items"] += int(item_created)
                 counts["new_observations"] += int(observation_created)
-                counts["new_snapshots"] += int(before is None)
+                counts["new_snapshots"] += int(before is None or snapshot.id != before.id)
                 delivered_source_ids.append(str(snapshot.raos_source_id))
         except Exception as exc:
             counts["item_failures"] += 1
@@ -401,7 +532,13 @@ def _due(source: SourceDefinition, now: datetime) -> bool:
     return last + timedelta(seconds=max(1, source.poll_interval_seconds)) <= now
 
 
-def poll_due_sources(db: Session, *, limit_per_source: int = 5, analyze: bool = True) -> list[dict]:
+def poll_due_sources(
+    db: Session,
+    *,
+    limit_per_source: int = 5,
+    analyze: bool = True,
+    cognition_defer_reason: str | None = None,
+) -> list[dict]:
     now = datetime.now(timezone.utc)
     sources = db.execute(
         select(SourceDefinition).where(SourceDefinition.enabled.is_(True)).order_by(SourceDefinition.created_at)
@@ -420,6 +557,7 @@ def poll_due_sources(db: Session, *, limit_per_source: int = 5, analyze: bool = 
                     source,
                     limit=limit_per_source,
                     analyze=analyze and not bootstrap,
+                    cognition_defer_reason=("baseline" if bootstrap else cognition_defer_reason),
                 )
             result["bootstrap"] = bootstrap
             result["status"] = "OK"
