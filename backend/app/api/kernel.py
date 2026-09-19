@@ -5,6 +5,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.db import get_db
+from app.execution_integrity import require_side_effects_authorized
 from app.models.kernel import KernelNode, KernelPatch, KernelVersion
 from app.models.scheduler import AttentionPlan
 from app.schemas.api import KernelNodeCreate, PatchModifyIn
@@ -13,6 +14,14 @@ from app.services.kernel_commit import commit_patch
 from app.testing.kernel_fixture import seed_mvp_kernel
 
 router = APIRouter()
+
+
+def _require_kernel_write_authority() -> None:
+    try:
+        require_side_effects_authorized()
+    except RuntimeError as exc:
+        raise HTTPException(403, str(exc)) from exc
+
 
 
 @router.get("")
@@ -35,6 +44,7 @@ def get_kernel(db: Session = Depends(get_db)):
 
 @router.post("/seed")
 def seed_kernel(db: Session = Depends(get_db)):
+    _require_kernel_write_authority()
     existing = db.execute(select(func.count()).select_from(KernelNode)).scalar_one()
     if existing:
         return {"seeded": False, "reason": "kernel already has nodes"}
@@ -48,6 +58,7 @@ def seed_kernel(db: Session = Depends(get_db)):
 
 @router.post("/nodes")
 def create_node(body: KernelNodeCreate, db: Session = Depends(get_db)):
+    _require_kernel_write_authority()
     # User-authored bootstrap only. AI must use KernelPatch.
     node = KernelNode(
         node_type=body.node_type,
@@ -101,6 +112,7 @@ def node_versions(node_id: UUID, db: Session = Depends(get_db)):
 
 @router.post("/patches")
 def create_user_patch(body: dict, db: Session = Depends(get_db)):
+    _require_kernel_write_authority()
     from app.services.kernel_commit import create_patch
 
     patch = create_patch(
@@ -134,16 +146,19 @@ def get_patch(patch_id: UUID, db: Session = Depends(get_db)):
 
 @router.post("/patches/{patch_id}/accept")
 def accept_patch(patch_id: UUID, db: Session = Depends(get_db)):
+    _require_kernel_write_authority()
     return _patch(commit_patch(db, patch_id, action="accept"))
 
 
 @router.post("/patches/{patch_id}/modify")
 def modify_patch(patch_id: UUID, body: PatchModifyIn, db: Session = Depends(get_db)):
+    _require_kernel_write_authority()
     return _patch(commit_patch(db, patch_id, action="modify", modified_state=body.modified_state))
 
 
 @router.post("/patches/{patch_id}/reject")
 def reject_patch(patch_id: UUID, db: Session = Depends(get_db)):
+    _require_kernel_write_authority()
     return _patch(commit_patch(db, patch_id, action="reject"))
 
 

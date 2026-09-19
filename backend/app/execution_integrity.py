@@ -211,6 +211,24 @@ def require_cognition_ready(*, provider=None, decision_strategy=None) -> dict[st
     return context
 
 
+def require_side_effects_authorized(*, provider=None, decision_strategy=None) -> dict[str, Any]:
+    """Require canonical side-effect authority for direct state mutation paths.
+
+    Cognition may be allowed in forensic/replay modes, but canonical writes such
+    as WATCH mutation, Attention mutation, Delivery mutation, topology changes,
+    or future belief persistence must fail closed without side-effect authority.
+    """
+    context = execution_context(provider=provider, decision_strategy=decision_strategy)
+    if not ((context.get("authority") or {}).get("side_effects_authorized")):
+        status = str((context.get("attestation") or {}).get("status") or "UNKNOWN")
+        purpose = str(context.get("purpose") or "UNSPECIFIED")
+        raise RuntimeError(
+            f"Canonical side effects are not authorized for purpose={purpose}, "
+            f"attestation={status}"
+        )
+    return context
+
+
 def stored_run_authority(run) -> dict[str, Any]:
     """Evaluate whether a persisted historical AnalysisRun may back CURRENT Attention.
 

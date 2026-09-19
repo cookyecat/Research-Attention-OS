@@ -2,7 +2,15 @@ from app.models.analysis import AnalysisRun
 from app.models.acquisition import AcquisitionObservation, AttentionSignalSample, ExternalInformationItem, InformationSnapshot, SourceDefinition
 from app.models.claim import Claim
 from app.models.delivery import DeliveryEnvelope
-from app.models.event import Event, EventSource
+from app.models.event import (
+    Event,
+    EventEvidenceFrame,
+    EventLineage,
+    EventMembershipAssertion,
+    EventRevision,
+    EventSource,
+    RepresentationAuditRun,
+)
 from app.models.evidence import EvidenceLink, TemporalPolicy
 from app.models.impact_replay import ImpactReplay
 from app.models.inference import Inference, InferenceSource
@@ -19,6 +27,11 @@ __all__ = [
     "SourceEdge",
     "Event",
     "EventSource",
+    "EventEvidenceFrame",
+    "RepresentationAuditRun",
+    "EventRevision",
+    "EventLineage",
+    "EventMembershipAssertion",
     "Claim",
     "DeliveryEnvelope",
     "Observation",

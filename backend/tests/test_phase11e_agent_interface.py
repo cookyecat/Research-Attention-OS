@@ -114,8 +114,12 @@ def test_capabilities_declares_single_attention_authority(client):
     assert response.status_code == 200
     body = response.json()
     contract = body["authority_contract"]
+    assert body["version"] == "agent-interface-v0.3"
     assert contract["attention_authority"] == "canonical_raos_only"
     assert contract["agent_interface_may_assign_attention"] is False
+    assert contract["agent_plane_role"] == "orchestration_control_only"
+    assert contract["canonical_write_integrity"] == "phase13_required"
+    assert contract["agent_may_bypass_integrity"] is False
     assert "why" in contract["read_only_commands"]
     assert contract["cognition_commands"] == ["analyze"]
 

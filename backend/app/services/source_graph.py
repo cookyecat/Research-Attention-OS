@@ -15,6 +15,46 @@ from app.services.fingerprint import NormalizedSource, content_hash, fingerprint
 from app.services.references import extract_reference_candidates
 
 
+_PLACEHOLDER_CONTENT = {"-", "—", "–", ".", "n/a", "none", "null"}
+
+
+def source_content_identity_eligible(source: Source | None) -> bool:
+    """Whether content_hash equality may carry semantic duplicate authority."""
+    if source is None or source.deleted_at is not None:
+        return False
+    metadata = dict(source.raw_metadata or {})
+    if str(metadata.get("content_scope") or "").upper() == "METADATA_ONLY":
+        return False
+    if source.ingestion_method == "REFERENCE_STUB" or metadata.get("stub") is True:
+        return False
+    text = str(source.content_text or "").strip()
+    if not text or text.lower() in _PLACEHOLDER_CONTENT:
+        return False
+    return bool(source.content_hash)
+
+
+def source_edge_authority_eligible(db: Session, edge: SourceEdge) -> bool:
+    """Current authority view over persisted SourceEdge history.
+
+    Historical edges remain stored for forensic inspection; this function decides
+    whether an edge may currently affect Coverage/independence/duplicate semantics.
+    """
+    if (
+        str(edge.relationship) == str(SourceEdgeRelationship.REPOSTS)
+        and str(edge.detected_by) == str(DetectedBy.METADATA)
+        and str(edge.evidence or "") == "identical content_hash"
+    ):
+        source = db.get(Source, edge.source_id)
+        target = db.get(Source, edge.target_id)
+        return bool(
+            source_content_identity_eligible(source)
+            and source_content_identity_eligible(target)
+            and source.content_hash
+            and source.content_hash == target.content_hash
+        )
+    return True
+
+
 def persist_source_edge(
     db: Session,
     source_id: UUID,
@@ -269,7 +309,11 @@ def freeze_analysis_relational_context(
         .scalars()
         .all()
     )
-    facts = sorted((str(e.source_id), str(e.relationship), str(e.target_id)) for e in edges)
+    eligible_edges = [edge for edge in edges if source_edge_authority_eligible(db, edge)]
+    facts = sorted(
+        (str(e.source_id), str(e.relationship), str(e.target_id))
+        for e in eligible_edges
+    )
     independent, secondary = _independence_from_facts(source_ids, facts)
     primary = source_ids[0]
     return FrozenAnalysisRelationalContext(
@@ -300,7 +344,7 @@ def analysis_relational_context_digest(db: Session, source_ids: list[UUID]) -> s
 
 
 def link_near_duplicates(db: Session, source: Source) -> list[Source]:
-    if not source.content_hash:
+    if not source_content_identity_eligible(source):
         return []
     others = (
         db.execute(
@@ -313,7 +357,8 @@ def link_near_duplicates(db: Session, source: Source) -> list[Source]:
         .scalars()
         .all()
     )
-    for other in others:
+    eligible_others = [other for other in others if source_content_identity_eligible(other)]
+    for other in eligible_others:
         persist_source_edge(
             db,
             source.id,
@@ -323,4 +368,4 @@ def link_near_duplicates(db: Session, source: Source) -> list[Source]:
             detected_by=DetectedBy.METADATA,
             evidence="identical content_hash",
         )
-    return list(others)
+    return eligible_others

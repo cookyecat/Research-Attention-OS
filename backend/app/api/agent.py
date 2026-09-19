@@ -9,6 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db import get_db
+from app.execution_integrity import require_side_effects_authorized
 from app.deployment_scope import deployment_contract
 from app.enums import TriggerType, WatchTargetType
 from app.models.acquisition import SourceDefinition
@@ -32,7 +33,7 @@ from app.services.ingestion import ingest_url
 from app.services.pipeline import run_pipeline
 
 router = APIRouter()
-AGENT_API_VERSION = "agent-interface-v0.2"
+AGENT_API_VERSION = "agent-interface-v0.3"
 
 
 @router.get("/capabilities")
@@ -42,6 +43,9 @@ def capabilities():
         "authority_contract": {
             "attention_authority": "canonical_raos_only",
             "agent_interface_may_assign_attention": False,
+            "agent_plane_role": "orchestration_control_only",
+            "canonical_write_integrity": "phase13_required",
+            "agent_may_bypass_integrity": False,
             "read_only_commands": ["capabilities", "today", "attention", "watch-status", "why"],
             "cognition_commands": ["analyze"],
             "delegation_commands": ["watch", "unwatch"],
@@ -276,6 +280,10 @@ def analyze(body: AgentAnalyzeIn, db: Session = Depends(get_db)):
 
 @router.post("/watch")
 def create_agent_watch(body: AgentWatchIn, db: Session = Depends(get_db)):
+    try:
+        require_side_effects_authorized()
+    except RuntimeError as exc:
+        raise HTTPException(403, str(exc)) from exc
     watch = find_shared_agent_watch(
         db, target_type=body.target_type, target_ref=body.topic
     )
@@ -376,6 +384,10 @@ def cancel_watch(
     body: AgentWatchCancelIn | None = None,
     db: Session = Depends(get_db),
 ):
+    try:
+        require_side_effects_authorized()
+    except RuntimeError as exc:
+        raise HTTPException(403, str(exc)) from exc
     watch = db.get(Watch, watch_id)
     if watch is None:
         raise HTTPException(404, "Watch not found")

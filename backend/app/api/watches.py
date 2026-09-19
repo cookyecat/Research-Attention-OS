@@ -6,6 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db import get_db
+from app.execution_integrity import require_side_effects_authorized
 from app.models.watch import Watch, WatchCheck, WatchTrigger
 from app.schemas.api import WatchActiveAcquisitionCreate, WatchCreate
 from app.services.watch_loop import recheck_watch
@@ -14,8 +15,17 @@ from app.services.active_acquisition import parse_bundle_locator, upsert_watch_q
 router = APIRouter()
 
 
+def _require_watch_write_authority() -> None:
+    try:
+        require_side_effects_authorized()
+    except RuntimeError as exc:
+        raise HTTPException(403, str(exc)) from exc
+
+
+
 @router.post("")
 def create_watch(body: WatchCreate, db: Session = Depends(get_db)):
+    _require_watch_write_authority()
     if not body.triggers:
         raise HTTPException(400, "WATCH requires at least one promotion trigger")
     watch = Watch(
@@ -43,6 +53,7 @@ def list_watches(db: Session = Depends(get_db)):
 def create_watch_active_acquisition(
     watch_id: UUID, body: WatchActiveAcquisitionCreate, db: Session = Depends(get_db)
 ):
+    _require_watch_write_authority()
     watch = db.get(Watch, watch_id)
     if watch is None:
         raise HTTPException(404, "Watch not found")
@@ -65,6 +76,7 @@ def create_watch_active_acquisition(
 
 @router.post("/{watch_id}/triggers/{trigger_id}/fire")
 def fire_trigger(watch_id: UUID, trigger_id: UUID, source_id: UUID | None = None, db: Session = Depends(get_db)):
+    _require_watch_write_authority()
     watch = db.get(Watch, watch_id)
     trigger = db.get(WatchTrigger, trigger_id)
     if watch is None or trigger is None or trigger.watch_id != watch.id:

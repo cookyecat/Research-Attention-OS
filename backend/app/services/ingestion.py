@@ -17,7 +17,7 @@ from app.models.event import Event, EventSource
 from app.models.ingestion import IngestionJob, ParserRun
 from app.models.source import Source, SourceAuthor
 from app.services.fingerprint import NormalizedSource, content_hash, fingerprint
-from app.services.source_graph import link_near_duplicates, resolve_references
+from app.services.source_graph import link_near_duplicates, resolve_references, source_content_identity_eligible
 
 
 def persist_normalized(db: Session, normalized: NormalizedSource, *, job: IngestionJob | None = None) -> Source:
@@ -146,12 +146,20 @@ def ingest_pdf(db: Session, data: bytes, filename: str | None = None) -> Source:
 def attach_or_create_event(db: Session, source: Source, title: str | None, summary: str | None) -> Event:
     event_title = title or source.title or "Untitled event"
     existing = db.execute(select(Event).where(Event.title == event_title)).scalars().first()
-    if existing is None and source.content_hash:
-        linked = db.execute(
-            select(EventSource).join(Source, Source.id == EventSource.source_id).where(
-                Source.content_hash == source.content_hash
-            )
-        ).scalars().first()
+    if existing is None and source_content_identity_eligible(source):
+        candidates = db.execute(
+            select(EventSource, Source)
+            .join(Source, Source.id == EventSource.source_id)
+            .where(Source.content_hash == source.content_hash)
+        ).all()
+        linked = next(
+            (
+                link
+                for link, other_source in candidates
+                if source_content_identity_eligible(other_source)
+            ),
+            None,
+        )
         if linked:
             existing = db.get(Event, linked.event_id)
     if existing is None:

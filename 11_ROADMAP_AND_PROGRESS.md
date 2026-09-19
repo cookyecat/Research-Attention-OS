@@ -1790,3 +1790,184 @@ Historical hydration remains append-only and fail-closed. Real dogfood on 新智
 Digest evidence matched the frozen Representation contract: `graph_digest` changed while `decision_representation_digest` remained exactly unchanged. Focused provenance/Landscape/Representation regression: 16 passed. Frontend typecheck/build PASS. Full backend: 855 passed / 63 skipped / 1 pre-existing Case-K urgency residual.
 
 Next active gate: bounded Representation Auditor work over stronger provenance roles, then shadow same-event adjudication. Do not promote CITES directly into stronger relation authority.
+
+
+### Representation Auditor V0.1 — PREREGISTERED 2026-09-19
+
+Reference: `237_REPRESENTATION_AUDITOR_V01_PREREGISTRATION.md`.
+
+The unfinished relation-auditing part of C and semantic-adjudication part of D are unified into one Representation Auditor path. Frozen principles: `Candidate != Audited != Authorized`; `CONFIRMED Event != Objective Reality`; representation judgments are orthogonal dimensions rather than one scalar/label; embedding similarity is candidate-retrieval evidence only; false Event merge cost is treated as much greater than missed merge cost; Event correction/merge/split history must be append-only and replayable. Qwen3-Embedding-0.6B remains a retrieval sensor pending RAOS-specific Recall@K/hard-negative calibration. Next implementation gates are C2 audit substrate -> D1 EventEvidenceFrame -> D2 unified candidate retrieval -> D3 shadow Auditor -> D4 calibration corpus -> E1 deterministic authority gate.
+
+### Representation Auditor V0.1 — REVIEW 1 AMENDED 2026-09-19
+
+Reference: `239_REPRESENTATION_AUDITOR_V01_REVIEW1_RESULT.md`.
+
+Architecture Review 1 tightened the preregistration without changing frozen theory: orthogonality now means semantic/causal irreducibility rather than statistical independence; SourceEvent role is decomposed into membership/officiality/reporting_role/originality; one Source may yield 0..N immutable EventEvidenceFrames; SAME_EVENT is audit evidence while shared authorized Event membership is the canonical fact; raw retrieval candidates no longer enter `graph_digest` by default; a global Representation consistency validator and atomic/idempotent transition contract are required; new Representation persistence is workspace-scoped/syncable without allowing ownership metadata into semantic judgments. Review result: no architecture blocker to C2 shadow substrate implementation.
+
+### Representation Auditor C2/D1/D2A — DOGFOOD DEPLOYED 2026-09-19
+
+Reference: `240_REPRESENTATION_AUDITOR_C2_D1_D2A_SHADOW_RESULT.md`.
+
+Implemented the reviewed shadow substrate without enabling representation authority: five append-oriented persistence objects (`EventEvidenceFrame`, `RepresentationAuditRun`, `EventRevision`, `EventLineage`, `EventMembershipAssertion`); pipeline persists shadow EventEvidenceFrames with explicit semantic provenance; same-event candidate retrieval becomes frame-aware when frames exist while remaining `authority=NONE / mutates_graph=false`; raw candidate sets have their own digest and do not affect Representation digests; EventLineage cycle validation added; frame lookup is batched to avoid N+1 queries. Dogfood DB migrated through `0014_representation_auditor_substrate` and compatibility `0015_event_frame_semantic_input_digest`; runtime is CANONICAL/ATTESTED/READY. Full regression: 860 passed, 63 skipped, only the known Case-K `PREEMPT` vs `PRIORITY` residual. Next gate: D3 shadow Representation Auditor + minimal replayable evidence-bundle assembly, then D4 calibration before any E-stage authority.
+
+
+### Representation Auditor D3/D4 — SHADOW READY 2026-09-19
+
+References: `241_REPRESENTATION_AUDITOR_D3_D4_SHADOW_RESULT.md`.
+
+D1 now directly reuses the research-aligned bridge's audited 0..N event projections instead of inventing a parallel event extractor. Historical completed AnalysisRuns yielded 426 append-only audited EventEvidenceFrames across 298 Sources, including 55 multi-frame runs. D2 expands Source candidates into all latest Frame↔Frame pairs, including intra-Source hard negatives, while remaining `authority=NONE / mutates_graph=false`.
+
+The FramePair Auditor persists three orthogonal dimensions (`event_identity`, directional `provenance_dependency`, `relation_context`) with code-level evidence grounding/fail-closed validation. Seed calibration is 9/9; a 12-pair real-flow probe is 12/12 valid with 10 DIFFERENT_EVENT / 2 SAME_EVENT, 12 UNKNOWN provenance, and 8 RELATED / 4 UNRELATED. Broad AI/topic overlap is explicitly insufficient for RELATED.
+
+### Content Identity Authority Quarantine — FIXED 2026-09-19
+
+Reference: `243_CONTENT_IDENTITY_AUTHORITY_QUARANTINE_RESULT.md`.
+
+E1 provenance study exposed a hidden SourceGraph authority leak: metadata-only Bilibili Sources shared placeholder/teaser `content_hash` values and were incorrectly linked as `REPOSTS`. 137 of 142 historical REPOSTS are now quarantined from current authority while preserved for forensic history. A single `source_content_identity_eligible()` invariant now gates SourceGraph duplicate creation, relational digests, Coverage, WATCH duplicate suppression, legacy Event hash fallback, and E1 provenance predicates.
+
+Across 1113 Sources, outgoing decision-relevant secondary facts drop from 48 Sources to 4; 44 Sources recover from polluted relational facts.
+
+### Representation Authority Gate E1 — SHADOW READY 2026-09-19
+
+References: `242_REPRESENTATION_AUTHORITY_GATE_E1_PREREGISTRATION.md`, `244_REPRESENTATION_AUTHORITY_E1_SHADOW_RESULT.md`.
+
+Implemented a pure deterministic, replayable authority simulator over frozen RepresentationAuditRun + frozen authority-predicate snapshot. It never invokes an LLM and never mutates Event/EventSource/EventMembershipAssertion/EventLineage/SourceEdge. Current contracts are `representation-evidence-bundle-v0.3`, `representation-auditor-frame-pair-v0.7`, `representation-authority-predicates-v0.2`, and `representation-authority-shadow-v0.2`.
+
+On the 9-case real seed corpus E1 produces 9 event-identity CANDIDATE_ONLY, 9 provenance UNRESOLVED, and 9 relation-context CANDIDATE_ONLY; `WOULD_AUTHORIZE=0`. A scan of 20 audited cross-version FramePairs also finds zero current exact strong anchors. This is accepted as a high-precision result, not treated as a yield problem. E2 authoritative EventMembershipAssertion writes remain unauthorized.
+
+Next research gate: E1.1 deterministic multi-axis corroboration for cross-publication SAME_EVENT; do not loosen authority using embedding/generic similarity thresholds.
+
+### Representation Authority E1.1 — CLOSED 2026-09-19
+
+Reference: `245_REPRESENTATION_AUTHORITY_E11_CORROBORATION_RESULT.md`.
+
+A bounded corroboration study deliberately stopped after one 20-case same-actor hard-negative batch, one exact-field coverage pass over 41 persisted v0.7 audits, and one audit-contract check for upstream temporal anchors. Exact actor overlap was rejected as an authority primitive: all 20 same-actor hard negatives were DIFFERENT_EVENT, and across the current audit set actor overlap appears in 20/37 DIFFERENT_EVENT pairs. Exact action/affected-system equality has zero positive coverage. Same ExternalInformationItem / same URL covers only 2/4 positives and is a Source-version identity signal rather than cross-publication Event identity.
+
+Phase 8C.2 Sensor frames contain `temporal_context`, but current production audited projection does not audit/admit it; using it directly in E1 would bypass the Semantic Evidence Auditor. E1.1 therefore closes with the finding that the current audited EventEvidenceFrame is insufficient for deterministic cross-publication SAME_EVENT authority. E2 remains unauthorized. Do not enlarge the corpus or add heuristics under the current representation contract.
+
+Current D2 same-event retrieval does not use embeddings; it is lexical EventFrame/title similarity + time proximity. A six-positive-pair current-source smoke gives Recall@5=91.7% and Recall@20=100%. This is not a benchmark, but there is no present evidence that retrieval recall is the blocker, so Qwen3-Embedding-0.6B is not wired in merely for speculative improvement.
+
+
+### Probabilistic World Representation Theory V0.1 — ACTIVE 2026-09-19
+
+References: `246_PROBABILISTIC_WORLD_REPRESENTATION_THEORY_V01.md`, `247_PROBABILISTIC_REPRESENTATION_BELIEF_VIEW_V01_RESULT.md`.
+
+Representation uncertainty is now explicitly separated from Phase13 Execution Authority. The theoretical epistemic state is a conditional probability measure over possible world representations, while current engineering uses local irreducible hypotheses such as SAME_WORLD_EVENT as marginals. Auditor response frequency is modeled separately from calibrated world-truth probability.
+
+A read-only `representation-belief-view-v0.1` now derives stochastic epochs directly from immutable RepresentationAuditRun history, grouped by FramePair + evidence digest + Auditor contract + provider/model. It exposes SAME/DIFFERENT/UNCERTAIN response spectra, entropy, an explicit belief/disbelief/uncertainty opinion, a clearly labelled projected probability proxy, and JSD across compatible evidence epochs. No new persistence entity was added, and neither graph_digest nor decision_representation_digest changes.
+
+A fixed real N=8 experiment produced concentrated spectra: Jev 8/8 SAME_EVENT, Steam Frame related-different 8/8 DIFFERENT_EVENT, and PHP-vs-AI-jobs 8/8 DIFFERENT_EVENT. These results measure inference stability only; they are not calibrated world-truth probabilities.
+
+The Representation pipeline is now interpreted as Candidate -> Audited Judgment -> Admitted Epistemic Hypothesis -> Topology Commitment. E1 is a Topology Commitment Gate, not a truth-certification gate. E2 topology writes remain unauthorized; probabilistic hypothesis admission does not require E2.
+
+Probabilistic Representation V0.1 dogfood validation completed: belief API now preserves immutable Source-version history for one ExternalInformationItem; live Jev view exposes the historical N=8 SAME_EVENT spectrum through the current Source while retaining uncertainty=0.2, `calibrated_world_truth_probability=false`, `iid_sampling_certified=false`, and no topology-commitment authority. Final backend regression: 888 passed, 63 skipped, only known Case-K residual.
+
+
+### Four-Plane Governance Architecture V1.0 — FROZEN 2026-09-19
+
+Reference: `248_RAOS_FOUR_PLANE_GOVERNANCE_ARCHITECTURE_V10.md`.
+
+Canonical naming is now:
+
+```text
+Epistemic Plane
+  Semantic Evidence Auditor
+  Representation Auditor
+  Probabilistic Epistemic World Representation
+
+Decision / Commitment Plane
+  Attention Policy
+  Topology Commitment Policy
+
+Agent / Control Plane
+  orchestration / delegation / proposal
+
+Integrity Plane
+  Phase13 Execution Integrity
+```
+
+Phase13 is no longer described as a third epistemic auditor. E1 is a Topology Commitment Gate, not a world-truth certification gate. The Agent Plane is orthogonal orchestration and may not manufacture epistemic truth, Attention authority, topology authority, Kernel authority, or Delivery authority.
+
+A review found direct WATCH mutation entry points that did not explicitly enforce Phase13 side-effect authority. A single `require_side_effects_authorized()` gate now covers direct Agent WATCH create/cancel plus ordinary WATCH create, active-acquisition activation, and trigger firing. Agent interface advanced to `agent-interface-v0.3`; focused Agent + Phase13 regression: 19 passed.
+
+### Representation–Cognition Marginalization V0.1 — MATH READY 2026-09-19
+
+References: `249_REPRESENTATION_COGNITION_MARGINALIZATION_V01_PREREGISTRATION.md`, `250_REPRESENTATION_COGNITION_MARGINALIZATION_V01_RESULT.md`.
+
+The old Phase10 implementation remains frozen as the conditional kernel `P(T,A | R,K,Theta)`. A new eval-only algebra layer implements finite marginalization and the entropy decomposition:
+
+```text
+H(A|E)
+=
+E_R[H(A|R)]
++
+I(A;R|E)
+```
+
+This cleanly separates cognitive stochasticity from representation-induced Attention uncertainty. Five preregistered algebra tests pass.
+
+Current `representation-belief-view-v0.1` weights are uncalibrated `OPERATIONAL_PROXY`, so the information term is diagnostic-only and has no Attention or topology authority.
+
+Production feasibility review found no explicit substitutable World Representation input to the research-aligned cognition provider. `FrozenRepresentationSnapshot` currently supplies identity/replay/digest protection, while cognition consumes projected semantic/context inputs. Therefore a real `P(A|R0)` vs `P(A|R1)` experiment is not yet justified. Do not construct a second Representation stack merely to run the demo; reopen only when an independently justified representation-conditioned cognition input contract exists.
+
+Four-plane governance rollout validated in dogfood: runtime CANONICAL / ATTESTED / READY; live Agent contract is agent-interface-v0.3 with Phase13-required canonical writes and no bypass/Attention authority. Full backend regression: 896 passed, 63 skipped, only known Case-K residual.
+
+
+### Phase 14A — Integrity Closure CLOSED 2026-09-19
+
+Reference: `251_PHASE14A_INTEGRITY_CLOSURE_RESULT.md`.
+
+One bounded inventory of authority-bearing canonical mutation paths is complete. Direct WATCH/Agent, Kernel, Delivery, manual decision-relevant SourceEdge, and materialized Event topology paths now respect Phase13 side-effect authority. A concrete forensic contamination bug was fixed: REPLAY/FORENSIC cognition no longer materializes Event/EventSource working topology, while append-only analysis evidence remains persistable. Focused closure regression: 30 passed. Reopen only for a new mutator or concrete bypass.
+
+### Phase 14B — Natural Longitudinal Belief Trajectories STOPPED: DATA INSUFFICIENT
+
+Reference: `252_PHASE14B_LONGITUDINAL_REPRESENTATION_TRAJECTORY_RESULT.md`.
+
+Current v0.7 history contains 61 audits across 34 FramePair+provider/model streams, but zero streams have more than one distinct evidence digest. Existing N=8 runs are repeated samples of one frozen epoch, not longitudinal updates. Immutable Source-version changes also create new Frame IDs, and RAOS currently has no independently justified cross-version hypothesis identity. No Hypothesis entity or fuzzy alignment rule is added merely to create curves.
+
+### Phase 14C — Representation Decision Relevance Census COMPLETE
+
+Reference: `253_PHASE14C_REPRESENTATION_DECISION_RELEVANCE_CENSUS.md`.
+
+Across 1190 current Sources, 598 have Event graph context and 276 have graph edges, but only 5 Sources have decision-relevant relational facts; all 8 such facts are REPOSTS. 32 current Sources participate in v0.7 Representation audits and 2 in SAME_EVENT hypotheses, yet probabilistic SAME_EVENT and candidate Event hypotheses are not direct inputs to `decision-representation-v0.1`.
+
+Frozen principle: `Epistemic uncertainty != Decision relevance`. For the current SAME_EVENT belief path, epistemic uncertainty may be non-zero while **current direct influence is zero by contract**; potential counterfactual decision relevance remains UNKNOWN. Do not build a production R-conditioned cognition adapter merely to make SAME_EVENT measurable; require an independently justified event-continuity/representation-conditioned input contract.
+
+Phase 14A–14C initial rollout validated: backend 900 passed / 63 skipped / only known Case-K residual; runtime CANONICAL / ATTESTED / READY; Agent v0.3, Delivery read, and Representation belief read surfaces healthy. Subsequent review clarified that SAME_EVENT has zero **current direct influence by contract**, while its potential counterfactual decision relevance remains UNKNOWN; controlled evolution/counterfactual experiments are tracked below. Production Phase 14D remains not started.
+
+
+### Phase 14B-Controlled — Representation Evolution COMPLETE 2026-09-19
+
+References: `254_PHASE14B_CONTROLLED_REPRESENTATION_EVOLUTION_PREREGISTRATION.md`, `255_PHASE14B_CONTROLLED_REPRESENTATION_EVOLUTION_RESULT.md`.
+
+One fixed four-stage, N=4-per-stage experiment used the real Representation Auditor without adaptive expansion:
+
+```text
+E0 weak          -> 4/4 UNCERTAIN
+E1 named         -> 4/4 SAME_EVENT
+E2 corroborated  -> 4/4 SAME_EVENT
+E3 conflict      -> 4/4 DIFFERENT_EVENT
+```
+
+Adjacent response-spectrum JSD: `1.0 -> 0.0 -> 1.0`. This validates bounded directional evidence sensitivity but also exposes a key engineering gap: E1 and E2 have materially different evidence strength yet identical response spectra and operational opinion. Therefore `representation-belief-view-v0.1` is a response-spectrum proxy, not a complete evidence-sensitive approximation to `P(H|E)`. Do not add a scalar evidence-strength heuristic merely to force movement; preserve evidence epoch/provenance and leave future calibrated estimator `C_phi(E,Q)` separate.
+
+Controlled evolution is a core Representation mechanism test, not a corner case. Natural longitudinal analysis remains separately blocked by lack of real multi-evidence epochs/stable cross-version hypothesis identity.
+
+### Phase 14C-Counterfactual — Current Contract Probe COMPLETE 2026-09-19
+
+References: `256_PHASE14C_COUNTERFACTUAL_DECISION_RELEVANCE_PREREGISTRATION.md`, `257_PHASE14C_COUNTERFACTUAL_DECISION_RELEVANCE_RESULT.md`.
+
+A bounded in-memory counterfactual used a decision-sensitive positive control. With two independent Sources, the same high-value OPEN_NEW effect has epistemic strength 0.90 and `ENGAGE`. Replacing the second Source with a REPOSTS/secondary report changes `decision_representation_digest`, reduces independent count to 1, caps epistemic strength to 0.35, and changes Attention to `WATCH`.
+
+Adding SAME_EVENT belief while preserving provenance independence changes neither graph_digest nor decision_representation_digest nor the current cognitive inputs; Attention remains `ENGAGE`.
+
+Correct interpretation:
+
+```text
+current direct SAME_EVENT decision influence = ZERO_BY_CURRENT_CONTRACT
+potential counterfactual SAME_EVENT decision relevance = UNKNOWN
+```
+
+The positive control proves the harness is decision-sensitive. The SAME_EVENT null result therefore identifies current-contract blindness, not intrinsic irrelevance. `SAME_EVENT` must not be mapped to REPOSTS/non-independence to make it measurable. Production Phase14D remains deferred until an independently justified event-continuity/representation-conditioned cognition input exists.
+
+Phase14B-Controlled / Phase14C-Counterfactual validation complete: focused tests 18 passed; full backend 901 passed / 63 skipped / only known Case-K residual. These experiments are eval-only and introduce no production representation-conditioned cognition path.

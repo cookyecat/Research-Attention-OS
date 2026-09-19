@@ -7,14 +7,18 @@ from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.db import get_db
+from app.execution_integrity import require_side_effects_authorized
 from app.models.acquisition import InformationSnapshot
+from app.models.event import EventEvidenceFrame, RepresentationAuditRun
 from app.models.source import Source, SourceEdge
 from app.schemas.api import SourceCreate, SourceEdgeCreate, SourceOut
 from app.services.ingestion import ingest_observation, ingest_pdf, ingest_text, ingest_url
 from app.services.information_landscape import source_information_landscape
-from app.services.same_event_candidates import same_event_candidates
+from app.services.same_event_candidates import same_event_candidates, same_event_frame_candidates
+from app.services.representation_authority import simulate_representation_authority
+from app.services.representation_belief import source_representation_beliefs
 from app.services.source_graph import independence_report, persist_source_edge, resolve_references
-from app.services.source_versions import current_source_id
+from app.services.source_versions import current_source_id, source_version_ids
 
 router = APIRouter()
 
@@ -182,6 +186,106 @@ def get_same_event_candidates(
         raise HTTPException(404, str(exc)) from exc
 
 
+@router.get("/{source_id}/same-event-frame-candidates")
+def get_same_event_frame_candidates(
+    source_id: UUID,
+    source_limit: int = 20,
+    max_pairs: int = 100,
+    max_window_hours: float = 168.0,
+    db: Session = Depends(get_db),
+):
+    resolved_id = current_source_id(db, source_id)
+    try:
+        return same_event_frame_candidates(
+            db,
+            resolved_id,
+            source_limit=source_limit,
+            max_pairs=max_pairs,
+            max_window_hours=max_window_hours,
+        )
+    except ValueError as exc:
+        raise HTTPException(404, str(exc)) from exc
+
+
+@router.get("/{source_id}/representation-audits")
+def get_representation_audits(
+    source_id: UUID,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+):
+    resolved_id = current_source_id(db, source_id)
+    source = db.get(Source, resolved_id)
+    if source is None or source.deleted_at is not None:
+        raise HTTPException(404, "Source not found")
+    frame_ids = list(
+        db.execute(
+            select(EventEvidenceFrame.id).where(EventEvidenceFrame.source_id == resolved_id)
+        ).scalars().all()
+    )
+    if not frame_ids:
+        return {
+            "source_id": str(resolved_id),
+            "frame_count": 0,
+            "audit_count": 0,
+            "audits": [],
+        }
+    rows = db.execute(
+        select(RepresentationAuditRun)
+        .where(
+            or_(
+                RepresentationAuditRun.subject_id.in_(frame_ids),
+                RepresentationAuditRun.object_id.in_(frame_ids),
+            )
+        )
+        .order_by(RepresentationAuditRun.created_at.desc(), RepresentationAuditRun.id.desc())
+        .limit(max(1, min(int(limit), 500)))
+    ).scalars().all()
+    return {
+        "source_id": str(resolved_id),
+        "frame_count": len(frame_ids),
+        "audit_count": len(rows),
+        "audits": [
+            {
+                "id": str(row.id),
+                "audit_type": row.audit_type,
+                "subject_type": row.subject_type,
+                "subject_id": str(row.subject_id),
+                "object_type": row.object_type,
+                "object_id": str(row.object_id),
+                "input_evidence_digest": row.input_evidence_digest,
+                "auditor_contract_version": row.auditor_contract_version,
+                "provider": row.provider,
+                "model": row.model,
+                "judgments": row.judgments,
+                "evidence_bundle_refs": row.evidence_bundle_refs,
+                "authority_result": row.authority_result,
+                "authority_policy_version": row.authority_policy_version,
+                "authority_simulation": simulate_representation_authority(row),
+                "created_at": row.created_at.isoformat() if row.created_at else None,
+            }
+            for row in rows
+        ],
+    }
+
+
+@router.get("/{source_id}/representation-beliefs")
+def get_representation_beliefs(
+    source_id: UUID,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+):
+    resolved_id = current_source_id(db, source_id)
+    source = db.get(Source, resolved_id)
+    if source is None or source.deleted_at is not None:
+        raise HTTPException(404, "Source not found")
+    return source_representation_beliefs(
+        db,
+        resolved_id,
+        source_ids=source_version_ids(db, resolved_id),
+        limit=limit,
+    )
+
+
 @router.get("/{source_id}/references")
 def get_references(source_id: UUID, db: Session = Depends(get_db)):
     source = db.get(Source, source_id)
@@ -237,6 +341,10 @@ def get_graph(source_id: UUID, db: Session = Depends(get_db)):
 
 @router.post("/source-edges")
 def create_edge(body: SourceEdgeCreate, db: Session = Depends(get_db)):
+    try:
+        require_side_effects_authorized()
+    except RuntimeError as exc:
+        raise HTTPException(403, str(exc)) from exc
     edge = persist_source_edge(
         db,
         body.source_id,

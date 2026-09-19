@@ -12,6 +12,7 @@ from app.models.event import EventSource
 from app.models.source import Source, SourceEdge
 from app.models.watch import Watch, WatchCheck, WatchTrigger
 from app.services.pipeline import run_pipeline
+from app.services.source_graph import source_content_identity_eligible, source_edge_authority_eligible
 from app.services.watch_loop import recheck_watch, watch_cumulative_source_ids
 
 CONTINUOUS_ATTENTION_VERSION = "continuous-attention-v0.1"
@@ -61,7 +62,7 @@ def _event_ids(db: Session, source_ids: list[UUID]) -> set[UUID]:
 def _edges_between(db: Session, new_source_id: UUID, watched_ids: list[UUID]) -> list[SourceEdge]:
     if not watched_ids:
         return []
-    return list(
+    rows = list(
         db.execute(
             select(SourceEdge).where(
                 or_(
@@ -71,6 +72,7 @@ def _edges_between(db: Session, new_source_id: UUID, watched_ids: list[UUID]) ->
             )
         ).scalars().all()
     )
+    return [edge for edge in rows if source_edge_authority_eligible(db, edge)]
 
 
 def _relevant_to_watch(db: Session, new_source_id: UUID, watched_ids: list[UUID]) -> bool:
@@ -83,8 +85,10 @@ def _relevant_to_watch(db: Session, new_source_id: UUID, watched_ids: list[UUID]
 
 def _evidence_class(db: Session, new_source: Source, watched_ids: list[UUID]) -> str:
     watched = [db.get(Source, source_id) for source_id in watched_ids]
-    if new_source.content_hash and any(
-        source is not None and source.content_hash == new_source.content_hash for source in watched
+    if source_content_identity_eligible(new_source) and any(
+        source_content_identity_eligible(source)
+        and source.content_hash == new_source.content_hash
+        for source in watched
     ):
         return "DUPLICATE"
     outgoing = [

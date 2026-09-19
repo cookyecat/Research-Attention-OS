@@ -12,7 +12,7 @@ authority:
 requirements:
   secrets:
     - llm_api_key
-  minimum_schema_revision: 0013_watch_delegations
+  minimum_schema_revision: 0015_event_frame_semantic_input_digest
 
 policy:
   allow_dirty_build: true

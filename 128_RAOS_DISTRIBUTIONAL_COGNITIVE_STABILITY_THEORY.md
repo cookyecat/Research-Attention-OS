@@ -411,3 +411,17 @@ Phase 10D.5 (`134_PHASE10D5_PRODUCTION_SEMANTIC_PARITY_RESULT.md`) discovered an
 The exact 168 stored Phase 10D.4 realizations replayed historical topology, Decision-Causal Core, and Attention with zero mismatch. Reprojecting only targeted importance through production authority changed many individual decisions in A/D/X but preserved the cross-checkpoint **Attention basin in all 4/4 selected real-web cases**. D's stronger load-bearing-basin stability did not survive: under production importance authority, D has supported load-bearing drift while Attention remains `ENGAGE 24/24` at both checkpoints.
 
 Therefore Theory V1.0's layered stability distinction remains supported, while empirical transfer language is narrowed: exact Phase 10D.4 Attention frequencies are native-research-path frequencies; the higher-level `4/4` Attention-basin persistence result survives production target-importance authority. This addendum does not claim full `native_assess` ↔ production `ModelProvider` prompt/grounding parity.
+
+
+## Representation-layer extension — 2026-09-19
+
+The Phase10 theory above conditions cognitive stochasticity on a frozen audited world. A separate upstream theory now models uncertainty in that world representation itself:
+
+`246_PROBABILISTIC_WORLD_REPRESENTATION_THEORY_V01.md`
+
+The two probability structures must remain distinct:
+
+- Representation uncertainty: P(R | Evidence<=t)
+- Cognitive stochasticity: P(T, A | R, K, Theta)
+
+They may later compose by marginalizing Attention over uncertain representations, but the current Phase10 empirical claims remain unchanged. The Representation-layer operational belief proxy is not a calibrated world-truth posterior and does not retroactively alter any Phase10 result.

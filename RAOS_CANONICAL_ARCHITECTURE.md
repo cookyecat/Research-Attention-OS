@@ -106,10 +106,14 @@ SourceDefinition → Observation → Information Object → Snapshot
         ↓
 RAOS Source / Raw Information Boundary
         ↓
-──────────── Information / Evidence Plane ─────────
+──────────────────── Epistemic Plane ────────────────────
 Semantic Sensor → Semantic Evidence Auditor
         ↓
-Audited World Representation
+Audited Evidence
+        ↓
+Representation Auditor
+        ↓
+Probabilistic Epistemic World Representation  P(R | E<=t)
         │
         ├──────────────── Cognitive Transition Path ───────────────┐
         │                                                          │
@@ -123,8 +127,12 @@ Audited World Representation
            Audited Event Projection → D / S / P                    │
            → AWARE iff S AND (D OR P)                               │
                                                                    ↓
-──────────────── Attention / Action Plane ────────────────
+────────────── Decision / Commitment Plane ───────────────
+Cognitive / no-Delta judgment
+        ↓
 DROP / AWARE / WATCH / ENGAGE
+        ├─→ Topology Commitment Policy
+        │      └─ MERGE / KEEP / DEFER / other materialized-topology action
         ├─→ Decision Cause → Public Update / WATCH / authorized KernelPatch
         └─→ Delivery Envelope (execution only; no decision authority)
                  ↓
@@ -133,6 +141,26 @@ DROP / AWARE / WATCH / ENGAGE
           in-app realtime / digest / configured external transports
                  ↓
           human acknowledgement / dismissal
+
+──────────────── Agent / Control Plane ────────────────
+Agent API / CLI / future MCP-A2A
+        ├─ observe / explain / orchestrate
+        ├─ invoke canonical cognition
+        ├─ delegate WATCH responsibility
+        └─ propose actions through existing canonical paths
+        ✕ no independent epistemic truth
+        ✕ no independent Attention authority
+        ✕ no direct topology / Kernel / Delivery authority
+
+──────────────── Integrity Plane ─────────────────────
+Phase13 Execution Integrity
+        └─ orthogonal gate on every canonical side effect:
+           belief persistence (if ever introduced)
+           topology mutation
+           Attention mutation
+           WATCH mutation
+           Kernel mutation
+           Delivery mutation
 ```
 
 The two Attention branches are orthogonal. D/S/P is not a substitute for cognitive effects, and cognitive relevance is not a substitute for situational awareness.
@@ -143,7 +171,7 @@ Phase 11C realizes the P sensor boundary without changing P semantics. Raw views
 
 Phase 11D adds the Delivery Plane as an execution boundary downstream of Attention. Every new persisted `AttentionPlan` owns at most one durable `DeliveryEnvelope`. Delivery policy maps the existing disposition to execution behavior but may never create, promote, downgrade, or reinterpret Attention. WATCH remains delegated future-attention responsibility: only a later canonical WATCH recheck may produce a new AWARE/ENGAGE plan that becomes deliverable. External transport availability/failure cannot mutate the source AttentionPlan.
 
-Phase 11E adds the Agent Interface boundary. External agents use `/agent/v1`, the `raos` CLI, or `skills/raos/SKILL.md` to invoke existing RAOS capabilities; these surfaces are orchestration/presentation only. Read-only calls never trigger cognition, `analyze` enters the ordinary canonical pipeline, `watch` creates the same durable WATCH object used by RAOS, and `why` explains stored decisions without reanalysis. No Agent surface may instantiate `AttentionPlan`, run an independent importance/relevance model, or mutate Kernel state outside existing authorization paths. MCP/A2A may later wrap this API but must preserve the same semantic authority boundary.
+Phase 11E establishes the Agent / Control Plane. External agents use `/agent/v1`, the `raos` CLI, or `skills/raos/SKILL.md` to invoke existing RAOS capabilities; these surfaces are orchestration/presentation only. Read-only calls never trigger cognition, `analyze` enters the ordinary canonical pipeline, `watch` delegates responsibility into the same durable WATCH model used by RAOS, and `why` explains stored decisions without reanalysis. Agent-originated canonical writes are Phase13-gated. No Agent surface may instantiate `AttentionPlan`, run an independent importance/relevance model, manufacture epistemic truth, or mutate topology/Kernel/Delivery state outside existing authorization paths. MCP/A2A may later wrap this API but must preserve the same Epistemic / Commitment / Integrity boundaries.
 
 ## 3. Attention authority split
 
@@ -195,6 +223,11 @@ URL article presentation       url-html-v9-publisher-adapters / structured-block
 Semantic Sensor                semantic-evidence-extractor-v0.2.6
 Semantic Evidence Auditor      semantic-evidence-auditor-v0.1.1
 World Representation           world-representation-v0.1 / decision-representation-v0.1
+Representation Auditor          representation-auditor-frame-pair-v0.7
+Probabilistic belief view       representation-belief-view-v0.1 / read-only derived materialization
+Representation↔Cognition mix    representation-cognition-marginalization-v0.1 / eval-only algebra
+Topology Commitment             representation-authority-shadow-v0.2 / E1 shadow only
+Agent / Control Plane           agent-interface-v0.3 / orchestration-only / Phase13-gated writes
 Explicit reference provenance  explicit-cites-v0.1 / append-only-parser-hydration
 Cognition                      research-aligned-cognition-v1
 Relation Mapping               Phase 9A v0.2 frozen contract
@@ -263,6 +296,23 @@ Execution Integrity            execution-integrity-v0.2 / explicit-identity-fail
 42. An explicit article hyperlink authorizes only the literal `CITES` relation. It must not silently imply `SAME_EVENT`, `DERIVED_FROM`, `INDEPENDENT_REPORT`, or `ORIGINAL_SOURCE`; stronger relations require Representation-level adjudication.
 43. Historical reference hydration is append-only. New reference extraction may add a new ParserRun and SourceGraph facts, but it may not rewrite the historical parser run or canonical Source text; real historical hydration must fail closed if the freshly extracted canonical text differs.
 44. Under `decision-representation-v0.1`, `CITES` is graph/audit context only: it changes `graph_digest` but not `decision_representation_digest`. Transport-only redirect/self-links must not become provenance facts.
+45. `content_hash` equality is an identity sensor over observed content, not semantic duplicate authority. `METADATA_ONLY`, stub, empty, or placeholder content may retain a literal hash but may not authorize `REPOSTS`, duplicate suppression, independence reduction, or same-Event fallback.
+46. Topology commitment authority is deterministic and versioned. A grounded RepresentationAuditRun may enter probabilistic epistemic World Representation without being certified true; merge, duplicate suppression, independence collapse, or Event-membership replacement require a separate versioned commitment policy plus valid execution authority. Directional provenance (`REPOST` / `DERIVED_FROM`) requires an explicit direction.
+47. Execution Authority and Epistemic Belief are orthogonal. Phase13 determines who may mutate canonical state; it does not certify world truth.
+48. Auditor response frequency is an observable stochastic response spectrum, not a calibrated probability of objective world truth. Any engineering probability proxy must state this limitation explicitly.
+49. Uncertainty is first-class. A grounded uncertain hypothesis may be represented without being coerced to False and without forcing materialized Event topology to collapse.
+50. Topology commitment is a decision-under-risk problem. The current `representation-belief-view-v0.1` is read-only and has no merge/suppression/Attention authority.
+51. The Agent / Control Plane is orchestration-only. It may observe, explain, invoke canonical cognition, delegate WATCH responsibility, and propose actions, but it may not manufacture epistemic truth, Attention authority, topology authority, Kernel authority, or Delivery authority.
+52. Every direct WATCH canonical write, including Agent delegation mutation and active-acquisition activation, must pass Phase13 side-effect authority; read-only Agent/WATCH surfaces remain read-only.
+53. Representation uncertainty composition belongs outside the frozen Phase10 conditional cognition kernel. Phase10 continues to estimate `P(T,A | R,K,Theta)` for fixed `R`; any future marginalization over `P(R | E)` must be an explicit outer composition layer.
+54. `representation-cognition-marginalization-v0.1` is eval-only algebra. Under `OPERATIONAL_PROXY` weights its information decomposition is diagnostic and has no production Attention or commitment authority.
+55. Phase13 gates authority-bearing canonical side effects, not append-only observation/evidence persistence. Source/Snapshot acquisition, parser CITES, Claim/Observation evidence and forensic AnalysisRun artifacts must not be globally blocked merely because cognition side-effect authority is absent.
+56. REPLAY/FORENSIC cognition may persist analysis evidence but may not materialize Event/EventSource working topology. Forensic computation must not silently change a later canonical `graph_digest`.
+57. Epistemic uncertainty is not automatically decision relevance. A probabilistic hypothesis may remain canonical epistemic context while having zero current decision authority.
+58. Under `decision-representation-v0.1`, probabilistic SAME_EVENT belief and candidate Event hypotheses are not direct decision inputs. Resolve or spend additional compute on them only when a future decision contract makes them decision-bearing.
+59. Equal Auditor response spectra do not imply equal epistemic evidence strength. `representation-belief-view-v0.1` is a response-spectrum/ignorance proxy; stronger corroboration may leave the proxy unchanged after categorical response saturation.
+60. A hypothesis having zero direct influence under the current decision projection does not prove intrinsic decision irrelevance. `not projected into the current decision contract` must be reported separately from `counterfactually decision-invariant`.
+61. Controlled evidence evolution is a core Representation-path validation, distinct from natural longitudinal dogfood. Synthetic controlled epochs may test directional update behavior, but they may not be presented as an empirically learned stochastic-process law.
 
 
 

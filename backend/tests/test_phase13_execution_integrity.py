@@ -225,3 +225,157 @@ def test_reschedule_cannot_bypass_execution_authority(db, monkeypatch):
     after = db.query(AttentionPlan).filter(AttentionPlan.analysis_run_id == run.id).count()
     assert after == before
     assert result["reschedule_suppressed"]["reason"] == "execution-authority-required"
+
+
+def test_direct_watch_write_requires_side_effect_authority(client, db, monkeypatch):
+    integrity = _set_no_profile(monkeypatch, "REPLAY")
+    assert integrity.execution_context()["authority"]["side_effects_authorized"] is False
+    before = db.query(Watch).count()
+
+    response = client.post(
+        "/watches",
+        json={
+            "target_type": "TREND",
+            "target_ref": "phase13 watch gate probe",
+            "created_reason": "must fail without canonical side-effect authority",
+            "kernel_target_ids": [],
+            "triggers": ["NEW_EVIDENCE"],
+        },
+    )
+    assert response.status_code == 403, response.text
+    assert db.query(Watch).count() == before
+
+
+def test_agent_watch_write_requires_side_effect_authority(client, db, monkeypatch):
+    integrity = _set_no_profile(monkeypatch, "REPLAY")
+    assert integrity.execution_context()["authority"]["side_effects_authorized"] is False
+    before = db.query(Watch).count()
+
+    response = client.post(
+        "/agent/v1/watch",
+        json={
+            "topic": "phase13 agent watch gate probe",
+            "target_type": "TREND",
+            "active_acquisition": False,
+        },
+    )
+    assert response.status_code == 403, response.text
+    assert db.query(Watch).count() == before
+
+
+def test_agent_watch_cancel_cannot_bypass_integrity_plane(client, db, monkeypatch):
+    created = client.post(
+        "/agent/v1/watch",
+        json={
+            "topic": "phase13 agent cancel gate probe",
+            "target_type": "TREND",
+            "active_acquisition": False,
+        },
+    )
+    assert created.status_code == 200, created.text
+    watch_id = UUID(created.json()["watch"]["id"])
+    assert db.get(Watch, watch_id).status == "ACTIVE"
+
+    integrity = _set_no_profile(monkeypatch, "REPLAY")
+    assert integrity.execution_context()["authority"]["side_effects_authorized"] is False
+    cancelled = client.post(f"/agent/v1/watch/{watch_id}/cancel")
+    assert cancelled.status_code == 403, cancelled.text
+    assert db.get(Watch, watch_id).status == "ACTIVE"
+
+
+def test_replay_does_not_materialize_event_topology(db, monkeypatch):
+    from app.models.event import Event, EventSource
+
+    integrity = _set_no_profile(monkeypatch, "REPLAY")
+    seed_mvp_kernel(db)
+    source = ingest_text(
+        db,
+        "A forensic-only note about representation topology contamination.",
+        title="phase14 replay event topology gate",
+    )
+    before_events = db.query(Event).count()
+    before_links = db.query(EventSource).count()
+
+    result = run_pipeline(
+        db,
+        source.id,
+        provider=RuleBasedCognitiveProvider(),
+        decision_strategy=get_decision_strategy("one-delta"),
+        reprocess=True,
+    )
+
+    from app.models.claim import Claim
+    from app.models.observation import Observation
+
+    assert result["execution_authority"]["overall"] == "FORENSIC"
+    assert db.query(Event).count() == before_events
+    assert db.query(EventSource).count() == before_links
+    claims = db.query(Claim).filter(Claim.source_id == source.id).all()
+    observations = db.query(Observation).filter(Observation.source_id == source.id).all()
+    assert claims or observations
+    assert all(row.event_id is None for row in [*claims, *observations])
+
+
+def test_direct_kernel_write_requires_side_effect_authority(client, db, monkeypatch):
+    integrity = _set_no_profile(monkeypatch, "REPLAY")
+    assert integrity.execution_context()["authority"]["side_effects_authorized"] is False
+
+    response = client.post(
+        "/kernel/nodes",
+        json={
+            "node_type": "QUESTION",
+            "title": "forensic kernel write must fail",
+            "status": "ACTIVE",
+            "payload": {},
+        },
+    )
+    assert response.status_code == 403, response.text
+
+
+def test_user_source_edge_write_requires_side_effect_authority(client, db, monkeypatch):
+    source_a = ingest_text(db, "Source A body.", title="phase14 edge A")
+    source_b = ingest_text(db, "Source B body.", title="phase14 edge B")
+    db.commit()
+
+    integrity = _set_no_profile(monkeypatch, "REPLAY")
+    assert integrity.execution_context()["authority"]["side_effects_authorized"] is False
+
+    response = client.post(
+        "/sources/source-edges",
+        json={
+            "source_id": str(source_a.id),
+            "target_id": str(source_b.id),
+            "relationship": "REPOSTS",
+            "confidence": 1.0,
+            "evidence": "forensic mutation must fail",
+        },
+    )
+    assert response.status_code == 403, response.text
+
+
+def test_delivery_acknowledgement_requires_side_effect_authority(client, db, monkeypatch):
+    source = ingest_text(
+        db,
+        "A bounded canonical source used to create a delivery envelope.",
+        title="phase14 delivery gate",
+    )
+    result = run_pipeline(db, source.id)
+    plan = result.get("attention_plan")
+    assert plan is not None
+
+    from app.models.delivery import DeliveryEnvelope
+
+    envelope = (
+        db.query(DeliveryEnvelope)
+        .filter(DeliveryEnvelope.attention_plan_id == UUID(plan["id"]))
+        .first()
+    )
+    assert envelope is not None
+
+    integrity = _set_no_profile(monkeypatch, "REPLAY")
+    assert integrity.execution_context()["authority"]["side_effects_authorized"] is False
+
+    response = client.post(f"/deliveries/{envelope.id}/acknowledge")
+    assert response.status_code == 403, response.text
+    db.refresh(envelope)
+    assert envelope.acknowledged_at is None

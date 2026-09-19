@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from app.enums import SourceEdgeRelationship
 from app.models.event import Event, EventSource
 from app.models.source import Source, SourceEdge
-from app.services.source_graph import independence_report
+from app.services.source_graph import independence_report, source_edge_authority_eligible
 
 
 _COVERAGE_EDGE_RELATIONSHIPS = {
@@ -124,6 +124,7 @@ def source_information_landscape(db: Session, source_id: UUID) -> dict:
         )
     ).scalars().all() if graph_ids else []
 
+    graph_edges = [edge for edge in graph_edges if source_edge_authority_eligible(db, edge)]
     edge_authorized_ids: set[UUID] = set()
     for edge in graph_edges:
         if edge.relationship not in _COVERAGE_EDGE_RELATIONSHIPS or float(edge.confidence or 0.0) < 0.85:

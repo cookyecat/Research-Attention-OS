@@ -8,6 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db import get_db
+from app.execution_integrity import require_side_effects_authorized
 from app.models.delivery import DeliveryEnvelope
 from app.services.delivery import (
     acknowledge_delivery,
@@ -19,6 +20,14 @@ from app.services.delivery import (
 )
 
 router = APIRouter()
+
+
+def _require_delivery_write_authority() -> None:
+    try:
+        require_side_effects_authorized()
+    except RuntimeError as exc:
+        raise HTTPException(403, str(exc)) from exc
+
 
 
 @router.get("")
@@ -47,6 +56,7 @@ def metrics(db: Session = Depends(get_db)):
 
 @router.post("/{delivery_id}/acknowledge")
 def acknowledge(delivery_id: UUID, db: Session = Depends(get_db)):
+    _require_delivery_write_authority()
     row = db.get(DeliveryEnvelope, delivery_id)
     if row is None:
         raise HTTPException(status_code=404, detail="Delivery not found")
@@ -55,6 +65,7 @@ def acknowledge(delivery_id: UUID, db: Session = Depends(get_db)):
 
 @router.post("/{delivery_id}/dismiss")
 def dismiss(delivery_id: UUID, db: Session = Depends(get_db)):
+    _require_delivery_write_authority()
     row = db.get(DeliveryEnvelope, delivery_id)
     if row is None:
         raise HTTPException(status_code=404, detail="Delivery not found")
@@ -63,6 +74,11 @@ def dismiss(delivery_id: UUID, db: Session = Depends(get_db)):
 
 @router.websocket("/ws")
 async def realtime_delivery(websocket: WebSocket, db: Session = Depends(get_db)):
+    try:
+        require_side_effects_authorized()
+    except RuntimeError:
+        await websocket.close(code=1008, reason="Phase13 side-effect authority required")
+        return
     await websocket.accept()
     try:
         while True:

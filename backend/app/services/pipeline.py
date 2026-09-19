@@ -183,6 +183,7 @@ def extract_source(
     analysis_run_id: UUID | None = None,
     independent_source_count: int | None = None,
     extraction_bridge=None,
+    materialize_event_topology: bool = True,
 ) -> tuple[
     ExtractionResult, list[Claim], list[Observation], list[Inference], list[EvidenceLink], dict
 ]:
@@ -223,12 +224,21 @@ def extract_source(
             raise TypeError("extraction_bridge.extract() must return ExtractionBridgeResult")
         merged = bridged.extraction
         extraction_diagnostics = {"mode": "bridge", **dict(bridged.diagnostics or {})}
-    event = attach_or_create_event(db, source, merged.event_title or source.title, merged.event_summary)
+    event = None
+    if materialize_event_topology:
+        event = attach_or_create_event(
+            db, source, merged.event_title or source.title, merged.event_summary
+        )
     claims, observations, inferences, links = persist_extraction(
-        db, source, merged, event.id, analysis_run_id=analysis_run_id
+        db,
+        source,
+        merged,
+        event.id if event is not None else None,
+        analysis_run_id=analysis_run_id,
     )
-    for extra in extras:
-        attach_or_create_event(db, extra, merged.event_title or extra.title, merged.event_summary)
+    if materialize_event_topology:
+        for extra in extras:
+            attach_or_create_event(db, extra, merged.event_title or extra.title, merged.event_summary)
     return merged, claims, observations, inferences, links, extraction_diagnostics
 
 
@@ -612,6 +622,27 @@ def run_pipeline(
             analysis_run_id=run.id,
             independent_source_count=rel_ctx.independent_sources,
             extraction_bridge=extraction_bridge,
+            materialize_event_topology=bool(
+                (execution_context.get("authority") or {}).get("side_effects_authorized")
+            ),
+        )
+        # D1 shadow-only EventEvidenceFrame. This is an append-only semantic
+        # evidence artifact, not Event authority and not a Decision input.
+        from app.services.event_evidence_frames import persist_event_evidence_frames
+
+        persist_event_evidence_frames(
+            db,
+            source=source,
+            extraction=extraction,
+            claims=claims,
+            observations=observations,
+            analysis_run_id=run.id,
+            extraction_diagnostics=extraction_diagnostics,
+            semantic_provenance={
+                "mode": "AUDITED_BRIDGE" if extraction_bridge is not None else "LEGACY_EXTRACTION",
+                "authority": "SEMANTIC_AUDITED" if extraction_bridge is not None else "UNAUDITED_LEGACY",
+                "bridge_execution": bridge_execution if extraction_bridge is not None else None,
+            },
         )
         extraction.analysis_provenance = {
             "primary_source_id": str(source.id),
