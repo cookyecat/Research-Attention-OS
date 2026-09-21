@@ -13,7 +13,7 @@ from app.models.analysis import AnalysisRun
 from app.models.event import EventEvidenceFrame
 from app.models.source import Source
 
-EVENT_EVIDENCE_FRAME_CONTRACT = "event-evidence-frame-v0.2"
+EVENT_EVIDENCE_FRAME_CONTRACT = "event-evidence-frame-v0.3"
 DEFAULT_WORKSPACE_ID = "local-default"
 
 
@@ -147,6 +147,7 @@ def _bridge_payloads(
                 "rendered_event_text": projection.get("rendered_event_text") or "",
                 "claim_evidence": [],
                 "observation_evidence": [],
+                "audited_semantic_units": list(raw.get("admitted_semantic_units") or []),
                 "audit_summary": dict(raw.get("audit") or {}),
             }
         )

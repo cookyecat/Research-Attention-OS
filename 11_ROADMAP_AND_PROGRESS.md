@@ -1,8 +1,8 @@
 # Research Attention OS — Roadmap and Progress
 
 Status: **ACTIVE PROJECT ROADMAP**  
-Date: 2026-09-17
-Current integrated baseline referenced: Phase 12 closed for current single-user dogfood; Phase 13 Execution Integrity V1.0 preregistered at committed HEAD `88c3516`, with V1 core implementation active in the working tree
+Date: 2026-09-21
+Current integrated baseline referenced: Phase13 Execution Integrity hardened; Phase15 Event Continuity closed; Phase16 Event-centric Attention alignment closed; Phase16C Event Processor V1 enabled in canonical dogfood with cross-Source Event resolution and Alembic schema authority hardened
 Semantic baseline: `08_COGNITIVE_TRANSITION_MODEL_V2.1.md` + Phase II-B AWARE semantics in `10_ATTENTION_POLICY_ELICITATION_AND_CALIBRATION.md`  
 D semantic baseline: `16_STANDING_ATTENTION_JURISDICTION.md`  
 D final validation: `17_STANDING_RADAR_FIT_V3_FINAL_VALIDATION.md`  
@@ -131,7 +131,10 @@ Core invariants:
 | Phase 10 — Distributional Cognitive Stability | Decision-causal core, static Cognitive Probability Map, temporal basin/regime analysis, real-web persistence, Attention Core validity | **10E CLOSED FOR FORWARD PROGRESS 2026-09-16** |
 | Phase 11 — External Attention Infrastructure | 11A Acquisition Expansion → 11B Query Expansion → 11C P Evidence → 11D Delivery → 11E Agent Interface | **CLOSED 2026-09-15** |
 | Phase 12 — Personalized Attention Calibration & Multi-Actor Control | 12A boundary/feedback attribution → 12B residual necessity → 12C bounded calibration (conditional) → 12D multi-actor arbitration → 12E multi-user scale | **CLOSED FOR CURRENT SINGLE-USER DOGFOOD 2026-09-16; 12C DORMANT / CONDITIONALLY DEFERRED** |
-| Phase 13 — Execution Integrity | Explicit execution identity, attestation-derived authority, graceful degradation, reconciliation, Manual/Service runtime operation | **ACTIVE / V1.1 TRUST ROOT HARDENED 2026-09-17** |
+| Phase 13 — Execution Integrity | Explicit execution identity, attestation-derived authority, graceful degradation, reconciliation, single-owner runtime operation | **HARDENED BASELINE / ACTIVE GUARDRAIL** |
+| Phase 14 — Probabilistic World Representation | Separate epistemic belief from decision authority; controlled representation evolution and counterfactual relevance probes | **BOUNDED RESULTS CLOSED FOR FORWARD PROGRESS** |
+| Phase 15 — Event Continuity | Place Event identity at lifecycle routing rather than direct Attention scoring | **CLOSED 2026-09-20** |
+| Phase 16 — Event-Centric Mainline | Event Attention identity, frame-conditioned residual study, coarse Event Processor V1, cross-Source Event commitment | **16C CLOSED / CANONICAL PRODUCTION ENABLED 2026-09-21** |
 
 Current strategic position:
 
@@ -144,10 +147,12 @@ $$
 $$
 
 $$
-\boxed{Phase\ 13:\ Execution\ Integrity\ V1.0\ ACTIVE}
+\boxed{Phase\ 16C:\ Event\ Processor\ V1\ CLOSED\ /\ CANONICAL}
 $$
 
-Current research/product position: Phase 9A is closed with causal alignment supported; Phase 10E validated the current Attention Core for forward progress; Phase 11 external attention infrastructure and Phase 12 personalization/multi-actor/scale-boundary work are closed for the current single-user dogfood. Phase 12C remains a dormant conditional calibration module and may activate only after repeated, cross-context stable, causally clean `USER_POLICY_RESIDUAL` evidence. The current active gate is Phase 13: make execution identity, Attention authority, degraded operation, and recovery explicit so a live process cannot silently fall back to a historical cognition contract. Frozen `one-delta-v1` remains available only for explicit compatibility/replay, not as accidental canonical dogfood authority.
+Current research/product position: Phase 9A is closed with causal alignment supported; Phase 10E validated the current Attention Core for forward progress; Phase 11 external attention infrastructure and Phase 12 personalization/multi-actor/scale-boundary work are closed for the current single-user dogfood. Phase 13 is now a hardened execution guardrail rather than the main research gate. Phase 14 separated probabilistic Representation belief from decision authority. Phase 15 placed Event continuity at lifecycle routing. Phase 16 aligned current Attention identity to Event, and Phase16C now gives canonical dogfood a coarse Event Processor that can explicitly commit multiple Sources to one Event while UNCERTAIN fails safe against merge.
+
+The next mainline research gate is **Event-state-aware decision recomputation**: when a new Source updates an existing Event, determine whether the Event's decision-bearing state materially changed, whether cognition should be recomputed from the updated Event rather than the new Source alone, and whether the existing Event Attention lifecycle should remain quiet or resurface.
 
 The 2026-09-16 Google-language false-ENGAGE incident established the new engineering invariant:
 
@@ -155,7 +160,7 @@ The 2026-09-16 Google-language false-ENGAGE incident established the new enginee
 process alive != semantically authoritative RAOS
 ```
 
-Current canonical Mac profile is `research-dogfood-v1`. Model credentials have been restored and the live Manual dogfood runtime currently attests `ATTESTED / READY` with Observation, Cognition, Attention, and Delivery all READY. The degraded-operation contract remains unchanged: if canonical cognition requirements disappear later, Observation may remain READY while Cognition/Attention block and eligible arrivals wait for reconciliation rather than falling back to legacy cognition.
+Current canonical Mac profile is `research-dogfood-v1`. Model credentials are available and the single-owner launchd service runtime currently attests `ATTESTED / READY` with Observation, Cognition, Attention, and Delivery all READY. The degraded-operation contract remains unchanged: if canonical cognition requirements disappear later, Observation may remain READY while Cognition/Attention block and eligible arrivals wait for reconciliation rather than falling back to legacy cognition.
 
 D semantic research is closed. The v3 D estimator has attributable implementation residuals and is not certified as a passed estimator; do not expand D into another offline synthetic benchmark now.
 
@@ -167,7 +172,7 @@ The project is now answering:
 
 > **Can RAOS sustain genuine personal use under continuous autonomous operation while preserving explicit semantic authority, provenance, and safe recovery?**
 
-Do not over-polish offline policy once a gate is met. The current priority is Execution Integrity and reliable dogfood operation, not a speculative new cognition variable.
+Do not over-polish offline policy once a gate is met. Execution Integrity remains a permanent guardrail; the current research priority is the Event-state-aware cognition/Attention lifecycle identified after Phase16C.
 
 ---
 
@@ -1971,3 +1976,307 @@ potential counterfactual SAME_EVENT decision relevance = UNKNOWN
 The positive control proves the harness is decision-sensitive. The SAME_EVENT null result therefore identifies current-contract blindness, not intrinsic irrelevance. `SAME_EVENT` must not be mapped to REPOSTS/non-independence to make it measurable. Production Phase14D remains deferred until an independently justified event-continuity/representation-conditioned cognition input exists.
 
 Phase14B-Controlled / Phase14C-Counterfactual validation complete: focused tests 18 passed; full backend 901 passed / 63 skipped / only known Case-K residual. These experiments are eval-only and introduce no production representation-conditioned cognition path.
+
+
+### Phase 15 — Event Continuity -> Attention Lifecycle V0.1 COMPLETE 2026-09-20
+
+References: `258_PHASE15_EVENT_CONTINUITY_ATTENTION_LIFECYCLE_PREREGISTRATION.md`, `259_PHASE15_EVENT_CONTINUITY_ATTENTION_LIFECYCLE_RESULT.md`.
+
+Phase15 validates the architectural placement of Event identity/continuity as a **lifecycle routing concern**, not a direct SAME_EVENT score fed into cognition.
+
+Controlled in-memory results:
+
+```text
+Case1 SAME_EVENT + independent corroboration
+  -> existing WATCH / RECHECK
+  -> WATCH identity stays 1
+
+Case2a distinct successor Event + EventLineage only
+  -> current router misses lineage
+  -> ordinary/new analysis path
+
+Case2b same successor case + SourceEdge.CONTRADICTS proxy
+  -> existing WATCH / RECHECK
+  -> WATCH identity stays 1
+
+Case3 distinct Event + same actor/product but no continuity fact
+  -> ordinary/new analysis path
+```
+
+Phase15 originally localized the router around shared materialized Event membership plus selected SourceEdge relations. Phase16 subsequently tightened this boundary: current `continuous_attention` now consumes only **decision-authorized Event membership** plus selected decision-authorized SourceEdge relations. Raw legacy `EventSource` is graph/history, not Attention-routing authority. EventLineage remains non-decision-bearing.
+
+Phase15 also exposed and fixed a serious topology bypass. During recheck, `extract_source()` previously attached every extra Source to the primary merged Event. A successor Event could therefore be silently collapsed into its predecessor merely because it participated as extra cognition evidence. The implicit extra-source Event materialization was removed. `extra evidence != Event membership authority` is now a canonical invariant.
+
+Historical Phase15 state: production AttentionPlans were still Source-level and WATCH carried lifecycle continuity. Phase16 has now closed that mainline gap by reusing the existing `AttentionPlan` entity with `candidate_type=EVENT`; no EventDecision table was added.
+
+The generic Phase15 routing probe did not attempt to prove a material successor Event should PROMOTE Attention; its rule-provider decisions were DROP/KEEP_ACTIVE. A separate decision-bearing EventState-delta probe is needed before making any resurfacing claim.
+
+Phase15 validation after the topology-bypass fix: focused continuity tests 6 passed; full backend 903 passed / 63 skipped / only known Case-K residual. The production change is deliberately narrow: extra Sources remain cognition evidence but no longer gain primary Event membership implicitly.
+
+
+### Phase 16 — Event-Centric Attention Alignment COMPLETE 2026-09-20
+
+References: `260_PHASE16_EVENT_CENTRIC_ATTENTION_ALIGNMENT_PREREGISTRATION.md`, `261_PHASE16_EVENT_CENTRIC_ATTENTION_ALIGNMENT_RESULT.md`.
+
+The mainline Representation→Attention identity gap is closed:
+
+```text
+AnalysisRun / Source
+= evidence-computation provenance
+
+AttentionPlan(EVENT)
+= current decision identity
+```
+
+No EventDecision entity was added. Existing `AttentionPlan(candidate_type=EVENT)` is now production current Attention.
+
+New source-local authority contract:
+
+```text
+source-local-event-membership-v0.1
+AUTHORIZED_SOURCE_LOCAL
+cross_source_commitment=false
+```
+
+At the time of Phase16 this permitted Event-centric Attention without opening cross-publication SAME_EVENT commitment. Phase16C later superseded that temporary boundary with the explicit coarse Event Processor V1 commitment contract.
+
+Current dogfood migration completed with no cognition rerun, no Delivery reenrollment, and no WATCH mutation. Final canonical projection:
+
+```text
+625 current decisions
+625 EVENT
+0 SOURCE
+```
+
+Legacy ambiguous multi-member EventSource topology was preserved for audit but not trusted. The 25 affected Source decisions received separate source-local Event hypotheses.
+
+`continuous_attention` now consumes decision-authorized Event membership rather than raw EventSource for Event-continuity routing.
+
+Historical Phase16 boundary: cross-Source aggregation was still authority-gated and the first collapse step remained conservative. Phase16C later opened a narrow production cross-Source commitment path through `llm-coarse-event-resolver-v1`; probabilistic Representation belief by itself remains non-authoritative.
+
+Final validation: Python compile and `git diff --check` passed; frontend TypeScript passed; backend `912 passed / 63 skipped / 1 known Case-K`.
+Final rollout exposed one migration-order race: two old canonical writers produced Source-centric plans after the first migration but before restart. The rollout was corrected to `stop writers -> migrate -> start new code`; the two tail plans were migrated without cognition rerun. Live `/kernel/attention` and `/agent/v1/attention` now return 625 current items, all EVENT, all with representative Source paths.
+
+Design audit also found a remaining mainline residual: 353 Sources have EventEvidenceFrames, and 67 of them contain more than one distinct frame (maximum 8). Current source-local Attention identity still resolves one decision Event per primary Source analysis. Therefore Phase16 closes Source-vs-Event decision identity, but does not yet implement full `1 Source -> 0..N Event decisions` decomposition.
+
+### Phase 16B — Multi-Event Source Decision Projection INPUT VALIDATED 2026-09-20
+
+References: `262_PHASE16B_MULTI_EVENT_SOURCE_DECISION_PROJECTION_PREREGISTRATION.md`, `263_PHASE16B_MULTI_EVENT_SOURCE_DECISION_PROJECTION_RESULT.md`.
+
+Dogfood confirms `1 Source -> 0..N EventEvidenceFrames` is real, not a corner case: 353 Sources have frames, 67 have more than one, maximum 8.
+
+The Sensor/Auditor bridge already computed per-Event admitted semantic units but discarded them from diagnostics. Phase16B preserves those units and support provenance under:
+
+```text
+phase8c2-production-sensor-bridge-v0.3
+event-evidence-frame-v0.3
+```
+
+New eval input contract:
+
+```text
+frame-conditioned-cognition-input-v0.1
+```
+
+The frame adapter fails closed without audited semantic units/support evidence and is regression-equivalent to the historical Phase6B audited-units adapter at the `canonical_semantic_units()` boundary.
+
+Controlled frozen-cognition probe:
+
+```text
+Frame A (performance contradiction) -> ENGAGE
+Frame B (unrelated memory challenge event) -> DROP
+Whole Source A+B -> ENGAGE
+```
+
+This validates the need for per-Event cognition: whole-Source cognition correctly reacts to A but masks B's independent DROP decision.
+
+Production 0..N Event plans are intentionally **not** enabled yet. Persistence supports multiple AttentionPlans per AnalysisRun, but hydrate/result payload, feedback, WATCH, reschedule, Agent CLI and compatibility contracts still assume one primary `attention_plan`. Switching now would create a half-migrated system.
+
+Phase16B originally identified 0..N public/decision cardinality as the next mainline step. Phase16C deliberately chose a simpler V1 prior instead: one normal Source -> one primary coarse EventCandidate, with multi-news digest / 0..N Event decisions deferred to V2. The Phase16B frame-conditioned evidence work remains valid input for that future V2.
+
+Validation: focused bridge/frame/cognition 23 passed; full backend 916 passed / 63 skipped / only known Case-K.
+
+### Phase 16C — Event Processor V1 COMPLETE / CANONICAL PRODUCTION ENABLED 2026-09-21
+
+References: `264_PHASE16C_EVENT_PROCESSOR_V1_PREREGISTRATION.md`, `265_PHASE16C_EVENT_PROCESSOR_V1_RESULT.md`.
+
+Phase16C replaces the transitional source-local Event bootstrap with a real coarse Event Processor:
+
+```text
+Source
+-> Sensor / Semantic Auditor
+-> audited evidence
+-> Event Processor V1
+-> SAME_EVENT / DIFFERENT_EVENT / UNCERTAIN
+-> Event create/update/join
+-> AttentionPlan(EVENT)
+```
+
+Event V1 uses a coarse editorial episode/story granularity. Claims, benchmark values, quotations, Observations and atomic semantic units enrich an Event but do not define its count. V1 defaults one normal Source to one primary EventCandidate; multi-news digest Sources are deferred to V2.
+
+The explicit production cross-Source commitment contract is `llm-coarse-event-resolver-v1` under Phase13 side-effect authority:
+
+```text
+SAME_EVENT      -> join existing Event
+DIFFERENT_EVENT -> create new Event
+UNCERTAIN       -> separate Event hypothesis; never hidden merge
+```
+
+Preregistered real-model fixed cases passed 3/3 without post-result tuning.
+
+Natural canonical dogfood after rollout produced three audited completed Event Processor runs in the first validation window: two SAME_EVENT and one DIFFERENT_EVENT, zero FAILED. Both SAME_EVENT cases formed two-Source Events while canonical current projection retained exactly one Event decision per Event. Live `/kernel/attention` returned 774 current items, all EVENT, with Event V1 structure present.
+
+Phase16C also closed a root schema-authority defect. Historical `0001_initial.py` dynamically derived schema from current ORM metadata; it is now a frozen explicit snapshot reconstructed from the original 2026-08-26 commit. `0017_schema_authority_hardening` brings both fresh databases and the real dogfood clone to zero structural drift against current ORM metadata. Canonical startup now treats Alembic as sole schema authority and forbids `create_all()` repair.
+
+Additional rollout hardening:
+
+```text
+relative SQLite URL            -> backend-root absolute DB identity
+service mode                   -> cleans same-repo orphan manual processes
+contentless deferred Source    -> skip reconciliation instead of FAILED churn
+```
+
+Final backend regression after all Phase16C + hardening changes:
+
+```text
+930 passed
+63 skipped
+1 known Case-K failure
+```
+
+Current canonical serving invariant:
+
+```text
+World Representation / Event topology = Event-centric
+Attention identity                     = Event-centric
+canonical current non-EVENT plans      = 0
+```
+
+Next mainline research question:
+
+```text
+new Source
+-> SAME_EVENT
+-> updated Event state
+-> did decision-bearing EventState materially change?
+   no  -> absorb / remain quiet
+   yes -> recompute Event decision / potentially resurface
+```
+
+This is the next Event-state-aware Attention lifecycle problem; it should not be approximated by feeding SAME_EVENT probability directly into cognition score.
+
+
+### Phase 17 — Event State Evolution / Jev Longitudinal Benchmark ACTIVE 2026-09-21
+
+References: `269_PHASE17_EVENT_SOURCED_RECURSIVE_STATE_FILTER_THEORY.md`, `271_PHASE17_DYNAMIC_EVENT_ENGINE_IMPLEMENTATION_PLAN.md`. Supporting benchmark/history: `266_PHASE17_EVENT_STATE_COGNITION_PREREGISTRATION.md`, `267_PHASE17_EVENT_STATE_MODEL_REVIEW_AND_JEV_BENCHMARK.md`, `268_PHASE17_JEV_LONGITUDINAL_BENCHMARK_IDENTITY_RESULT.md`, `270_PHASE17_RECURSIVE_EVENT_STATE_FILTER_PRIMITIVE_RESULT.md`.
+
+Event ontology review is now frozen at a higher level than any update algorithm:
+
+```text
+Event
+= Identity
++ Current EventState
++ History refs
+
+Current EventState
+= WorldState
++ EvidenceState
+
+EventDecision
+= F(EventState, Kernel, Context)
+```
+
+Probabilistic identity remains external and relational:
+
+```text
+P(Event candidate A is existing Event B | evidence)
+```
+
+is an epistemic belief used by the resolver/commitment path; it is not an `Event.confidence` scalar and is not part of WorldState.
+
+Algorithm-specific notions such as correction, supersession, contradiction and enrichment are NOT Event schema fields. They are optional internal semantics of a candidate update operator:
+
+```text
+S_(t+1) = U(S_t, e_(t+1))
+```
+
+The Jev benchmark is now layered rather than one flat label set:
+
+```text
+Observed World Trace
+-> 44 deduplicated RAOS-observed ExternalInformationItems
+-> 2026-09-16 .. 2026-09-20
+-> daily arrivals 3 -> 8 -> 15 -> 8 -> 10
+
+Event Gold
+-> t0/t1/t2/t3 are one coarse Event
+
+Human Gold (profile=user-primary-v0.1; subjective)
+-> AWARE -> WATCH -> WATCH -> ENGAGE
+
+Algorithm Output
+-> compared against the same frozen trace/profile without rewriting the fixture
+```
+
+The Human Gold trajectory is not a universal normative answer; a different Kernel/user may legitimately produce another Attention trajectory over the same Event.
+
+Real configured Event Processor V1 identity gate passed without fixture tuning:
+
+```text
+t0 create Event
+t1 SAME_EVENT
+t2 SAME_EVENT
+t3 SAME_EVENT
+
+4 Sources -> 1 Event
+```
+
+Artifact: `eval/live/results/phase17_jev_event_identity_v0_1/phase17_jev_event_identity_v0.1_20260920T181034Z.json`.
+
+The profile-scoped Human Gold trajectory is frozen and is NOT yet claimed as matched. Phase17 theory now adopts mature primitives rather than inventing a bespoke rule engine: Event Sourcing for immutable history/materialized state, recursive state estimation for `S_(t+1)=U(S_t,e_(t+1))`, evidence accumulation with optional leakage, and a hysteretic Attention controller. `event-state-v0.1` primitives are implemented eval-first; EventRevision now records structured `world_state + evidence_state` snapshots without changing production Attention policy. Momentum innovation/decay and hysteresis thresholds remain benchmark/ablation parameters rather than canonical constants.
+
+
+#### Phase17 primitive implementation checkpoint — 2026-09-21
+
+Reference: `270_PHASE17_RECURSIVE_EVENT_STATE_FILTER_PRIMITIVE_RESULT.md`.
+
+Implemented eval-first primitives:
+
+```text
+event-state-v0.1
+recursive-event-state-filter-v0.1
+hysteretic-attention-controller-v0.1
+```
+
+Existing `EventRevision` now records structured `event_state = world_state + evidence_state` snapshots on future CREATE/UPDATE revisions. No new EventState/EventDecision table was added and production Attention policy is unchanged.
+
+A hidden Event-Sourcing bug was fixed at the same time: EventRevision head selection no longer relies on same-second timestamps plus UUID ordering. The unique revision head is derived from `parent_revision_id` topology; multiple heads fail closed.
+
+Jev observed trace has been frozen separately from Human Gold:
+
+```text
+World Trace:
+44 deduplicated observed items
+daily arrivals 3 -> 8 -> 15 -> 8 -> 10
+
+Human Gold:
+profile=user-primary-v0.1
+subjective
+AWARE -> WATCH -> WATCH -> ENGAGE
+```
+
+First leaky-integrator sensitivity is intentionally not gold-tuned. Full-history cumulative is monotone `3 -> 11 -> 26 -> 34 -> 44`, while leaky variants can exhibit burst memory and decay. No retention/innovation policy is selected yet.
+
+Validation:
+
+```text
+Phase17 focused: 24 passed
+full backend:    947 passed / 63 skipped / only known Case-K
+canonical:       READY / ATTESTED
+schema drift:    0
+Alembic:         0017 head
+```
+
+No natural EventRevision had arrived after the new acquisition worker start at the validation cutoff, so natural production observation of an `event-state-v0.1` revision remains pending. A second writer or artificial production side effect was deliberately not created solely to force that proof.
+
+Architecture review is complete and `271_PHASE17_DYNAMIC_EVENT_ENGINE_IMPLEMENTATION_PLAN.md` is now the Phase17 implementation source of truth. The immediate next gate is **Phase17.0 contract cleanup**: `event-state-v0.2`, `EventObservationV01`, three-time semantics, durable observation identity, and FilterState/EventState separation. Only after that contract gate should `Phi/R`, momentum, EventState cognition, and hysteresis ablations proceed. Production Decision/Attention wiring remains unchanged until the later gates in 271 pass.

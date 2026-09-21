@@ -14,9 +14,15 @@ class Event(UUIDPrimaryKeyMixin, TimestampMixin, Base):
 
     title: Mapped[str] = mapped_column(Text, nullable=False)
     event_type: Mapped[str | None] = mapped_column(Text, nullable=True)
+    actors: Mapped[list | None] = mapped_column(JSON, nullable=True, default=list)
+    action: Mapped[str | None] = mapped_column(Text, nullable=True)
+    object: Mapped[str | None] = mapped_column(Text, nullable=True)
     occurred_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    time_context: Mapped[str | None] = mapped_column(Text, nullable=True)
     location: Mapped[str | None] = mapped_column(Text, nullable=True)
     summary: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    current_state: Mapped[str | None] = mapped_column(Text, nullable=True)
+    attributes: Mapped[dict | None] = mapped_column(JSON, nullable=True, default=dict)
     confidence: Mapped[float] = mapped_column(Float, nullable=False, default=0.5)
     status: Mapped[str] = mapped_column(String, nullable=False, default="CANDIDATE")
 
@@ -106,12 +112,14 @@ class EventRevision(UUIDPrimaryKeyMixin, Base):
     __tablename__ = "event_revisions"
     __table_args__ = (
         UniqueConstraint("event_id", "revision_digest", name="uq_event_revisions_event_digest"),
+        UniqueConstraint("event_id", "observation_key", name="uq_event_revisions_event_observation"),
         Index("ix_event_revisions_event_created", "event_id", "created_at"),
     )
 
     workspace_id: Mapped[str] = mapped_column(String(128), nullable=False, default="local-default", index=True)
     event_id: Mapped[UUID] = mapped_column(Uuid, ForeignKey("events.id"), nullable=False, index=True)
     parent_revision_id: Mapped[UUID | None] = mapped_column(Uuid, ForeignKey("event_revisions.id"), nullable=True)
+    observation_key: Mapped[str | None] = mapped_column(String(128), nullable=True)
     revision_payload: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     revision_digest: Mapped[str] = mapped_column(String(128), nullable=False)
     audit_run_id: Mapped[UUID | None] = mapped_column(

@@ -516,6 +516,20 @@ function nextMove(disposition: string) {
   return "You can skip this unless you are personally curious.";
 }
 
+function representativeSourceId(plan: any) {
+  return plan?.representative_source_id || (plan?.candidate_type === "SOURCE" ? plan?.candidate_id : null);
+}
+
+function sourceForPlan(plan: any, sources: Record<string, SourceSummary>) {
+  const id = representativeSourceId(plan);
+  return id ? sources[id] : undefined;
+}
+
+function titleForPlan(plan: any, source?: SourceSummary) {
+  if (plan?.candidate_type === "EVENT" && plan?.event?.title) return String(plan.event.title);
+  return source ? displayTitle(source) : `${plan?.candidate_type || "Candidate"} ${plan?.candidate_id || ""}`;
+}
+
 export default function AttentionPage() {
   const params = useSearchParams();
   const sourceId = params.get("source");
@@ -667,21 +681,25 @@ export default function AttentionPage() {
   }, [plans]);
 
   const shown = useMemo(() => currentPlans.filter((p) => {
-    if (!sources[p.candidate_id]) return false;
-    if (isSystemFixture(sources[p.candidate_id])) return false;
+    const source = sourceForPlan(p, sources);
+    if (!source) return false;
+    if (isSystemFixture(source)) return false;
     if (filter === "CURRENT" && p.disposition === "DROP") return false;
     if (filter !== "CURRENT" && p.disposition !== filter) return false;
     if (!query.trim()) return true;
-    const title = sources[p.candidate_id]?.title || "";
+    const title = titleForPlan(p, source);
     return `${title} ${p.reason || ""}`.toLowerCase().includes(query.toLowerCase());
   }), [currentPlans, filter, query, sources]);
 
   const counts = useMemo(() => {
-    const visible = currentPlans.filter((p) => sources[p.candidate_id] && !isSystemFixture(sources[p.candidate_id]));
+    const visible = currentPlans.filter((p) => {
+      const source = sourceForPlan(p, sources);
+      return Boolean(source) && !isSystemFixture(source);
+    });
     return Object.fromEntries(FILTERS.map((f) => [f, f === "CURRENT" ? visible.filter((p) => p.disposition !== "DROP").length : visible.filter((p) => p.disposition === f).length]));
   }, [currentPlans, sources]);
   const editorialShown = useMemo(() => [...shown].sort((a, b) =>
-    timestampMs(sourceTimeValue(sources[b.candidate_id], b.created_at)) - timestampMs(sourceTimeValue(sources[a.candidate_id], a.created_at))
+    timestampMs(sourceTimeValue(sourceForPlan(b, sources), b.created_at)) - timestampMs(sourceTimeValue(sourceForPlan(a, sources), a.created_at))
   ), [shown, sources]);
   const selectedSource = sourceId ? (selectedSourceDetail || sources[sourceId]) : undefined;
 
@@ -1147,7 +1165,7 @@ export default function AttentionPage() {
   return (
     <>
       <header className="page-header">
-        <div><div className="eyebrow">Attention</div><h1 className="page-title">Your filtered world.</h1><p className="page-subtitle">One source, one current attention state. Start with what needs you; everything else has already been compressed.</p></div>
+        <div><div className="eyebrow">Attention</div><h1 className="page-title">Your filtered world.</h1><p className="page-subtitle">One world event, one current attention state. Read the representative source; RAOS keeps the evidence bundle behind it.</p></div>
         <Link className="button-link ghost" href="/inbox">Add source</Link>
       </header>
       {error && <p className="error">{error}</p>}
@@ -1163,12 +1181,14 @@ export default function AttentionPage() {
       {shown.length > 0 && (
         <div className={filter === "CURRENT" && !query.trim() ? "attention-newsroom" : "attention-card-grid"}>
           {editorialShown.map((p, index) => {
-            const source = sources[p.candidate_id];
-            const title = source ? displayTitle(source) : `${p.candidate_type} ${p.candidate_id}`;
+            const source = sourceForPlan(p, sources);
+            const title = titleForPlan(p, source);
             const when = sourceTimeValue(source, p.created_at);
             const newsroom = filter === "CURRENT" && !query.trim();
+            const readingSourceId = representativeSourceId(p);
+            if (!source || !readingSourceId) return null;
             return (
-              <Link className={`${newsroom && index === 0 ? "attention-lead" : "attention-story-card"} disposition-${p.disposition}`} href={`/attention?source=${p.candidate_id}`} key={p.id}>
+              <Link className={`${newsroom && index === 0 ? "attention-lead" : "attention-story-card"} disposition-${p.disposition}`} href={`/attention?source=${readingSourceId}`} key={p.id}>
                 {heroImage(source) && <img className="story-visual" src={heroImage(source)} alt={heroImageAlt(source)} loading="lazy" />}
                 <div className="story-kicker"><span className={`human-state ${p.disposition}`} title={`RAOS state: ${p.disposition}`}>{attentionLabel(p.disposition)}</span><span>{sourceOrigin(source)}</span>{when && <><span>·</span><span title={formatBeijingTime(when)}>{formatRelativeTime(when)}</span></>}</div>
                 <h2>{title}</h2>

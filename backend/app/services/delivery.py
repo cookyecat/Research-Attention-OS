@@ -10,6 +10,7 @@ from sqlalchemy.orm.attributes import flag_modified
 
 from app.config import settings
 from app.models.delivery import DeliveryEnvelope
+from app.models.event import Event
 from app.models.scheduler import AttentionPlan
 from app.models.source import Source
 
@@ -56,14 +57,27 @@ def _channel_status(channels: tuple[str, ...]) -> dict:
     return status
 def _payload_for_plan(db: Session, plan: AttentionPlan) -> dict:
     source = None
-    if _value(plan.candidate_type).upper() == "SOURCE":
+    event = None
+    candidate_type = _value(plan.candidate_type).upper()
+    if candidate_type == "SOURCE":
         source = db.get(Source, plan.candidate_id)
+    elif candidate_type == "EVENT":
+        event = db.get(Event, plan.candidate_id)
     return {
         "attention_plan_id": str(plan.id),
         "candidate_type": _value(plan.candidate_type),
         "candidate_id": str(plan.candidate_id),
         "source_id": str(source.id) if source is not None else None,
-        "title": source.title if source is not None else None,
+        "event_id": str(event.id) if event is not None else None,
+        "title": source.title if source is not None else (event.title if event is not None else None),
+        "summary": event.summary if event is not None else None,
+        "event_type": event.event_type if event is not None else None,
+        "actors": list(event.actors or []) if event is not None else [],
+        "action": event.action if event is not None else None,
+        "object": event.object if event is not None else None,
+        "current_state": event.current_state if event is not None else None,
+        "time_context": event.time_context if event is not None else None,
+        "location": event.location if event is not None else None,
         "canonical_url": source.canonical_url if source is not None else None,
         "disposition": _value(plan.disposition),
         "urgency": _value(plan.urgency),

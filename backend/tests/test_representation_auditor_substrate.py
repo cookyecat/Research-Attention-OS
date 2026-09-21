@@ -201,6 +201,21 @@ def test_audited_bridge_persists_zero_to_many_real_event_projections(db):
                         "uncertainties": [],
                         "rendered_event_text": "Company launched Product A.",
                     },
+                    "admitted_semantic_units": [
+                        {
+                            "unit_id": "evt-1:action_change:1",
+                            "statement": "Company launched Product A.",
+                            "epistemic_status": "SOURCE_CLAIM",
+                            "confidence": "HIGH",
+                            "supports": [
+                                {
+                                    "source_id": str(source.id),
+                                    "support_pointer": "PARA 0001",
+                                    "support_excerpt": "Company launched Product A.",
+                                }
+                            ],
+                        }
+                    ],
                     "audit": {"n_admitted_edges": 1},
                 },
                 {
@@ -214,6 +229,21 @@ def test_audited_bridge_persists_zero_to_many_real_event_projections(db):
                         "uncertainties": [],
                         "rendered_event_text": "Company announced Product B pricing.",
                     },
+                    "admitted_semantic_units": [
+                        {
+                            "unit_id": "evt-2:action_change:1",
+                            "statement": "Company announced Product B pricing.",
+                            "epistemic_status": "SOURCE_CLAIM",
+                            "confidence": "MEDIUM",
+                            "supports": [
+                                {
+                                    "source_id": str(source.id),
+                                    "support_pointer": "PARA 0002",
+                                    "support_excerpt": "Company announced Product B pricing.",
+                                }
+                            ],
+                        }
+                    ],
                     "audit": {"n_admitted_edges": 1},
                 },
             ],
@@ -232,6 +262,11 @@ def test_audited_bridge_persists_zero_to_many_real_event_projections(db):
     assert len(rows) == 2
     assert {row.frame_payload["event_key"] for row in rows} == {"evt-1", "evt-2"}
     assert all(row.frame_payload["semantic_provenance"]["audited_projection"] is True for row in rows)
+    assert all(row.frame_contract_version == "event-evidence-frame-v0.3" for row in rows)
+    by_key = {row.frame_payload["event_key"]: row for row in rows}
+    assert by_key["evt-1"].frame_payload["audited_semantic_units"][0]["unit_id"] == "evt-1:action_change:1"
+    assert by_key["evt-1"].frame_payload["audited_semantic_units"][0]["supports"][0]["support_pointer"] == "PARA 0001"
+    assert by_key["evt-2"].frame_payload["audited_semantic_units"][0]["unit_id"] == "evt-2:action_change:1"
 
     empty = ingest_text(db, "No admitted event.", title="no event")
     db.flush()

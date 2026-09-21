@@ -183,8 +183,18 @@ def test_pipeline_created_attention_plan_owns_delivery_envelope(client, db):
 
 
 def test_external_worker_ignores_unavailable_channels(db, monkeypatch):
+    from sqlalchemy.orm import sessionmaker
+    import app.db as app_db
     from app.config import settings
     from app.delivery_worker import deliver_external_once
+
+    # The worker imports app.db.SessionLocal at call time. Keep this regression
+    # isolated from any real/dogfood database state by binding it to this test DB.
+    monkeypatch.setattr(
+        app_db,
+        "SessionLocal",
+        sessionmaker(bind=db.get_bind(), autoflush=False, expire_on_commit=False),
+    )
     monkeypatch.setattr(settings, 'delivery_email_to', None)
     monkeypatch.setattr(settings, 'delivery_smtp_host', None)
     monkeypatch.setattr(settings, 'delivery_push_webhook_url', None)

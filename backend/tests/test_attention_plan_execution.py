@@ -13,6 +13,8 @@ from app.cognitive.rule_provider import RuleBasedCognitiveProvider
 from app.enums import Disposition, ExpectedOutput
 from app.models.analysis import AnalysisRun
 from app.models.kernel import KernelPatch
+from app.models.scheduler import AttentionPlan
+from app.models.source import Source
 from app.models.watch import Watch
 from app.services.scheduler import PlanDraft, validate_plan
 from tests.conftest import add_text, analyze
@@ -370,4 +372,75 @@ def test_policy_watch_binds_to_targeted_decision_cause_not_all_locate_matches(cl
     watches = _watches_for_plan(db, UUID(result["attention_plan"]["id"]))
     assert len(watches) == 1
     assert watches[0].kernel_target_ids == [chosen["id"]]
-    assert watches[0].target_ref == chosen["title"]
+    assert watches[0].target_type == "EVENT"
+    assert watches[0].target_ref == result["event_processor"]["candidate"]["title"]
+
+
+
+def test_same_event_policy_watch_reuses_lifecycle(client: TestClient, db, monkeypatch):
+    import app.services.pipeline as pipeline_mod
+
+    monkeypatch.setattr(pipeline_mod, "route", _force_route(Disposition.WATCH, ExpectedOutput.WATCH))
+    src = add_text(
+        client,
+        "A developing result that should remain under one Event lifecycle.",
+        title="event-watch-reuse",
+    )
+    first = analyze(client, src["id"])
+    event_id = UUID(first["attention_plan"]["candidate_id"])
+
+    watches = db.execute(
+        select(Watch).where(Watch.status == "ACTIVE", Watch.target_type == "EVENT")
+    ).scalars().all()
+    event_watches = []
+    for watch in watches:
+        plan = db.get(AttentionPlan, watch.attention_plan_id) if watch.attention_plan_id else None
+        if plan is not None and plan.candidate_id == event_id:
+            event_watches.append(watch)
+    assert len(event_watches) == 1
+    watch_id = event_watches[0].id
+
+    first_plan = db.get(AttentionPlan, UUID(first["attention_plan"]["id"]))
+    second_plan = AttentionPlan(
+        candidate_type="EVENT",
+        candidate_id=event_id,
+        disposition=first_plan.disposition,
+        processing_modes=list(first_plan.processing_modes or []),
+        urgency=first_plan.urgency,
+        cognitive_budget_minutes=first_plan.cognitive_budget_minutes,
+        kernel_target_ids=list(first_plan.kernel_target_ids or []),
+        expected_output=first_plan.expected_output,
+        reason="same Event later decision",
+        watch_after_processing=True,
+        scheduler_version=first_plan.scheduler_version,
+        attention_policy_version=first_plan.attention_policy_version,
+        runtime_context_id=first_plan.runtime_context_id,
+        runtime_snapshot=dict(first_plan.runtime_snapshot or {}),
+        score_debug={},
+        analysis_run_id=first_plan.analysis_run_id,
+    )
+    db.add(second_plan)
+    db.flush()
+    draft = _force_route(Disposition.WATCH, ExpectedOutput.WATCH)(None)
+    source = db.get(Source, UUID(src["id"]))
+    reused = pipeline_mod._fulfill_watch_obligation(
+        db,
+        draft=draft,
+        source=source,
+        matches=[],
+        plan=second_plan,
+        analysis_run_id=first_plan.analysis_run_id,
+    )
+    assert len(reused) == 1
+    assert reused[0].id == watch_id
+    assert reused[0].attention_plan_id == second_plan.id
+
+    watches = db.execute(
+        select(Watch).where(Watch.status == "ACTIVE", Watch.target_type == "EVENT")
+    ).scalars().all()
+    event_watches = []
+    for watch in watches:
+        plan = db.get(AttentionPlan, watch.attention_plan_id) if watch.attention_plan_id else None
+        if plan is not None and plan.candidate_id == event_id:
+            event_watches.append(watch)
+    assert len(event_watches) == 1

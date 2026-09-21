@@ -1,0 +1,482 @@
+{
+  "contract": "jev-observed-world-trace-v0.1",
+  "frozen_at": "2026-09-21T02:00:00+08:00",
+  "scope": "RAOS-observed acquisition sample, not a population-level estimate of global Jev attention",
+  "matching_rule": {
+    "fields": [
+      "ExternalInformationItem.title",
+      "ExternalInformationItem.canonical_url"
+    ],
+    "casefold_terms": [
+      "jev",
+      "typesafe",
+      "system one",
+      "system-one",
+      "rlcd"
+    ]
+  },
+  "summary": {
+    "deduplicated_external_items": 44,
+    "date_start": "2026-09-16T12:36:36",
+    "date_end": "2026-09-20T17:08:28",
+    "domain_counts": {
+      "weibo.com": 28,
+      "www.bilibili.com": 15,
+      "frederickparsons.substack.com": 1
+    },
+    "type_counts": {
+      "POST": 28,
+      "VIDEO": 15,
+      "ARTICLE": 1
+    }
+  },
+  "daily": [
+    {
+      "date": "2026-09-16",
+      "new_items": 3,
+      "type_counts": {
+        "POST": 3
+      },
+      "domain_counts": {
+        "weibo.com": 3
+      },
+      "representative_item_ids": [
+        "c66ab7b0-0aec-417f-82de-294d8467421d",
+        "3b00d287-d74c-48b4-badb-d9d9b8299d29",
+        "ad655e0f-0029-4d75-bbd7-fdc53ad744b2"
+      ]
+    },
+    {
+      "date": "2026-09-17",
+      "new_items": 8,
+      "type_counts": {
+        "POST": 7,
+        "VIDEO": 1
+      },
+      "domain_counts": {
+        "weibo.com": 7,
+        "www.bilibili.com": 1
+      },
+      "representative_item_ids": [
+        "4d488ac9-71f6-4870-b8e5-5bab6060412e",
+        "19da8750-4ea8-4cbe-b388-5e02dfef6b42",
+        "9442ac5c-c213-492d-9974-f7b33aa35080",
+        "6d60769b-c501-44eb-b607-6d04744ea049",
+        "a4280ff6-fe66-499d-aecc-c4dfc04bee39"
+      ]
+    },
+    {
+      "date": "2026-09-18",
+      "new_items": 15,
+      "type_counts": {
+        "POST": 12,
+        "VIDEO": 3
+      },
+      "domain_counts": {
+        "weibo.com": 12,
+        "www.bilibili.com": 3
+      },
+      "representative_item_ids": [
+        "c4efbf6d-d4fb-4a58-ac24-c2e36f81fcb5",
+        "5cc0ee2b-7fd0-4607-a0c7-024bec776f9e",
+        "5ce425d7-dbc0-41ef-9a5c-60d894ba8e49",
+        "3322c372-4d54-401c-80d1-88fc5dc3d7da",
+        "5b3c2ee4-e464-4677-9008-29d7eb931d00"
+      ]
+    },
+    {
+      "date": "2026-09-19",
+      "new_items": 8,
+      "type_counts": {
+        "VIDEO": 4,
+        "POST": 3,
+        "ARTICLE": 1
+      },
+      "domain_counts": {
+        "www.bilibili.com": 4,
+        "weibo.com": 3,
+        "frederickparsons.substack.com": 1
+      },
+      "representative_item_ids": [
+        "6229c224-780d-4849-9621-234d54ab05e3",
+        "e9982754-eb41-4922-a817-756e01b60e0c",
+        "fa074235-e2a6-4cd5-b048-4b1c5bbcc7b1",
+        "c19be024-2df7-4b36-88a8-87977095d7d7",
+        "b99bd14b-1d54-45f3-8e72-f11dd5e0ee67"
+      ]
+    },
+    {
+      "date": "2026-09-20",
+      "new_items": 10,
+      "type_counts": {
+        "POST": 3,
+        "VIDEO": 7
+      },
+      "domain_counts": {
+        "weibo.com": 3,
+        "www.bilibili.com": 7
+      },
+      "representative_item_ids": [
+        "83bfb8ce-c012-46bd-8126-dc9612396770",
+        "5c0f578b-abda-4134-bc56-486512cb2a3a",
+        "98234372-76cd-43d2-a407-8163ed65e1be",
+        "e1448df8-0758-409c-9ff1-1d1c32169d8b",
+        "200c98a9-b5fb-4910-87ea-3e8fad36b1f0"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "external_item_id": "c66ab7b0-0aec-417f-82de-294d8467421d",
+      "published_at": "2026-09-16T12:36:36",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "让 @typesafeai 的新模型 Jev 来玩《超级马里奥兄弟》。 快速推理 + 结构化输出让它出奇地适合实时用例。 我很期待看看这些新模型能做什么！…",
+      "canonical_url": "https://weibo.com/1912085257/RiplKu9EC"
+    },
+    {
+      "external_item_id": "3b00d287-d74c-48b4-badb-d9d9b8299d29",
+      "published_at": "2026-09-16T12:39:46",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "Jev 在实时中玩《毁灭战士》，看起来就像一个真正的玩家。 他们的性能数据：速度快 20 到 200 倍，成本低 40 到 400 倍，输出令牌免费。 现…",
+      "canonical_url": "https://weibo.com/1912085257/Ripn2hdJh"
+    },
+    {
+      "external_item_id": "ad655e0f-0029-4d75-bbd7-fdc53ad744b2",
+      "published_at": "2026-09-16T12:54:55",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "【快讯】ChatGPT 联合发明者，经过 2 年隐秘研发，发布新型 AI 模型「Jev」 ・比 LLM 快 20～200 倍，成本低 40～400 倍 ・…",
+      "canonical_url": "https://weibo.com/1912085257/RiptboWAL"
+    },
+    {
+      "external_item_id": "4d488ac9-71f6-4870-b8e5-5bab6060412e",
+      "published_at": "2026-09-17T00:17:05",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "对于所有好奇 Jev 如何工作的人，我使用 @claudeai 制作了一个可视化解释 :)\n\n这是基于 @harshagundal 在 @huggingf…",
+      "canonical_url": "https://weibo.com/1912085257/RitW4AWpV"
+    },
+    {
+      "external_item_id": "19da8750-4ea8-4cbe-b388-5e02dfef6b42",
+      "published_at": "2026-09-17T00:36:30",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "我获得了对 @typesafeai 新款 Jev 模型的早期访问权限，并为其构建了一个玩俄罗斯方块的演示\n\n生成速度快到让它在向下推送方块\n\n这感觉像是另…",
+      "canonical_url": "https://weibo.com/1912085257/Riu3XlGoJ"
+    },
+    {
+      "external_item_id": "9442ac5c-c213-492d-9974-f7b33aa35080",
+      "published_at": "2026-09-17T00:52:25",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "我和Jev在一个小时内重建了特斯拉全自动驾驶系统。\n\n这个模型是一个完全的解锁。\n[视频]\n\n网页链接",
+      "canonical_url": "https://weibo.com/1912085257/Riuaq7rWj"
+    },
+    {
+      "external_item_id": "6d60769b-c501-44eb-b607-6d04744ea049",
+      "published_at": "2026-09-17T06:51:12",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "突发：浏览器使用 + Jev = 超快 ⚡\n\n查找航班只需 7 秒，成本仅 $0.0039 🤯\n\n> 每步新的动作空间\n> DOM 状态空间\n> 小型 L…",
+      "canonical_url": "https://weibo.com/1912085257/Riww3f8M0"
+    },
+    {
+      "external_item_id": "a4280ff6-fe66-499d-aecc-c4dfc04bee39",
+      "published_at": "2026-09-17T06:58:26",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "卧槽，JEV 的出现很可能就是自动智能交易的起点。\n\n昨天JEV在AI 圈刷屏，今天 Monad 工程师就用JEV做了一个自动交易机器人。\n\n实时读取 M…",
+      "canonical_url": "https://weibo.com/1912085257/RiwyZfpCa"
+    },
+    {
+      "external_item_id": "637b829d-d63c-4465-94c3-2dde19a7a10a",
+      "published_at": "2026-09-17T07:08:45",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "Typesafe：pnewed 💨\nJev：解放 🫡\n\n我在 qwen 4b 基础上训练了一个 MLP，它的表现简直就像 JEV 一样\n\n网页链接 …\n引…",
+      "canonical_url": "https://weibo.com/1912085257/RiwDawWKQ"
+    },
+    {
+      "external_item_id": "2455de8b-5ce3-4006-98af-1b6f3236ded2",
+      "published_at": "2026-09-17T07:48:27",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "这是理解 Jev 的最简单方式：\n\nLLMs 生成答案。\n\nJev 做出决策。\n\n这听起来只是细微差别，但实际上它改变了整个使用场景。\n\n假设你给一个普通…",
+      "canonical_url": "https://weibo.com/1912085257/RiwThBxr9"
+    },
+    {
+      "external_item_id": "08366864-d3f5-495d-9486-9cd31cb5f826",
+      "published_at": "2026-09-17T16:09:58",
+      "item_type": "VIDEO",
+      "domain": "www.bilibili.com",
+      "title": "Jev + Browser Use 实测：我试过最快的 AI Agent 到底有多强？",
+      "canonical_url": "https://www.bilibili.com/video/BV1Yde66dEkh"
+    },
+    {
+      "external_item_id": "c4efbf6d-d4fb-4a58-ac24-c2e36f81fcb5",
+      "published_at": "2026-09-18T00:09:08",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "好吧，所以 Jev 实际上能非常好地使用电脑\n\n没有任何截图，或者 LLM，也没有像素离开我的 Mac\n\n我甚至不读取 DOM 元素\n\n一个本地的 Cor…",
+      "canonical_url": "https://weibo.com/1912085257/RiDjlFBQQ"
+    },
+    {
+      "external_item_id": "5cc0ee2b-7fd0-4607-a0c7-024bec776f9e",
+      "published_at": "2026-09-18T00:12:22",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "jev 太疯狂了 🤯\n\n以下是 Jev 以超人速度玩《地铁跑酷》，同时还玩了 50 个游戏。\n\n这次运行的成本不到一分钱。\n\nJev 不会取代像 astr…",
+      "canonical_url": "https://weibo.com/1912085257/RiDkF1XBN"
+    },
+    {
+      "external_item_id": "5ce425d7-dbc0-41ef-9a5c-60d894ba8e49",
+      "published_at": "2026-09-18T00:18:33",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "Jev 的好用方法：\n\n1. 停止直接向 Jev 抛出问题\n2. 让 Jev 成为一个接收 [输入] --> [各维度分数] 的机器\n3. 维度数量和每个…",
+      "canonical_url": "https://weibo.com/1912085257/RiDnaocL6"
+    },
+    {
+      "external_item_id": "3322c372-4d54-401c-80d1-88fc5dc3d7da",
+      "published_at": "2026-09-18T00:28:56",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "我已进入Jev内测资格。\nJev是另一个ChatGPT。",
+      "canonical_url": "https://weibo.com/1912085257/RiDro2Kfb"
+    },
+    {
+      "external_item_id": "5b3c2ee4-e464-4677-9008-29d7eb931d00",
+      "published_at": "2026-09-18T00:32:07",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "Jev 这个 waitlist 还是很给力的，昨天申请，今天就能用上。\n\n给已经拿到 API、但还不知道怎么玩的人整理了一份 Awesome Jev，目前…",
+      "canonical_url": "https://weibo.com/1912085257/RiDsG7pXK"
+    },
+    {
+      "external_item_id": "a2afeb18-2651-45f9-8748-22ab9cf2154d",
+      "published_at": "2026-09-18T00:45:58",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "让 Jev、Claude Haiku 4.5 和 Gemini 3.5 Flash-Lite 玩俄罗斯方块。相同的 200 块，相同的合法移动，实时。\n\n…",
+      "canonical_url": "https://weibo.com/1912085257/RiDyitfcG"
+    },
+    {
+      "external_item_id": "430e4ffa-600c-4c8d-87c4-8ea26ce34889",
+      "published_at": "2026-09-18T01:03:22",
+      "item_type": "VIDEO",
+      "domain": "www.bilibili.com",
+      "title": "Jev Fully Tested + Browser Use - FASTEST AI Agent I VE TRIED YET",
+      "canonical_url": "https://www.bilibili.com/video/BV1yrey6QEHu"
+    },
+    {
+      "external_item_id": "6027889e-218d-43f9-b643-9ea50e50f331",
+      "published_at": "2026-09-18T01:28:49",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "预测：百万富翁将通过使用定制的Jev风格模型（并行约束解码）产生，这些模型将使代理系统公司已经运行的系统更高效地使用令牌。\n\n让我用一个场景来解释：\n\n想…",
+      "canonical_url": "https://weibo.com/1912085257/RiDPH00CA"
+    },
+    {
+      "external_item_id": "bc991788-ef7c-4509-949e-759de83dded8",
+      "published_at": "2026-09-18T01:31:15",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "他们秘密开发了两年，我秘密开发了两个小时……\n\n很高兴开源 Qwen-2.5-1B-RLCD，这是一个针对需要类型安全的 JSON 工作负载的设备端推理工…",
+      "canonical_url": "https://weibo.com/1912085257/RiDQGdeWD"
+    },
+    {
+      "external_item_id": "997690af-2810-4911-9bbe-f6b339786052",
+      "published_at": "2026-09-18T04:42:19",
+      "item_type": "VIDEO",
+      "domain": "www.bilibili.com",
+      "title": "JEV 深度解析：首个为代码而生的 AI 模型",
+      "canonical_url": "https://www.bilibili.com/video/BV1ZVe26UEht"
+    },
+    {
+      "external_item_id": "067dd2bc-97e1-439d-bab5-fa74971a32c2",
+      "published_at": "2026-09-18T06:07:45",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "有人说Jev就是个分类器，确实是的。但是这个Jev无须你自己训练啊，这就是优势。",
+      "canonical_url": "https://weibo.com/1912085257/RiFEUrWQ7"
+    },
+    {
+      "external_item_id": "b49329f8-d2d1-4ca1-9ddc-53996d0fc095",
+      "published_at": "2026-09-18T11:08:12",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "找到了 @typesafeai Jev 的完美用例：\n\n即时压缩\n\n在 2026 年，为什么压缩仍然是一个摘要提示？\n\nJev 可以通过为每个工具调用评分…",
+      "canonical_url": "https://weibo.com/1912085257/RiHCRw3Vl"
+    },
+    {
+      "external_item_id": "7955bc42-e2d1-4aaf-9a13-5bf41017acf6",
+      "published_at": "2026-09-18T12:30:00",
+      "item_type": "VIDEO",
+      "domain": "www.bilibili.com",
+      "title": "号称200倍速的AI模型Jev，背后藏着什么坑 | Cloud Codes",
+      "canonical_url": "https://www.bilibili.com/video/BV1FMey6LEiL"
+    },
+    {
+      "external_item_id": "17c9fbf8-9a24-4f00-b98b-fe53f5d1609d",
+      "published_at": "2026-09-18T12:40:15",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "为了验证当前最热门的“Jev”的判断力之快，我尝试让它进行邮件分类。\n\n比较的对象是AI各公司的高速模型：Luna、Sonnet、Flash。结果是……遥…",
+      "canonical_url": "https://weibo.com/1912085257/RiIee2RT7"
+    },
+    {
+      "external_item_id": "739d3a8b-883f-4281-ad14-4536af6fdc78",
+      "published_at": "2026-09-18T23:30:27",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "我见过人们将 Jev 描述为“AI if 语句”。但如果它真的就是一个 if 语句呢？\n\n介绍 Probably：一种由 Jev 驱动的编程语言：… 网页…",
+      "canonical_url": "https://weibo.com/1912085257/RiMu943VO"
+    },
+    {
+      "external_item_id": "6229c224-780d-4849-9621-234d54ab05e3",
+      "published_at": "2026-09-19T00:11:49",
+      "item_type": "VIDEO",
+      "domain": "www.bilibili.com",
+      "title": "Peak Code 又有新东西了！AI编程Agent看板 + Jev Ultrafast高速浏览器Agent实测：让Claude Code、Codex等Agen",
+      "canonical_url": "https://www.bilibili.com/video/BV1f4eX6PEPR"
+    },
+    {
+      "external_item_id": "e9982754-eb41-4922-a817-756e01b60e0c",
+      "published_at": "2026-09-19T01:23:16",
+      "item_type": "VIDEO",
+      "domain": "www.bilibili.com",
+      "title": "Jev到底是什么？不是聊天大模型，而是专门给AI做“选择题”的决策模型！本地部署实测+开源项目盘点：模型路由、浏览器Agent、上下文压缩、Computer U",
+      "canonical_url": "https://www.bilibili.com/video/BV13FeX6XEpx"
+    },
+    {
+      "external_item_id": "fa074235-e2a6-4cd5-b048-4b1c5bbcc7b1",
+      "published_at": "2026-09-19T02:14:21",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "jev 类模型没有生成式解码器循环，输出有界，利用并行推理，并且具有极端的压缩/效率激励。这使得它们非常适合在设备上运行（这很快就会发生）。\n\n在那个时候…",
+      "canonical_url": "https://weibo.com/1912085257/RiNyFulpq"
+    },
+    {
+      "external_item_id": "c19be024-2df7-4b36-88a8-87977095d7d7",
+      "published_at": "2026-09-19T05:34:33",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "全网爆火的JEV 上下文即时压缩策略，被狠狠开喷了...\n\n起因是前苹果工程师 Tamara @tamarajtran 开源了 fast-jev-comp…",
+      "canonical_url": "https://weibo.com/1912085257/RiORVw336"
+    },
+    {
+      "external_item_id": "b99bd14b-1d54-45f3-8e72-f11dd5e0ee67",
+      "published_at": "2026-09-19T07:07:22",
+      "item_type": "VIDEO",
+      "domain": "www.bilibili.com",
+      "title": "Ekko Studio + Jev，让 Agent 少一点等待。",
+      "canonical_url": "https://www.bilibili.com/video/BV1jAe46RE2k"
+    },
+    {
+      "external_item_id": "166d71ba-475c-4314-b0d0-5a16712db0cf",
+      "published_at": "2026-09-19T12:30:00",
+      "item_type": "VIDEO",
+      "domain": "www.bilibili.com",
+      "title": "Jev实战指南：10个AI工作流决策场景落地演示 | Mark Kashef",
+      "canonical_url": "https://www.bilibili.com/video/BV1K8eQ65EAE"
+    },
+    {
+      "external_item_id": "37fe5060-cf69-4f21-8305-07ab64dc95a3",
+      "published_at": "2026-09-19T19:35:13",
+      "item_type": "ARTICLE",
+      "domain": "frederickparsons.substack.com",
+      "title": "Testing Jev as a validation gate for drug-discovery agents",
+      "canonical_url": "https://frederickparsons.substack.com/p/can-a-fast-ai-gate-catch-chemistry"
+    },
+    {
+      "external_item_id": "eadfba57-49bd-4931-b252-4be2784f7766",
+      "published_at": "2026-09-19T23:59:08",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "Laya 是 Jev 的一个开源项目，已经超越了他。\n\n它变得越来越快了\n\n网页链接 …\n\n网页链接",
+      "canonical_url": "https://weibo.com/1912085257/RiW6hlxR5"
+    },
+    {
+      "external_item_id": "83bfb8ce-c012-46bd-8126-dc9612396770",
+      "published_at": "2026-09-20T00:21:19",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "不像大型语言模型那样，Jev 并没有发明一个新概念。\n\n分类器已经存在了几十年，接口完全相同 → 提出一个问题，得到一个概率分数。\n\n但是，这就是炒作的核…",
+      "canonical_url": "https://weibo.com/1912085257/RiWfhFkFd"
+    },
+    {
+      "external_item_id": "5c0f578b-abda-4134-bc56-486512cb2a3a",
+      "published_at": "2026-09-20T00:35:11",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "Jev 创始人，Diogo Almeida（前 OpenAI）：\n\n“下一个时代不是 Claude Code 或 Codex 时代，它们仍然属于人类在环路…",
+      "canonical_url": "https://weibo.com/1912085257/RiWkUAChy"
+    },
+    {
+      "external_item_id": "98234372-76cd-43d2-a407-8163ed65e1be",
+      "published_at": "2026-09-20T02:10:46",
+      "item_type": "POST",
+      "domain": "weibo.com",
+      "title": "Jev 控制着这座城市里的每一个交通灯\n\n当我关闭它时，平均等待时间会增加超过 600%\n\n我们现在就需要这个\n[视频]\n\nyou can try it …",
+      "canonical_url": "https://weibo.com/1912085257/RiWXIf2a9"
+    },
+    {
+      "external_item_id": "e1448df8-0758-409c-9ff1-1d1c32169d8b",
+      "published_at": "2026-09-20T04:44:50",
+      "item_type": "VIDEO",
+      "domain": "www.bilibili.com",
+      "title": "剪辑 Agent：Jev >> Hypit",
+      "canonical_url": "https://www.bilibili.com/video/BV1bhev6BEv6"
+    },
+    {
+      "external_item_id": "200c98a9-b5fb-4910-87ea-3e8fad36b1f0",
+      "published_at": "2026-09-20T09:45:57",
+      "item_type": "VIDEO",
+      "domain": "www.bilibili.com",
+      "title": "这个AI不陪你聊天：Jev到底怎么替程序做判断？",
+      "canonical_url": "https://www.bilibili.com/video/BV1Vbeq6mEnV"
+    },
+    {
+      "external_item_id": "62fc6c8f-6417-4dd9-881e-a04a1f30f7ca",
+      "published_at": "2026-09-20T09:46:00",
+      "item_type": "VIDEO",
+      "domain": "www.bilibili.com",
+      "title": "Jev模型核心概念（state、choice、score、noul、置信度）介绍与Python SDK实战、LangChain实战",
+      "canonical_url": "https://www.bilibili.com/video/BV1wSeq6PEbq"
+    },
+    {
+      "external_item_id": "c5b293e1-2b32-4529-9241-60b309460ca1",
+      "published_at": "2026-09-20T14:46:32",
+      "item_type": "VIDEO",
+      "domain": "www.bilibili.com",
+      "title": "Jev为什么故意不聊天：AI真正要补的，是软件里的判断层",
+      "canonical_url": "https://www.bilibili.com/video/BV1yteB6TEh2"
+    },
+    {
+      "external_item_id": "2ef536d6-2473-44ea-ab73-518d03d06f62",
+      "published_at": "2026-09-20T14:49:55",
+      "item_type": "VIDEO",
+      "domain": "www.bilibili.com",
+      "title": "Jev为什么故意不聊天：AI真正要补的，是软件里的判断层",
+      "canonical_url": "https://www.bilibili.com/video/BV1waeB6vEQr"
+    },
+    {
+      "external_item_id": "af566ea9-1c8e-4583-9a4c-eeddb6280d49",
+      "published_at": "2026-09-20T15:23:27",
+      "item_type": "VIDEO",
+      "domain": "www.bilibili.com",
+      "title": "最强自动化模型 Jev来了！AI自动化为什么先做决定？",
+      "canonical_url": "https://www.bilibili.com/video/BV1qyeB6xEur"
+    },
+    {
+      "external_item_id": "9091976e-8414-4a14-bcd7-bbe01926648e",
+      "published_at": "2026-09-20T17:08:28",
+      "item_type": "VIDEO",
+      "domain": "www.bilibili.com",
+      "title": "Jev到底是什么？为什么AI Agent开始“不需要”大模型了？",
+      "canonical_url": "https://www.bilibili.com/video/BV1j2hh6cE5F"
+    }
+  ]
+}

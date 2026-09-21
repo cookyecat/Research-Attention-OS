@@ -3,14 +3,16 @@ from __future__ import annotations
 from pathlib import Path
 
 import yaml
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from sqlalchemy.engine import make_url
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="RAOS_", extra="ignore")
 
     database_url: str = "sqlite:///./raos.db"
-    auto_create_tables: bool = True
+    auto_create_tables: bool = False
     cognitive_provider: str = "rule"
     cognitive_contract: str = "legacy"
     no_delta_awareness_contract: str = "disabled"
@@ -49,6 +51,19 @@ class Settings(BaseSettings):
     runtime_profile: str | None = None
     execution_purpose: str = "UNSPECIFIED"
     runtime_install_mode: str = "manual"
+
+    @field_validator("database_url")
+    @classmethod
+    def normalize_database_url(cls, value: str) -> str:
+        url = make_url(value)
+        if url.get_backend_name() != "sqlite" or not url.database or url.database == ":memory:":
+            return value
+        database = Path(url.database).expanduser()
+        if not database.is_absolute():
+            backend_root = Path(__file__).resolve().parents[1]
+            database = (backend_root / database).resolve()
+            url = url.set(database=str(database))
+        return url.render_as_string(hide_password=False)
 
 
 def _load_runtime_profile(path_value: str | None) -> tuple[dict | None, str | None]:

@@ -100,4 +100,14 @@ app = create_app()
 @app.on_event("startup")
 def startup() -> None:
     if settings.auto_create_tables:
+        if str(settings.execution_purpose or "").upper() == "CANONICAL":
+            raise RuntimeError(
+                "Canonical RAOS forbids Base.metadata.create_all(); "
+                "database schema authority belongs to Alembic migrations."
+            )
         Base.metadata.create_all(bind=engine)
+        return
+
+    from app.schema_authority import assert_database_schema_current
+
+    assert_database_schema_current(engine)

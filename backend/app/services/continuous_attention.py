@@ -8,9 +8,9 @@ from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
 from app.enums import SourceEdgeRelationship
-from app.models.event import EventSource
 from app.models.source import Source, SourceEdge
 from app.models.watch import Watch, WatchCheck, WatchTrigger
+from app.services.event_membership import decision_event_ids_for_sources
 from app.services.pipeline import run_pipeline
 from app.services.source_graph import source_content_identity_eligible, source_edge_authority_eligible
 from app.services.watch_loop import recheck_watch, watch_cumulative_source_ids
@@ -53,11 +53,7 @@ class ArrivalDecision:
 def _event_ids(db: Session, source_ids: list[UUID]) -> set[UUID]:
     if not source_ids:
         return set()
-    return set(
-        db.execute(
-            select(EventSource.event_id).where(EventSource.source_id.in_(source_ids))
-        ).scalars().all()
-    )
+    return decision_event_ids_for_sources(db, source_ids)
 
 def _edges_between(db: Session, new_source_id: UUID, watched_ids: list[UUID]) -> list[SourceEdge]:
     if not watched_ids:

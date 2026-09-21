@@ -1,0 +1,168 @@
+{
+  "corpus_version": "representation-auditor-seed-calibration-v0.1",
+  "purpose": "Small architecture-regression corpus for D3/D4 shadow Representation Auditor. Not a comprehensive benchmark.",
+  "cases": [
+    {
+      "name": "jev_near_duplicate",
+      "category": "same-event_same-external-resource",
+      "a": {
+        "source_id": "1fbc440f-9cc3-4417-8f30-d0146491fd3e",
+        "event_key": "1fbc440f-9cc3-4417-8f30-d0146491fd3e-evt-01"
+      },
+      "b": {
+        "source_id": "a7601f5e-49f5-4e48-966b-f5f70a00ff52",
+        "event_key": "a7601f5e-49f5-4e48-966b-f5f70a00ff52-evt-01"
+      },
+      "expected": {
+        "event_identity": "SAME_EVENT",
+        "provenance_dependency": "UNKNOWN",
+        "relation_context": "RELATED"
+      },
+      "rationale": "Same Jev release occurrence and same canonical external resource; Source version identity must not be mislabeled DERIVED_FROM."
+    },
+    {
+      "name": "jev_related_source",
+      "category": "same-event_cross-source",
+      "a": {
+        "source_id": "1fbc440f-9cc3-4417-8f30-d0146491fd3e",
+        "event_key": "1fbc440f-9cc3-4417-8f30-d0146491fd3e-evt-01"
+      },
+      "b": {
+        "source_id": "9ba9e72a-3dbb-40b2-9066-1b7a2bc5dc27",
+        "event_key": "9ba9e72a-3dbb-40b2-9066-1b7a2bc5dc27-evt-jev-release"
+      },
+      "expected": {
+        "event_identity": "SAME_EVENT",
+        "provenance_dependency": "UNKNOWN",
+        "relation_context": "RELATED"
+      },
+      "rationale": "Both audited frames describe the Jev release and performance claims; no positive provenance evidence authorizes dependency or independence."
+    },
+    {
+      "name": "steam_frame_vs_price",
+      "category": "related-different-event",
+      "a": {
+        "source_id": "7b14458f-6123-4fbe-9c4b-52415e850fee",
+        "event_key": "7b14458f-6123-4fbe-9c4b-52415e850fee-evt-002"
+      },
+      "b": {
+        "source_id": "ba822d55-83d1-4a49-8a1e-dbd56091e63e",
+        "event_key": "ba822d55-steam-frame-accessories"
+      },
+      "expected": {
+        "event_identity": "DIFFERENT_EVENT",
+        "provenance_dependency": "UNKNOWN",
+        "relation_context": "RELATED"
+      },
+      "rationale": "Foveated-rendering/port feasibility and accessory sales are related Steam Frame facts but different transitions."
+    },
+    {
+      "name": "steam_frame_vs_deck2",
+      "category": "same-actor-product-family-hard-negative",
+      "a": {
+        "source_id": "7b14458f-6123-4fbe-9c4b-52415e850fee",
+        "event_key": "7b14458f-6123-4fbe-9c4b-52415e850fee-evt-002"
+      },
+      "b": {
+        "source_id": "afdb6df8-8cde-4ba8-b178-4298f2ece518",
+        "event_key": "afdb6df8-8cde-4ba8-b178-4298f2ece518-evt-0001"
+      },
+      "expected": {
+        "event_identity": "DIFFERENT_EVENT",
+        "provenance_dependency": "UNKNOWN",
+        "relation_context": "RELATED"
+      },
+      "rationale": "Valve hardware context is shared, but Steam Frame rendering and future Steam Deck timing are different events."
+    },
+    {
+      "name": "php_vs_ai_jobs",
+      "category": "unrelated-retrieval-false-positive",
+      "a": {
+        "source_id": "39bd3b81-12eb-41db-b080-bbd37a465f16",
+        "event_key": "39bd3b81-12eb-41db-b080-bbd37a465f16-evt-1"
+      },
+      "b": {
+        "source_id": "de2189a6-0a3e-4a18-a6e6-d8ec5ef1d826",
+        "event_key": "de2189a6-0a3e-4a18-a6e6-d8ec5ef1d826-evt-001"
+      },
+      "expected": {
+        "event_identity": "DIFFERENT_EVENT",
+        "provenance_dependency": "UNKNOWN",
+        "relation_context": "UNRELATED"
+      },
+      "rationale": "A PHP webserver release and a global AI/jobs survey are a retrieval false positive with no event relation."
+    },
+    {
+      "name": "valve_multi_frame",
+      "category": "same-source-multi-event",
+      "a": {
+        "source_id": "7b14458f-6123-4fbe-9c4b-52415e850fee",
+        "event_key": "7b14458f-6123-4fbe-9c4b-52415e850fee-evt-002"
+      },
+      "b": {
+        "source_id": "7b14458f-6123-4fbe-9c4b-52415e850fee",
+        "event_key": "7b14458f-6123-4fbe-9c4b-52415e850fee-evt-001"
+      },
+      "expected": {
+        "event_identity": "DIFFERENT_EVENT",
+        "provenance_dependency": "UNKNOWN",
+        "relation_context": "RELATED"
+      },
+      "rationale": "One article contains multiple event propositions; article identity must not collapse event identity."
+    },
+    {
+      "name": "nature_multi_frame",
+      "category": "same-source-framework-vs-case-study",
+      "a": {
+        "source_id": "bf74b466-ecc9-4226-8247-a27260fbf69f",
+        "event_key": "bf74b466-ecc9-4226-8247-a27260fbf69f-evt-001"
+      },
+      "b": {
+        "source_id": "bf74b466-ecc9-4226-8247-a27260fbf69f",
+        "event_key": "bf74b466-ecc9-4226-8247-a27260fbf69f-evt-003"
+      },
+      "expected": {
+        "event_identity": "DIFFERENT_EVENT",
+        "provenance_dependency": "UNKNOWN",
+        "relation_context": "RELATED"
+      },
+      "rationale": "Paper2Agent framework introduction and Scanpy case-study result are related but distinct event propositions in one paper."
+    },
+    {
+      "name": "paper2agent_vs_openai_ads",
+      "category": "same-domain-unrelated-hard-negative",
+      "a": {
+        "source_id": "bf74b466-ecc9-4226-8247-a27260fbf69f",
+        "event_key": "bf74b466-ecc9-4226-8247-a27260fbf69f-evt-001"
+      },
+      "b": {
+        "source_id": "2f74f725-6a6d-4a1a-a96b-251d56461f9d",
+        "event_key": "2f74f725-6a6d-4a1a-a96b-251d56461f9d-evt-002"
+      },
+      "expected": {
+        "event_identity": "DIFFERENT_EVENT",
+        "provenance_dependency": "UNKNOWN",
+        "relation_context": "UNRELATED"
+      },
+      "rationale": "Paper2Agent scientific tooling and ChatGPT Ads Manager are both AI/agent topics but have no concrete event relation."
+    },
+    {
+      "name": "jev_vs_sensefold",
+      "category": "same-domain-unrelated-hard-negative",
+      "a": {
+        "source_id": "1fbc440f-9cc3-4417-8f30-d0146491fd3e",
+        "event_key": "1fbc440f-9cc3-4417-8f30-d0146491fd3e-evt-01"
+      },
+      "b": {
+        "source_id": "a46f7ee6-7c1f-4599-a26a-44d43a42ee81",
+        "event_key": "a46f7ee6-7c1f-4599-a26a-44d43a42ee81-evt-001"
+      },
+      "expected": {
+        "event_identity": "DIFFERENT_EVENT",
+        "provenance_dependency": "UNKNOWN",
+        "relation_context": "UNRELATED"
+      },
+      "rationale": "Jev model release and Sensefold's MCP architecture change share the AI/agent domain only; there is no concrete shared episode or causal relation."
+    }
+  ]
+}

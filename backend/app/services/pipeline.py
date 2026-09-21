@@ -11,6 +11,7 @@ from app.config import settings
 from app.enums import AuthorType, CandidateType, ExpectedOutput
 from app.models.claim import Claim
 from app.models.evidence import EvidenceLink
+from app.models.event import Event
 from app.models.inference import Inference, InferenceSource
 from app.models.kernel import KernelNode, KernelPatch
 from app.models.observation import Observation
@@ -24,7 +25,10 @@ from app.services.extraction import (
     merge_extractions,
     observation_is_forbidden_inference,
 )
-from app.services.ingestion import attach_or_create_event
+from app.services.event_membership import (
+    decision_event_for_source,
+    membership_debug,
+)
 from app.services.kernel_commit import create_patch
 from app.services.matching import KernelMatch
 from app.services.scheduler import (
@@ -183,7 +187,6 @@ def extract_source(
     analysis_run_id: UUID | None = None,
     independent_source_count: int | None = None,
     extraction_bridge=None,
-    materialize_event_topology: bool = True,
 ) -> tuple[
     ExtractionResult, list[Claim], list[Observation], list[Inference], list[EvidenceLink], dict
 ]:
@@ -224,21 +227,18 @@ def extract_source(
             raise TypeError("extraction_bridge.extract() must return ExtractionBridgeResult")
         merged = bridged.extraction
         extraction_diagnostics = {"mode": "bridge", **dict(bridged.diagnostics or {})}
-    event = None
-    if materialize_event_topology:
-        event = attach_or_create_event(
-            db, source, merged.event_title or source.title, merged.event_summary
-        )
+    # Source extraction owns semantic evidence only. Event topology is created
+    # exclusively by Event Processor V1 after audited extraction completes.
     claims, observations, inferences, links = persist_extraction(
         db,
         source,
         merged,
-        event.id if event is not None else None,
+        None,
         analysis_run_id=analysis_run_id,
     )
-    if materialize_event_topology:
-        for extra in extras:
-            attach_or_create_event(db, extra, merged.event_title or extra.title, merged.event_summary)
+    # Extra Sources are evidence inputs to this AnalysisRun, not implicit members
+    # of the primary Source's Event. Their Event membership must come from their
+    # own primary analysis or an explicit Representation / topology transition.
     return merged, claims, observations, inferences, links, extraction_diagnostics
 
 
@@ -345,6 +345,26 @@ def _execute_authorized_artifacts(
     return _placeholder_delta(authorized, features), []
 
 
+def _active_watch_for_event(db: Session, event_id: UUID) -> Watch | None:
+    watches = db.execute(
+        select(Watch).where(
+            Watch.status == "ACTIVE",
+            Watch.target_type == "EVENT",
+        )
+    ).scalars().all()
+    for watch in watches:
+        if watch.attention_plan_id is None:
+            continue
+        prior_plan = db.get(AttentionPlan, watch.attention_plan_id)
+        if (
+            prior_plan is not None
+            and str(prior_plan.candidate_type) == CandidateType.EVENT.value
+            and prior_plan.candidate_id == event_id
+        ):
+            return watch
+    return None
+
+
 def _fulfill_watch_obligation(
     db: Session,
     *,
@@ -367,10 +387,35 @@ def _fulfill_watch_obligation(
             target_id = getattr(effect, "target_kernel_node_id", None) if effect is not None else None
             scoped_ids = {str(target_id)} if target_id is not None else set()
         scoped_matches = [m for m in scoped_matches if str(m.node_id) in scoped_ids]
-    title = next((m.title for m in scoped_matches if m.title), None)
-    target_ref = title or source.title or str(source.id)
+    if str(plan.candidate_type) == CandidateType.EVENT.value:
+        event = db.get(Event, plan.candidate_id)
+        target_ref = event.title if event is not None else source.title or str(plan.candidate_id)
+        watch = _active_watch_for_event(db, plan.candidate_id)
+        if watch is not None:
+            watch.target_ref = str(target_ref)
+            watch.created_reason = draft.reason or watch.created_reason
+            watch.kernel_target_ids = [str(m.node_id) for m in scoped_matches]
+            watch.analysis_run_id = analysis_run_id
+            watch.attention_plan_id = plan.id
+            existing_trigger_types = {
+                str(row.trigger_type)
+                for row in db.execute(
+                    select(WatchTrigger).where(WatchTrigger.watch_id == watch.id)
+                ).scalars().all()
+            }
+            for trig in triggers:
+                if str(trig) not in existing_trigger_types:
+                    db.add(WatchTrigger(watch_id=watch.id, trigger_type=str(trig), trigger_config={}))
+            db.flush()
+            return [watch]
+        target_type = "EVENT"
+    else:
+        title = next((m.title for m in scoped_matches if m.title), None)
+        target_ref = title or source.title or str(source.id)
+        target_type = "KERNEL" if scoped_matches else "SOURCE"
+
     watch = Watch(
-        target_type="KERNEL" if scoped_matches else "SOURCE",
+        target_type=target_type,
         target_ref=str(target_ref),
         status="ACTIVE",
         created_reason=draft.reason or "AttentionPlan assumed future attention responsibility.",
@@ -477,6 +522,32 @@ def _persist_authorized_artifacts(
     return patches, created_watches
 
 
+def _event_attention_candidate(db: Session, source: Source) -> tuple[CandidateType, UUID]:
+    event = decision_event_for_source(db, source.id)
+    if event is None:
+        raise RuntimeError(
+            "No unique decision-authorized Event candidate for Source; "
+            "refusing Source-centric Attention fallback"
+        )
+    return CandidateType.EVENT, event.id
+
+
+def _completed_run_matches_event_candidate(db: Session, run, source: Source) -> bool:
+    from app.services.analysis_runs import attention_plans_for_run
+
+    event = decision_event_for_source(db, source.id)
+    if event is None:
+        return False
+    plans = attention_plans_for_run(db, run.id)
+    if not plans:
+        return False
+    latest = plans[0]
+    return (
+        str(latest.candidate_type) == CandidateType.EVENT.value
+        and latest.candidate_id == event.id
+    )
+
+
 def run_pipeline(
     db: Session,
     source_id: UUID,
@@ -544,6 +615,8 @@ def run_pipeline(
     strategy_execution = decision_strategy_snapshot(decision_strategy)
     exec_snapshot["decision_strategy"] = strategy_execution
     exec_snapshot["execution_context"] = execution_context
+    from app.services.event_processor import execution_snapshot as event_processor_execution_snapshot
+    exec_snapshot["event_processor"] = event_processor_execution_snapshot()
     bridge_execution = None
     if extraction_bridge is not None:
         bridge_execution = dict(extraction_bridge.execution_snapshot() or {})
@@ -576,6 +649,20 @@ def run_pipeline(
         reprocess=reprocess,
     )
     if kind == "existing" and run.status == "COMPLETED":
+        if not reprocess and not _completed_run_matches_event_candidate(db, run, source):
+            return run_pipeline(
+                db,
+                source_id,
+                extra_source_ids=extra_source_ids,
+                runtime_context_id=runtime_context_id,
+                runtime=runtime,
+                persist_suggested_watches=persist_suggested_watches,
+                reprocess=True,
+                allow_watch_creation=allow_watch_creation,
+                provider=provider,
+                extraction_bridge=extraction_bridge,
+                decision_strategy=decision_strategy,
+            )
         if runtime is not None:
             return _reschedule(
                 db,
@@ -596,6 +683,20 @@ def run_pipeline(
             db.expire(run)
             db.refresh(run)
             if run.status == "COMPLETED":
+                if not _completed_run_matches_event_candidate(db, run, source):
+                    return run_pipeline(
+                        db,
+                        source_id,
+                        extra_source_ids=extra_source_ids,
+                        runtime_context_id=runtime_context_id,
+                        runtime=runtime,
+                        persist_suggested_watches=persist_suggested_watches,
+                        reprocess=True,
+                        allow_watch_creation=allow_watch_creation,
+                        provider=provider,
+                        extraction_bridge=extraction_bridge,
+                        decision_strategy=decision_strategy,
+                    )
                 if runtime is not None:
                     return _reschedule(
                         db, run, runtime, source, persist_suggested_watches=persist_suggested_watches,
@@ -609,6 +710,20 @@ def run_pipeline(
                 break
             time.sleep(0.05)
         if run.status == "COMPLETED":
+            if not _completed_run_matches_event_candidate(db, run, source):
+                return run_pipeline(
+                    db,
+                    source_id,
+                    extra_source_ids=extra_source_ids,
+                    runtime_context_id=runtime_context_id,
+                    runtime=runtime,
+                    persist_suggested_watches=persist_suggested_watches,
+                    reprocess=True,
+                    allow_watch_creation=allow_watch_creation,
+                    provider=provider,
+                    extraction_bridge=extraction_bridge,
+                    decision_strategy=decision_strategy,
+                )
             return hydrate_run(db, run)
         if run.status == "RUNNING":
             raise RuntimeError("AnalysisRun already in progress for this identity")
@@ -622,9 +737,6 @@ def run_pipeline(
             analysis_run_id=run.id,
             independent_source_count=rel_ctx.independent_sources,
             extraction_bridge=extraction_bridge,
-            materialize_event_topology=bool(
-                (execution_context.get("authority") or {}).get("side_effects_authorized")
-            ),
         )
         # D1 shadow-only EventEvidenceFrame. This is an append-only semantic
         # evidence artifact, not Event authority and not a Decision input.
@@ -644,6 +756,17 @@ def run_pipeline(
                 "bridge_execution": bridge_execution if extraction_bridge is not None else None,
             },
         )
+
+        event_processing = None
+        if bool((execution_context.get("authority") or {}).get("side_effects_authorized")):
+            from app.services.event_processor import process_event
+
+            event_processing = process_event(db, source, extraction)
+            resolved_event_id = event_processing.event.id
+            for row in [*claims, *observations]:
+                row.event_id = resolved_event_id
+            db.flush()
+
         extraction.analysis_provenance = {
             "primary_source_id": str(source.id),
             "independent_source_ids": list(rel_ctx.independent_source_ids),
@@ -811,6 +934,10 @@ def run_pipeline(
             payload["no_delta_awareness"] = no_delta_awareness_trace
             payload["execution_digest"] = exec_digest
             payload["execution_snapshot"] = exec_snapshot
+            payload["event_processor"] = {
+                "contract": "event-processor-v1",
+                "status": "SUPPRESSED_NO_SIDE_EFFECT_AUTHORITY",
+            }
             payload["analysis_run"] = {
                 "id": str(run.id),
                 "identity_key": ident,
@@ -829,9 +956,16 @@ def run_pipeline(
             payload["analysis_run"] = run_public(run)
             return payload
 
+        candidate_type, candidate_id = _event_attention_candidate(db, source)
+        score_candidate = {
+            "contract": "event-attention-candidate-v0.1",
+            "candidate_type": candidate_type.value,
+            "candidate_id": str(candidate_id),
+            "membership": membership_debug(db, source.id),
+        }
         plan = AttentionPlan(
-            candidate_type=CandidateType.SOURCE,
-            candidate_id=source.id,
+            candidate_type=candidate_type,
+            candidate_id=candidate_id,
             disposition=draft.disposition.value,
             processing_modes=[],
             urgency=draft.urgency,
@@ -851,6 +985,7 @@ def run_pipeline(
             analysis_run_id=run.id,
             created_at=datetime.now(timezone.utc),
             score_debug={
+                "decision_candidate": score_candidate,
                 "features": features.as_dict(),
                 "cognitive_impact": assessment.as_dict(),
                 "impact_assessor_version": IMPACT_ASSESSOR_VERSION,
@@ -959,6 +1094,10 @@ def run_pipeline(
             "mode": "bridge" if extraction_bridge is not None else "legacy",
             "bridge_execution": bridge_execution,
             "diagnostics": extraction_diagnostics,
+        }
+        payload["event_processor"] = event_processing.as_dict() if event_processing is not None else {
+            "contract": "event-processor-v1",
+            "status": "SUPPRESSED_NO_SIDE_EFFECT_AUTHORITY",
         }
         payload["analysis_run"] = {
             "id": str(run.id),
@@ -1099,9 +1238,22 @@ def _reschedule(
         "provenance": draft.decision_scope_provenance,
     }
     score_debug["no_delta_awareness"] = stored_no_delta_trace
+    from app.services.analysis_runs import attention_plans_for_run
+    prior_plans = attention_plans_for_run(db, run.id)
+    if not prior_plans:
+        candidate_type, candidate_id = _event_attention_candidate(db, source)
+    else:
+        candidate_type = CandidateType(str(prior_plans[0].candidate_type))
+        candidate_id = prior_plans[0].candidate_id
+    score_debug["decision_candidate"] = {
+        "contract": "event-attention-candidate-v0.1",
+        "candidate_type": candidate_type.value,
+        "candidate_id": str(candidate_id),
+        "membership": membership_debug(db, source.id),
+    }
     plan = AttentionPlan(
-        candidate_type=CandidateType.SOURCE,
-        candidate_id=source.id,
+        candidate_type=candidate_type,
+        candidate_id=candidate_id,
         disposition=draft.disposition.value,
         processing_modes=[],
         urgency=draft.urgency,
@@ -1313,6 +1465,8 @@ def serialize_analysis(
         ],
         "attention_plan": {
             "id": str(plan.id),
+            "candidate_type": str(plan.candidate_type),
+            "candidate_id": str(plan.candidate_id),
             "disposition": plan.disposition,
             "update": update,
             "urgency": plan.urgency,

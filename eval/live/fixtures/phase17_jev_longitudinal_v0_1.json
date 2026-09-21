@@ -1,0 +1,85 @@
+{
+  "contract": "jev-longitudinal-benchmark-v0.1",
+  "provenance": "user-observed longitudinal attention fixture; not a factual benchmark of all Jev technical claims",
+  "event_identity": {
+    "label": "Jev model launch / emergence and early validation episode",
+    "actors": [
+      "Jev model team / authors"
+    ],
+    "action": "launch, explain, and early validation of Jev",
+    "object": "Jev model",
+    "time_context": "multi-day emergence episode",
+    "location": null
+  },
+  "epochs": [
+    {
+      "epoch": "t0",
+      "source_label": "brief Weibo introduction",
+      "source_description": "A brief Weibo post introduces a newly released model called Jev with only a simple overview and little technical detail.",
+      "world_state_delta": {
+        "launch_status": "released / newly observed"
+      },
+      "evidence_state_delta": {
+        "secondary_signal": "one brief source",
+        "technical_depth": "low",
+        "independent_corroboration": "low",
+        "external_attention_momentum": "low"
+      },
+      "expected_relation_to_event": "SAME_EVENT"
+    },
+    {
+      "epoch": "t1",
+      "source_label": "broad cross-platform discussion",
+      "source_description": "Two days later, many independent X discussions and analyses appear, broader cross-platform attention grows, and Chinese technical media also report on Jev.",
+      "world_state_delta": {
+        "launch_status": "same launch / emergence episode"
+      },
+      "evidence_state_delta": {
+        "source_breadth": "high increase",
+        "independent_discussion": "high increase",
+        "technical_analysis_depth": "increase",
+        "external_attention_momentum": "high increase"
+      },
+      "expected_relation_to_event": "SAME_EVENT"
+    },
+    {
+      "epoch": "t2",
+      "source_label": "author presentation",
+      "source_description": "The author publishes a new presentation explaining Jev's mechanism and design in substantially more technical detail.",
+      "world_state_delta": {
+        "mechanism_understanding": "richer and less uncertain"
+      },
+      "evidence_state_delta": {
+        "first_party_evidence": "increase",
+        "technical_depth": "high increase"
+      },
+      "expected_relation_to_event": "SAME_EVENT"
+    },
+    {
+      "epoch": "t3",
+      "source_label": "strong independent performance evidence",
+      "source_description": "A strong independent performance or workflow result appears and materially strengthens evidence that Jev has important practical capability.",
+      "world_state_delta": {
+        "practical_capability_evidence": "material increase"
+      },
+      "evidence_state_delta": {
+        "independent_validation": "strong increase",
+        "practical_credibility": "strong increase"
+      },
+      "expected_relation_to_event": "SAME_EVENT"
+    }
+  ],
+  "human_gold": {
+    "profile_id": "user-primary-v0.1",
+    "subjective": true,
+    "label_source": "user retrospective self-report in RAOS research session",
+    "attention_trajectory": [
+      "AWARE",
+      "WATCH",
+      "WATCH",
+      "ENGAGE"
+    ],
+    "note": "This is one human profile gold trajectory, not a universal normative label."
+  },
+  "observed_world_trace_ref": "eval/live/fixtures/phase17_jev_observed_world_trace_v0_1.json"
+}

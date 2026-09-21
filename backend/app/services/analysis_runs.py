@@ -466,6 +466,8 @@ def plan_public(plan: AttentionPlan) -> dict:
     )
     return {
         "id": str(plan.id),
+        "candidate_type": str(plan.candidate_type),
+        "candidate_id": str(plan.candidate_id),
         "disposition": plan.disposition,
         "update": visible["update"],
         "delta_content": visible["delta_content"],

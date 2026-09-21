@@ -1,7 +1,7 @@
 """AnalysisRun provenance, analysis_run_id FKs, pgvector extension.
 
-Does not drop or recreate existing Kernel tables. 0001 remains historical
-(create_all). Subsequent schema changes must stay explicit.
+Does not drop or recreate existing Kernel tables. 0001 is a frozen explicit
+historical snapshot. Subsequent schema changes must stay explicit.
 """
 
 from alembic import op

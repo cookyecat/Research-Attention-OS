@@ -43,7 +43,7 @@ from eval.live.semantic_evidence_extractor_v0_2_6 import (
 )
 from eval.live.semantic_source_loader_v0_1 import LoadedSemanticSource, _render_text_paragraphs
 
-BRIDGE_VERSION = "phase8c2-production-sensor-bridge-v0.2"
+BRIDGE_VERSION = "phase8c2-production-sensor-bridge-v0.3"
 SOURCE_PACKAGING_VERSION = "production-source-to-semantic-sensor-v0.3-url-provenance-blocks"
 URL_PROVENANCE_BLOCK_MAX_CHARS = 580
 
@@ -314,6 +314,7 @@ class SemanticSensorProductionBridgeV0_1:
                     "routing_status": projection["routing_status"],
                     "sensor_summary_diagnostic_only": projection["sensor_event_summary_diagnostic_only"],
                     "audited_projection": projection,
+                    "admitted_semantic_units": admitted,
                     "n_edges": len(rows),
                     "n_admitted_edges": len(admitted),
                     "n_rejected_or_unscorable": len(projection["rejected_or_unscorable_objects"]),

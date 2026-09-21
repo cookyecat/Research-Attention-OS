@@ -86,10 +86,43 @@ unload_label() {
     launchctl bootout "$DOMAIN/$label" >/dev/null 2>&1 || launchctl bootout "$DOMAIN" "$path" >/dev/null 2>&1 || true
   fi
 }
+
+launchd_pid() {
+  local label="$1"
+  launchctl print "$DOMAIN/$label" 2>/dev/null | awk '/^[[:space:]]*pid = / {print $3; exit}'
+}
+
+pid_cwd() {
+  local pid="$1"
+  lsof -a -p "$pid" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p' | head -n 1
+}
+
+cleanup_orphan_group() {
+  local label="$1" expected_cwd="$2" pattern="$3"
+  local managed pid cwd
+  managed="$(launchd_pid "$label" || true)"
+  while read -r pid; do
+    [[ -n "$pid" ]] || continue
+    [[ -n "$managed" && "$pid" == "$managed" ]] && continue
+    cwd="$(pid_cwd "$pid")"
+    [[ "$cwd" == "$expected_cwd" ]] || continue
+    echo "Stopping orphan RAOS process pid=$pid label=$label cwd=$cwd"
+    kill -TERM "$pid" >/dev/null 2>&1 || true
+  done < <(pgrep -f "$pattern" 2>/dev/null || true)
+}
+
+cleanup_orphan_processes() {
+  cleanup_orphan_group "ai.raos.backend" "$ROOT/backend" "uvicorn app.main:app"
+  cleanup_orphan_group "ai.raos.acquisition" "$ROOT/backend" "app.acquisition_worker"
+  cleanup_orphan_group "ai.raos.delivery" "$ROOT/backend" "app.delivery_worker"
+  cleanup_orphan_group "ai.raos.frontend" "$ROOT/frontend" "next-server"
+  sleep 0.4
+}
 install_service() {
   require_runtime
   mkdir -p "$PLIST_DIR" "$LOG_DIR"
   for label in "${LABELS[@]}"; do unload_label "$label"; done
+  cleanup_orphan_processes
   render_plists "$PLIST_DIR"
   for label in "${LABELS[@]}"; do
     launchctl bootstrap "$DOMAIN" "$(plist_path "$label")"
@@ -109,6 +142,7 @@ uninstall_service() {
 
 start_service() {
   require_runtime
+  cleanup_orphan_processes
   render_plists "$PLIST_DIR"
   for label in "${LABELS[@]}"; do
     if ! is_loaded "$label"; then launchctl bootstrap "$DOMAIN" "$(plist_path "$label")"; fi
@@ -118,6 +152,7 @@ start_service() {
 
 stop_service() {
   for label in "${LABELS[@]}"; do unload_label "$label"; done
+  cleanup_orphan_processes
 }
 status_service() {
   local installed=0

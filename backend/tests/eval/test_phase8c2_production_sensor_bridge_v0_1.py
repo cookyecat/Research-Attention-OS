@@ -95,7 +95,12 @@ def test_event_summary_never_routes_and_supported_event_objects_do():
     )
     assert "UNAUDITED SUMMARY MUST NOT ROUTE" not in text
     assert "released Model Z" in text
-    assert result.diagnostics["sources"][0]["events"][0]["routing_status"] == "ROUTABLE"
+    event = result.diagnostics["sources"][0]["events"][0]
+    assert event["routing_status"] == "ROUTABLE"
+    assert event["admitted_semantic_units"]
+    unit_ids = {row["unit_id"] for row in event["admitted_semantic_units"]}
+    assert any("action_change" in unit_id for unit_id in unit_ids)
+    assert all(row["supports"] for row in event["admitted_semantic_units"])
 
 
 def test_event_frame_fails_closed_when_action_change_is_not_sufficient():

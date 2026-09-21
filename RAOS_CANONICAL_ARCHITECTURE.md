@@ -21,6 +21,14 @@ RAOS should observe the world as broadly as practical, understand genuinely new 
 
 The product promise is stronger than "better recommendations": the user should not have to scan the world personally. RAOS should already have observed and judged the incoming world, so the user can understand within seconds **why these items surfaced, why the rest did not, and whether anything requires action now**.
 
+A canonical product formulation is:
+
+> **RAOS maintains the dynamic state of world events and interrupts the human only when that state crosses a cognitive or attention boundary.**
+
+中文：
+
+> **RAOS 维护世界事件的动态状态，并只在状态跨过认知/注意力边界时打扰人。**
+
 ```text
 Observe broadly.
 Understand automatically.
@@ -115,7 +123,21 @@ Representation Auditor
         ↓
 Probabilistic Epistemic World Representation  P(R | E<=t)
         │
-        ├──────────────── Cognitive Transition Path ───────────────┐
+        ├──────────── Topology Commitment Policy ────────────────┐
+        │        expected-loss / versioned deterministic gate    │
+        │        → MERGE / KEEP / DEFER                          │
+        │        → authorized membership / lineage only when     │
+        │          commitment policy and Phase13 permit          │
+        │                                                        │
+        └──────── Event Processor V1 / Event Continuity ─────────┤
+                 one normal Source → one primary EventCandidate    │
+                 candidate retrieval + SAME / DIFFERENT / UNCERTAIN
+                 SAME_EVENT → update existing Event lifecycle      │
+                 DIFFERENT_EVENT / UNCERTAIN → separate Event      │
+                 cross-Source commitment only through explicit     │
+                 Event Processor contract + Phase13 authority      │
+                                                                  ↓
+        ┌──────────────── Cognitive Transition Path ───────────────┐
         │                                                          │
         │  Locate(K_t) → Relation Mapping → Support Binding         │
         │  → Grounding / OPEN_NEW Jurisdiction → Authority          │
@@ -128,13 +150,17 @@ Probabilistic Epistemic World Representation  P(R | E<=t)
            → AWARE iff S AND (D OR P)                               │
                                                                    ↓
 ────────────── Decision / Commitment Plane ───────────────
-Cognitive / no-Delta judgment
+Event-scoped cognitive / no-Delta judgment
         ↓
 DROP / AWARE / WATCH / ENGAGE
-        ├─→ Topology Commitment Policy
-        │      └─ MERGE / KEEP / DEFER / other materialized-topology action
+        ↓
+AttentionPlan(candidate_type=EVENT, candidate_id=event_id)
         ├─→ Decision Cause → Public Update / WATCH / authorized KernelPatch
+        ├─→ current Attention projection
+        │      └─ historical Source plans remain audit history
         └─→ Delivery Envelope (execution only; no decision authority)
+                 ↓
+          representative Source reading path
                  ↓
           SUPPRESSED / PASSIVE / HELD / INTERRUPT
                  ↓
@@ -227,7 +253,12 @@ Representation Auditor          representation-auditor-frame-pair-v0.7
 Probabilistic belief view       representation-belief-view-v0.1 / read-only derived materialization
 Representation↔Cognition mix    representation-cognition-marginalization-v0.1 / eval-only algebra
 Topology Commitment             representation-authority-shadow-v0.2 / E1 shadow only
-Agent / Control Plane           agent-interface-v0.3 / orchestration-only / Phase13-gated writes
+Event membership authority      source-local-event-membership-v0.1 / cross-source E2 still closed
+Event Attention candidate       event-attention-candidate-v0.1 / AttentionPlan(EVENT)
+Current Attention projection    event-centric-current-attention-v0.1 / representative Source path
+Event evidence frame            event-evidence-frame-v0.3 / persisted audited semantic units
+Frame-conditioned cognition     frame-conditioned-cognition-input-v0.1 / validated eval input / production multi-plan deferred
+Agent / Control Plane           agent-interface-v0.4 / event-centric Attention projection / orchestration-only / Phase13-gated writes
 Explicit reference provenance  explicit-cites-v0.1 / append-only-parser-hydration
 Cognition                      research-aligned-cognition-v1
 Relation Mapping               Phase 9A v0.2 frozen contract
@@ -313,6 +344,33 @@ Execution Integrity            execution-integrity-v0.2 / explicit-identity-fail
 59. Equal Auditor response spectra do not imply equal epistemic evidence strength. `representation-belief-view-v0.1` is a response-spectrum/ignorance proxy; stronger corroboration may leave the proxy unchanged after categorical response saturation.
 60. A hypothesis having zero direct influence under the current decision projection does not prove intrinsic decision irrelevance. `not projected into the current decision contract` must be reported separately from `counterfactually decision-invariant`.
 61. Controlled evidence evolution is a core Representation-path validation, distinct from natural longitudinal dogfood. Synthetic controlled epochs may test directional update behavior, but they may not be presented as an empirically learned stochastic-process law.
+62. Event Continuity is a routing semantic, not a direct Attention score. It answers whether new audited Source evidence updates an existing coarse Event lifecycle or starts a new Event before downstream cognition decides whether Attention should change.
+63. Event V1 uses a **coarse editorial episode/story granularity**, not atomic Claim count or atomic state-transition count. One launch episode may include preparation, execution and immediate result; one paper Event may include its method, benchmark results, conclusions and later discussion. The operational test is whether a competent editor would continue one evolving story/case/research story or open a genuinely separate one.
+64. V1 defaults one normal Source to one primary `EventCandidate`. Claims, Observations, benchmark values, quotations, attributes and semantic units may enrich that Event but do not create Event multiplicity. Multi-news digest Sources and general `1 Source -> 0..N decision Events` remain a V2/cardinality-contract problem.
+65. `extra_source in an AnalysisRun` never implies Event membership. Cognition evidence aggregation has no authority to attach extra Sources to the primary Source's Event; cross-Source membership requires an explicit Event identity resolution/commitment.
+66. Event Processor V1 is the only normal canonical path that creates, joins or updates Event topology for a newly analyzed Source. Sensor/Semantic Auditor owns evidence extraction; Event Processor consumes that audited evidence and must not re-audit truth merely to decide Event identity.
+67. Canonical Event resolution is `SAME_EVENT / DIFFERENT_EVENT / UNCERTAIN`. `SAME_EVENT` may authorize a new Source to join an existing Event; `DIFFERENT_EVENT` creates a new Event; `UNCERTAIN` must fail safe by preserving a separate Event hypothesis and never performing a hidden merge.
+68. Cross-Source Event membership is now enabled only through the explicit coarse Event Processor commitment contract (`llm-coarse-event-resolver-v1` plus Phase13 side-effect authority). Title similarity, actor overlap, raw `EventSource`, or `representation-belief-view-v0.1` response frequency alone still has no topology authority.
+69. `AUTHORIZED_SOURCE_LOCAL` remains the initial one-Source Event membership status and does not certify objective world truth. A later explicit SAME_EVENT Event Processor decision may add an `AUTHORIZED` cross-Source membership without rewriting the historical source-local assertion.
+70. Event identity is stable while RAOS knowledge is revisable. The materialized Event row is the current representation; append-only `EventRevision` records CREATE/UPDATE knowledge history. Later evidence may fill missing actors/time/location/state or revise the current description without changing Event identity merely because more claims became known.
+71. Production current Attention is Event-centric. Canonical new decisions persist `AttentionPlan(candidate_type=EVENT, candidate_id=event_id)`. Multiple historical plans for the same Event remain immutable audit history, while canonical current projection exposes only the latest authoritative decision for that Event. The representative Source is a reading/provenance path, not Attention identity.
+72. Policy-generated WATCH responsibility is Event-keyed. Repeated WATCH decisions for the same Event reuse one active Event WATCH and advance its owning/current AttentionPlan; Kernel target ids remain explanatory cognition targets rather than lifecycle identity.
+73. Historical ambiguous multi-member legacy topology is preserved for audit but is not automatically trusted. Explicit Event Processor V1 resolution, not legacy graph shape, determines new cross-Source commitment.
+74. Canonical identity/schema migrations must quiesce old writers. Rollout order is `stop canonical writers -> migrate -> start one canonical runtime`; mixed manual/service writers or tail writes from deprecated code are invalid operating states.
+75. Frame-conditioned cognition may consume only audited semantic units persisted with the EventEvidenceFrame, including explicit evidence supports. Event summary/rendered text alone is not a legal substitute for Support Binding / Grounding evidence. Frame schema version alone is not readiness proof; missing audited units must fail closed.
+76. Phase16B multi-frame evidence remains valid research input, but Event V1 intentionally does not emit 0..N production Event plans from one Source. General multi-event digest support requires a separately versioned public/feedback/WATCH/reschedule/Delivery cardinality contract and must not be smuggled into V1 through Claim splitting.
+77. Canonical database schema authority belongs to Alembic migrations. Historical migrations must be frozen explicit schema transitions and may not derive schema from current `app.models` / `Base.metadata`; canonical runtime must not use `create_all()` to repair schema drift.
+78. Canonical startup must fail closed when the database Alembic revision differs from repository head. A fresh empty database must be able to replay the full migration chain to head and structurally match current ORM metadata with zero drift.
+79. SQLite database identity must be cwd-independent. Relative SQLite URLs are normalized to the backend-root absolute path so backend, Alembic, scripts and launchd cannot silently operate on different same-named database files.
+80. Canonical service mode is single-owner. Repo-owned orphan manual backend/acquisition/delivery/frontend processes must not coexist with the launchd canonical service set; health checks from an old process are not proof that the newly deployed runtime is healthy.
+81. Dynamic Event representation follows Event Sourcing: immutable History / evidence is append-only, while Current EventState is a revisable materialized projection. History and Current State are not interchangeable cognition inputs.
+82. Phase17 freezes `EventState = (WorldState, EvidenceState)`. WorldState describes the current episode; EvidenceState describes the current support/provenance structure. EventDecision and Attention remain outside EventState.
+83. Dynamic Event evolution is recursive: `S_(t+1) = U(S_t, e_(t+1))`. Normal online cognition should consume a sufficient current EventState rather than replay the entire historical evidence bag on every Source arrival.
+84. Evidence accumulation may be stateful and decaying, but EvidenceState is not raw Source count. Reposts/derived reports, independent corroboration, first-party evidence, and technical evidence may carry different informational roles.
+85. Attention is stateful and may use hysteresis: upward and downward transition boundaries need not be identical. This permits inertia near boundaries and prevents `AWARE <-> WATCH` or `WATCH <-> ENGAGE` chatter from small fluctuations.
+86. `P(SAME_EVENT)` is a relational Representation belief between hypotheses; it is not `Event.confidence`, not WorldState, not EvidenceState, and not Attention score.
+87. Longitudinal benchmark Attention labels are profile-scoped Human Gold. A fixed World Trace and Event identity may legitimately yield different Attention trajectories for different Kernels/users; no single personal trajectory is a universal normative label.
+
 
 
 

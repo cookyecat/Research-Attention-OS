@@ -6,7 +6,7 @@ from sqlalchemy import func, select
 
 from app.enums import AttributionType, ClaimType, Disposition, ExpectedOutput, SourceEdgeRelationship
 from app.models.analysis import AnalysisRun
-from app.models.event import EventSource
+from app.models.event import EventMembershipAssertion, EventSource
 from app.models.watch import Watch, WatchCheck, WatchTrigger
 from app.services.continuous_attention import process_source_arrival
 from app.services.extraction import ExtractedClaim, ExtractionResult
@@ -129,6 +129,22 @@ def test_continuous_arrival_distinguishes_article_from_independent_evidence(clie
     assert a_event is not None
     d = add_text(client, "Independent replication confirms the developing result.", title="arrival-D-independent")
     db.add(EventSource(event_id=a_event.event_id, source_id=UUID(d["id"]), relationship="REPORTS", confidence=0.9))
+    db.add(
+        EventMembershipAssertion(
+            workspace_id="pytest",
+            event_id=a_event.event_id,
+            source_id=UUID(d["id"]),
+            frame_ids=[],
+            action="ASSERT",
+            membership="REPORTS_EVENT",
+            contextual_role_fields={"cross_source_commitment": True, "fixture": True},
+            audit_run_id=None,
+            authority_policy_version="pytest-cross-source-membership-v0.1",
+            authority_epoch=1,
+            authority_status="AUTHORIZED",
+            supersedes_assertion_id=None,
+        )
+    )
     db.flush()
 
     d_result = process_source_arrival(db, UUID(d["id"]))
@@ -203,3 +219,62 @@ def test_watch_recheck_propagates_extraction_bridge(client, db, monkeypatch):
     assert payload["extraction_path"]["mode"] == "bridge"
     assert payload["execution_snapshot"]["extraction_bridge"]["bridge_version"] == "test-arrival-bridge-v1"
     assert watch.status in {"ACTIVE", "PROMOTED"}
+
+
+
+def test_successor_recheck_does_not_collapse_event_membership(client, db):
+    from app.models.event import Event, EventMembershipAssertion, EventSource
+
+    a = add_text(
+        client,
+        "Acme launched the Nimbus API public beta at AtlasConf.",
+        title="continuity-predecessor",
+    )
+    initial = analyze(client, a["id"])
+    _make_watch(db, initial)
+
+    a_link = db.execute(
+        select(EventSource).where(EventSource.source_id == UUID(a["id"]))
+    ).scalars().one()
+    predecessor_event_id = a_link.event_id
+
+    b = add_text(
+        client,
+        "Acme later paused the Nimbus API public beta after a reliability incident.",
+        title="continuity-successor",
+    )
+    successor = Event(
+        title="Acme pauses Nimbus API beta",
+        event_type="PUBLICATION",
+        summary="Later state transition.",
+        confidence=0.8,
+        status="CANDIDATE",
+    )
+    db.add(successor)
+    db.flush()
+    db.add(
+        EventSource(
+            event_id=successor.id,
+            source_id=UUID(b["id"]),
+            relationship="REPORTS",
+            confidence=0.9,
+        )
+    )
+    persist_source_edge(
+        db,
+        UUID(b["id"]),
+        UUID(a["id"]),
+        SourceEdgeRelationship.CONTRADICTS,
+    )
+    db.flush()
+
+    result = process_source_arrival(db, UUID(b["id"]))
+    assert result["matched_watch"] is True
+
+    memberships = set(
+        db.execute(
+            select(EventSource.event_id).where(EventSource.source_id == UUID(b["id"]))
+        ).scalars().all()
+    )
+    assert memberships == {successor.id}
+    assert predecessor_event_id not in memberships

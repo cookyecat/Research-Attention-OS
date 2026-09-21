@@ -30,6 +30,7 @@ def reconcile_once(*, limit: int = 20) -> dict:
     from app.db import SessionLocal
     from app.execution_integrity import health_contract
     from app.models.acquisition import InformationSnapshot
+    from app.models.source import Source
     from app.services.pipeline import run_pipeline
 
     health = health_contract()
@@ -38,18 +39,41 @@ def reconcile_once(*, limit: int = 20) -> dict:
     if health["capabilities"].get("cognition") != "READY":
         raise RuntimeError("Canonical cognition is not ready; reconciliation deferred")
 
-    counts = {"eligible": 0, "already_authoritative": 0, "reconciled": 0, "failed": 0}
+    counts = {
+        "eligible": 0,
+        "already_authoritative": 0,
+        "reconciled": 0,
+        "failed": 0,
+        "skipped_unanalyzable": 0,
+    }
     with SessionLocal() as db:
         rows = db.execute(
             select(InformationSnapshot).order_by(InformationSnapshot.captured_at.asc())
         ).scalars().all()
         candidates = []
+        metadata_changed = False
         for row in rows:
             meta = dict(row.snapshot_metadata or {})
-            if meta.get("cognition_deferred") and meta.get("cognition_reconcile_eligible"):
-                candidates.append(row)
+            if not (meta.get("cognition_deferred") and meta.get("cognition_reconcile_eligible")):
+                continue
+
+            source = db.get(Source, row.raos_source_id)
+            if source is None or not str(source.content_text or "").strip():
+                meta["cognition_deferred"] = False
+                meta["cognition_reconcile_eligible"] = False
+                meta["reconciliation_outcome"] = "skipped_unanalyzable_no_content"
+                meta["reconciled_at"] = datetime.now(timezone.utc).isoformat()
+                row.snapshot_metadata = meta
+                flag_modified(row, "snapshot_metadata")
+                counts["skipped_unanalyzable"] += 1
+                metadata_changed = True
+                continue
+
+            candidates.append(row)
             if len(candidates) >= max(1, int(limit)):
                 break
+        if metadata_changed:
+            db.commit()
         counts["eligible"] = len(candidates)
 
         for snapshot in candidates:

@@ -7,6 +7,9 @@ from pathlib import Path
 # production dogfood profile and never rely on no-profile compatibility authority.
 _TEST_RUNTIME_PROFILE = Path(__file__).resolve().parents[2] / "config" / "runtime" / "test-rule-one-delta-v1.yaml"
 os.environ["RAOS_RUNTIME_PROFILE"] = os.environ.get("RAOS_TEST_RUNTIME_PROFILE", str(_TEST_RUNTIME_PROFILE))
+# Tests intentionally use ephemeral ORM-created schemas. Canonical runtime does
+# not; see app.schema_authority.
+os.environ["RAOS_AUTO_CREATE_TABLES"] = "true"
 
 import pytest
 from fastapi.testclient import TestClient

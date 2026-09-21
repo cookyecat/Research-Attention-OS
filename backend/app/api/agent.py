@@ -13,6 +13,8 @@ from app.execution_integrity import require_side_effects_authorized
 from app.deployment_scope import deployment_contract
 from app.enums import TriggerType, WatchTargetType
 from app.models.acquisition import SourceDefinition
+from app.models.analysis import AnalysisRun
+from app.models.event import Event
 from app.models.scheduler import AttentionPlan
 from app.models.source import Source
 from app.models.watch import Watch, WatchCheck, WatchTrigger
@@ -29,11 +31,12 @@ from app.services.agent_delegations import (
 )
 from app.services.active_acquisition import parse_bundle_locator, upsert_watch_query_bundle
 from app.services.analysis_runs import attention_plans_for_run, latest_run_for_source, plan_public, run_public
+from app.services.current_attention import current_attention_plans
 from app.services.ingestion import ingest_url
 from app.services.pipeline import run_pipeline
 
 router = APIRouter()
-AGENT_API_VERSION = "agent-interface-v0.3"
+AGENT_API_VERSION = "agent-interface-v0.4"
 
 
 @router.get("/capabilities")
@@ -46,6 +49,8 @@ def capabilities():
             "agent_plane_role": "orchestration_control_only",
             "canonical_write_integrity": "phase13_required",
             "agent_may_bypass_integrity": False,
+            "attention_candidate_contract": "event-centric-v0.1",
+            "representative_reading_path": "analysis-run-primary-source",
             "read_only_commands": ["capabilities", "today", "attention", "watch-status", "why"],
             "cognition_commands": ["analyze"],
             "delegation_commands": ["watch", "unwatch"],
@@ -55,7 +60,7 @@ def capabilities():
         "deployment": deployment_contract(),
         "commands": {
             "today": "Return the current human-visible residue plus delegated WATCH responsibilities.",
-            "attention": "Return the latest stored canonical AttentionPlan per candidate.",
+            "attention": "Return the current canonical Attention projection; Event decisions expose a representative Source reading path.",
             "analyze": "Ingest or reuse a Source and run the canonical RAOS pipeline.",
             "watch": "Delegate actor provenance into a canonical WATCH and optionally start active acquisition.",
             "watch-status": "Inspect a WATCH and its accumulated checks without cognition.",
@@ -130,29 +135,15 @@ def _source_summary(source: Source | None) -> dict | None:
 
 
 def _latest_plans(db: Session) -> list[AttentionPlan]:
-    from app.execution_integrity import desired_identity, stored_run_authority
-    from app.models.analysis import AnalysisRun
-
-    rows = db.execute(
-        select(AttentionPlan).order_by(AttentionPlan.created_at.desc(), AttentionPlan.id.desc())
-    ).scalars().all()
-    latest: dict[tuple[str, UUID], AttentionPlan] = {}
-    for row in rows:
-        run = db.get(AnalysisRun, row.analysis_run_id) if row.analysis_run_id else None
-        if run is None:
-            if desired_identity() is not None:
-                continue
-        elif not stored_run_authority(run).get("authoritative"):
-            continue
-        key = (str(row.candidate_type), row.candidate_id)
-        if key not in latest:
-            latest[key] = row
-    return list(latest.values())
+    return current_attention_plans(db)
 
 
 def _agent_plan(db: Session, plan: AttentionPlan) -> dict:
     public = plan_public(plan)
     source = db.get(Source, plan.candidate_id) if str(plan.candidate_type) == "SOURCE" else None
+    event = db.get(Event, plan.candidate_id) if str(plan.candidate_type) == "EVENT" else None
+    run = db.get(AnalysisRun, plan.analysis_run_id) if plan.analysis_run_id else None
+    representative_source = source or (db.get(Source, run.source_id) if run is not None else None)
     return {
         "id": str(plan.id),
         "candidate_type": str(plan.candidate_type),
@@ -166,6 +157,27 @@ def _agent_plan(db: Session, plan: AttentionPlan) -> dict:
         "cognitive_budget_minutes": public["cognitive_budget_minutes"],
         "created_at": public["created_at"],
         "source": _source_summary(source),
+        "representative_source_id": str(representative_source.id) if representative_source else None,
+        "representative_source": _source_summary(representative_source),
+        "event": (
+            {
+                "id": str(event.id),
+                "title": event.title,
+                "event_type": event.event_type,
+                "actors": list(event.actors or []),
+                "action": event.action,
+                "object": event.object,
+                "summary": event.summary,
+                "current_state": event.current_state,
+                "status": event.status,
+                "occurred_at": event.occurred_at.isoformat() if event.occurred_at else None,
+                "time_context": event.time_context,
+                "location": event.location,
+                "attributes": dict(event.attributes or {}),
+            }
+            if event is not None
+            else None
+        ),
     }
 
 

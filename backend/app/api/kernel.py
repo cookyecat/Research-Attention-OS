@@ -6,10 +6,14 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.execution_integrity import require_side_effects_authorized
+from app.models.analysis import AnalysisRun
+from app.models.event import Event
 from app.models.kernel import KernelNode, KernelPatch, KernelVersion
 from app.models.scheduler import AttentionPlan
+from app.models.source import Source
 from app.schemas.api import KernelNodeCreate, PatchModifyIn
 from app.services.analysis_runs import plan_public
+from app.services.current_attention import current_attention_plans
 from app.services.kernel_commit import commit_patch
 from app.testing.kernel_fixture import seed_mvp_kernel
 
@@ -164,36 +168,50 @@ def reject_patch(patch_id: UUID, db: Session = Depends(get_db)):
 
 @router.get("/attention")
 def list_attention(db: Session = Depends(get_db)):
-    from app.execution_integrity import desired_identity, stored_run_authority
-    from app.models.analysis import AnalysisRun
-
-    rows = db.execute(select(AttentionPlan).order_by(AttentionPlan.created_at.desc())).scalars().all()
-    plans = []
-    for plan in rows:
-        run = db.get(AnalysisRun, plan.analysis_run_id) if plan.analysis_run_id else None
-        if run is None:
-            if desired_identity() is None:
-                plans.append(plan)
-            continue
-        if stored_run_authority(run).get("authoritative"):
-            plans.append(plan)
-    return [
-        {
-            "id": str(p.id),
-            "candidate_type": p.candidate_type,
-            "candidate_id": str(p.candidate_id),
-            "disposition": p.disposition,
-            "update": plan_public(p)["update"],
-            "urgency": p.urgency,
-            "reason": p.reason,
-            "expected_output": p.expected_output,
-            "cognitive_budget_minutes": p.cognitive_budget_minutes,
-            "kernel_target_ids": p.kernel_target_ids,
-            "score_debug": p.score_debug,
-            "created_at": p.created_at.isoformat() if p.created_at else None,
-        }
-        for p in plans
-    ]
+    plans = current_attention_plans(db)
+    out = []
+    for p in plans:
+        public = plan_public(p)
+        run = db.get(AnalysisRun, p.analysis_run_id) if p.analysis_run_id else None
+        representative = db.get(Source, run.source_id) if run is not None else None
+        event = db.get(Event, p.candidate_id) if str(p.candidate_type).upper() == "EVENT" else None
+        out.append(
+            {
+                "id": str(p.id),
+                "candidate_type": p.candidate_type,
+                "candidate_id": str(p.candidate_id),
+                "representative_source_id": str(representative.id) if representative else None,
+                "event": (
+                    {
+                        "id": str(event.id),
+                        "title": event.title,
+                        "event_type": event.event_type,
+                        "actors": list(event.actors or []),
+                        "action": event.action,
+                        "object": event.object,
+                        "summary": event.summary,
+                        "current_state": event.current_state,
+                        "status": event.status,
+                        "occurred_at": event.occurred_at.isoformat() if event.occurred_at else None,
+                        "time_context": event.time_context,
+                        "location": event.location,
+                        "attributes": dict(event.attributes or {}),
+                    }
+                    if event is not None
+                    else None
+                ),
+                "disposition": p.disposition,
+                "update": public["update"],
+                "urgency": p.urgency,
+                "reason": p.reason,
+                "expected_output": p.expected_output,
+                "cognitive_budget_minutes": p.cognitive_budget_minutes,
+                "kernel_target_ids": p.kernel_target_ids,
+                "score_debug": p.score_debug,
+                "created_at": p.created_at.isoformat() if p.created_at else None,
+            }
+        )
+    return out
 
 
 def _patch(p: KernelPatch) -> dict:
