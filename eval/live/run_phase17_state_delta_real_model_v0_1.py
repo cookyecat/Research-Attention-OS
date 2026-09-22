@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from datetime import datetime, timezone
 import json
 from pathlib import Path
@@ -21,17 +19,19 @@ from app.db import Base
 from app.models.event import Event, EventMembershipAssertion
 from app.models.source import Source
 from app.services.event_observation import EventObservationV01
-from app.services.event_state import WorldStateV02
-from app.services.event_state_transition import (
-    StateTransitionProposalV01,
-    estimate_state_transition,
-    reduce_state_transition,
+from app.services.event_state import (
+    WorldStateV02,
+    make_event_state_v02,
+    structural_evidence_state_v02,
+)
+from app.services.event_state_delta import (
+    StateDeltaV01,
+    apply_state_delta,
+    decide_state_delta,
 )
 
-RUN_VERSION = "phase17-state-transition-phi-real-model-v0.3"
-OUT_DIR = ROOT / "eval/live/results/phase17_state_transition_phi_real_model_v0_3"
-
-
+RUN_VERSION = "phase17-state-delta-real-model-v0.1"
+OUT_DIR = ROOT / "eval/live/results/phase17_state_delta_real_model_v0_1"
 def _db() -> Session:
     engine = create_engine("sqlite+pysqlite:///:memory:", future=True)
     Base.metadata.create_all(engine)
@@ -59,16 +59,13 @@ def _source(db: Session, label: str) -> Source:
         source_type="TEXT",
         title=label,
         content_text=label,
-        fingerprint=f"phase17-phi-{uuid4()}",
+        fingerprint=f"phase17-state-delta-{uuid4()}",
         ingestion_method="CONTROLLED_EVAL",
         raw_metadata={},
     )
     db.add(row)
     db.flush()
-    db.refresh(row)
     return row
-
-
 def _member(db: Session, event: Event, source: Source, *, local: bool = False):
     db.add(
         EventMembershipAssertion(
@@ -78,9 +75,9 @@ def _member(db: Session, event: Event, source: Source, *, local: bool = False):
             frame_ids=[],
             action="ASSERT",
             membership="REPORTS_EVENT",
-            contextual_role_fields={"origin": "PHASE17_PHI_CONTROLLED"},
+            contextual_role_fields={"origin": "PHASE17_STATE_DELTA_CONTROLLED"},
             audit_run_id=None,
-            authority_policy_version="phase17-phi-controlled",
+            authority_policy_version="phase17-state-delta-controlled",
             authority_epoch=1,
             authority_status="AUTHORIZED_SOURCE_LOCAL" if local else "AUTHORIZED",
             supersedes_assertion_id=None,
@@ -94,56 +91,48 @@ def _obs(event: Event, source: Source, key: str, refs: tuple[str, ...], day: int
         event_id=event.id,
         observation_key=(key * 64)[:64],
         source_id=source.id,
-        source_snapshot_id=None,
-        frame_ids=(),
         semantic_input_digests=(f"semantic-{key}",),
         evidence_time=datetime(2026, 9, day, 12, 0, tzinfo=timezone.utc),
         ingest_time=datetime(2026, 9, day, 12, 1, tzinfo=timezone.utc),
-        world_time=None,
         provenance_digest=f"prov-{key}",
         audited_semantic_unit_refs=refs,
     )
-
-
-def _controlled_initial(
+def _controlled_previous(
     db: Session,
     *,
     event: Event,
     source: Source,
-    obs: EventObservationV01,
-    synopsis: str,
+    ref: str,
+    statement: str,
     status: str,
-    refs: tuple[str, ...],
 ):
-    proposal = StateTransitionProposalV01(
-        transition_kind="INITIALIZE",
-        world_state=WorldStateV02(
-            synopsis=synopsis,
-            status=status,
-            effective_at=obs.evidence_time,
-            active_semantic_unit_refs=refs,
-        ),
-        rationale="controlled initial state",
-    )
-    return reduce_state_transition(
+    evidence_state = structural_evidence_state_v02(
         db,
-        event_id=event.id,
-        previous=None,
-        observation=obs,
-        proposal=proposal,
+        event.id,
+        active_semantic_unit_refs=(ref,),
         supporting_source_ids=[source.id],
-    ).next_state
+    )
+    return make_event_state_v02(
+        event_id=event.id,
+        world_state=WorldStateV02(
+            synopsis=statement,
+            status=status,
+            effective_at=datetime(2026, 9, 16, 12, 0, tzinfo=timezone.utc),
+            active_semantic_unit_refs=(ref,),
+        ),
+        evidence_state=evidence_state,
+    )
 
 
 def _run_case(
     *,
     name: str,
-    expected_kind: str,
-    previous_synopsis: str | None,
+    expected_kind: str | None,
+    previous_statement: str | None,
     previous_status: str | None,
     previous_ref: str | None,
     new_statement: str,
-    expected_new_ref: str,
+    new_ref: str,
     expected_status: str | None = None,
 ):
     db = _db()
@@ -151,198 +140,198 @@ def _run_case(
         event = _event(db, name)
         source_ids = []
         previous = None
-        if previous_synopsis is not None:
+        unit_index = {}
+        previous_units = []
+        if previous_statement is not None:
             a = _source(db, "previous evidence")
             _member(db, event, a, local=True)
             source_ids.append(a.id)
-            obs_a = _obs(event, a, "a", (previous_ref,), 16)
-            previous = _controlled_initial(
+            previous = _controlled_previous(
                 db,
                 event=event,
                 source=a,
-                obs=obs_a,
-                synopsis=previous_synopsis,
+                ref=previous_ref,
+                statement=previous_statement,
                 status=previous_status or "ACTIVE",
-                refs=(previous_ref,),
             )
+            previous_row = {
+                "unit_id": previous_ref,
+                "statement": previous_statement,
+                "epistemic_status": "SOURCE_CLAIM",
+                "confidence": "HIGH",
+            }
+            previous_units = [previous_row]
+            unit_index[previous_ref] = previous_row
 
         b = _source(db, "new evidence")
         _member(db, event, b, local=previous is None)
         source_ids.append(b.id)
-        obs_b = _obs(event, b, "b", (expected_new_ref,), 18)
+        obs = _obs(event, b, "b", (new_ref,), 18)
+        new_row = {
+            "unit_id": new_ref,
+            "statement": new_statement,
+            "epistemic_status": "SOURCE_CLAIM",
+            "confidence": "HIGH",
+        }
+        unit_index[new_ref] = new_row
 
-        proposal = estimate_state_transition(
+        delta = decide_state_delta(
             previous=previous,
-            observation=obs_b,
-            previous_active_semantic_units=(
-                []
-                if previous is None
-                else [
-                    {
-                        "unit_id": previous_ref,
-                        "statement": previous_synopsis,
-                        "epistemic_status": "SOURCE_CLAIM",
-                        "confidence": "HIGH",
-                    }
-                ]
-            ),
-            new_semantic_units=[
-                {
-                    "unit_id": expected_new_ref,
-                    "statement": new_statement,
-                    "epistemic_status": "SOURCE_CLAIM",
-                    "confidence": "HIGH",
-                }
-            ],
+            observation=obs,
+            previous_active_semantic_units=previous_units,
+            new_semantic_units=[new_row],
             chat_fn=chat_json,
         )
-
-        reduced = None
-        reducer_error = None
+        observed_kind = delta.kind if delta is not None else None
+        applied = None
+        apply_error = None
         try:
-            reduced = reduce_state_transition(
+            applied = apply_state_delta(
                 db,
                 event_id=event.id,
                 previous=previous,
-                observation=obs_b,
-                proposal=proposal,
+                observation=obs,
+                delta=delta,
                 supporting_source_ids=source_ids,
+                semantic_units_by_ref=unit_index,
             )
         except Exception as exc:
-            reducer_error = f"{type(exc).__name__}: {exc}"
+            apply_error = f"{type(exc).__name__}: {exc}"
 
+        observed_status = (
+            applied.next_state.world_state.status if applied is not None else None
+        )
         return {
             "name": name,
             "expected_kind": expected_kind,
-            "observed_kind": proposal.transition_kind,
-            "kind_match": proposal.transition_kind == expected_kind,
-            "proposal": proposal.model_dump(mode="json"),
+            "observed_kind": observed_kind,
+            "kind_match": observed_kind == expected_kind,
+            "delta": delta.model_dump(mode="json") if delta is not None else None,
             "expected_status": expected_status,
-            "observed_status": proposal.world_state.status,
+            "observed_status": observed_status,
             "status_match": (
-                True if expected_status is None
-                else proposal.world_state.status == expected_status
+                True if expected_status is None else observed_status == expected_status
             ),
-            "reducer_accepted": reduced is not None,
-            "reducer_error": reducer_error,
+            "apply_accepted": applied is not None,
+            "apply_error": apply_error,
             "next_state": (
-                reduced.next_state.model_dump(mode="json") if reduced is not None else None
+                applied.next_state.model_dump(mode="json")
+                if applied is not None
+                else None
             ),
         }
     finally:
         db.close()
-
-
 def run() -> dict:
     cases = [
         _run_case(
-            name="INITIALIZE",
-            expected_kind="INITIALIZE",
-            previous_synopsis=None,
+            name="INITIAL_ADD",
+            expected_kind="ADD",
+            previous_statement=None,
             previous_status=None,
             previous_ref=None,
             new_statement="Jev has been publicly released as a new decision-oriented model.",
-            expected_new_ref="uLaunch",
+            new_ref="uLaunch",
+            expected_status="EMERGING",
         ),
         _run_case(
-            name="CORROBORATION_NO_CHANGE",
-            expected_kind="NO_MATERIAL_CHANGE",
-            previous_synopsis="Jev has been publicly released as a new decision-oriented model.",
+            name="CORROBORATION_NONE",
+            expected_kind=None,
+            previous_statement="Jev has been publicly released as a new decision-oriented model.",
             previous_status="ACTIVE",
             previous_ref="uLaunch",
             new_statement="An independent source reports the same Jev public release without adding a new material fact.",
-            expected_new_ref="uCorroborate",
+            new_ref="uCorroborate",
             expected_status="ACTIVE",
         ),
         _run_case(
-            name="ENRICH",
-            expected_kind="ENRICH",
-            previous_synopsis="Jev has been publicly released and is attracting early discussion.",
+            name="ADD",
+            expected_kind="ADD",
+            previous_statement="Jev has been publicly released.",
             previous_status="ACTIVE",
             previous_ref="uLaunch",
             new_statement="The authors publish a technical presentation explaining Jev's mechanism in substantially more detail.",
-            expected_new_ref="uMechanism",
+            new_ref="uMechanism",
             expected_status="ACTIVE",
         ),
         _run_case(
-            name="TOPIC_SHIFT_ENRICH",
-            expected_kind="ENRICH",
-            previous_synopsis="Jev is demonstrated in a claimed Tesla FSD rebuild use case.",
+            name="TOPIC_SHIFT_ADD",
+            expected_kind="ADD",
+            previous_statement="Jev is demonstrated in a claimed Tesla FSD rebuild use case.",
             previous_status="ACTIVE",
             previous_ref="uFSD",
             new_statement=(
                 "A Monad engineer demonstrates a separate Jev-based automated trading bot "
-                "that reads market data, asks Jev for a Buy/Sell decision, and sends orders "
-                "to an on-chain order book."
+                "that reads market data and sends orders to an on-chain order book."
             ),
-            expected_new_ref="uTrading",
+            new_ref="uTrading",
             expected_status="ACTIVE",
         ),
         _run_case(
-            name="ADDITIONAL_DEMO_ENRICH",
-            expected_kind="ENRICH",
-            previous_synopsis="Jev was demonstrated playing one game in real time.",
+            name="ADDITIONAL_DEMO_ADD",
+            expected_kind="ADD",
+            previous_statement="Jev was demonstrated playing one game in real time.",
             previous_status="ACTIVE",
             previous_ref="uDemoA",
             new_statement=(
-                "A separate later demonstration shows Jev playing a different game in real "
-                "time; the new source does not say the earlier demonstration was wrong."
+                "A separate later demonstration shows Jev playing a different game in real time; "
+                "the new source does not say the earlier demonstration was wrong."
             ),
-            expected_new_ref="uDemoB",
+            new_ref="uDemoB",
             expected_status="ACTIVE",
         ),
         _run_case(
-            name="REPLACE_CURRENT",
-            expected_kind="REPLACE_CURRENT",
-            previous_synopsis="The reported implementation uses a transformer architecture.",
+            name="SUPERSEDE",
+            expected_kind="SUPERSEDE",
+            previous_statement="The reported implementation uses a transformer architecture.",
             previous_status="ACTIVE",
             previous_ref="uOld",
             new_statement="The authors explicitly correct the earlier description and state that the implementation is not a transformer architecture.",
-            expected_new_ref="uCorrection",
+            new_ref="uCorrection",
             expected_status="ACTIVE",
         ),
         _run_case(
             name="CONTEST",
             expected_kind="CONTEST",
-            previous_synopsis="An independent reproduction reports a strong Jev workflow improvement.",
+            previous_statement="An independent reproduction reports a strong Jev workflow improvement.",
             previous_status="ACTIVE",
             previous_ref="uPositive",
             new_statement="A separate independent reproduction fails to reproduce the reported workflow improvement under comparable conditions.",
-            expected_new_ref="uNegative",
+            new_ref="uNegative",
             expected_status="CONTESTED",
         ),
         _run_case(
-            name="RESOLVE_PHASE",
-            expected_kind="REPLACE_CURRENT",
-            previous_synopsis="Jev remains an active launch-and-validation episode.",
+            name="RESOLVE",
+            expected_kind="SUPERSEDE",
+            previous_statement="Jev remains an active launch-and-validation episode.",
             previous_status="ACTIVE",
             previous_ref="uActive",
             new_statement=(
                 "The authors explicitly announce that this Jev launch episode is concluded "
                 "and no further releases or validation updates are planned for this episode."
             ),
-            expected_new_ref="uClosure",
+            new_ref="uClosure",
             expected_status="RESOLVED",
         ),
     ]
     return {
         "run_version": RUN_VERSION,
-        "status": "CONTROLLED_REAL_MODEL_COMPLETE",
+        "status": "CONTROLLED_STATE_DELTA_REAL_MODEL_COMPLETE",
         "cases": cases,
         "diagnostics": {
             "kind_matches": sum(1 for row in cases if row["kind_match"]),
-            "reducer_accepts": sum(1 for row in cases if row["reducer_accepted"]),
             "status_matches": sum(1 for row in cases if row["status_match"]),
+            "apply_accepts": sum(1 for row in cases if row["apply_accepted"]),
             "all_kind_matches": all(row["kind_match"] for row in cases),
             "all_status_matches": all(row["status_match"] for row in cases),
-            "all_reducer_accepted": all(row["reducer_accepted"] for row in cases),
+            "all_apply_accepted": all(row["apply_accepted"] for row in cases),
         },
         "guardrails": [
             "In-memory database only.",
-            "Configured real LLM used only for Phi proposals.",
-            "Deterministic reducer retains canonical support authority.",
+            "Configured real LLM used only for Decide.",
+            "Apply is deterministic and owns canonical state materialization.",
+            "Decide returns only None or minimal StateDelta; it never rewrites next EventState.",
             "No production Event/Attention/WATCH writes.",
-            "Cases fixed before execution; no Human Gold tuning.",
         ],
     }
 
@@ -360,12 +349,10 @@ def main():
             "expected", row["expected_kind"],
             "observed", row["observed_kind"],
             "match", row["kind_match"],
-            "reducer", row["reducer_accepted"],
+            "status", row["observed_status"],
+            "apply", row["apply_accepted"],
         )
-        if row["reducer_error"]:
-            print("  reducer_error:", row["reducer_error"])
-        print("  synopsis:", row["proposal"]["world_state"]["synopsis"])
-        print("  refs:", row["proposal"]["world_state"]["active_semantic_unit_refs"])
+        print("  delta:", json.dumps(row["delta"], ensure_ascii=False))
     print("DIAGNOSTICS", json.dumps(report["diagnostics"], ensure_ascii=False))
 
 
