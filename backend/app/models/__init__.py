@@ -20,6 +20,13 @@ from app.models.observation import Observation
 from app.models.scheduler import AttentionFeedback, AttentionPlan, RuntimeContext
 from app.models.source import Source, SourceAuthor, SourceEdge
 from app.models.watch import Watch, WatchCheck, WatchDelegation, WatchTrigger
+from app.models.user_space import (
+    ProjectionCheckpoint,
+    ProjectionOutbox,
+    SourceSurfaceProjection,
+    UserAttentionProjection,
+    UserSourceAttentionProjection,
+)
 
 __all__ = [
     "Source",
@@ -60,4 +67,9 @@ __all__ = [
     "AttentionSignalSample",
     "ExternalInformationItem",
     "InformationSnapshot",
+    "SourceSurfaceProjection",
+    "UserAttentionProjection",
+    "UserSourceAttentionProjection",
+    "ProjectionOutbox",
+    "ProjectionCheckpoint",
 ]

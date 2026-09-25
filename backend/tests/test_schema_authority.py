@@ -99,3 +99,26 @@ def test_relative_sqlite_database_url_is_anchored_to_backend():
     path = Path(make_url(settings.database_url).database)
     assert path.is_absolute()
     assert path == (BACKEND / "raos.db").resolve()
+
+
+def test_test_runtime_never_create_all_on_import_time_app_engine(monkeypatch):
+    import app.main as main
+
+    calls = []
+
+    def forbidden_create_all(*args, **kwargs):
+        calls.append((args, kwargs))
+        raise AssertionError(
+            "TEST startup must not mutate the import-time app engine"
+        )
+
+    monkeypatch.setattr(main.settings, "auto_create_tables", True)
+    monkeypatch.setattr(main.settings, "execution_purpose", "TEST")
+    monkeypatch.setattr(
+        main.Base.metadata,
+        "create_all",
+        forbidden_create_all,
+    )
+
+    main.startup()
+    assert calls == []

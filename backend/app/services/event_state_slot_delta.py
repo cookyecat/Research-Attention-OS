@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from app.cognitive.client import chat_json_schema
 from app.services.event_observation import EventObservationV01
+from app.services.semantic_primitives import PrimitiveFamily
 from app.services.event_state import (
     EventStateV02,
     WorldStateV02,
@@ -27,16 +28,6 @@ SLOT_APPLIER_CONTRACT = "event-state-slot-applier-v0.2"
 SlotMutationMode = Literal["CREATE", "UPSERT", "CONTEST"]
 DraftTarget = Literal["CREATE", "EXISTING"]
 EventPhase = Literal["EMERGING", "ACTIVE", "CONTESTED", "RESOLVED"]
-PrimitiveFamily = Literal[
-    "STATE",
-    "STRUCTURE",
-    "PROCESS",
-    "FORM",
-    "DISPOSITION",
-    "QUALITY",
-    "RELATION",
-    "OTHER",
-]
 EvidenceDisposition = Literal[
     "WORLD_MUTATION",
     "IDENTITY",

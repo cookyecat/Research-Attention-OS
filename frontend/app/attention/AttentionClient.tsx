@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { api, apiOrNull } from "@/lib/api";
+import { api, apiOrNull, cachedApi, invalidateApiCache } from "@/lib/api";
 import { formatBeijingTime, formatRelativeTime, timestampMs } from "@/lib/time";
 import { attentionLabel } from "@/lib/attentionPresentation";
 import KernelPatchCard from "@/components/KernelPatchCard";
@@ -530,6 +530,40 @@ function titleForPlan(plan: any, source?: SourceSummary) {
   return source ? displayTitle(source) : `${plan?.candidate_type || "Candidate"} ${plan?.candidate_id || ""}`;
 }
 
+function sourceFromAttentionCard(card: any): SourceSummary {
+  return {
+    id: card.id,
+    source_type: card.source_type,
+    title: card.title,
+    canonical_url: card.canonical_url,
+    content_text: card.excerpt,
+    published_at: card.published_at,
+    publisher: card.publisher,
+    ingested_at: card.ingested_at,
+    ingestion_method: card.ingestion_method,
+    raw_metadata: {
+      ...(card.presentation_metadata || {}),
+      hero_image_url: card.hero_image_url,
+      hero_image_cached_url: card.hero_image_url,
+      hero_image_alt: card.hero_image_alt,
+    },
+  };
+}
+
+function planFromAttentionCard(card: any) {
+  return {
+    id: card.attention_plan_id,
+    candidate_type: "EVENT",
+    candidate_id: card.event_id,
+    representative_source_id: card.id,
+    disposition: card.disposition,
+    created_at: card.attention_created_at,
+    reason: card.reason,
+    urgency: card.urgency,
+    cognitive_budget_minutes: card.cognitive_budget_minutes,
+  };
+}
+
 export default function AttentionPage() {
   const params = useSearchParams();
   const sourceId = params.get("source");
@@ -556,11 +590,36 @@ export default function AttentionPage() {
   const [selectedSourceDetail, setSelectedSourceDetail] = useState<SourceSummary | null>(null);
   const [sourceDetailLoading, setSourceDetailLoading] = useState(false);
   const [landscape, setLandscape] = useState<any>(null);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [attentionCounts, setAttentionCounts] = useState<Record<string, number>>({});
+  const [loadingMore, setLoadingMore] = useState(false);
 
-  async function loadPlans() {
-    const [nextPlans, nextSources] = await Promise.all([api<any[]>("/kernel/attention"), api<SourceSummary[]>("/sources?compact=true")]);
-    setPlans(nextPlans);
-    setSources(Object.fromEntries(nextSources.map((source) => [source.id, source])));
+  async function loadPlans(_force = false, append = false) {
+    const params = new URLSearchParams({ limit: "30", disposition: filter });
+    if (query.trim()) params.set("q", query.trim());
+    if (append && nextCursor) params.set("cursor", nextCursor);
+    const payload = await api<any>(`/user-space/attention?${params.toString()}`);
+    const nextPlans = payload.items.map(planFromAttentionCard);
+    const nextSources = payload.items.map(sourceFromAttentionCard);
+    setPlans((current) => append ? [...current, ...nextPlans] : nextPlans);
+    setSources((current) => {
+      const incoming = Object.fromEntries(nextSources.map((source: SourceSummary) => [source.id, source]));
+      return append ? { ...current, ...incoming } : incoming;
+    });
+    setAttentionCounts(payload.counts || {});
+    setNextCursor(payload.next_cursor || null);
+  }
+
+  async function loadMoreAttention() {
+    if (!nextCursor || loadingMore) return;
+    setLoadingMore(true);
+    try {
+      await loadPlans(false, true);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setLoadingMore(false);
+    }
   }
 
   async function loadAnalysis(mode: "read" | "analyze" | "reprocess" = "read") {
@@ -587,7 +646,14 @@ export default function AttentionPage() {
   }
 
 
-  useEffect(() => { loadPlans().catch((e) => setError(String(e.message || e))); }, []);
+  useEffect(() => {
+    if (sourceId) return;
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      loadPlans(false, false).catch((e) => { if (!cancelled) setError(String(e.message || e)); });
+    }, query.trim() ? 140 : 0);
+    return () => { cancelled = true; window.clearTimeout(timer); };
+  }, [sourceId, filter, query]);
   useEffect(() => {
     let cancelled = false;
     setSelectedSourceDetail(null);
@@ -648,7 +714,7 @@ export default function AttentionPage() {
           setActiveAnalysisJob(null);
           const refreshedLandscape = await apiOrNull<any>(`/sources/${sourceId}/landscape`);
           if (!cancelled) setLandscape(refreshedLandscape);
-          await loadPlans();
+          await loadPlans(true);
           return;
         }
         if (job.status === "FAILED") {
@@ -691,13 +757,7 @@ export default function AttentionPage() {
     return `${title} ${p.reason || ""}`.toLowerCase().includes(query.toLowerCase());
   }), [currentPlans, filter, query, sources]);
 
-  const counts = useMemo(() => {
-    const visible = currentPlans.filter((p) => {
-      const source = sourceForPlan(p, sources);
-      return Boolean(source) && !isSystemFixture(source);
-    });
-    return Object.fromEntries(FILTERS.map((f) => [f, f === "CURRENT" ? visible.filter((p) => p.disposition !== "DROP").length : visible.filter((p) => p.disposition === f).length]));
-  }, [currentPlans, sources]);
+  const counts = attentionCounts;
   const editorialShown = useMemo(() => [...shown].sort((a, b) =>
     timestampMs(sourceTimeValue(sourceForPlan(b, sources), b.created_at)) - timestampMs(sourceTimeValue(sourceForPlan(a, sources), a.created_at))
   ), [shown, sources]);
@@ -728,7 +788,7 @@ export default function AttentionPage() {
   }, [sourceId, detailView, analysis, selectedSourceDetail]);
 
   async function afterCommit() {
-    await loadPlans();
+    await loadPlans(true);
     if (sourceId) {
       const existing = await apiOrNull<any>(`/analysis/by-source/${sourceId}`);
       if (existing) setAnalysis(existing);
@@ -767,6 +827,9 @@ export default function AttentionPage() {
     const activeClaim = paperMode ? null : (claims.find((claim: any) => claim.id === selectedClaimId) || activeAnchor?.claim || null);
     const progressPercent = Math.max(0, Math.min(100, Math.round(readingProgress * 100)));
     const progressUnits = paperMode ? paperSectionList.length : paragraphs.length;
+    const referenceSources = landscape?.references?.sources || [];
+    const resolvedReferenceSources = referenceSources.filter((item: any) => !item.stub);
+    const literalReferenceStubs = referenceSources.filter((item: any) => item.stub);
 
     return (
       <>
@@ -884,18 +947,18 @@ export default function AttentionPage() {
                     {landscape.coverage?.source_count > 1 && <span className="landscape-count">{landscape.coverage.source_count} sources</span>}
                   </div>
 
-                  {(landscape.references?.count || 0) > 0 && <div className="landscape-group">
+                  {resolvedReferenceSources.length > 0 && <div className="landscape-group">
                     <div className="landscape-group-title">
-                      <strong>References · {landscape.references.count}</strong>
-                      <span>Explicit links preserved as provenance. A link proves CITES only; it does not by itself prove original source, derivation, independence, or same-event identity.</span>
+                      <strong>Referenced sources · {resolvedReferenceSources.length}</strong>
+                      <span>Known RAOS Sources explicitly linked from this article. CITES does not by itself prove original source, derivation, independence, or same-event identity.</span>
                     </div>
                     <div className="landscape-source-list">
-                      {landscape.references.sources.map((item: any) => (
+                      {resolvedReferenceSources.map((item: any) => (
                         item.canonical_url ? (
                           <a className="landscape-source-row" key={item.source_id} href={item.canonical_url} target="_blank" rel="noreferrer">
                             <span>
                               <strong>{item.title || item.publisher || item.canonical_url || "Referenced source"}</strong>
-                              <small>{item.publisher || item.source_type || "Source"} · {String(item.relationship || "CITES").toLowerCase()}{item.stub ? " · reference stub" : ""}</small>
+                              <small>{item.publisher || item.source_type || "Source"} · explicit link</small>
                             </span>
                             <span aria-hidden="true">↗</span>
                           </a>
@@ -907,14 +970,35 @@ export default function AttentionPage() {
                           >
                             <span>
                               <strong>{item.title || item.publisher || "Referenced source"}</strong>
-                              <small>{item.publisher || item.source_type || "Source"} · {String(item.relationship || "CITES").toLowerCase()}{item.stub ? " · reference stub" : ""}</small>
+                              <small>{item.publisher || item.source_type || "Source"} · explicit link</small>
                             </span>
                             <span aria-hidden="true">→</span>
                           </Link>
                         )
                       ))}
                     </div>
-                    <div className="landscape-audit-line">Provenance authority: literal explicit-link relation only.</div>
+                  </div>}
+
+                  {literalReferenceStubs.length > 0 && <details className="landscape-related">
+                    <summary>Other explicit links · {literalReferenceStubs.length}</summary>
+                    <p>Literal links preserved for provenance. This may include navigation, policy, commerce, author, or unresolved external links; they are not promoted to world context until resolved.</p>
+                    <div className="landscape-source-list">
+                      {literalReferenceStubs.map((item: any) => (
+                        item.canonical_url ? (
+                          <a className="landscape-source-row" key={item.source_id} href={item.canonical_url} target="_blank" rel="noreferrer">
+                            <span>
+                              <strong>{item.title || item.publisher || item.canonical_url || "Explicit link"}</strong>
+                              <small>{item.publisher || item.source_type || "URL"} · literal link</small>
+                            </span>
+                            <span aria-hidden="true">↗</span>
+                          </a>
+                        ) : null
+                      ))}
+                    </div>
+                  </details>}
+
+                  {(landscape.references?.count || 0) > 0 && <div className="landscape-audit-line">
+                    Provenance authority: {landscape.references.count} literal explicit-link relations preserved; only resolved Sources are promoted above.
                   </div>}
 
                   {(landscape.coverage?.other_source_count || 0) > 0 && <div className="landscape-group">
@@ -1199,6 +1283,7 @@ export default function AttentionPage() {
           })}
         </div>
       )}
+      {nextCursor && <div className="library-more"><button className="ghost" disabled={loadingMore} onClick={loadMoreAttention}>{loadingMore ? "Loading…" : "Show 30 more"}</button></div>}
     </>
   );
 }

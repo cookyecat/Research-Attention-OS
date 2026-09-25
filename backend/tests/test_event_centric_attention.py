@@ -205,6 +205,15 @@ def test_http_current_attention_exposes_event_and_representative_source(client):
     assert event_row["event"]["id"] == plan["candidate_id"]
     assert event_row["event"]["title"]
 
+    compact_rows = client.get("/kernel/attention?compact=true").json()
+    compact_event = next(
+        row for row in compact_rows
+        if row["id"] == plan["id"]
+    )
+    assert compact_event["candidate_type"] == "EVENT"
+    assert compact_event["representative_source_id"] == source["id"]
+    assert source["id"] in compact_event["source_ids"]
+
     agent = client.get("/agent/v1/attention").json()
     agent_row = next(row for row in agent["items"] if row["id"] == plan["id"])
     assert agent_row["candidate_type"] == "EVENT"

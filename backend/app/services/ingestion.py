@@ -29,6 +29,7 @@ def persist_normalized(db: Session, normalized: NormalizedSource, *, job: Ingest
         canonical_url=normalized.canonical_url,
         content_text=normalized.content_text,
         published_at=normalized.published_at,
+        ingested_at=datetime.now(timezone.utc),
         publisher=normalized.publisher,
         language=normalized.language,
         fingerprint=fp,
@@ -59,6 +60,15 @@ def persist_normalized(db: Session, normalized: NormalizedSource, *, job: Ingest
     if job:
         job.status = IngestionStatus.PERSISTED
         job.finished_at = datetime.now(timezone.utc)
+    from app.services.user_space_projection import (
+        SOURCE_CHANGED,
+        enqueue_projection_change,
+    )
+    enqueue_projection_change(
+        db,
+        SOURCE_CHANGED,
+        source.id,
+    )
     return source
 
 

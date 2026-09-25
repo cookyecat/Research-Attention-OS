@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import ipaddress
 import json
 import re
 import time
 from typing import Any, Literal
+from urllib.parse import urlparse
 
 import httpx
 from pydantic import BaseModel, ValidationError
@@ -36,6 +38,44 @@ class LLMTimeoutError(LLMError):
 
 class EmbeddingDimensionError(ValueError):
     pass
+
+
+def _httpx_client_kwargs(url: str, timeout: float) -> dict[str, Any]:
+    """Bypass environment proxies for loopback/private network endpoints."""
+    kwargs: dict[str, Any] = {"timeout": timeout}
+    host = (urlparse(url).hostname or "").casefold()
+    direct = host == "localhost" or host.endswith(".local")
+    if host and not direct:
+        try:
+            address = ipaddress.ip_address(host)
+            direct = (
+                address.is_private
+                or address.is_loopback
+                or address.is_link_local
+            )
+        except ValueError:
+            pass
+    if direct:
+        kwargs["trust_env"] = False
+    return kwargs
+
+
+def embedding_query_instruct_enabled() -> bool:
+    """Whether the configured embedding model expects query-side task instruction."""
+    protocol = (settings.embedding_query_protocol or "auto").strip().lower()
+    if protocol in {"qwen", "instruct", "on", "true", "1"}:
+        return True
+    if protocol in {"none", "off", "openai"}:
+        return False
+    model = (settings.embedding_model or "").lower()
+    return "qwen" in model
+
+
+def format_embedding_query(text: str, instruction: str) -> str:
+    """Apply provider-compatible query instruction without touching documents."""
+    if not embedding_query_instruct_enabled():
+        return text
+    return f"Instruct: {instruction}\nQuery: {text}"
 
 
 def thinking_request_fields(
@@ -111,7 +151,7 @@ def chat_json(
     }
     started = time.perf_counter()
     try:
-        with httpx.Client(timeout=timeout) as client:
+        with httpx.Client(**_httpx_client_kwargs(url, timeout)) as client:
             resp = client.post(url, json=payload, headers=headers)
             resp.raise_for_status()
             body = resp.json()
@@ -224,7 +264,7 @@ def embed_texts(texts: list[str], *, timeout: float = 30.0) -> tuple[list[list[f
     payload = {"model": settings.embedding_model, "input": texts}
     headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
     try:
-        with httpx.Client(timeout=timeout) as client:
+        with httpx.Client(**_httpx_client_kwargs(url, timeout)) as client:
             resp = client.post(url, json=payload, headers=headers)
             resp.raise_for_status()
             body = resp.json()

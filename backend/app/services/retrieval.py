@@ -1,10 +1,16 @@
 from __future__ import annotations
 
-import math
 from dataclasses import asdict, dataclass
 from uuid import UUID
 
-from app.cognitive.client import EmbeddingDimensionError, LLMError, embed_texts
+from app.cognitive.client import (
+    EmbeddingDimensionError,
+    LLMError,
+    embed_texts,
+    embedding_query_instruct_enabled,
+    format_embedding_query,
+)
+from app.cognitive.embedding_math import cosine_similarity
 from app.config import settings
 from app.models.kernel import KernelNode
 from app.services.matching import node_text, tokenize, _overlap
@@ -31,33 +37,15 @@ class RetrievalTrace:
 
 
 def query_instruct_enabled() -> bool:
-    protocol = (settings.embedding_query_protocol or "auto").strip().lower()
-    if protocol in {"qwen", "instruct", "on", "true", "1"}:
-        return True
-    if protocol in {"none", "off", "openai"}:
-        return False
-    model = (settings.embedding_model or "").lower()
-    return "qwen" in model
+    return embedding_query_instruct_enabled()
 
 
 def format_query_for_embedding(text: str) -> str:
     """Qwen-style instruct prefix on the query side only. Document/Kernel text stays raw."""
-    if not query_instruct_enabled():
-        return text
-    return f"Instruct: {RAOS_QUERY_EMBED_INSTRUCT}\nQuery: {text}"
+    return format_embedding_query(text, RAOS_QUERY_EMBED_INSTRUCT)
 
 
-def cosine(a: list[float], b: list[float]) -> float:
-    if not a or not b:
-        raise EmbeddingDimensionError("empty embedding")
-    if len(a) != len(b):
-        raise EmbeddingDimensionError(f"dimension mismatch: {len(a)} vs {len(b)}")
-    dot = sum(x * y for x, y in zip(a, b))
-    na = math.sqrt(sum(x * x for x in a))
-    nb = math.sqrt(sum(y * y for y in b))
-    if na == 0 or nb == 0:
-        return 0.0
-    return dot / (na * nb)
+cosine = cosine_similarity
 
 
 def retrieve_kernel_candidates(

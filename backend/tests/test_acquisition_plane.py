@@ -410,3 +410,46 @@ def test_bootstrap_is_deferred_but_not_reconciliation_eligible(db, monkeypatch):
     assert snapshot.snapshot_metadata["cognition_deferred"] is True
     assert snapshot.snapshot_metadata["cognition_reconcile_eligible"] is False
     assert snapshot.snapshot_metadata["cognition_defer_reason"] == "baseline"
+
+
+def test_user_source_surface_excludes_graph_stubs_and_metadata_only(client, db):
+    visible = ingest_text(
+        db,
+        "Readable source body",
+        title="Readable source",
+    )
+    graph_stub = ingest_text(
+        db,
+        "Internal graph node",
+        title="Internal reference node",
+    )
+    graph_stub.ingestion_method = "REFERENCE_STUB"
+
+    metadata_only = ingest_text(
+        db,
+        "Discovery metadata only",
+        title="Metadata-only discovery",
+    )
+    metadata_only.ingestion_method = "BILIBILI_SEARCH"
+    metadata_only.raw_metadata = {
+        **(metadata_only.raw_metadata or {}),
+        "content_scope": "METADATA_ONLY",
+    }
+    db.flush()
+
+    listed_ids = {
+        row["id"]
+        for row in client.get("/sources?compact=true").json()
+    }
+    assert str(visible.id) in listed_ids
+    assert str(graph_stub.id) not in listed_ids
+    assert str(metadata_only.id) not in listed_ids
+
+    graph_search = client.get(
+        "/sources/search?q=Internal%20reference%20node"
+    ).json()
+    metadata_search = client.get(
+        "/sources/search?q=Metadata-only%20discovery"
+    ).json()
+    assert graph_search == []
+    assert metadata_search == []

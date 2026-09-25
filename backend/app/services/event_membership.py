@@ -110,6 +110,15 @@ def _assert_source_local_membership(
     )
     db.add(row)
     db.flush()
+    from app.services.user_space_projection import (
+        MEMBERSHIP_CHANGED,
+        enqueue_projection_change,
+    )
+    enqueue_projection_change(
+        db,
+        MEMBERSHIP_CHANGED,
+        source_id,
+    )
     return row
 
 

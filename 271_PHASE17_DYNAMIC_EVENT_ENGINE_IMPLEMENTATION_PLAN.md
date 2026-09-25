@@ -615,15 +615,16 @@ The production form remains:
 S_{t+1}=R(S_t,\Delta_t)
 \]
 
-## 6.1 `Φ` — Semantic State Delta Estimator
+## 6.1 `Φ / Decide` — Semantic Relation + Minimal State Delta
 
-`Φ` may use an LLM.
+`Φ` may use an LLM, but it no longer rewrites the whole next EventState.
 
 Input:
 
 ```text
 Event Identity
-Previous WorldState
+Previous canonical current state
+Previous active audited semantic units
 New EventObservation
 New audited semantic units
 minimal provenance/evidence context
@@ -631,37 +632,78 @@ minimal provenance/evidence context
 
 `Φ` must NOT read arbitrary full-history prose by default.
 
-Primary Phase17 candidate:
+The Phase17 contract is the mature Event-Sourcing aggregate split:
 
 ```text
-support-constrained recursive projection
+Current State + Input
+-> Decide
+-> Domain Event / State Delta
+-> Apply
+-> New State
 ```
 
-Instead of generating an unbounded patch language, `Φ` proposes the next small WorldState:
+RAOS adopts this rather than inventing a second state-transition architecture.
+
+The RAOS-specific research question is deliberately narrow:
+
+> Given new audited semantic evidence relative to the current Event state, what semantic state change, if any, has occurred?
+
+`Φ` returns either no material WorldState delta:
 
 ```text
-ProposedWorldState {
-    synopsis
-    status
-    effective_at
-    active_semantic_unit_refs[]
+None
+```
+
+or one minimal semantic delta:
+
+```text
+StateDeltaV01 {
+    contract
+
+    kind:
+        ADD
+        | SUPERSEDE
+        | CONTEST
+
+    activate_refs[]
+    retire_refs[]
+
+    supersession_pairs[] {
+        previous_ref
+        new_ref
+        reason
+    }
+
+    phase_change?
+    rationale?
 }
 ```
 
-Optional transition explanation may be persisted for audit:
+Interpretation:
 
 ```text
-NO_MATERIAL_CHANGE
-ENRICH
-REPLACE_CURRENT
-CONTEST
+redundant / corroborating only
+-> None
+
+new compatible current information
+-> ADD
+
+explicit correction / replacement
+-> SUPERSEDE
+
+unresolved incompatible current assertions
+-> CONTEST
 ```
 
-These labels are transition metadata, not Event ontology.
+`retire_refs` under ADD means projection compaction, not that immutable historical evidence became false.
 
-### Support constraint
+A later different occurrence, demo, example, object, timestamp, or use case is NOT by itself supersession.
 
-Every proposed `active_semantic_unit_ref` must belong to:
+Phase17 intentionally does not introduce a larger semantic ontology such as REFINE/STRENGTHEN/WEAKEN/MERGE unless a benchmarked counterexample later proves one is required.
+
+### Support constraint and aliases
+
+Every delta ref must belong to:
 
 ```text
 previous active refs
@@ -671,35 +713,118 @@ new observation audited refs
 
 The LLM may not invent unsupported current-state facts.
 
-## 6.2 `R` — Deterministic Reducer
+Long semantic-unit identifiers are mechanical identifiers, not a reasoning task. A Decide implementation may expose temporary aliases:
 
-`R` owns authority to form next canonical state.
+```text
+P001, P002, ... = previous active support
+N001, N002, ... = new observation support
+```
+
+The program maps these aliases back to canonical semantic-unit refs before persistence. Aliases never become canonical EventState or History identifiers.
+
+## 6.2 `R / Apply` — Deterministic State Transition Authority
+
+`R` owns canonical state formation.
 
 Responsibilities:
 
 ```text
-1. validate observation_key has not already been applied
-2. validate support refs
-3. validate event identity unchanged
-4. materialize ProposedWorldState
-5. recompute EvidenceState deterministically from:
+1. validate observation_key / Event identity invariants
+2. validate every delta ref
+3. validate delta-kind semantics
+4. apply activate_refs / retire_refs deterministically
+5. apply explicit supersession semantics
+6. apply coarse lifecycle phase transition
+7. recompute EvidenceState deterministically from:
    Event membership + SourceGraph provenance
-6. update selected FilterState, if any
-7. compute state_digest
-8. append EventRevision
-9. update Event read-model rendering
+8. materialize EventState
+9. compute state_digest
+10. append EventRevision
+11. update non-authoritative read-model rendering
 ```
 
 `R` is deterministic for the same:
 
 ```text
-previous state
-+ observation
-+ Phi output
-+ policy versions
+previous canonical state
++ admitted StateDelta
++ evidence prefix
++ reducer/policy version
 ```
 
-## 6.3 Do not let Event.attributes become the hidden state engine
+No second LLM repair step sits between Decide and Apply. Invalid deltas fail closed.
+
+## 6.3 Relation-only raw-ref baseline and the minimal RAOS extension
+
+A controlled Event-Sourcing baseline was evaluated with StateDelta operating directly on raw `active_semantic_unit_refs`.
+
+On the frozen Jev prefix (8 observations / 79 Event-Gold semantic units), the relation classifier was semantically clean but produced:
+
+```text
+ADD x 8
+retire_refs = [] throughout
+active refs = 79 / history refs = 79
+```
+
+This falsifies the hypothesis that raw evidence refs alone are a sufficient Aggregate State representation.
+
+The reason is structural rather than a prompt bug:
+
+> many historical evidence statements can remain true simultaneously, while the Aggregate State must still summarize them into a smaller set of derived current facts.
+
+This is exactly the distinction Event Sourcing makes between immutable domain events and derived Aggregate State.
+
+The minimal RAOS-specific extension to evaluate next is therefore:
+
+```text
+CurrentFactV01 {
+    fact_id
+    text
+    support_refs[]
+}
+```
+
+with StateDelta operating on current facts rather than directly treating every evidence ref as one state variable.
+
+The intended invariant is:
+
+```text
+History:
+all admitted observations / audited semantic units / admitted deltas
+
+Current semantic state:
+small set of derived current facts
+
+Grounding:
+each current fact -> audited support refs
+```
+
+No fixed fact-count cap, salience weighting, large Claim ontology, or threshold model is introduced at this stage.
+
+This CurrentFact layer is an experimental Phase17.3 candidate until it passes the frozen Jev longitudinal gate.
+
+## 6.4 `synopsis` is a read-model rendering, not transition authority
+
+`WorldStateV02.synopsis` remains temporarily for schema compatibility and human/cognition-facing rendering.
+
+Its role is explicitly downgraded:
+
+```text
+Canonical transition authority:
+active semantic state/support
++ lifecycle/status
++ effective time
++ EvidenceState
+
+Read-model rendering:
+synopsis
+```
+
+Decide must not rewrite the next state by treating synopsis as the canonical object.
+
+For Phase17.3, no database migration is required solely to remove the existing synopsis field.
+
+## 6.4 Do not let Event.attributes become the hidden state engine
 
 After production recursive filtering is enabled:
 
@@ -715,7 +840,7 @@ Current EventState becomes the canonical decision-bearing Representation project
 
 ---
 
-# 7. EventRevision V2 transition record
+# 7. EventRevision V2 — persist Observation and admitted StateDelta
 
 Phase17 production revision payload should evolve toward:
 
@@ -737,10 +862,18 @@ EventRevision {
         }
 
         transition {
-            phi_contract
+            decide_contract
             reducer_contract
-            transition_kind?
-            rationale?
+
+            state_delta? {
+                contract: event-state-delta-v0.1
+                kind
+                activate_refs[]
+                retire_refs[]
+                supersession_pairs[]
+                phase_change?
+                rationale?
+            }
         }
 
         event_state {
@@ -758,6 +891,10 @@ EventRevision {
 }
 ```
 
+If Decide returns no material WorldState delta, the Observation still remains in immutable evidence/history and EvidenceState may still advance.
+
+A material WorldState event is not fabricated merely to record that an Observation arrived.
+
 Revision-chain authority remains structural:
 
 ```text
@@ -771,7 +908,30 @@ No timestamp-based head guessing.
 
 # 8. Replay contract
 
-Replay is a first-class correctness mechanism, not only a debug tool.
+Replay is a first-class Event-Sourcing correctness mechanism.
+
+The canonical replay path MUST NOT re-call the stochastic LLM Decide function.
+
+Online admission:
+
+```text
+Observation
++
+Current State
+-> Decide / Φ
+-> admitted persisted StateDelta
+-> Apply / R
+-> EventState
+```
+
+Deterministic rebuild:
+
+```text
+persisted admitted StateDelta stream
++ deterministic evidence-prefix reconstruction
+-> Apply / R only
+-> rebuilt EventState
+```
 
 Define:
 
@@ -782,23 +942,24 @@ rebuild_event_state(event_id, as_of_evidence_time=None)
 Algorithm:
 
 ```text
-load admitted Event observations
-dedupe by observation_key
-sort by evidence_time + observation_key
+load admitted Event revisions / deltas
+dedupe observation identity
+order by evidence_time + observation_key
 start from empty/nearest valid snapshot
-apply Phi/R using frozen contract versions
+apply persisted admitted deltas through frozen reducer/policy versions
+recompute deterministic EvidenceState
 return rebuilt state + state_digest
 ```
 
 Production invariant:
 
 ```text
-online state_digest
+online canonical state_digest
 ==
-replayed state_digest
+replayed canonical state_digest
 ```
 
-for the same observation set and policy versions.
+for the same admitted delta stream, evidence prefix, and policy versions.
 
 If not equal:
 
@@ -806,6 +967,8 @@ If not equal:
 fail validation
 do not silently overwrite canonical state
 ```
+
+Re-calling Decide over the same observations is a model reproducibility experiment, not Event-Sourcing replay correctness.
 
 ---
 
@@ -1204,7 +1367,7 @@ state remains compact
 
 ## Phase17.3 — Longitudinal Event-state replay
 
-Status: **ACTIVE — HYDRATION COMPLETE / EVENT-GOLD SEMANTIC PROJECTION IN PROGRESS**
+Status: **ACTIVE — LONGITUDINAL REPLAY RUNNING / CURRENT-STATE REPRESENTATION RESEARCH ACTIVE**
 
 Historical-data readiness finding:
 
@@ -1247,6 +1410,53 @@ The benchmark Event-Gold projector exists because the Jev fixture has already fr
 
 A Source with zero projected Event units is legal. It contributes no new WorldState semantic content; during replay it may only produce deterministic `NO_MATERIAL_CHANGE` at the WorldState layer while still being available to EvidenceState/provenance accounting.
 
+### 2026-09-22 representation finding
+
+The raw active-ref representation is rejected as the canonical Phase17.3 Current State because the Jev n8 baseline degenerated into a full History Bag:
+
+```text
+History refs = 79
+Current refs = 79
+```
+
+The derived `CurrentFact` candidate materially improved semantic compactness and enabled explicit merge, correction, contest, materiality filtering, and deterministic persisted-delta replay. At n20 it produced 24 live CurrentFacts over 191 historical semantic refs. It is therefore an effective intermediate representation, but Phase17.3 is **not yet PASS** because the free fact set remains finer-grained than the desired materialized Event state.
+
+Commercial keyed-materialization patterns (Kafka compacted logs / KTable, Flink upsert tables, Materialize UPSERT) suggest the next candidate:
+
+```text
+Fine Evidence / immutable History
+        ↓
+ResolveKey(EventIdentity, CurrentSlots, NewEvidence)
+        ↓
+Keyed Semantic Materialized State
+        ↓
+stable slot_id → current value + audited support
+```
+
+Eval-only semantic-key experiments found:
+
+```text
+n8  CurrentFacts: 10 → 6 semantic slots + 1 peripheral drop
+n20 CurrentFacts: 24 → approximately 9 slots when rediscovered freely
+
+Temporal reuse test:
+frozen n8 slots = 6
+reused at n20 = 6 / 6
+new slots created = 1
+final keyed slots = 7
+```
+
+Therefore the active Phase17.3 candidate is now **Keyed Semantic Materialized State**, documented in `273_PHASE17_KEYED_SEMANTIC_MATERIALIZED_STATE_RESEARCH.md`.
+
+Key principle:
+
+```text
+Do not coarsen audited Evidence.
+Coarsen Current State by persistent semantic key.
+```
+
+No global ontology, fixed slot list, or hard slot-count cap is authorized. The RAOS-specific research surface is reduced to stable semantic key resolution; once a key is known, current-state maintenance should reuse ordinary upsert/materialized-view semantics.
+
 Tasks:
 
 0. hydrate the frozen Jev trace eval-only with current Sensor + Auditor; freeze repaired artifact without overwriting the original failed artifact;
@@ -1264,6 +1474,64 @@ recursive state qualitatively coherent
 no monotonic history-bag failure
 no replay/order failure
 ```
+
+### Phase17.3-KS — Key-Space research subphases
+
+Naming reconciliation (2026-09-23):
+
+The semantic-key research opened while Phase17.3 keyed materialization was still active. To avoid collision with the canonical roadmap phases below, this work is formally scoped as an internal Phase17.3 Key-Space line:
+
+```text
+Phase17.3-KS-A  theory / literature mapping
+Phase17.3-KS-B  semantic resolver contract
+Phase17.3-KS-C  controlled benchmark / baseline / Jev integration
+Phase17.3-KS-D  semantic coordinate candidate retrieval and refinement
+Phase17.3-KS-E  candidate adjudication / address-locked REUSE-CREATE (ACTIVE — research gate passed; production default not switched)
+Phase17.3-KS-F  learned semantic-address gate / LLM distillation (ACTIVE — data/baseline stage)
+```
+
+This naming does **not** redefine the canonical roadmap:
+
+```text
+Phase17.4 = Information innovation + momentum
+Phase17.5 = EventState -> frozen cognition
+```
+
+Key-Space experiments remain subordinate to the Phase17.3 gate until keyed semantic Current State is accepted. Earlier temporary experiment labels using Phase17.4/17.5 were relabeled before being admitted as tracked project state.
+
+KS-E checkpoint (2026-09-24):
+
+- KS-D candidate retrieval is retained as recall-oriented search, not semantic authority.
+- Candidate-only constrained joint KeyBy was experimentally rejected as the final architecture.
+- Pairwise Direct-Answer v0.9 reached 16/16 strict cases and 32/32 repeated judgments on the current Jev boundary set.
+- A five-round single-judgment stress test produced 79/80 correct decisions; therefore pairwise_repeats=1 is not admitted for key-space mutation.
+- A matched five-round two-judgment consensus stress test produced 80/80 correct consensus decisions and 16/16 fully stable cases.
+- Address-Locked synthesis v0.6 achieved 4/4 reviewed semantic-gold agreement on Jev ordinals 5–8, with 11 CREATE-group cross-checks and all 4 observations passing semantic group validation.
+- Latest broad targeted regression after Address-Locked integration: 130 passed, 0 failed.
+- Production semantic-key resolution is **not** switched to the new path yet. The next gate is breadth: more Events/domains, larger same-family key-spaces, raw-observation end-to-end replay, and durable coordinate persistence/migration design.
+
+KS-F checkpoint (2026-09-24):
+
+- Cost problem is now treated as an architectural constraint: the current 4-observation Address-Locked Jev window expands to 36 semantic pair checks, 72 pairwise LLM calls at repeats=2, plus 4 synthesis calls.
+- A versioned Direct-Answer learning-data contract and HUMAN_REVIEWED Jev dataset v0.1 were created: 16 examples, balanced 8 DIRECT / 8 NOT_DIRECT, one Event, status DEVELOPMENT_ONLY.
+- LLM-consensus teacher pool v0.2 contains 31 unique pairs. Fourteen overlap human gold and agree 14/14; 17 are teacher-only, including 3 DIRECT positives from CREATE-group cross-validation.
+- Generic Qwen3-Embedding-0.6B cosine is rejected as a final Direct-Answer gate. Retrieval-protocol cosine reached AUROC 0.8438 but only 0.75 leave-one-out accuracy on the 16 human-reviewed cases.
+- Leave-one-out selective thresholding still produced one false DIRECT and one false NOT_DIRECT at 56.25% coverage.
+- A threshold fitted only on 17 non-overlapping teacher pairs transferred poorly to human gold: 56.25% accuracy, 6 false DIRECT, 1 false NOT_DIRECT.
+- Therefore further scalar-cosine tuning is stopped. The next learned-model candidate is a small pair cross-encoder or Direct-Answer-specific learned metric model with explicit abstention.
+- A human review pack v0.1 now contains 17 teacher-only/boundary pairs, including 6 high-priority cases, to support multi-event HUMAN_REVIEWED dataset growth.
+- Cost model shows that 90% safe local-student coverage would reduce expected LLM calls on the current window from 76 to about 11.2 without cache; 95% coverage to about 7.6. With 25% cache hits and 95% student coverage, expected calls are about 6.7.
+- Neural training is intentionally deferred until multi-event gold exists. Random pair split on the single Jev Event is not accepted as a generalization claim.
+
+Primary result documents:
+
+- `docs/phase17_3_ks_d/283_PHASE17_3_KS_D_SEMANTIC_COORDINATE_RETRIEVAL_IMPLEMENTATION_RESULT.md`
+- `docs/phase17_3_ks_e/284_PHASE17_3_KS_E_CANDIDATE_ADJUDICATION_PREREGISTRATION.md`
+- `docs/phase17_3_ks_e/286_PHASE17_3_KS_E_PAIRWISE_GUARDED_ADJUDICATION_RESULT.md`
+- `docs/phase17_3_ks_e/287_PHASE17_3_KS_E_ADDRESS_LOCKED_SYNTHESIS_RESULT.md`
+- `docs/phase17_3_ks_f/288_PHASE17_3_KS_F_LEARNED_SEMANTIC_ADDRESS_GATE_PREREGISTRATION.md`
+- `docs/phase17_3_ks_f/289_PHASE17_3_KS_F_DATA_AND_EMBEDDING_BASELINE_RESULT.md`
+- `docs/phase17_3_ks_f/290_PHASE17_3_KS_F_PROGRESS_CHECKPOINT_20260924.md`
 
 ## Phase17.4 — Information innovation + momentum
 

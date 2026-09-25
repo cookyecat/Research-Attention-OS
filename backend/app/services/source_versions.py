@@ -30,6 +30,67 @@ def current_source_id(db: Session, source_id: UUID) -> UUID:
 
 
 
+def current_source_ids(
+    db: Session,
+    source_ids: set[UUID],
+) -> dict[UUID, UUID]:
+    """Batch-resolve immutable Source versions to current acquisition snapshots."""
+    if not source_ids:
+        return {}
+
+    origin_rows = (
+        db.execute(
+            select(InformationSnapshot)
+            .where(InformationSnapshot.raos_source_id.in_(source_ids))
+            .order_by(
+                InformationSnapshot.captured_at.desc(),
+                InformationSnapshot.id.desc(),
+            )
+        )
+        .scalars()
+        .all()
+    )
+    item_by_source: dict[UUID, UUID] = {}
+    for row in origin_rows:
+        item_by_source.setdefault(
+            row.raos_source_id,
+            row.external_item_id,
+        )
+
+    item_ids = set(item_by_source.values())
+    latest_by_item: dict[UUID, UUID] = {}
+    if item_ids:
+        latest_rows = (
+            db.execute(
+                select(InformationSnapshot)
+                .where(
+                    InformationSnapshot.external_item_id.in_(
+                        item_ids
+                    )
+                )
+                .order_by(
+                    InformationSnapshot.captured_at.desc(),
+                    InformationSnapshot.id.desc(),
+                )
+            )
+            .scalars()
+            .all()
+        )
+        for row in latest_rows:
+            latest_by_item.setdefault(
+                row.external_item_id,
+                row.raos_source_id,
+            )
+
+    return {
+        source_id: latest_by_item.get(
+            item_by_source.get(source_id),
+            source_id,
+        )
+        for source_id in source_ids
+    }
+
+
 def source_version_ids(db: Session, source_id: UUID) -> tuple[UUID, ...]:
     """Return every immutable RAOS Source version for one ExternalInformationItem.
 

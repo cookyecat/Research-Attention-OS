@@ -1,4 +1,6 @@
 from datetime import datetime, timezone
+import threading
+import time
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
@@ -6,9 +8,8 @@ from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
 from app.config import settings
-from app.db import get_db
+from app.db import SessionLocal, engine, get_db
 from app.execution_integrity import require_side_effects_authorized
-from app.models.acquisition import InformationSnapshot
 from app.models.event import EventEvidenceFrame, RepresentationAuditRun
 from app.models.source import Source, SourceEdge
 from app.schemas.api import SourceCreate, SourceEdgeCreate, SourceOut
@@ -18,9 +19,130 @@ from app.services.same_event_candidates import same_event_candidates, same_event
 from app.services.representation_authority import simulate_representation_authority
 from app.services.representation_belief import source_representation_beliefs
 from app.services.source_graph import independence_report, persist_source_edge, resolve_references
+from app.services.source_surface import is_user_visible_source_clause
 from app.services.source_versions import current_source_id, source_version_ids
 
 router = APIRouter()
+
+_COMPACT_SOURCE_LOCK = threading.Lock()
+_COMPACT_SOURCE_CACHE: list[SourceOut] | None = None
+_COMPACT_SOURCE_CACHE_BUILT_AT = 0.0
+_COMPACT_SOURCE_REFRESHING = False
+_COMPACT_SOURCE_TTL_SECONDS = 5.0
+
+_COMPACT_METADATA_KEYS = {
+    "abstract",
+    "acquisition",
+    "affiliations",
+    "author",
+    "authors",
+    "feed_fallback",
+    "hero_image_alt",
+    "hero_image_cached_url",
+    "hero_image_url",
+    "paper_lead_figure_url",
+    "paper_profile",
+    "paper_title",
+    "paper_word_count",
+    "primary_category",
+    "published",
+    "publisher_dynamic_media_status",
+    "social_author",
+    "social_platform",
+}
+
+
+def _compact_source_out(row: Source) -> SourceOut:
+    payload = SourceOut.model_validate(row).model_dump()
+    text = payload.get("content_text") or ""
+    if len(text) > 600:
+        payload["content_text"] = text[:600].rstrip() + "…"
+    metadata = dict(payload.get("raw_metadata") or {})
+    payload["raw_metadata"] = {
+        key: metadata[key]
+        for key in _COMPACT_METADATA_KEYS
+        if key in metadata
+    }
+    return SourceOut(**payload)
+
+
+def _query_compact_sources(db: Session) -> list[SourceOut]:
+    rows = (
+        db.execute(
+            select(Source)
+            .where(*is_user_visible_source_clause())
+            .order_by(Source.ingested_at.desc(), Source.id.desc())
+        )
+        .scalars()
+        .all()
+    )
+    return [_compact_source_out(row) for row in rows]
+
+
+def _refresh_compact_source_cache_background() -> None:
+    global _COMPACT_SOURCE_CACHE
+    global _COMPACT_SOURCE_CACHE_BUILT_AT
+    global _COMPACT_SOURCE_REFRESHING
+
+    db = SessionLocal()
+    try:
+        payload = _query_compact_sources(db)
+        with _COMPACT_SOURCE_LOCK:
+            _COMPACT_SOURCE_CACHE = payload
+            _COMPACT_SOURCE_CACHE_BUILT_AT = time.monotonic()
+    finally:
+        db.close()
+        with _COMPACT_SOURCE_LOCK:
+            _COMPACT_SOURCE_REFRESHING = False
+
+
+def _compact_source_snapshot(db: Session) -> list[SourceOut]:
+    global _COMPACT_SOURCE_CACHE
+    global _COMPACT_SOURCE_CACHE_BUILT_AT
+    global _COMPACT_SOURCE_REFRESHING
+
+    now = time.monotonic()
+    with _COMPACT_SOURCE_LOCK:
+        payload = _COMPACT_SOURCE_CACHE
+        age = now - _COMPACT_SOURCE_CACHE_BUILT_AT
+        if payload is not None and age < _COMPACT_SOURCE_TTL_SECONDS:
+            return payload
+        if payload is not None:
+            if not _COMPACT_SOURCE_REFRESHING:
+                _COMPACT_SOURCE_REFRESHING = True
+                threading.Thread(
+                    target=_refresh_compact_source_cache_background,
+                    name="raos-compact-source-refresh",
+                    daemon=True,
+                ).start()
+            return payload
+
+    payload = _query_compact_sources(db)
+    with _COMPACT_SOURCE_LOCK:
+        _COMPACT_SOURCE_CACHE = payload
+        _COMPACT_SOURCE_CACHE_BUILT_AT = time.monotonic()
+    return payload
+
+
+def warm_compact_source_cache() -> None:
+    """Prebuild the canonical User-Space Source projection off the request path."""
+    global _COMPACT_SOURCE_CACHE
+    global _COMPACT_SOURCE_CACHE_BUILT_AT
+
+    db = SessionLocal()
+    try:
+        payload = _query_compact_sources(db)
+        with _COMPACT_SOURCE_LOCK:
+            _COMPACT_SOURCE_CACHE = payload
+            _COMPACT_SOURCE_CACHE_BUILT_AT = time.monotonic()
+    finally:
+        db.close()
+
+
+def invalidate_compact_source_cache() -> None:
+    global _COMPACT_SOURCE_CACHE_BUILT_AT
+    with _COMPACT_SOURCE_LOCK:
+        _COMPACT_SOURCE_CACHE_BUILT_AT = 0.0
 
 
 @router.post("", response_model=SourceOut)
@@ -45,6 +167,7 @@ def create_source(body: SourceCreate, db: Session = Depends(get_db)):
         raise
     except Exception as exc:
         raise HTTPException(400, str(exc)) from exc
+    invalidate_compact_source_cache()
     return source
 
 
@@ -64,41 +187,36 @@ async def create_pdf(
     source = ingest_pdf(db, data, filename=file.filename)
     if title:
         source.title = title
+    invalidate_compact_source_cache()
     return source
 
 
 @router.get("", response_model=list[SourceOut])
-def list_sources(compact: bool = False, db: Session = Depends(get_db)):
-    rows = db.execute(select(Source).where(Source.deleted_at.is_(None)).order_by(Source.ingested_at.desc())).scalars().all()
+def list_sources(
+    compact: bool = False,
+    limit: int | None = None,
+    offset: int = 0,
+    db: Session = Depends(get_db),
+):
+    if compact and limit is None and offset == 0:
+        if db.get_bind() is engine:
+            return _compact_source_snapshot(db)
+        return _query_compact_sources(db)
 
-    # Acquisition can preserve multiple immutable Source versions for one external
-    # information item. User-facing Source Library surfaces only the newest snapshot;
-    # historical versions remain addressable for provenance and replay.
-    snapshots = db.execute(
-        select(InformationSnapshot).order_by(InformationSnapshot.captured_at.desc())
-    ).scalars().all()
-    versioned_source_ids = {snapshot.raos_source_id for snapshot in snapshots}
-    current_source_ids = set()
-    seen_items = set()
-    for snapshot in snapshots:
-        if snapshot.external_item_id in seen_items:
-            continue
-        seen_items.add(snapshot.external_item_id)
-        current_source_ids.add(snapshot.raos_source_id)
-    rows = [row for row in rows if row.id not in versioned_source_ids or row.id in current_source_ids]
+    stmt = (
+        select(Source)
+        .where(*is_user_visible_source_clause())
+        .order_by(Source.ingested_at.desc(), Source.id.desc())
+    )
+    if offset > 0:
+        stmt = stmt.offset(offset)
+    if limit is not None:
+        stmt = stmt.limit(max(1, min(int(limit), 500)))
+    rows = db.execute(stmt).scalars().all()
 
     if not compact:
         return rows
-    compact_rows = []
-    for row in rows:
-        payload = SourceOut.model_validate(row).model_dump()
-        text = payload.get("content_text") or ""
-        if len(text) > 1400:
-            payload["content_text"] = text[:1400].rstrip() + "…"
-        metadata = dict(payload.get("raw_metadata") or {})
-        metadata.pop("paper_body_html", None)
-        compact_rows.append(SourceOut(**{**payload, "raw_metadata": metadata}))
-    return compact_rows
+    return [_compact_source_out(row) for row in rows]
 
 
 @router.get("/search", response_model=list[SourceOut])
@@ -111,7 +229,7 @@ def search_sources(q: str, limit: int = 20, db: Session = Depends(get_db)):
     rows = db.execute(
         select(Source)
         .where(
-            Source.deleted_at.is_(None),
+            *is_user_visible_source_clause(),
             or_(
                 Source.title.ilike(pattern),
                 Source.content_text.ilike(pattern),
@@ -119,23 +237,12 @@ def search_sources(q: str, limit: int = 20, db: Session = Depends(get_db)):
                 Source.canonical_url.ilike(pattern),
             ),
         )
-        .order_by(Source.ingested_at.desc())
+        .order_by(Source.ingested_at.desc(), Source.id.desc())
+        .limit(limit)
     ).scalars().all()
-
-    snapshots = db.execute(select(InformationSnapshot).order_by(InformationSnapshot.captured_at.desc())).scalars().all()
-    versioned_source_ids = {snapshot.raos_source_id for snapshot in snapshots}
-    current_source_ids = set()
-    seen_items = set()
-    for snapshot in snapshots:
-        if snapshot.external_item_id in seen_items:
-            continue
-        seen_items.add(snapshot.external_item_id)
-        current_source_ids.add(snapshot.raos_source_id)
 
     out = []
     for row in rows:
-        if row.id in versioned_source_ids and row.id not in current_source_ids:
-            continue
         payload = SourceOut.model_validate(row).model_dump()
         text = payload.get("content_text") or ""
         if len(text) > 900:

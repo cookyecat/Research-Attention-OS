@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { api } from "@/lib/api";
+import { api, cachedApi } from "@/lib/api";
 import { attentionLabel } from "@/lib/attentionPresentation";
 
 type Source = {
@@ -16,7 +16,14 @@ type Source = {
   ingestion_method?: string | null;
   raw_metadata?: Record<string, any>;
 };
-type Plan = { candidate_type?: string | null; candidate_id: string; disposition: string; created_at?: string | null };
+type Plan = {
+  candidate_type?: string | null;
+  candidate_id: string;
+  representative_source_id?: string | null;
+  source_ids?: string[];
+  disposition: string;
+  created_at?: string | null;
+};
 
 function sourceOrigin(source: Source) {
   if (source.raw_metadata?.paper_profile) return `arXiv${source.raw_metadata?.primary_category ? ` · ${String(source.raw_metadata.primary_category).replace(/^.*\(([^)]+)\).*$/, "$1")}` : ""}`;
@@ -65,7 +72,7 @@ export default function GlobalSearch() {
   useEffect(() => {
     if (!open) return;
     requestAnimationFrame(() => inputRef.current?.focus());
-    api<Plan[]>("/kernel/attention").then((items) => {
+    cachedApi<Plan[]>("/kernel/attention?compact=true", 5_000).then((items) => {
       const next: Record<string, Plan> = {};
       for (const plan of items) if (!next[plan.candidate_id]) next[plan.candidate_id] = plan;
       setPlans(next);

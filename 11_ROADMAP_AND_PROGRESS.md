@@ -2280,3 +2280,274 @@ Alembic:         0017 head
 No natural EventRevision had arrived after the new acquisition worker start at the validation cutoff, so natural production observation of an `event-state-v0.1` revision remains pending. A second writer or artificial production side effect was deliberately not created solely to force that proof.
 
 Architecture review is complete and `271_PHASE17_DYNAMIC_EVENT_ENGINE_IMPLEMENTATION_PLAN.md` is now the Phase17 implementation source of truth. The immediate next gate is **Phase17.0 contract cleanup**: `event-state-v0.2`, `EventObservationV01`, three-time semantics, durable observation identity, and FilterState/EventState separation. Only after that contract gate should `Phi/R`, momentum, EventState cognition, and hysteresis ablations proceed. Production Decision/Attention wiring remains unchanged until the later gates in 271 pass.
+
+
+### Phase17.3 Key-Space checkpoint — 2026-09-24
+
+The Phase17.3 keyed-state research has now progressed beyond simple semantic
+candidate retrieval into explicit semantic-address adjudication.
+
+Current preferred research architecture:
+
+```text
+FlatMap v0.7
+→ typed WorldProposition
+→ same-family semantic-coordinate retrieval
+→ pairwise Direct-Answer address adjudication
+→ binding AddressPolicy
+→ Address-Locked semantic synthesis
+→ CREATE-group Direct-Answer cross-validation
+→ deterministic SemanticKeyByDraft / SlotDelta
+→ deterministic Apply
+```
+
+The architectural boundary is now explicit:
+
+```text
+Embedding      = where to look
+Direct Answer  = which existing semantic address is valid
+AddressPolicy  = what addresses are admissible
+Locked synthesis = what the updated value / new coordinate should be
+Validator      = whether the projection is legal
+Apply          = deterministic state transition
+```
+
+Important negative results were retained:
+
+- raw/CurrentFact-like text keys remain too representation-dependent;
+- embedding similarity is not accepted as final REUSE/MERGE authority;
+- simply constraining the old joint KeyBy to Top-K slots was semantically
+  unstable and is not the preferred architecture;
+- historical KeyBy is not treated as absolute gold;
+- one pairwise LLM judgment is not stable enough for key-space mutation.
+
+Current evidence:
+
+```text
+Pairwise Direct-Answer v0.9:
+16 strict cases
+32 repeated judgments
+100% strict accuracy on the current controlled boundary set
+
+Single-judgment stress:
+5 rounds × 16 cases = 80 judgments
+79 / 80 correct
+15 / 16 fully stable
+
+Two-judgment consensus stress:
+5 rounds × 16 cases = 80 consensus decisions
+80 / 80 correct
+16 / 16 fully stable
+
+Address-Locked Jev v0.6:
+4 / 4 selected observations match reviewed semantic gold
+11 CREATE-group semantic cross-checks
+4 / 4 observations pass CREATE-group validation
+mean visible-slot ratio = 0.3887
+mean latency ≈ 6.57 s vs fresh FULL ≈ 4.33 s
+
+Latest broad targeted regression:
+130 passed
+0 failed
+```
+
+The new path is **not** the production default yet. The research gate has passed
+on the current Jev window, but admission still requires broader Events/domains,
+larger same-family state spaces, raw-observation end-to-end replay, cache/latency
+work, and durable semantic-coordinate persistence/versioning design.
+
+Primary detailed result:
+`docs/phase17_3_ks_e/287_PHASE17_3_KS_E_ADDRESS_LOCKED_SYNTHESIS_RESULT.md`.
+
+The canonical implementation source of truth remains
+`271_PHASE17_DYNAMIC_EVENT_ENGINE_IMPLEMENTATION_PLAN.md`.
+
+
+### Phase17.3-KS-F learned semantic-address checkpoint — 2026-09-24
+
+The Key-Space line now includes a cost-reduction research branch for replacing
+most pairwise LLM adjudication with a learned local student while preserving
+the KS-E safety boundary.
+
+Current learned task:
+
+~~~text
+(proposition, state_question, frozen semantic context)
+→ DIRECT | NOT_DIRECT | ABSTAIN
+~~~
+
+This is treated as an open-set pair relation problem, not fixed coordinate-ID
+classification.
+
+Implemented:
+
+- versioned Direct-Answer training-data contract;
+- 16-example HUMAN_REVIEWED Jev dataset (8 DIRECT / 8 NOT_DIRECT);
+- LLM_CONSENSUS teacher pool v0.2 with 31 pairs;
+- authority separation between HUMAN_REVIEWED / LLM_CONSENSUS / proxy labels;
+- 17-item human review expansion pack;
+- generic Qwen embedding metric baselines;
+- teacher-only metric-transfer diagnostic;
+- LLM-call cost model.
+
+Key negative result:
+
+~~~text
+Qwen3-Embedding-0.6B retrieval-protocol cosine:
+AUROC 0.8438
+LOO accuracy 0.75
+LOO selective still produced structural errors
+~~~
+
+A threshold fitted on 17 exact-pair-non-overlap teacher examples transferred to
+the 16 human-reviewed examples at only 56.25% accuracy.
+
+Therefore generic embedding cosine remains retrieval-only and is rejected as
+semantic-address authority.
+
+Cost target:
+
+~~~text
+current 4-observation Address-Locked window:
+36 semantic pairs
+72 pair-consensus LLM calls
+4 synthesis calls
+76 total calls
+
+90% safe local-student pair coverage:
+~11.2 total calls without cache
+
+95% safe coverage:
+~7.6 without cache
+~6.7 with 25% pair-cache hits
+~~~
+
+The next learned-model candidate is a small pair cross-encoder with explicit
+abstention. Neural training is intentionally deferred until multiple Events
+provide HUMAN_REVIEWED event-level holdouts.
+
+Checkpoint:
+docs/phase17_3_ks_f/290_PHASE17_3_KS_F_PROGRESS_CHECKPOINT_20260924.md
+
+
+### User Space Materialized Projection research — 2026-09-25
+
+Dogfood after Event-centric Attention exposed a serving-layer mismatch rather than a cognition-semantic failure.
+
+Observed failure chain:
+
+~~~text
+long-lived delivery WebSocket held SQLAlchemy Session
+→ QueuePool(size=5, overflow=10) exhaustion
+→ API waits / 30 s timeout
+→ backend reset
+→ Next proxy ECONNRESET / socket hang up
+→ Today/Inbox appeared empty or returned Internal Server Error
+~~~
+
+Immediate runtime repair is active: WebSocket lifetime is long, but each DB unit
+of work now uses a short Session that is closed before the socket sleeps.
+
+A separate Source-surface contamination was also quantified:
+
+~~~text
+active Source rows                     6067
+REFERENCE_STUB                         3903
+non-stub active                        2164
+current non-stub                       2137
+METADATA_ONLY                          1146
+User Space visible                      992
+~~~
+
+REFERENCE_STUB rows are durable CITES/provenance placeholders, not ordinary
+readable/news Sources. The canonical User Space Source filter excludes
+REFERENCE_STUB, METADATA_ONLY, deleted and non-current immutable snapshots.
+
+The Reader World Context contract was audited. Literal CITES authority was
+correct, but unresolved stubs such as Privacy Policy / Terms / retailer /
+navigation links were given the same visual weight as known Sources. User Space
+presentation now separates resolved Referenced sources from folded Other
+explicit links while retaining all literal provenance.
+
+A new research line is frozen in:
+
+- 291_USER_SPACE_MATERIALIZED_PROJECTION_RESEARCH_PLAN.md
+- 292_USER_SPACE_MATERIALIZED_PROJECTION_RESEARCH_RESULT.md
+
+The architecture direction is:
+
+~~~text
+canonical immutable history / current Event + Attention
+        ↓
+deterministic idempotent projector
+        ↓
+materialized User Space read model
+        ↓
+bounded Today / Inbox / Attention / Watch / Context reads
+~~~
+
+Event remains Attention identity. Source remains the reading/evidence path.
+The projection has zero decision/mutation authority and is rebuildable.
+
+Read-only prototype endpoints now exist:
+
+~~~text
+GET /user-space/today
+GET /user-space/inbox?limit=...
+GET /user-space/attention?limit=...
+~~~
+
+Focused projection + Event-centric regression: 9 passed.
+
+Live dogfood comparison:
+
+~~~text
+legacy Sources compact:
+  992 rows / ~1.74 MB
+
+User Space Inbox:
+  30 rows / ~25.6 KB
+  warm median ~259 ms
+  bottleneck remains current-Source snapshot SQL
+
+legacy Attention compact:
+  1424 rows / ~1.32 MB
+
+User Space Attention:
+  30 rows / ~30 KB
+  warm median ~34 ms
+
+User Space Today:
+  7 cards / ~6.7 KB
+  warm median ~22 ms
+~~~
+
+Inbox decomposition localized the remaining read-time cost to current Source
+surface selection (~54 ms warm in the direct SQL probe), not Event membership
+(~0.7 ms) or Source↔Event Python joining (~0.02 ms). SQLite EXPLAIN shows the
+current Source query still scans Source rows and reconstructs latest immutable
+snapshots with a window function and temporary ordering. The next durable step
+is therefore a SourceSurfaceProjection updated at write/project time.
+
+A synthetic indexed materialized read-model benchmark was run at 10k and 200k
+rows, page size 50, 100 repeats. At 200k rows the first-page, disposition-filter
+and cursor-page medians remained roughly 0.038–0.040 ms with ~15.6 KB payload.
+This is an algorithm-isolation SQLite in-memory benchmark, not a production SLA,
+but demonstrates that indexed bounded read queries need not grow linearly with
+total corpus size.
+
+Current Phase12E multi-user boundary remains authoritative:
+public World state may be shared, while Kernel / user-conditioned cognition /
+Attention / Watch / Delivery / private observations and User Space projections
+are user-private. Current runtime remains SINGLE_USER_DOGFOOD and is not yet
+safe for 50–200 external users.
+
+Product-scale target is shared PostgreSQL world/private relational state,
+tenant-authenticated private rows, durable projection workers, broker/pubsub
+realtime, and optional encrypted local SQLite read/cache stores. Do not use the
+current shared SQLite file as a 50–200-user network database.
+
+The frontend has **not** been migrated to /user-space endpoints yet. Existing
+stale-while-revalidate caches remain a dogfood latency repair. Production
+cutover waits for persistent SourceSurfaceProjection / UserAttentionProjection
+plus deterministic projector and rebuild validation.

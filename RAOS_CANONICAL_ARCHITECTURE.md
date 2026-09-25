@@ -199,6 +199,56 @@ Phase 11D adds the Delivery Plane as an execution boundary downstream of Attenti
 
 Phase 11E establishes the Agent / Control Plane. External agents use `/agent/v1`, the `raos` CLI, or `skills/raos/SKILL.md` to invoke existing RAOS capabilities; these surfaces are orchestration/presentation only. Read-only calls never trigger cognition, `analyze` enters the ordinary canonical pipeline, `watch` delegates responsibility into the same durable WATCH model used by RAOS, and `why` explains stored decisions without reanalysis. Agent-originated canonical writes are Phase13-gated. No Agent surface may instantiate `AttentionPlan`, run an independent importance/relevance model, manufacture epistemic truth, or mutate topology/Kernel/Delivery state outside existing authorization paths. MCP/A2A may later wrap this API but must preserve the same Epistemic / Commitment / Integrity boundaries.
 
+### 2.1 User Space serving boundary
+
+Event-centric cognition does **not** require Event-centric presentation.
+
+Canonical Attention identity remains:
+
+```text
+Event
+→ AttentionPlan(candidate_type=EVENT)
+```
+
+while normal User Space may deliberately present a Source as the reading/evidence path:
+
+```text
+Event Attention
+→ authorized current membership
+→ representative / evidence Source
+→ Today / Inbox / Attention card
+```
+
+This projection has no epistemic, topology, Attention, Kernel, WATCH, or Delivery authority. It is a read model only.
+
+The intended product-scale serving architecture is:
+
+```text
+canonical immutable history / current Event + Attention state
+        ↓
+deterministic idempotent projector
+        ↓
+materialized User Space read model
+        ↓
+bounded Today / Inbox / Attention / Watch / Context queries
+```
+
+Normal page reads must not replay immutable history or download the whole current corpus merely to select a small screenful. User Space read models are disposable and rebuildable from canonical state.
+
+Repository HEAD currently contains the read-only prototype:
+
+```text
+GET /user-space/today
+GET /user-space/inbox
+GET /user-space/attention
+```
+
+The prototype preserves Event identity while returning Source-oriented cards and bounded result sets. It has no mutation authority and is **not yet the frontend default or the durable production read model**. Persistent Source/User-Attention projection schema and projector admission remain a later gate.
+
+Literal reference provenance is also separate from User Space prominence. `REFERENCE_STUB` rows may preserve explicit CITES targets in the graph, but are not ordinary human-readable Sources and must not enter default Inbox/Search surfaces. Reader World Context may preserve all literal CITES while promoting only suitable resolved/substantive references in the normal view.
+
+Current single-user dogfood may use process-local stale-while-revalidate caches as a latency repair. Those caches are not the product-scale architecture and do not replace a durable materialized read model.
+
 ## 3. Attention authority split
 
 

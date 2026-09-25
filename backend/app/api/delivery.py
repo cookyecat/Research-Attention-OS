@@ -73,20 +73,43 @@ def dismiss(delivery_id: UUID, db: Session = Depends(get_db)):
 
 
 @router.websocket("/ws")
-async def realtime_delivery(websocket: WebSocket, db: Session = Depends(get_db)):
+async def realtime_delivery(
+    websocket: WebSocket,
+    db: Session = Depends(get_db),
+):
     try:
         require_side_effects_authorized()
     except RuntimeError:
         await websocket.close(code=1008, reason="Phase13 side-effect authority required")
         return
+
     await websocket.accept()
     try:
         while True:
-            rows = pending_realtime_deliveries(db, limit=20)
-            for row in rows:
-                await websocket.send_json(envelope_out(row))
-                mark_delivery_channel(db, row, "IN_APP_REALTIME", state="SENT")
-            db.commit()
+            # A WebSocket may live for hours. Never let the injected
+            # SQLAlchemy Session keep a pooled connection/transaction for that
+            # lifetime. Closing after each poll is safe: the same Session
+            # object will transparently check out a fresh connection next time.
+            try:
+                rows = pending_realtime_deliveries(db, limit=20)
+                payloads = [envelope_out(row) for row in rows]
+                for row in rows:
+                    mark_delivery_channel(
+                        db,
+                        row,
+                        "IN_APP_REALTIME",
+                        state="SENT",
+                    )
+                db.commit()
+            except Exception:
+                db.rollback()
+                raise
+            finally:
+                db.close()
+
+            for payload in payloads:
+                await websocket.send_json(payload)
+
             # Keep the connection durable without coupling delivery latency to cognition.
             await asyncio.sleep(0.5)
     except WebSocketDisconnect:

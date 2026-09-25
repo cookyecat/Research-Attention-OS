@@ -1017,6 +1017,15 @@ def run_pipeline(
         )
         db.add(plan)
         db.flush()
+        from app.services.user_space_projection import (
+            ATTENTION_PLAN_CHANGED,
+            enqueue_projection_change,
+        )
+        enqueue_projection_change(
+            db,
+            ATTENTION_PLAN_CHANGED,
+            plan.id,
+        )
         from app.services.delivery import ensure_delivery_envelope
         ensure_delivery_envelope(db, plan)
         authorized = _expected_output(draft.expected_output)
@@ -1276,6 +1285,15 @@ def _reschedule(
     )
     db.add(plan)
     db.flush()
+    from app.services.user_space_projection import (
+        ATTENTION_PLAN_CHANGED,
+        enqueue_projection_change,
+    )
+    enqueue_projection_change(
+        db,
+        ATTENTION_PLAN_CHANGED,
+        plan.id,
+    )
     from app.services.delivery import ensure_delivery_envelope
     ensure_delivery_envelope(db, plan)
     authorized = _expected_output(draft.expected_output)

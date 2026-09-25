@@ -431,13 +431,26 @@ def _deliver(
             "source_type": kind,
             "cognition_deferred": bool(explicit_defer or operator_defer),
             "cognition_defer_reason": effective_defer_reason,
-            "cognition_reconcile_eligible": bool(operator_defer and cognition_defer_reason != "baseline"),
+            "cognition_reconcile_eligible": bool(
+                operator_defer
+                and not explicit_defer
+                and cognition_defer_reason != "baseline"
+            ),
             "recovered_from_feed_fallback": bool(recovering_feed_fallback),
             "previous_snapshot_id": str(existing.id) if recovering_feed_fallback and existing is not None else None,
         },
     )
     db.add(snapshot)
     db.flush()
+    from app.services.user_space_projection import (
+        SNAPSHOT_CHANGED,
+        enqueue_projection_change,
+    )
+    enqueue_projection_change(
+        db,
+        SNAPSHOT_CHANGED,
+        snapshot.id,
+    )
     if analyze and not metadata.get("defer_cognition"):
         try:
             run_pipeline(db, raos_source.id)

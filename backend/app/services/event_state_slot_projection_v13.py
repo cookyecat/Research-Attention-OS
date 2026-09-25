@@ -7,11 +7,11 @@ from pydantic import BaseModel, Field, model_validator
 
 from app.cognitive.client import chat_json_schema
 from app.services.event_observation import EventObservationV01
+from app.services.semantic_primitives import PrimitiveFamily
 from app.services.event_state_slot_delta import (
     CurrentSlotV01,
     DraftTarget,
     EventPhase,
-    PrimitiveFamily,
     SemanticSlotStateV01,
     SlotDeltaV01,
     SlotMutationMode,

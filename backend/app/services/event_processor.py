@@ -497,6 +497,15 @@ def _attach_source(db: Session, *, event: Event, source: Source, cross_source_co
     )
     db.add(assertion)
     db.flush()
+    from app.services.user_space_projection import (
+        MEMBERSHIP_CHANGED,
+        enqueue_projection_change,
+    )
+    enqueue_projection_change(
+        db,
+        MEMBERSHIP_CHANGED,
+        source.id,
+    )
     return assertion
 
 

@@ -8,9 +8,20 @@ from pydantic import BaseModel, Field, model_validator
 
 from app.cognitive.client import chat_json_schema
 from app.services.event_observation import EventObservationV01
+from app.services.semantic_coordinate.adjudication import (
+    CandidateAdjudicationPlan,
+    build_candidate_adjudication_plan,
+)
+from app.services.semantic_coordinate.direct_answer import (
+    PairwiseAuthorizationPlanV01,
+    build_pairwise_authorization_plan,
+    build_pairwise_authorization_plan_batched,
+    build_pairwise_authorization_plan_parallel,
+    build_pairwise_authorization_plan_proposition_batched,
+)
+from app.services.semantic_primitives import PrimitiveFamily, ReferentScope
 from app.services.event_state_slot_delta import (
     CurrentSlotV01,
-    PrimitiveFamily,
     SemanticSlotStateV01,
     SlotDeltaV01,
     SlotMutationV01,
@@ -30,7 +41,7 @@ PlaneDisposition = Literal[
 ]
 PropositionDisposition = Literal["WORLD_MUTATION", "NO_WORLD_VALUE_CHANGE"]
 DraftTarget = Literal["CREATE", "EXISTING"]
-ReferentScope = Literal["TARGET_INTRINSIC", "TARGET_RELATION"]
+CandidateKeyByMode = Literal["FULL", "SHADOW", "CONSTRAINED"]
 
 
 def _stable_digest(value) -> str:
@@ -167,6 +178,110 @@ class TwoStageSlotDecisionV01(BaseModel):
     delta: SlotDeltaV01 | None
     flatmap: PropositionFlatMapResultV01
     keyby_draft: SemanticKeyByDraftV01
+
+
+class KeyByCandidateContextV01(BaseModel):
+    mode: CandidateKeyByMode
+    top_k: int = Field(ge=1)
+    candidate_slot_keys_by_proposition: dict[str, tuple[str, ...]]
+    hidden_same_family_slot_keys_by_proposition: dict[str, tuple[str, ...]]
+    visible_slot_keys: tuple[str, ...]
+    total_previous_slot_count: int
+    visible_slot_count: int
+
+    @property
+    def compression_ratio(self) -> float:
+        if self.total_previous_slot_count == 0:
+            return 1.0
+        return self.visible_slot_count / self.total_previous_slot_count
+
+
+class CandidateExpansionRequired(RuntimeError):
+    def __init__(self, proposition_keys: tuple[str, ...]):
+        self.proposition_keys = proposition_keys
+        super().__init__(
+            "CREATE requires same-family candidate expansion for "
+            + ", ".join(proposition_keys)
+        )
+
+
+class KeyByAddressPolicyV01(BaseModel):
+    authorized_existing_slot_ids_by_proposition: dict[
+        str,
+        tuple[str, ...],
+    ] = Field(default_factory=dict)
+    create_eligible_proposition_keys: tuple[str, ...] = ()
+
+    @model_validator(mode="after")
+    def normalize_existing_sets(self):
+        normalized = {
+            proposition_id: tuple(sorted(set(slot_ids)))
+            for proposition_id, slot_ids in (
+                self.authorized_existing_slot_ids_by_proposition.items()
+            )
+        }
+        object.__setattr__(
+            self,
+            "authorized_existing_slot_ids_by_proposition",
+            normalized,
+        )
+        overlap = (
+            set(normalized)
+            & set(self.create_eligible_proposition_keys)
+        )
+        if overlap:
+            raise ValueError(
+                "address policy cannot authorize both EXISTING and CREATE; "
+                f"propositions={sorted(overlap)}"
+            )
+        return self
+
+    @property
+    def authorized_existing_slot_key_by_proposition(self) -> dict[str, str]:
+        """Backward-compatible view for singular-only callers."""
+        return {
+            proposition_id: slot_ids[0]
+            for proposition_id, slot_ids in (
+                self.authorized_existing_slot_ids_by_proposition.items()
+            )
+            if len(slot_ids) == 1
+        }
+
+
+class PairwiseAddressUnresolved(RuntimeError):
+    def __init__(self, proposition_ids: tuple[str, ...]):
+        self.proposition_ids = proposition_ids
+        super().__init__(
+            "pairwise address resolution unresolved for "
+            + ", ".join(proposition_ids)
+        )
+
+
+class CandidateAwareSemanticKeyByResultV01(BaseModel):
+    mode: Literal["SHADOW", "CONSTRAINED"]
+    delta: SlotDeltaV01 | None
+    draft: SemanticKeyByDraftV01
+    plan: CandidateAdjudicationPlan
+    initial_context: KeyByCandidateContextV01
+    final_context: KeyByCandidateContextV01
+    expansion_triggered: bool = False
+    expanded_proposition_keys: tuple[str, ...] = ()
+    shadow_unauthorized_existing_routes: tuple[str, ...] = ()
+
+
+class PairwiseGuardedSemanticKeyByResultV01(BaseModel):
+    delta: SlotDeltaV01 | None
+    draft: SemanticKeyByDraftV01
+    candidate_plan: CandidateAdjudicationPlan
+    pairwise_plan: PairwiseAuthorizationPlanV01
+    candidate_context: KeyByCandidateContextV01
+    address_policy: KeyByAddressPolicyV01
+    pairwise_transport: Literal[
+        "SERIAL",
+        "BATCH",
+        "PROPOSITION_BATCH",
+        "PARALLEL",
+    ] = "SERIAL"
 _FLATMAP_SYSTEM = """You are the RAOS Proposition FlatMap operator.
 
 Your ONLY job is semantic normalization before keyed state resolution.
@@ -308,6 +423,14 @@ Rules:
 - For CREATE, use the proposition's primitive_family. Do not invent a broader/different family merely to reuse a nearby slot.
 - Apply the DIRECT ANSWER TEST. A proposition may mutate an existing slot only when it directly changes the answer to that exact state_question.
 - Causal relevance, topical relation, or being in the same source does not count.
+- If candidate_mode=CONSTRAINED is present, EXISTING may target only a slot listed in candidate_slot_keys_by_proposition for EVERY proposition routed to that mutation.
+- Candidate ranking is retrieval evidence only. A high-ranked candidate still fails if it does not directly answer the proposition.
+- CREATE in a constrained pass may be provisional; the caller can expose hidden same-family slots in a fail-safe expansion pass before allowing key-space growth.
+- If address_policy_by_proposition is present, it is BINDING semantic address authority:
+  * EXISTING_SET:[Sxxx,...] means this proposition may update zero-or-more of ONLY those authorized existing slots, or be NO_CHANGE;
+  * CREATE means this proposition may create a new coordinate and may not reuse an existing slot.
+  * One proposition may legitimately update multiple authorized existing slots when it directly answers multiple orthogonal state_questions.
+  * Do not override, reinterpret, or broaden the address policy.
 - If a proposition directly changes no existing slot but defines a new independently variable material World dimension, CREATE.
 - If the current sufficient World value is semantically unchanged, use NO_WORLD_VALUE_CHANGE.
 - Generality is domain-independence, NOT semantic breadth. Avoid umbrella questions.
@@ -340,6 +463,198 @@ def _slot_aliases(
     key_by_id = {slot.slot_id: f"S{i:03d}" for i, slot in enumerate(ordered, 1)}
     id_by_key = {key: slot_id for slot_id, key in key_by_id.items()}
     return key_by_id, id_by_key
+
+
+def _candidate_context_from_plan(
+    *,
+    plan: CandidateAdjudicationPlan,
+    proposition_key_by_id: dict[str, str],
+    slot_key_by_id: dict[str, str],
+    mode: CandidateKeyByMode,
+    expanded_proposition_keys: set[str] | None = None,
+) -> KeyByCandidateContextV01:
+    expanded = expanded_proposition_keys or set()
+    candidates_by_prop: dict[str, tuple[str, ...]] = {}
+    hidden_by_prop: dict[str, tuple[str, ...]] = {}
+    visible = set()
+
+    for row in plan.propositions:
+        proposition_key = proposition_key_by_id.get(row.proposition_id)
+        if proposition_key is None:
+            raise ValueError(
+                "candidate plan proposition is not present in KeyBy input: "
+                f"{row.proposition_id}"
+            )
+
+        if proposition_key in expanded:
+            candidate_ids = row.same_family_slot_ids
+            hidden_ids = ()
+        else:
+            candidate_ids = row.candidate_slot_ids
+            hidden_ids = row.hidden_same_family_slot_ids
+
+        candidate_keys = tuple(
+            slot_key_by_id[slot_id]
+            for slot_id in candidate_ids
+            if slot_id in slot_key_by_id
+        )
+        hidden_keys = tuple(
+            slot_key_by_id[slot_id]
+            for slot_id in hidden_ids
+            if slot_id in slot_key_by_id
+        )
+        candidates_by_prop[proposition_key] = candidate_keys
+        hidden_by_prop[proposition_key] = hidden_keys
+        visible.update(candidate_keys)
+
+    return KeyByCandidateContextV01(
+        mode=mode,
+        top_k=plan.top_k,
+        candidate_slot_keys_by_proposition=candidates_by_prop,
+        hidden_same_family_slot_keys_by_proposition=hidden_by_prop,
+        visible_slot_keys=tuple(sorted(visible)),
+        total_previous_slot_count=plan.total_slot_count,
+        visible_slot_count=len(visible),
+    )
+
+
+def _address_policy_from_pairwise_plan(
+    plan: PairwiseAuthorizationPlanV01,
+) -> KeyByAddressPolicyV01:
+    unresolved = plan.unresolved_proposition_ids
+    if unresolved:
+        raise PairwiseAddressUnresolved(unresolved)
+
+    authorized = {}
+    for row in plan.propositions:
+        resolution = row.resolution
+        if resolution.status == "REUSE_AUTHORIZED":
+            slot_ids = resolution.authorized_existing_slot_ids
+            if not slot_ids:
+                raise ValueError(
+                    "REUSE_AUTHORIZED requires authorized existing slots"
+                )
+            authorized[row.proposition_id] = slot_ids
+
+    return KeyByAddressPolicyV01(
+        authorized_existing_slot_ids_by_proposition=authorized,
+        create_eligible_proposition_keys=plan.create_eligible_proposition_ids,
+    )
+
+
+def _address_policy_aliases(
+    *,
+    policy: KeyByAddressPolicyV01,
+    proposition_key_by_id: dict[str, str],
+    slot_key_by_id: dict[str, str],
+) -> tuple[dict[str, tuple[str, ...]], set[str]]:
+    existing_by_prop_key = {}
+    for proposition_id, slot_ids in (
+        policy.authorized_existing_slot_ids_by_proposition.items()
+    ):
+        proposition_key = proposition_key_by_id.get(proposition_id)
+        if proposition_key is None:
+            raise ValueError(
+                "address policy proposition missing from KeyBy input: "
+                f"{proposition_id}"
+            )
+
+        slot_keys = []
+        for slot_id in slot_ids:
+            slot_key = slot_key_by_id.get(slot_id)
+            if slot_key is None:
+                raise ValueError(
+                    "address policy slot missing from previous EventState: "
+                    f"{slot_id}"
+                )
+            slot_keys.append(slot_key)
+        existing_by_prop_key[proposition_key] = tuple(sorted(set(slot_keys)))
+
+    create_prop_keys = set()
+    for proposition_id in policy.create_eligible_proposition_keys:
+        proposition_key = proposition_key_by_id.get(proposition_id)
+        if proposition_key is None:
+            raise ValueError(
+                "CREATE policy proposition missing from KeyBy input: "
+                f"{proposition_id}"
+            )
+        create_prop_keys.add(proposition_key)
+
+    overlap = set(existing_by_prop_key) & create_prop_keys
+    if overlap:
+        raise ValueError(
+            "address policy cannot authorize both EXISTING and CREATE; "
+            f"propositions={sorted(overlap)}"
+        )
+    covered = set(existing_by_prop_key) | create_prop_keys
+    expected = set(proposition_key_by_id.values())
+    if covered != expected:
+        raise ValueError(
+            "address policy must cover every World proposition exactly once; "
+            f"missing={sorted(expected-covered)} "
+            f"unknown={sorted(covered-expected)}"
+        )
+    return existing_by_prop_key, create_prop_keys
+
+
+def _validate_address_policy(
+    *,
+    draft: SemanticKeyByDraftV01,
+    authorized_existing_slot_keys_by_proposition: dict[
+        str,
+        tuple[str, ...],
+    ],
+    create_eligible_proposition_keys: set[str],
+) -> None:
+    """Make set-valued pairwise address authorization binding on KeyBy output."""
+    for route in draft.proposition_routes:
+        proposition_key = route.proposition_key
+        authorized_slots = set(
+            authorized_existing_slot_keys_by_proposition.get(
+                proposition_key,
+                (),
+            )
+        )
+        create_eligible = (
+            proposition_key in create_eligible_proposition_keys
+        )
+
+        if route.disposition == "NO_WORLD_VALUE_CHANGE":
+            if create_eligible:
+                raise ValueError(
+                    "CREATE-eligible proposition cannot be dropped as "
+                    "NO_WORLD_VALUE_CHANGE; "
+                    f"proposition_key={proposition_key}"
+                )
+            if not authorized_slots:
+                raise ValueError(
+                    "NO_WORLD_VALUE_CHANGE requires at least one authorized "
+                    f"existing address; proposition_key={proposition_key}"
+                )
+            continue
+
+        for index in route.mutation_indices:
+            mutation = draft.mutations[index]
+            if mutation.target == "EXISTING":
+                if not authorized_slots:
+                    raise ValueError(
+                        "KeyBy emitted EXISTING for CREATE-only proposition; "
+                        f"proposition_key={proposition_key}"
+                    )
+                if mutation.existing_slot_key not in authorized_slots:
+                    raise ValueError(
+                        "KeyBy changed pairwise-authorized address set; "
+                        f"proposition_key={proposition_key} "
+                        f"authorized={sorted(authorized_slots)!r} "
+                        f"observed={mutation.existing_slot_key!r}"
+                    )
+            else:
+                if not create_eligible:
+                    raise ValueError(
+                        "KeyBy emitted CREATE for REUSE-authorized proposition; "
+                        f"proposition_key={proposition_key} "
+                        f"authorized_existing={sorted(authorized_slots)!r}"
+                    )
 
 
 def _previous_support_aliases(
@@ -565,6 +880,82 @@ def _normalize_keyby_draft(
     )
 
 
+def _candidate_authorization_violations(
+    *,
+    draft: SemanticKeyByDraftV01,
+    candidate_slot_keys_by_proposition: dict[str, set[str]],
+) -> tuple[str, ...]:
+    violations = []
+    for route in draft.proposition_routes:
+        if route.disposition != "WORLD_MUTATION":
+            continue
+        allowed = candidate_slot_keys_by_proposition.get(
+            route.proposition_key,
+            set(),
+        )
+        for index in route.mutation_indices:
+            mutation = draft.mutations[index]
+            if mutation.target != "EXISTING":
+                continue
+            key = mutation.existing_slot_key or ""
+            if key not in allowed:
+                violations.append(
+                    f"{route.proposition_key}:{key}"
+                )
+    return tuple(sorted(set(violations)))
+
+
+def _validate_candidate_authorization(
+    *,
+    draft: SemanticKeyByDraftV01,
+    candidate_slot_keys_by_proposition: dict[str, set[str]],
+) -> None:
+    """Reject EXISTING mutations outside each routed proposition's Top-K set."""
+    for route in draft.proposition_routes:
+        if route.disposition != "WORLD_MUTATION":
+            continue
+        allowed = candidate_slot_keys_by_proposition.get(
+            route.proposition_key,
+            set(),
+        )
+        for index in route.mutation_indices:
+            mutation = draft.mutations[index]
+            if mutation.target != "EXISTING":
+                continue
+            key = mutation.existing_slot_key or ""
+            if key not in allowed:
+                raise ValueError(
+                    "KeyBy EXISTING target is outside candidate authorization; "
+                    f"proposition_key={route.proposition_key} "
+                    f"existing_slot_key={key!r} "
+                    f"allowed={sorted(allowed)}"
+                )
+
+
+def _create_expansion_proposition_keys(
+    *,
+    draft: SemanticKeyByDraftV01,
+    hidden_same_family_slot_keys_by_proposition: dict[str, set[str]],
+) -> tuple[str, ...]:
+    """Return propositions whose CREATE still hides same-family existing slots."""
+    provisional = set()
+    for route in draft.proposition_routes:
+        if route.disposition != "WORLD_MUTATION":
+            continue
+        hidden = hidden_same_family_slot_keys_by_proposition.get(
+            route.proposition_key,
+            set(),
+        )
+        if not hidden:
+            continue
+        if any(
+            draft.mutations[index].target == "CREATE"
+            for index in route.mutation_indices
+        ):
+            provisional.add(route.proposition_key)
+    return tuple(sorted(provisional))
+
+
 def _validate_keyby_draft(
     *,
     draft: SemanticKeyByDraftV01,
@@ -612,8 +1003,18 @@ def semantic_keyby(
     observation: EventObservationV01,
     flatmap: PropositionFlatMapResultV01,
     chat_fn,
+    candidate_context: KeyByCandidateContextV01 | None = None,
+    address_policy: KeyByAddressPolicyV01 | None = None,
 ) -> tuple[SlotDeltaV01 | None, SemanticKeyByDraftV01]:
     propositions = flatmap.world_propositions
+    if (
+        address_policy is not None
+        and candidate_context is not None
+        and candidate_context.mode == "CONSTRAINED"
+    ):
+        raise ValueError(
+            "address_policy and candidate-constrained KeyBy are mutually exclusive"
+        )
     if not propositions:
         empty = SemanticKeyByDraftV01(
             mutations=(),
@@ -654,11 +1055,61 @@ def semantic_keyby(
         prop_key_by_id[row.proposition_id]: row
         for row in propositions
     }
+
+    address_existing_by_prop_key: dict[str, tuple[str, ...]] = {}
+    address_create_prop_keys: set[str] = set()
+    if address_policy is not None:
+        (
+            address_existing_by_prop_key,
+            address_create_prop_keys,
+        ) = _address_policy_aliases(
+            policy=address_policy,
+            proposition_key_by_id=prop_key_by_id,
+            slot_key_by_id=slot_key_by_id,
+        )
+
+    effective_previous_slots_payload = previous_slots_payload
+    allowed_existing_slot_keys = sorted(slot_id_by_key)
+    allowed_previous_support_keys = sorted(prev_ref_by_key)
+    if address_policy is not None:
+        visible = {
+            slot_key
+            for slot_keys in address_existing_by_prop_key.values()
+            for slot_key in slot_keys
+        }
+        effective_previous_slots_payload = [
+            row
+            for row in previous_slots_payload
+            if row["slot_key"] in visible
+        ]
+        allowed_existing_slot_keys = sorted(visible)
+        allowed_previous_support_keys = sorted({
+            support_key
+            for slot_key in visible
+            for support_key in support_keys_by_slot_key.get(slot_key, set())
+        })
+    elif (
+        candidate_context is not None
+        and candidate_context.mode == "CONSTRAINED"
+    ):
+        visible = set(candidate_context.visible_slot_keys)
+        effective_previous_slots_payload = [
+            row
+            for row in previous_slots_payload
+            if row["slot_key"] in visible
+        ]
+        allowed_existing_slot_keys = sorted(visible)
+        allowed_previous_support_keys = sorted({
+            support_key
+            for slot_key in visible
+            for support_key in support_keys_by_slot_key.get(slot_key, set())
+        })
+
     payload = {
         "contract": SEMANTIC_KEYBY_CONTRACT,
         "event_identity": dict(event_identity),
         "previous_status": previous.status if previous is not None else None,
-        "previous_slots": previous_slots_payload,
+        "previous_slots": effective_previous_slots_payload,
         "world_propositions": [
             {
                 "proposition_key": prop_key_by_id[row.proposition_id],
@@ -668,9 +1119,34 @@ def semantic_keyby(
             }
             for row in propositions
         ],
-        "allowed_existing_slot_keys": sorted(slot_id_by_key),
-        "allowed_previous_support_keys": sorted(prev_ref_by_key),
+        "allowed_existing_slot_keys": allowed_existing_slot_keys,
+        "allowed_previous_support_keys": allowed_previous_support_keys,
     }
+    if address_policy is not None:
+        payload["address_policy_by_proposition"] = {
+            proposition_key: (
+                {
+                    "mode": "EXISTING_SET",
+                    "slot_keys": list(
+                        address_existing_by_prop_key[proposition_key]
+                    ),
+                }
+                if proposition_key in address_existing_by_prop_key
+                else {"mode": "CREATE"}
+            )
+            for proposition_key in sorted(prop_by_key)
+        }
+    elif (
+        candidate_context is not None
+        and candidate_context.mode == "CONSTRAINED"
+    ):
+        payload["candidate_mode"] = "CONSTRAINED"
+        payload["candidate_slot_keys_by_proposition"] = {
+            key: list(value)
+            for key, value in (
+                candidate_context.candidate_slot_keys_by_proposition.items()
+            )
+        }
     obj, _meta, _validation = chat_json_schema(
         [
             {"role": "system", "content": _KEYBY_SYSTEM},
@@ -696,6 +1172,43 @@ def semantic_keyby(
             for key, proposition in prop_by_key.items()
         },
     )
+    if address_policy is not None:
+        _validate_address_policy(
+            draft=draft,
+            authorized_existing_slot_keys_by_proposition=(
+                address_existing_by_prop_key
+            ),
+            create_eligible_proposition_keys=address_create_prop_keys,
+        )
+    elif (
+        candidate_context is not None
+        and candidate_context.mode == "CONSTRAINED"
+    ):
+        _validate_candidate_authorization(
+            draft=draft,
+            candidate_slot_keys_by_proposition={
+                key: set(value)
+                for key, value in (
+                    candidate_context
+                    .candidate_slot_keys_by_proposition
+                    .items()
+                )
+            },
+        )
+        provisional = _create_expansion_proposition_keys(
+            draft=draft,
+            hidden_same_family_slot_keys_by_proposition={
+                key: set(value)
+                for key, value in (
+                    candidate_context
+                    .hidden_same_family_slot_keys_by_proposition
+                    .items()
+                )
+            },
+        )
+        if provisional:
+            raise CandidateExpansionRequired(provisional)
+
     prop_routes = {row.proposition_key: row for row in draft.proposition_routes}
     new_support_by_mutation: dict[int, set[str]] = {
         index: set() for index in range(len(draft.mutations))
@@ -791,6 +1304,211 @@ def semantic_keyby(
         delta=delta,
     )
     return delta, draft
+
+
+def semantic_keyby_candidate_aware(
+    *,
+    event_identity: dict,
+    previous: SemanticSlotStateV01 | None,
+    observation: EventObservationV01,
+    flatmap: PropositionFlatMapResultV01,
+    chat_fn,
+    mode: Literal["SHADOW", "CONSTRAINED"] = "SHADOW",
+    candidate_top_k: int = 2,
+    candidate_retriever=None,
+) -> CandidateAwareSemanticKeyByResultV01:
+    """Run KeyBy with KS-E candidate planning without changing default KeyBy.
+
+    SHADOW preserves the full KeyBy prompt and only measures whether chosen
+    EXISTING targets were inside Top-K.
+
+    CONSTRAINED exposes only candidate slots. If CREATE is proposed while
+    same-family slots remain hidden, the visible set expands monotonically and
+    KeyBy is rerun until CREATE is verified or an existing slot is selected.
+    """
+    propositions = flatmap.world_propositions
+    current_slots = list(previous.slots) if previous is not None else []
+    plan = build_candidate_adjudication_plan(
+        propositions=propositions,
+        current_slots=current_slots,
+        top_k=candidate_top_k,
+        retriever=candidate_retriever,
+    )
+
+    proposition_key_by_id = {
+        row.proposition_id: f"P{i:03d}"
+        for i, row in enumerate(propositions, 1)
+    }
+    slot_key_by_id, _slot_id_by_key = _slot_aliases(previous)
+
+    initial_context = _candidate_context_from_plan(
+        plan=plan,
+        proposition_key_by_id=proposition_key_by_id,
+        slot_key_by_id=slot_key_by_id,
+        mode=mode,
+    )
+
+    if mode == "SHADOW":
+        delta, draft = semantic_keyby(
+            event_identity=event_identity,
+            previous=previous,
+            observation=observation,
+            flatmap=flatmap,
+            chat_fn=chat_fn,
+            candidate_context=initial_context,
+        )
+        violations = _candidate_authorization_violations(
+            draft=draft,
+            candidate_slot_keys_by_proposition={
+                key: set(value)
+                for key, value in (
+                    initial_context
+                    .candidate_slot_keys_by_proposition
+                    .items()
+                )
+            },
+        )
+        return CandidateAwareSemanticKeyByResultV01(
+            mode=mode,
+            delta=delta,
+            draft=draft,
+            plan=plan,
+            initial_context=initial_context,
+            final_context=initial_context,
+            shadow_unauthorized_existing_routes=violations,
+        )
+
+    expanded: set[str] = set()
+    context = initial_context
+    expansion_triggered = False
+    while True:
+        try:
+            delta, draft = semantic_keyby(
+                event_identity=event_identity,
+                previous=previous,
+                observation=observation,
+                flatmap=flatmap,
+                chat_fn=chat_fn,
+                candidate_context=context,
+            )
+            return CandidateAwareSemanticKeyByResultV01(
+                mode=mode,
+                delta=delta,
+                draft=draft,
+                plan=plan,
+                initial_context=initial_context,
+                final_context=context,
+                expansion_triggered=expansion_triggered,
+                expanded_proposition_keys=tuple(sorted(expanded)),
+            )
+        except CandidateExpansionRequired as exc:
+            new_keys = set(exc.proposition_keys) - expanded
+            if not new_keys:
+                raise
+            expanded.update(new_keys)
+            expansion_triggered = True
+            context = _candidate_context_from_plan(
+                plan=plan,
+                proposition_key_by_id=proposition_key_by_id,
+                slot_key_by_id=slot_key_by_id,
+                mode="CONSTRAINED",
+                expanded_proposition_keys=expanded,
+            )
+
+
+def semantic_keyby_pairwise_guarded(
+    *,
+    event_identity: dict,
+    previous: SemanticSlotStateV01 | None,
+    observation: EventObservationV01,
+    flatmap: PropositionFlatMapResultV01,
+    chat_fn,
+    candidate_top_k: int = 2,
+    candidate_retriever=None,
+    pairwise_chat_fn=None,
+    pairwise_repeats: int = 2,
+    verify_full_family_on_reuse: bool = False,
+    pairwise_transport: Literal[
+        "SERIAL",
+        "BATCH",
+        "PROPOSITION_BATCH",
+        "PARALLEL",
+    ] = "SERIAL",
+    pairwise_max_workers: int = 6,
+) -> PairwiseGuardedSemanticKeyByResultV01:
+    """Resolve semantic address pairwise, then run joint KeyBy under that policy.
+
+    The pairwise stage owns semantic address authorization. The joint KeyBy
+    remains responsible for current-value synthesis, proposition grouping,
+    NO_WORLD_VALUE_CHANGE, CONTEST, and phase change, but cannot change address.
+    """
+    propositions = flatmap.world_propositions
+    current_slots = list(previous.slots) if previous is not None else []
+
+    candidate_plan = build_candidate_adjudication_plan(
+        propositions=propositions,
+        current_slots=current_slots,
+        top_k=candidate_top_k,
+        retriever=candidate_retriever,
+    )
+    if pairwise_transport == "BATCH":
+        pairwise_builder = build_pairwise_authorization_plan_batched
+    elif pairwise_transport == "PROPOSITION_BATCH":
+        pairwise_builder = (
+            build_pairwise_authorization_plan_proposition_batched
+        )
+    elif pairwise_transport == "PARALLEL":
+        pairwise_builder = build_pairwise_authorization_plan_parallel
+    elif pairwise_transport == "SERIAL":
+        pairwise_builder = build_pairwise_authorization_plan
+    else:
+        raise ValueError(
+            f"unknown pairwise_transport: {pairwise_transport!r}"
+        )
+
+    pairwise_kwargs = {
+        "event_identity": event_identity,
+        "propositions": propositions,
+        "current_slots": current_slots,
+        "candidate_plan": candidate_plan,
+        "chat_fn": pairwise_chat_fn or chat_fn,
+        "repeats": pairwise_repeats,
+        "verify_full_family_on_reuse": verify_full_family_on_reuse,
+    }
+    if pairwise_transport == "PARALLEL":
+        pairwise_kwargs["max_workers"] = pairwise_max_workers
+    pairwise_plan = pairwise_builder(**pairwise_kwargs)
+    address_policy = _address_policy_from_pairwise_plan(pairwise_plan)
+
+    proposition_key_by_id = {
+        row.proposition_id: f"P{i:03d}"
+        for i, row in enumerate(propositions, 1)
+    }
+    slot_key_by_id, _slot_id_by_key = _slot_aliases(previous)
+    candidate_context = _candidate_context_from_plan(
+        plan=candidate_plan,
+        proposition_key_by_id=proposition_key_by_id,
+        slot_key_by_id=slot_key_by_id,
+        mode="SHADOW",
+    )
+
+    delta, draft = semantic_keyby(
+        event_identity=event_identity,
+        previous=previous,
+        observation=observation,
+        flatmap=flatmap,
+        chat_fn=chat_fn,
+        address_policy=address_policy,
+    )
+    return PairwiseGuardedSemanticKeyByResultV01(
+        delta=delta,
+        draft=draft,
+        candidate_plan=candidate_plan,
+        pairwise_plan=pairwise_plan,
+        candidate_context=candidate_context,
+        address_policy=address_policy,
+        pairwise_transport=pairwise_transport,
+    )
 
 
 def decide_slot_delta_two_stage(

@@ -13,6 +13,7 @@ from app.api.delivery import router as delivery_router
 from app.api.kernel import router as kernel_router
 from app.api.meta import router as meta_router
 from app.api.sources import router as sources_router
+from app.api.user_space import router as user_space_router
 from app.api.watches import router as watches_router
 from app.config import settings
 from app.db import Base, engine
@@ -49,6 +50,7 @@ def create_app() -> FastAPI:
     application.include_router(watches_router, prefix="/watches", tags=["watches"])
     application.include_router(delivery_router, prefix="/deliveries", tags=["delivery"])
     application.include_router(meta_router, prefix="/meta", tags=["meta"])
+    application.include_router(user_space_router, prefix="/user-space", tags=["user-space"])
 
     from app.api.sources import create_edge
     from app.schemas.api import SourceEdgeCreate
@@ -100,14 +102,46 @@ app = create_app()
 @app.on_event("startup")
 def startup() -> None:
     if settings.auto_create_tables:
-        if str(settings.execution_purpose or "").upper() == "CANONICAL":
+        purpose = str(settings.execution_purpose or "").upper()
+        if purpose == "CANONICAL":
             raise RuntimeError(
                 "Canonical RAOS forbids Base.metadata.create_all(); "
                 "database schema authority belongs to Alembic migrations."
             )
+        if purpose == "TEST":
+            # Test fixtures own their isolated engine/schema. Never let
+            # FastAPI startup reconnect the import-time app engine and mutate
+            # a developer/canonical database merely because TestClient starts.
+            return
         Base.metadata.create_all(bind=engine)
         return
 
+    from threading import Thread
+
     from app.schema_authority import assert_database_schema_current
+    from app.api.kernel import warm_compact_attention_cache
+    from app.api.sources import warm_compact_source_cache
+    from app.services.current_attention import warm_current_attention_cache
+    from app.services.user_space_projection import (
+        run_projection_worker_forever,
+    )
+
+    def warm_user_space_projections() -> None:
+        # Serial materialization avoids Source/Attention competing with each
+        # other. The service itself becomes reachable before this background
+        # warmup completes.
+        warm_compact_source_cache()
+        warm_current_attention_cache()
+        warm_compact_attention_cache()
 
     assert_database_schema_current(engine)
+    Thread(
+        target=run_projection_worker_forever,
+        name="raos-user-space-projector",
+        daemon=True,
+    ).start()
+    Thread(
+        target=warm_user_space_projections,
+        name="raos-user-space-cache-prewarm",
+        daemon=True,
+    ).start()
